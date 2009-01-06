@@ -1,0 +1,15 @@
+#
+# .hgignore
+# Files to ignore for version control
+#                
+
+syntax: glob
+
+*.pyc
+*.kit
+*.scode
+
+lib/*.jar
+manifests/*
+temp/*
+test/*
