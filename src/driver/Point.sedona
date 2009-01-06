@@ -1,0 +1,71 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   23 Aug 07  Andy Saunders  Creation
+//
+
+**
+** Point -- Base class to model a data point in a Device.
+**
+class Point
+  extends Component 
+{
+  property bool fault = false
+  property int status = 0
+  @config property int address = 0
+
+ public bool isDown()
+ {
+ 	return status == Status.DOWN;
+ }
+  virtual override void execute()
+  {
+  	Device device = getDevice()
+  	if(device != null)
+  	  setDown(device.isDown())
+  	fault = status != 0
+  }
+  
+////////////////////////////////////////////////////////////////
+// app support
+////////////////////////////////////////////////////////////////
+  **
+  ** getDevice() -- returns reference to parent device
+  **
+  Device getDevice()
+  {
+  	App app = Sys.app
+    for (Component c = app.lookup(parent); c != null; c = app.lookup(c.parent))
+      if (c.type.is(Device.type))
+        return (Device)c
+    return null
+  }
+
+////////////////////////////////////////////////////////////////
+// status support
+////////////////////////////////////////////////////////////////
+  virtual void setDown(bool isDown)
+  {
+    if(isDown)
+      status = status | Status.DOWN
+    else
+    {
+      status = status & ~Status.DOWN
+    }	
+  }  	
+
+  virtual void setFault(bool isFault)
+  {
+    if(isFault)
+      status = status | Status.FAULT
+    else
+    {
+      status = status & ~Status.FAULT
+    }	
+  }  	
+
+
+  
+}
