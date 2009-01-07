@@ -1,8 +1,8 @@
 #! /usr/bin/env python
 #
-# compilelinux.py
+# compileunix.py
 # 
-#    Standard code used to compile a Linux executable
+#    Standard code used to compile a UNIX executable
 #
 # Author:    Matthew Giannini
 # Creation:  10 Dec 08
@@ -13,7 +13,7 @@ import env
 import fileutil
 
 #
-# Compile C source to a Linux executable
+# Compile C source to a unix executable
 #   exeFile:  absolute path of output executable
 #   srcFiles: list of absolute source files
 #   includes: list of absolute directories
@@ -47,7 +47,7 @@ def compile(exeFile, srcFiles, includes, libs, defs):
   # compile away
   status = os.system(cmd)
   if status:
-    raise env.BuildError("FATAL: compilelinux " + exeFile)     
+    raise env.BuildError("FATAL: compileunix " + exeFile)     
 
   print "  Success [" + exeFile + "]"
     

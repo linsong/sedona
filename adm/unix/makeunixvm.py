@@ -1,8 +1,8 @@
 #! /usr/bin/env python
 #
-# makelinuxvm.py
+# makeunixvm.py
 #
-#    Compile svm.exe Linux's Sedona virtual machine
+#    Compile svm 
 #
 # Author:    Matthew Giannini
 # Creation:  10 Dec 08
@@ -11,16 +11,16 @@
 import os
 import env
 import fileutil
-import compilelinux
+import compileunix
 import compilekit
 
-platDir = os.path.join(env.platforms, "generic", "linux")
+platDir = os.path.join(env.platforms, "generic", "unix")
 
-platFile = os.path.join(platDir, "generic-linux.xml")
+platFile = os.path.join(platDir, "generic-unix.xml")
 
 exeFile = os.path.join(platDir, "svm")
 
-stageDir = os.path.join(env.temp, "linux")
+stageDir = os.path.join(env.temp, "unix")
 
 srcFiles = [ os.path.join(stageDir, "*.c")]
 
@@ -28,14 +28,14 @@ includes = []
 
 libs = []
 
-defs = [("__LINUX__", "1")]
+defs = [("__UNIX__", "1")]
 
 
 # Make
 def compile():
   try:
     compilekit.compile(platFile + " -outDir " + stageDir)
-    compilelinux.compile(exeFile, srcFiles, includes, libs, defs)
+    compileunix.compile(exeFile, srcFiles, includes, libs, defs)
     fileutil.cpfile(exeFile, env.svmExe)
     os.chmod(env.svmExe, 0755)
 

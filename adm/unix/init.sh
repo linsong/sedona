@@ -2,23 +2,21 @@
 #
 # init.sh
 #
-#   Initializes the sedona environment for Linux
+#   Initializes the sedona environment for a UNIX host.
 #
 # Author: Matthew Giannini
 # Creation: 10 Dec 08
 #
 
-# Sedona directories
-# Sedona root is the directory that contains pub/, tridium/ and www/
-export sedona_root=/usr/local/sedona
+# Setup sedona_home. This is the directory that contains adm/, src/, bin/, etc...
+# This assumes you have cloned the sedona repository to your home directory, and
+# then setup a symbolic link called "sedonadev" that points to the version of sedona
+# you want to be working with. You can always change this to the explicit path.
 
-export sedona_home=$sedona_root/pub
-export sedona_tridium=$sedona_root/tridium
-export sedona_www=$sedona_root/www
+export sedona_home=~/sedonadev
 
 # path
-export PATH=$PATH:$sedona_home/bin:$sedona_home/adm:$sedona_tridium/adm:$sedona_www/bin
-export PATH=$PATH:$sedona_home/adm/linux
+export PATH=$PATH:$sedona_home/bin:$sedona_home/adm:$sedona_home/adm/unix
 
 # python environment
 export PYTHONPATH=$PYTHONPATH:$sedona_home/adm
@@ -41,7 +39,7 @@ done
 find $sedona_home/adm -name "*.py" -exec chmod 755 '{}' \; 2> /dev/null
 
 # aliases
-alias makelinuxvm='makelinuxvm.py'
+alias makeunixvm='makeunixvm.py'
 alias makesedona='makesedona.py'
 alias makesedonac='makesedonac.py'
 alias sedonac='sedonac.sh'
@@ -56,40 +54,3 @@ function scodegen
   $java_home/bin/java -cp $sedona_home/adm SCodeGen "h" $sedona_home/adm/scode.txt $sedona_home/adm/scode.h $sedona_home/src/vm/scode.h
   rm -rf $sedona_home/adm/*.class
 }
-
-#function debugs()
-#{
-#  $java_home/bin/java -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8000 -Dsedona.home=$sedona_home -cp "$sedona_home/lib/*" sedonac/Main "$@"
-#}
-#
-
-#function cleanSedona()
-#{
-#  # TODO make this a python script
-#  echo "Cleaning c files..."
-#  rm -rfv $sedona_home/temp/linux/*.[ch]
-#
-#  echo "Cleaning kits..."
-#  rm -rfv $sedona_home/kits/*
-#
-#  echo "Removing sedona.jar and sedonac.jar..."
-#  rm -rfv $sedona_home/lib/*.jar
-#
-#  echo "Removing svm..."
-#  rm -rfv $sedona_home/bin/svm
-#
-#  echo "Done."
-#  
-#}
-#
-#function buildSedona()
-#{
-#  cleanSedona
-#  python $sedona_home/adm/makesedona.py
-#  python $sedona_home/adm/makesedonac.py
-#  for i in sys inet
-#  do
-#    sedonac $sedona_home/src/$i
-#  done
-#  makevm
-#}

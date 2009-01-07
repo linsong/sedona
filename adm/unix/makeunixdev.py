@@ -1,10 +1,10 @@
 #! /usr/bin/env python
 #
-# makelinux.py
+# makeunixdev.py
 # 
 #    This script is used to rebuild and test what a developer typically
 #    needs to get going.  It rebuilds most everything from source, 
-#    then runs the sedonac and linux svm test suite as a fairly quick 
+#    then runs the sedonac and unix svm test suite as a fairly quick 
 #    sanity check.
 #
 # Author:    Matthew Giannini
@@ -16,7 +16,7 @@ import env
 import fileutil
 import makesedona
 import makesedonac
-import makelinuxvm
+import makeunixvm
 import compilekit
 
 # Main
@@ -30,8 +30,8 @@ if __name__ == '__main__':
   # make all kits
   compilekit.compile(env.src)
 
-  # make linux svm
-  makelinuxvm.compile()
+  # make unix svm
+  makeunixvm.compile()
   
   # make windows test scode
   #compilekit.compile(os.path.join(env.scode, "x86-test.xml"))  

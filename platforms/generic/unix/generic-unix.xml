@@ -4,7 +4,7 @@
   -  Licensed under the Academic Free License version 3.0
   -->
 
-<sedonaPlatform id="generic-linux">
+<sedonaPlatform id="generic-unix">
 
   <compile endian="little" blockSize="4" refSize="4" debug="true" test="true">
 
@@ -19,13 +19,11 @@
     <nativeSource path="/src/vm" />
     <nativeSource path="/src/sys/native" />
     <nativeSource path="/src/sys/native/std" />
-    <nativeSource path="/src/sys/native/linux" />
+    <nativeSource path="/src/sys/native/unix" />
     <nativeSource path="/src/inet/native" />
     <nativeSource path="/src/inet/native/std" />
     <nativeSource path="/src/inet/native/sha1" />
-    <!--nativeSource path="/src/fw/serial/native/qnx" /-->
-    <!--<nativeSource path="/../tridium/src/platforms/jace/native/qnx" />-->
-    <!--<nativeSource path="/../tridium/src/drivers/nrio/native/qnx" />-->
+    <!--nativeSource path="/src/fw/serial/native/unix" /-->
 
   </compile>    
 

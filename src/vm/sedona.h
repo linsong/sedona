@@ -144,10 +144,10 @@ typedef short             int_least16_t;
 
 
 ////////////////////////////////////////////////////////////////
-// LINUX
+// UNIX
 ////////////////////////////////////////////////////////////////
 
-#elif defined( __LINUX__ )
+#elif defined( __UNIX__ )
 
 // includes
 #include <stdio.h>
@@ -159,7 +159,7 @@ typedef short             int_least16_t;
 // debug
 #define SCODE_DEBUG
 
-// We assume we are only targeting LINUX for x86.
+// Change to IS_BIG_ENDIAN if target platform is not little endian
 #define IS_LITTLE_ENDIAN
 
 // macros
@@ -175,10 +175,6 @@ typedef short             int_least16_t;
 #else
 #error "cannot determine __WORDSIZE"
 #endif
-
-
-
-
 
 ////////////////////////////////////////////////////////////////
 //
