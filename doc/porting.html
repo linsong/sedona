@@ -63,10 +63,9 @@ OS platforms using the following steps:
 <p>
 Your porting journey starts with "<a href="../src/vm/sedona.h">sedona.h</a>"
 which is sourced in the "src/vm" directory.  If you take 
-a look at this file you can see that there is a section for each target
-platform including Win32, QNX, and Cygwin.  Each platform section
-should be wrapped by an <code>#ifdef</code> directive for your
-target platform.
+a look at this file you can see that there is a section for major targets
+platform such as Win32, QNX, and GCC.  Each platform section should 
+be wrapped by an <code>#ifdef</code> directive for your target compiler/platform.
 </p>
 
 <p>
@@ -78,7 +77,9 @@ endianness and block sizes.
 
 <p>
 If you wish your changes to be merged back into the standard
-distribution, just email your changes back to us.
+distribution, just email your changes back to us.  You can also
+put your definitions into the "sedona-local.h" file which if included
+by default is none of the existing "sedona.h" sections are matched.
 </p>
 
 <p>
@@ -108,9 +109,9 @@ For every native method you will have to supply a C function
 using the appropriate naming conventions which implements that
 native method for your target platform.  Often you will be able
 to use implementations which have already been written.  For
-example some native methods like <code>sys::Time.compare</code>
+example some native methods like <code>sys::Sys.copy</code>
 can be written in portable ANSI C.  Other methods such
-<code>sys::Time.now</code> almost always require a custom
+<code>sys::Sys.ticks</code> almost always require a custom
 implementation for each hardware or OS platform.
 </p>
 
@@ -241,9 +242,9 @@ into one big flat directory so that we can compile them.
 </p>
 
 <p>
-Staging is driven by a platform XML file passed to <code>sedonac</code>.
-Here is the generic Windows platform XML file which contains the 
-compiler directives to stage the native code:
+Staging is driven by a <a href='platforms.html#manifest'>platform XML</a> file
+passed to <code>sedonac</code>. Here is the generic Windows platform XML file
+which contains the compiler directives to stage the native code:
 </p>
 
 <pre>
@@ -262,6 +263,7 @@ compiler directives to stage the native code:
     &lt;nativeSource path="/src/sys/native/win32" />
     &lt;nativeSource path="/src/inet/native" />
     &lt;nativeSource path="/src/inet/native/std" />
+    &lt;nativeSource path="/src/inet/native/sha1" />
       
   &lt;/compile>
        
@@ -269,17 +271,15 @@ compiler directives to stage the native code:
 </pre>
 
 <p>
-The platform XML file lists of all the directories containing
-the C files we need to compile for our target platform.  For
-example to implement all the native methods for the <code>sys</code>
-kit we pull from the common "native" directory which is the
-portable code.  We pull from "native/std" which is portable
-if using stdlib.  And we pull from "native/win32" which is
-win32 specific code.  We also need the "src/vm" code itself
-and we use the standard bootstrap code from "src/boot/std".
-You can take advantage of the platform database's ability to
-include other platform files if you have a multiple binaries
-to build.
+The platform XML file lists of all the directories containing the C files we
+need to compile for our target platform. For example to implement all the
+native methods for the <code>sys</code> kit we pull from the common "native"
+directory which is the portable code. We pull from "native/std" which is
+portable if using stdlib. And we pull from "native/win32" which is win32
+specific code. We also need the "src/vm" code itself and we use the standard
+bootstrap code from "src/boot/std". You can take advantage of the platform
+database's ability to include other platform files if you have a multiple
+binaries to build.
 </p>
 
 <p>
