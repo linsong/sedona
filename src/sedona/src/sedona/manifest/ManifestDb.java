@@ -55,7 +55,7 @@ public class ManifestDb
    * Lookup the manifest for the specified kit part using the algorthm:
    *   - If already loaded return cached manifest
    *   - If found, load from "{home}\manifests\kit\{kitName}-{checksum}.xml"
-   *   - If "{home}\kits\{kitName}.kit" has matching checksum,
+   *   - If "{home}\kits\{kitName}-xxx.kit" has matching checksum,
    *     then copy to manifest database and load that
    *   - Return null
    */

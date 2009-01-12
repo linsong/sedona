@@ -112,34 +112,46 @@ of the declared types and slots.
 </p>
 
 <!-- /////////////////////////////////////////////////////// -->
+<h1 id="kitDb">Kit Database</h1>
+<!-- /////////////////////////////////////////////////////// -->
+
+<p> 
+Within a Sedona installation we store all the local copies of
+kits with the file pattern: 
+</p>                   
+
+<pre>
+{home}/kits/{kit}/{kit}-{checksum}-{version}.kit
+{home}/kits/control/control-cdf5f0f0-1.0.29.kit
+</pre>
+
+<p>
+We call this directory the <i>kit database</i>.  It can store
+multiple concurrent versions of each kit.  The <code>sedona.kit.*</code>
+APIs are used to work with the kit database.
+</p>
+
+<!-- /////////////////////////////////////////////////////// -->
 <h1 id="manifestDb">Manifest Database</h1>
 <!-- /////////////////////////////////////////////////////// -->
 
-<p>                                     
-TODO: some of this is out of date!
-</p>
+<p>
+Kits always contain the manifest information we need when working
+with schema.  However, often we don't need the full kit file, only
+the XML manifest inside of it.  So in addition to the kit database,
+we also store a manifest database with the file pattern:
+</p>                                                       
+
+<pre>      
+{home}/manifests/{kit}/{kit}-{checksum}.xml
+{home}/manifests/control/control-cdf5f0f0.xml
+</pre>
 
 <p>
-Within a given Sedona toolkit installation there can be multiple versions 
-of a kit file for a given kit name.  For example the kit "control" might
-be stored in the file "{home}\kits\control\control-40464bf3-1.0.13.kit".  
-Typically an installation stores the latest known versions of each kit - these
-kit files contain the full set of information needed for type checking
-and compiling IR into scode.  But when working with binary formats
-we need to support different kit parts simultaneously.  To solve
-this problem, we break out kit manifest information into a
-separate <i>manifest database</i>.
-</p>
-
-<p>
-The "{home}\manifest" directory is used to store the toolkit's
-manifest database.  The manifest database contains an XML manifest file
-for each kit part (each combination of kit name and checksum).
-The XML format in the manifest database is the same as the manifest
-in the kit zip file.  The "sysTest" example above would be stored
-in the file "{home}\manifest\sysTest\sysTest-da52f78f.xml".  But
-we might also have many other manifests for "sysTest" for different
-checksum revisions.
+By pulling the manifests out into a separate database, we don't
+require the full kit file to work with the kit's types.  This is
+typically more efficient, and it allows a manufacturer to only
+publish the manifest versus the whole kit file.
 </p>
 
 <p>
@@ -183,6 +195,75 @@ to work with binary formats such as ".sab" files and Sox messages.
 </p>
 
 <!-- /////////////////////////////////////////////////////// -->
+<h1 id="resolvingManifests">Resolving Manifests</h1>
+<!-- /////////////////////////////////////////////////////// -->
+
+<p>
+The recommended rules for resolving a given kit name and
+checksum to a manifest:
+<p>
+
+<ol>
+<li>Check the local manifest database first, if found use it;</li>
+<li>Check the local kit database, if found then copy the manifest
+to the local manifest database for the next time around;</li>
+<li>Download the manifest from Internet via sedonadev.org to the
+local manifest database;</i>
+</ol>                                                      
+
+<p>
+Steps 1 and 2 are automatically implemented by the <code>ManifestDb</code>
+API.
+</p>
+
+<!-- /////////////////////////////////////////////////////// -->
+<h1 id="kitsVsManifests">Kits versus Manifests</h1>
+<!-- /////////////////////////////////////////////////////// -->
+
+<p>         
+So when do you need a kit and when do you only need a manifest?
+This table helps summarize the differences:
+</p>                                 
+
+<table>
+
+<tr>
+  <th></th>
+  <th>Encapsulates</th>
+  <th>Versioned By</th>
+  <th>Uses</th>
+</tr>
+
+<tr>
+  <th>Manifest</th>
+  <td>type and slot schema</td>
+  <td>checksum</td>
+  <td>sax, sab, and sox</td>
+</tr>
+
+<tr>
+  <th>Kit</th>
+  <td>code</td>
+  <td>version number</td>
+  <td>compiling dependencies and scode images</td>
+</tr>
+  
+</table>
+
+<p>
+For example when working with an application file or Sox, only
+the type schema's are needed.  No knowledge of the internal code
+is required.  However when compiling, you need the full kit which 
+contains the actual code.
+</p>                      
+
+<p>
+Manifests are versioned with a checksum each time a type or
+slot definition is modified.  Kits are versioned with a version
+number typically whenever code is modified.
+</p>
+
+<!-- /////////////////////////////////////////////////////// -->
 <h1 id="review">Review</h1>
 <!-- /////////////////////////////////////////////////////// -->
 
@@ -203,6 +284,9 @@ revision.</li>
 <li><b>Kit Manifest</b>: the kit file contains its checksum
 and type definitions in a zip entry called "manifest.xml".
 </li>
+
+<li><b>Kit Database</b>: the Sedona Java toolkit
+maintains a database of all local kit versions.</li>
 
 <li><b>Manifest Database</b>: the Sedona Java toolkit
 maintains a database of all the different kit manifests which
