@@ -8,11 +8,14 @@ syntax: glob
 *.pyc
 *.kit
 *.scode
-*.jar    
+*.jar         
+*.class   
+*libJar*
 
 syntax: regexp
 
 ^manifests/
 ^platforms/tridium/
 ^temp/
-^test/
+^test/ 
+^doc/.*/      

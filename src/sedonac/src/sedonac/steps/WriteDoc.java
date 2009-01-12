@@ -139,7 +139,7 @@ public class WriteDoc
   private void footer(XWriter out)
   {
     nav(out);
-    out.w("<div class='copyright'>Copyright &#169; 2007 Tridium, Inc.</div>\n");
+    out.w("<div class='copyright'>Copyright &#169; 2007-2009 Tridium, Inc.</div>\n");
     out.w("</body>\n");
     out.w("</html>\n");
   }                         

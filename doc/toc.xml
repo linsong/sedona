@@ -17,14 +17,21 @@
   <chapter name="Methods" href="methods.html" blurb="method slots"/>
   <chapter name="Inheritance" href="inheritance.html" blurb="class inheritance"/>
   <chapter name="Components" href="components.html" blurb="the Sedona component model"/>
-  <chapter name="Apps" href="apps.html" blurb="the Sedona application model"/>
   <chapter name="Reflection" href="reflection.html" blurb="the Sedona reflection APIs"/>
   <chapter name="Arrays" href="arrays.html" blurb="how Sedona arrays work"/>
   <chapter name="Memory" href="memory.html" blurb="how memory is laid out and utilized"/>
-  <chapter name="Schema" href="schema.html" blurb="kit versioning and application schemas"/>
   <chapter name="Native Methods" href="nativeMethods.html" blurb="binding Sedona APIs to native implementations written in C"/>
-  <chapter name="Security" href="security.html" blurb="Sedona's security model"/>
   <chapter name="Logging" href="logging.html" blurb="how to embed logging into Sedona code"/>
+</section>
+
+<section name="Apps">
+  <chapter name="Apps" href="apps.html" blurb="the Sedona application model"/>
+  <chapter name="Security" href="security.html" blurb="Sedona's security model"/>
+</section>
+
+<section name="Deployment">
+  <chapter name="Schema" href="schema.html" blurb="kits and manifests: versioning and schemas"/>
+  <chapter name="Platforms" href="platforms.html" blurb="managing platform binaries"/>
 </section>
 
 <section name="Networking">
@@ -34,12 +41,10 @@
 </section>  
 
 <section name="Development">
+  <chapter name="Java VM" href="jvm.html" blurb="running Sedona on the Java VM"/>
   <chapter name="Testing" href="testing.html" blurb="how to use Sedona's built-in test harness"/>
   <chapter name="Porting" href="porting.html" blurb="how to port the VM to new platforms"/>
   <chapter name="Sedonac" href="sedonac.html" blurb="command line sedonac tool"/>
-</section>
-
-<section name="Vendors">
   <chapter name="Vendors" href="vendors.html" blurb="Overview of vendors in Sedona"/>
 </section>
 
