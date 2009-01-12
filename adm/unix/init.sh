@@ -15,6 +15,9 @@
 
 export sedona_home=~/sedonadev
 
+# used by makeunixvm.py as the default SVM platform to build
+export SVM_PLATFORM=generic/linux/x86
+
 # path
 export PATH=$PATH:$sedona_home/bin:$sedona_home/adm:$sedona_home/adm/unix
 

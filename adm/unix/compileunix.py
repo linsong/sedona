@@ -20,9 +20,8 @@ import fileutil
 #   libs:     list of filenames
 #   defs:     list of name/value tuples
 #
-def compile(exeFile, srcFiles, includes, libs, defs):  
-  print "Compile [" + os.path.basename(exeFile) + "]"
-
+#def compile(exeFile, srcFiles, includes, libs, defs):  
+def gcc(exeFile, srcFiles, includes, libs, defs):  
   # standard includes                                                                   
   cmd = "gcc"
   for include in includes:
@@ -45,6 +44,7 @@ def compile(exeFile, srcFiles, includes, libs, defs):
   cmd += " -o " + exeFile
 
   # compile away
+  print cmd
   status = os.system(cmd)
   if status:
     raise env.BuildError("FATAL: compileunix " + exeFile)     

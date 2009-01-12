@@ -63,9 +63,10 @@ if os.name == "posix":
   cpSep       = ":"
   jikes       = "jikes"   # assume in the PATH
   jar         = os.path.join(javaBin, "jar")
-  sedonacExe  = "sedonac.sh"
+  sedonacExe  = os.path.join(bin, "sedonac.sh")
   svmExe      = os.path.join(bin, "svm")
   jsvmExe     = os.path.join(bin, "jsvm")
+  svmPlatform = os.environ.get("SVM_PLATFORM")
   
 # Get the buildVersion defined in /lib/sedona.properties
 def buildVersion():
@@ -81,17 +82,13 @@ class BuildError(Exception):
 # Dump the environment setting
 def dump():           
   print "------- env ------"
-  for slot in env.__dict__:
+  keys = env.__dict__.keys()
+  keys.sort()
+  for slot in keys:
     if not slot.startswith("__"):
       print "%-20s %20s" % (slot + ":", getattr(env, slot))
     
 # Main
 if __name__ == '__main__':     
   dump()
-       
-
-  
-  
-  
-  
 
