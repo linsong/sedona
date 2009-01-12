@@ -155,12 +155,25 @@ typedef short             int_least16_t;
 #include <string.h>
 #include <stdbool.h>
 #include <unistd.h>
+#include <endian.h>
 
 // debug
 #define SCODE_DEBUG
 
-// Change to IS_BIG_ENDIAN if target platform is not little endian
-#define IS_LITTLE_ENDIAN
+// determine endianness
+#ifdef __BYTE_ORDER
+#  if __BYTE_ORDER == __LITTLE_ENDIAN
+#    define IS_LITTLE_ENDIAN
+#  else
+#    define IS_BIG_ENDIAN
+#  endif
+#elif defined (BYTE_ORDER) && defined(LITTLE_ENDIAN) && defined(BIG_ENDIAN)  
+#  if BYTE_ORDER == LITTLE_ENDIAN
+#    define IS_LITTLE_ENDIAN
+#  else
+#    define IS_BIG_ENDIAN
+#  endif
+#endif
 
 // macros
 #define USE_STANDARD_MAIN
@@ -169,11 +182,11 @@ typedef short             int_least16_t;
 #define _chdir chdir
 
 #if __WORDSIZE == 64
-#define CLOCK_T_MAX INT64_MAX
+#  define CLOCK_T_MAX INT64_MAX
 #elif __WORDSIZE == 32
-#define CLOCK_T_MAX INT32_MAX
+#  define CLOCK_T_MAX INT32_MAX
 #else
-#error "cannot determine __WORDSIZE"
+#  error "cannot determine __WORDSIZE"
 #endif
 
 ////////////////////////////////////////////////////////////////
