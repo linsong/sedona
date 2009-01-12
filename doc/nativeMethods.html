@@ -59,7 +59,13 @@ are used to create a native method:
 <li><b>Native Tables</b>: function pointers to all native implementations
    are mapped into tables for dispatch by the Sedona VM</li>
 
-</ol>
+</ol>       
+
+<p>
+When running on the Java VM, native methods are implemented in the
+Java language - see the <a href='jvm.html#nativeMethods'>Java VM</a>
+chatper.            
+</p>
 
 <!-- /////////////////////////////////////////////////////// -->
 <h1 id="id">Native Id</h1>
@@ -263,7 +269,15 @@ A summary of common mappings from Sedona to their C equivalents:
   <td>Obj</td>   <td>void*</td>
   <td>Obj[]</td> <td>void**</td>
 </tr>
+<tr>
+  <td>Str</td>   <td>uint8_t*</td>
+  <td>Str[]</td> <td>uint8_t**</td>
+</tr>
 </table>
+
+<p>
+Note that Sedona strings can be used as a normal null terminated C string.
+</p>
 
 <p>
 Refer to the <a href='porting.html#natives'>Porting</a> chapter for how
@@ -312,11 +326,18 @@ The following are the predefined native kit ids:
 </p>
 
 <table>
-  <tr> <td>sys</td>      <td>0</td></tr>
-  <tr> <td>inet</td>     <td>3</td></tr>
-  <tr> <td>serial</td>   <td>4</td></tr>
-  <tr> <td>jn5139R1</td> <td>5</td></tr>
-  <tr> <td>jace</td>     <td>6</td></tr>
+  <tr> <td>sys</td>               <td>0</td></tr>
+  <tr> <td>mac154</td>            <td>2</td></tr>        
+  <tr> <td>inet</td>              <td>3</td></tr>
+  <tr> <td>serial</td>            <td>4</td></tr>
+  <tr> <td>basicio, smbus</td>    <td>5</td></tr>
+  <tr> <td>jace, spibus</td>      <td>6</td></tr>      
+  <tr> <td>jennic</td>            <td>7</td></tr>        
+  <tr> <td>jenNet</td>            <td>8</td></tr>        
+  <tr> <td>analogio</td>          <td>9</td></tr>        
+  <tr> <td>bacnet</td>            <td>11</td></tr>        
+  <tr> <td>memtool</td>           <td>13</td></tr>        
+  <tr> <td>nrio</td>              <td>20</td></tr>         
 </table>
 
 <br/>
