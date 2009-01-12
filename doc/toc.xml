@@ -30,7 +30,8 @@
 </section>
 
 <section name="Deployment">
-  <chapter name="Schema" href="schema.html" blurb="kits and manifests: versioning and schemas"/>
+  <chapter name="Kits" href="kits.html" blurb="unit of modularity, versioning, and dependencies"/>
+  <chapter name="Schema" href="schema.html" blurb="manifests: type meta-data and schemas"/>
   <chapter name="Platforms" href="platforms.html" blurb="managing platform binaries"/>
 </section>
 
@@ -45,7 +46,6 @@
   <chapter name="Testing" href="testing.html" blurb="how to use Sedona's built-in test harness"/>
   <chapter name="Porting" href="porting.html" blurb="how to port the VM to new platforms"/>
   <chapter name="Sedonac" href="sedonac.html" blurb="command line sedonac tool"/>
-  <chapter name="Vendors" href="vendors.html" blurb="Overview of vendors in Sedona"/>
 </section>
 
 <section name="Appendix">
