@@ -48,7 +48,7 @@ following tasks:
 <li><a href='#compileKit'>Compile Kit</a>: compile Sedona source
 code into a kit file.</li>             
 <li><a href='#compileDir'>Compile Dir</a>: compile a group of
-sedona kits</li>             
+Sedona kits</li>             
 <li><a href='#compileCode'>Compile Code</a>: compile a set of
 kits into an scode file</li>             
 <li><a href='#compilePlatform'>Compile Platform</a>: stage
@@ -56,7 +56,7 @@ the native code for a specific platform binary</li>
 <li><a href='#compileApp'>Compile App</a>: convert between
 a sax or sab file.</li>             
 <li><a href='#run'>Run</a>: and arbitrary class within "sedona.jar" 
-or sedoanc.jar.</li>             
+or "sedoanc.jar".</li>             
 </ul>
 
 <!--/////////////////////////////////////////////////////////-->
@@ -104,7 +104,7 @@ on a "kit.xml" file or a directory which contains a "kit.xml" file.
 <p><b>&lt;sedonaKit></b> top level element:</p>
 
 <ul>
-<li><b>name</b>: required name of kit</li>
+<li><b>name</b>: required name of kit (must start with vendor name)</li>
 <li><b>vendor</b>: required name of vendor for kit</li>
 <li><b>description</b>: required short single sentence for kit</li>
 <li><b>includeSource</b>: optional boolean to include source in kit zip.  Defaults to false.</li>
@@ -135,8 +135,9 @@ added to the serial kit:
 <ul>
 <li><b>dir</b>: required directory path relative to top directory
 where "kit.xml" is located</li>
-<li><b>test</b>: optional boolean indicating which infers the @testonly
-facet on all the classes in that directory.  Default is false.</li>
+<li><b>test</b>: optional boolean indicating which infers the 
+<code>@testonly</code> facet on all the classes in that directory.  
+Default is false.</li>
 </ul>
 
 <p><b>&lt;native></b> specifies a <a href='nativeMethods.html#id'>native method</a>
@@ -241,7 +242,12 @@ Defaults to value of <code>sedonaCode.test</code> if unspecified.</li>
 <!--/////////////////////////////////////////////////////////-->
 
 <p> 
-TODO
+Sedonac is used to <i>stage</i> the native code when compiling
+a binary image for a given platform.  This happens when sedonac
+is run against an XML file with a <code>sedonaPlatform</code> root
+element.  See <a href='porting.html#staging'>Staging</a> and
+<a href='platforms.html#manifest'>Platform Manifest</a> for more
+details.
 </p>
 
 <!--/////////////////////////////////////////////////////////-->
@@ -249,7 +255,28 @@ TODO
 <!--/////////////////////////////////////////////////////////-->
 
 <p> 
-TODO
+If you run sedonac against a file with a ".sax" extension it
+converts the application to a ".sab" file, and vise versa.
+The output file is placed in the same directory as the
+input file:
+</p>       
+
+<pre> 
+D:\sedona\baseline\pub\apps>sedonac test.sax
+  ConvertAppFile [D:\sedona\baseline\pub\apps\test.sax -> D:\sedona\baseline\pub\apps\test.sab]
+  +----------------------------------
+  |  RAM:     14.2kb (14588 bytes)
+  |  FLASH:    0.4kb (382 bytes)
+  +----------------------------------
+</pre>                               
+
+<p>
+Running sedonac on an application file also prints a memory
+report.  RAM is an estimate of how memory the application
+consumes in RAM during runtime.   FLASH is the size required to
+persist the application to durable storage like FLASH (always
+exactly the same as the size of the sab file).  Also see the
+<a href='memory.html'>Memory</a> chapter.
 </p>
 
 <!--/////////////////////////////////////////////////////////-->
@@ -273,8 +300,54 @@ Base64: yk0f2aCJ/51Qqx8dxOR3Kmskxrs=
 <!--/////////////////////////////////////////////////////////-->
 
 <p> 
-TODO
+Many of the XML files used in Sedona development require a string
+formatted as a <i>dependency</i>.  Dependencies are a kit name
+and a list of version constraints.  Convention is to use a four part
+version of <code>major.minor.build[.patch]</code>.  The formal definition
+of a dependency:
 </p>
+
+<pre>
+depend        := name space* constraints
+constraints   := constraint [space* "," space* constraint]*
+constraint    := versionSimple | versionPlus | versionRange | checksum
+versionSimple := version
+versionPlus   := version space* "+"
+versionRange  := version space* "-" space* version
+version       := digit ["." digit]*                                   
+checksum      := "0x" 8 hex digits
+digit         := "0" - "9"
+</pre>
+
+<p>
+Note a simple version constraint such as "foo 1.2" really means
+"1.2.*" - it  will match all build numbers and patch numbers
+within "1.2".  Likewise "foo 1.2.64" will match all patch numbers
+within the "1.2.64" build.  The "+" plus sign is used to specify a
+given version and anything greater.  The "-" dash is used to
+specify an inclusive range.  When using a range, then end version
+is matched using the same rules as a simple version - for example
+"4", "4.2", and "4.0.99 " are all matches for "foo 1.2-4".  You may
+specify a list of potential constraints separated by commas.  Multiple
+version dependencies are evaluated using a logical OR - any one match
+is considered an overall match.  A version constraint and a checksum
+constraint are evaluated using a logical AND. 
+</p> 
+
+<p>
+Examples:
+</p>
+
+<pre>
+"foo 1.2"        Any version of foo 1.2 with any build or patch number
+"foo 1.2.64"     Any version of foo 1.2.64 with any patch number
+"foo 0+"         Any version of foo - version wildcard
+"foo 1.2+"       Any version of foo 1.2 or greater
+"foo 1.2-1.4"    Any version between 1.2 and 1.4 inclusive
+"foo 1.2,1.4"    Any version of 1.2 or 1.4
+"foo 0x1b02d4fc" Any version of foo with a checksum of 0x1b02d4fc
+"foo 1.0, 0x1b02d4fc" Any version of foo 1.0 and a checksum of 0x1b02d4fc
+</pre>
 
 <!-- TOC-FOOTER-START -->
 <!-- Auto-generated by sedonac -->
