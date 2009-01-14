@@ -9,9 +9,9 @@
 #
 
 # Setup sedona_home. This is the directory that contains adm/, src/, bin/, etc...
-# This assumes you have cloned the sedona repository to your home directory, and
-# then setup a symbolic link called "sedonadev" that points to the version of sedona
-# you want to be working with. You can always change this to the explicit path.
+# This assumes you have set up a symbolic link in your home directory called
+# "sedonadev" that points to the repository you want to be working with.
+# You can always change this to be the explicit path.This
 
 export sedona_home=~/sedonadev
 
