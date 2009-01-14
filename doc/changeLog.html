@@ -268,82 +268,82 @@ Build 1.0.7 (5 Mar 08)
   - Support for null doubles
   - Redesign of provisioning tools
 Build 1.0.8 (11 Mar 08)
-  - Added Sys.rand   
+  - Added Sys.rand
   - Added inet::Crypt
   - Added LoadNullDouble opcode
   - Added File.rename
   - Provisioning tool works for Win32/QNX
-Build 1.0.9 (18 Mar 08)  
+Build 1.0.9 (18 Mar 08)
   - Provisioning tool enhancements
-Build 1.0.10 (25 Mar 08)  
+Build 1.0.10 (25 Mar 08)
   - Fixes
-Build 1.0.11 (16 Apr 08)  
+Build 1.0.11 (16 Apr 08)
   - Rework Sox to use Dasp
   - Unified 6LoWPAN coordinator software
-Build 1.0.12 (22 Apr 08)  
-  - Coordinator uses IP mapping table 
+Build 1.0.12 (22 Apr 08)
+  - Coordinator uses IP mapping table
   - SedonaNetwork fixes
-Build 1.0.13 (23 Apr 08)  
+Build 1.0.13 (23 Apr 08)
   - Workbench Jennic Service
   - SoxSession spy page
-Build 1.0.14 (24 Apr 08)  
+Build 1.0.14 (24 Apr 08)
   - Tweaks to jenStuff
   - SedonaDevice spy for dasp diagnostics
-Build 1.0.15 (29 Apr 08)  
+Build 1.0.15 (29 Apr 08)
   - Fix send window ackMore overrun bug
   - Fix jennic circuluar queue bug
   - Fix double session bug when challenge dropped
   - Fix various SedonaNetwork bugs
-Build 1.0.16 (29 Apr 08)  
+Build 1.0.16 (29 Apr 08)
   - Minor fix to send window
-Build 1.0.17 (27 May 08)  
-  - Reorder sox support      
-  - Execution order is based on tree order  
-  - Sys.compareBytes native method      
-  - Sox authentication  
-  - Limit children under one component to 200     
+Build 1.0.17 (27 May 08)
+  - Reorder sox support
+  - Execution order is based on tree order
+  - Sys.compareBytes native method
+  - Sox authentication
+  - Limit children under one component to 200
   - Depend version and checksum matched with logical and
   - ConstFolding compiler step
   - Peephole IR optimizations
   - EqZero and NotEqZero opcodes
   - New JumpIntXxx opcodes
-  - New combination opcodes 
-  - Optimize space for long, float, double literals  
+  - New combination opcodes
+  - Optimize space for long, float, double literals
   - Unaligned arguments for call opcodes
   - VM and scode version rolled to 1.4
   - Scode image flags for test/debug (versionMore)
-Build 1.0.18 (11 Jun 08)         
+Build 1.0.18 (11 Jun 08)
   - Fix delete bug when component has circular link
   - Computed goto vm optimization
   - Doc chapters: Expr, Stmt, Fields, Methods
-Build 1.0.19 (17 Jun 08)       
-  - Security model and permission checking  
-Build 1.0.20 (25 Jun 08)       
-Build 1.0.21 (25 Jun 08)       
+Build 1.0.19 (17 Jun 08)
+  - Security model and permission checking
+Build 1.0.20 (25 Jun 08)
+Build 1.0.21 (25 Jun 08)
   - Reorganize code for open source
-Build 1.0.22 (26 Jun 08)       
+Build 1.0.22 (26 Jun 08)
   - Cleanup doc and src for full build
-Build 1.0.23 (9 Jul 08)       
+Build 1.0.23 (9 Jul 08)
   - More code reorg for Jennic ROM
-Build 1.0.24 (30 Jul 08)                     
+Build 1.0.24 (30 Jul 08)
   - Null safe navigation ?. operator
   - Elvis ?: operator
-  - Rename runVM => vmRun      
+  - Rename runVM => vmRun
   - Abstract call() as function pointer
   - Platform manifest nativePatch
   - New doc chapters: networking, dasp, sox
-Build 1.0.25 (21 Aug 08)                     
+Build 1.0.25 (21 Aug 08)
   - Added dasp connectTimeout option (defaults to 10sec)
   - Hibernate APIs
   - Workbench convert to Sax/Sab on SaxFile/SabFile
   - Workbench SlotSheet
 Build 1.0.26 (3 Sep 08)
-  - New docs: introduction, architecture, licensing    
+  - New docs: introduction, architecture, licensing
   - Fix bug related to dasp sending window size
-Build 1.0.27 (17 Sep 08)   
+Build 1.0.27 (17 Sep 08)
   - Stop and free mememory on app exit
   - Fix bugs and optimize dasp tuning
-Build 1.0.28 (2 Dec 08)                 
+Build 1.0.28 (2 Dec 08)
   - Sedonac generates Java bytecode
   - Sedona Java runtime (jsvm.exe)
   - Remove ability to perform pointer arithmetic
@@ -353,25 +353,27 @@ Build 1.0.28 (2 Dec 08)
   - Buf.setStr -> copyFromStr
   - Buf.set -> copyFromBuf
   - Str.buf made private (use get/set/toBytes)
-  - Cast type checking                          
+  - Cast type checking
   - Heap new/delete operators
   - Limit dasp max receive window to 31 to fit within 32-bit int
-Build 1.0.29 (16 Dec 08)           
-  - Fix JVM SedonaClassLoader to use match correct kit by checksum                
+Build 1.0.29 (16 Dec 08)
+  - Fix JVM SedonaClassLoader to use match correct kit by checksum
   - Optimize Str.get/set into byte[] array load/store instructions
   - App.initApp now takes initial comps array size
-  - Linux tooling and SVM support      
+  - Linux tooling and SVM support
   - Optimize Sedona reflection on JVM
-Build 1.0.30 (incomplete)                          
+Build 1.0.30
   - Updated documentation
   - Kit names must now be prefixed with vendor name
   - Vendor names restricted to less than 32 alphanum chars
-  - Add support for maxStack to Java bytecode      
+  - Add support for maxStack to Java bytecode
   - Map Sedona slot facets thru to Niagara slot facets
+
+Build 1.0.31 (incomplete)
 </pre>
 
 <pre>
-TODO:                          
+TODO:
   - Sox debug in HTML spy pages
   - subclass InStream, chain ctors
   - allow str[] literals
@@ -386,8 +388,8 @@ TODO:
   - internal class error checking
   - string literal escape sequences (utf-8)
   - definite assignment
-  - support the -2147483648 32-bit integer literal  
-  - optimize out field inits to zero/null     
+  - support the -2147483648 32-bit integer literal
+  - optimize out field inits to zero/null
 </pre>
 
 <!-- TOC-FOOTER-START -->
