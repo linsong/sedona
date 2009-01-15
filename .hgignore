@@ -9,8 +9,12 @@ syntax: glob
 *.kit
 *.scode
 *.jar         
-*.class   
+*.class
 *libJar*
+
+# Ignore Eclipse metafiles
+*.classpath
+*.project
 
 syntax: regexp
 
