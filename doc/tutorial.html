@@ -49,7 +49,14 @@ involved in building Sedona applications:
 <li>Build a new scode image</li>
 <li>Build an application</li>
 <li>Run the application</li>
-</ol>
+</ol>                       
+
+<p>It is recommended that you read the <a href='architecture.html'>Architecture</a>
+chapter before exploring this tutorial.  Refer to the 
+<a href='architecture.html#workflow'>diagram</a>, which illustrates the 
+work flow this tutorial will take.  Also make sure you have your 
+Sedona environment  <a href='setup.html'>setup</a> correctly before.  
+</p>
                  
 <!--/////////////////////////////////////////////////////////-->
 <h1 id="newKit">Build New Kit</h1>
@@ -87,10 +94,10 @@ The "kit.xml" file is used to define the kit's meta-data for the compiler:
 
 <p>
 The "kit.xml" file specifies the name of our kit, a short description,
-dependencies, and the directories of source code. The vendor specifies the
-company who developed the kit, for the purposes of the tutorial leave this as
-"Tridium" because otherwise the kit name must be prefixed with the name. For
-more information see <a href='kits.html'>Kits</a> and 
+dependencies, and the directories of source code. The vendor attribute
+specifies the company who developed the kit - for the purposes of the tutorial
+leave this as "Tridium" because otherwise the kit name must be prefixed with
+the name. For more information see <a href='kits.html'>Kits</a> and 
 <a href='sedonac.html#compileKit'>Sedonac</a>.
 </p>    
 
@@ -110,7 +117,7 @@ public class Add extends Component
 </pre>
 
 <p>
-The Add component is pretty simple.  If declares two inputs and an output.
+The Add component is pretty simple - it declares two inputs and an output.
 When the component is "executed" we add the two inputs and update the
 output.  For more information see <a href='components.html'>Components</a>.
 </p>
@@ -149,8 +156,8 @@ trouble running sedonac, then see <a href='setup.html'>Setup</a>.
 <p>
 Kits are units of deployment, but are not run directly by the 
 Sedona VM.  First we have to compile a set of kits into an scode
-image which can be run directly by the Sedona VM.  First let's
-create a new directory called "code" with one file:
+image which can be run directly by the Sedona VM.  Create a new 
+directory called "tutorialApp" with one file:
 </p>                  
 
 <pre> 
@@ -252,14 +259,13 @@ create a new "app.sax" file:
 </pre>
 
 <p>
-The file above declares four components.  The "web" component is
-an instance of the <code>WebService</code> which we can use to browse
-the runtime for debugging.  We set the web servers port to 8080.
-We declare two <code>control::Ramp</code> components which are used
-to generate dummy data.  Finally we declare a <code>tutorial::Add</code>
-component which is the component we build ourselves in the step above.
-The links section is used to link the output of the two ramps to
-the inputs of our <code>Add</code> block.
+The file above declares four components. The <code>WebService</code> component
+will run an HTTP server so we can use a browser for debugging. We set the web
+server's port to 8080. We declare two <code>control::Ramp</code> components
+which are used to generate dummy data. Finally we declare a <code>tutorial::Add</code> 
+component which is the component we built ourselves in the step above. 
+The links section is used to link the output of the two ramps to the 
+inputs of our <code>Add</code> block to create control flow.
 </p>
 
 <p>
@@ -288,11 +294,11 @@ for more information.
 <!--/////////////////////////////////////////////////////////-->
 
 <p>
-If you have followed the steps above:
+If you have followed the steps above, we have:
 </p>
 
 <ul>
-<li>Build a new kit called "tutorial" with a component called "Add"</li>
+<li>Built a new kit called "tutorial" with a component called "Add"</li>
 <li>Compiled our new kit into an scode image called "code.scode"</li>
 <li>Defined and compiled an app into a file called "app.sab"</li>
 </ul>
@@ -324,14 +330,14 @@ SVM from source - see <a href='porting.html'>Porting</a>.
 
 <p>
 Assuming you have your SVM running the application, you should be able
-to hit it with your browser at <a href='http://localhost:80/'>http://localhost:80/</a>.
+to hit it with your browser at <a href='http://localhost:8080/'>http://localhost:8080/</a>.
 If you go to the URL <a href='http://localhost:8080/spy/app/4'>http://localhost:8080/spy/app/4</a> 
 you should see the current values of your <code>tutorial::Add</code> component.  
 Hit refresh a couple times to see how the inputs and output change in real-time.
 </p>       
 
 <p>
-Congratulations, you've just build and deployed your first Sedona
+Congratulations, you've just built and deployed your first Sedona
 application!  Remember this tutorial illustrates the very basics 
 using only the command line tools.  Visit 
 <a href='http://www.sedonadev.org/'>sedonadev.org</a> to learn more
