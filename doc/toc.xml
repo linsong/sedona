@@ -4,8 +4,8 @@
 <section name="Getting Started">
   <chapter name="Introduction" href="intro.html" blurb="introduction to the Sedona Framework"/>
   <chapter name="Setup" href="setup.html" blurb="getting your development environment setup"/>
-  <chapter name="Tutorial" href="tutorial.html" blurb="step by step walk thru example"/>
   <chapter name="Architecture" href="architecture.html" blurb="the big picture"/>
+  <chapter name="Tutorial" href="tutorial.html" blurb="step by step walk thru example"/>
 </section>
 
 <section name="Sedona Language">
