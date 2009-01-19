@@ -9,6 +9,15 @@
 #                 
 
 import os
+import sys
+
+# override sedona_home to based off the script location
+home    = os.path.dirname(os.path.dirname(sys.argv[0]))
+root    = os.path.dirname(home)
+pub     = os.path.join(root, "pub")  
+os.environ["sedona_home"] = pub
+sys.path.append(os.path.join(pub, "adm"))
+
 import env
 import fileutil
 import makesedona
