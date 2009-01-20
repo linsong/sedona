@@ -126,7 +126,7 @@ public class Upload
     throws Exception
   {
     // plain text
-    String plain = vendor + ":" + password;
+    String plain = vendor.toLowerCase() + ":" + password;
     byte[] bytes = plain.getBytes("UTF-8");
     
     // hash
