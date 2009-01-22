@@ -40,8 +40,9 @@ final class File
   }
 
   **
-  ** Return the size in bytes of the file or -1 if the file does
-  ** not exist.  This method may used without opening the file.
+  ** Return the size in bytes of the file, or -1 if the file does
+  ** not exist or cannot currently be accessed (e.g. if open for
+  ** writing).  This method may used without opening the file.
   **
   int size()
   {
@@ -53,7 +54,6 @@ final class File
   ** is a string how IO will be performed:
   **   - "r": open for reading
   **   - "w": open for writing (truncate existing)
-  **   - "wx": open for writing transactionally
   ** Return true on success or false on error.
   **
   ** Note although the mode strings are passed as simply "r" or
