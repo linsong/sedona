@@ -36,6 +36,7 @@ xcopies  = [
   ("manifests", []),
   ("platforms", ["tridium"]),
   ("scode",     [".*\.scode"]),
+  ("src",       [".*\.class"]),
 ]  
 
 # directories
