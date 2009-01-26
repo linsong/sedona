@@ -118,13 +118,9 @@ class App
     runStatus = 0
     while (isRunning)
     {
-      // update our cycle counter. restart if 0
-      if ((++cycleCount) == 0L)
-      {
-        log.message("restarting")
-        Sys.platform.restart()
-      }
-      
+      // update our cycle counter
+      cycleCount++
+
       // get start ticks and compute cycle deadline
       // using fixed 50ms period for now
       long deadline = Sys.ticks() + (long)scanPeriod*1ms
@@ -820,9 +816,7 @@ class App
   @confirmRequired
   action void restart()
   {
-    // Set cycle count to negative number. When it reaches zero again
-    // the runApp() engine will issue are platform restart
-    cycleCount = -3L                  
+    Sys.platform.restart()                  
   }
 
   **
@@ -873,5 +867,4 @@ class App
 
   ** Status to return from run() method
   internal byte runStatus = 0
-  
 }
