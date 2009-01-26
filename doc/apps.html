@@ -40,8 +40,216 @@
 <!--/////////////////////////////////////////////////////////-->
 
 <p>
-TODO Apps...
+The standard design for deploying applications in Sedona is to utilize
+the component model to separate the code from the application.  In
+this architecture you have a clean boundary between the code packaged
+up as kits and the application packaged up as a tree of components.
+This model allows you to build applications simply by assembling
+components together, configuring their properties, and linking slots
+together to define control flow.  This style of programming is especially
+amenable to graphical programming.
+</p>                              
+
+<p>
+So when talking about a Sedona application, we are really talking
+about a tree of components assembled together.  An application is
+purely declarative, all the code is encapsulated in the kits.  The
+application itself is typically stored as a file using one of 
+two file formats:
+</p>                         
+
+<ul>
+<li><b>SAX</b> (Sedona App XML): is a simple XML representation
+of the application which is easily generated and consumed by software 
+tools</li>
+<li><b>SAB</b> (Sedona App Binary): is a compact binary representation
+of the application suitable for storage and execution on a Sedona 
+device</li>
+</ul>             
+
+<p>
+You can convert between the two file formats using 
+<a href='sedonac.html#compileApp'>sedonac</a>.
 </p>
+
+<!--/////////////////////////////////////////////////////////-->
+<h1 id="execution">Execution</h1>
+<!--/////////////////////////////////////////////////////////-->
+
+<p>                              
+Sedona's execution model is based a single threaded main loop
+with a fixed scan rate:
+</p>                                                          
+
+<ol> 
+<li>Recursively execute components (children first).  For each component:
+  <ol type='a'>
+  <li>Propagate incoming links</li> 
+  <li>Call the <code>Component.execute</code> virtual method</li> 
+  </ol>
+</li>
+<li>Give any remaining time in the scan cycle to services via 
+<code>Service.work</code></li>
+<li>If no services have remaining work, then sleep until next cycle</li>
+</ol>
+
+<!--/////////////////////////////////////////////////////////-->
+<h1 id="links">Links</h1>
+<!--/////////////////////////////////////////////////////////-->
+
+<p>
+Links are the mechanism used to define control flow in an app.  
+Links are said to be <i>from</i> a given component's slot <i>to</i> 
+another component's slot.  
+</p>
+
+<p>
+Currently only prop-to-prop links are supported.  During link
+propagation, the <i>from-property</i> value is copied into 
+the <i>to-property</i>.  This mechanism is often used to link
+sensor inputs through control logic to actuator outputs.
+</p>
+
+<!--/////////////////////////////////////////////////////////-->
+<h1 id="services">Services</h1>
+<!--/////////////////////////////////////////////////////////-->
+
+<p>
+Services are special components which subclass from 
+<a href='sys/Service.html'>sys::Service</a>.  Services have
+two primary characteristics which sets them apart from other
+types of components:
+</p>
+
+<ul>
+<li><b>Type Lookup</b>: services are easy to lookup by
+type via the <code>App.lookupService</code> method.
+</li>
+<li><b>Background work</b>: most components get a single
+callback to do work during a scan cycle.  Services on the other
+hand get to handle background work during the time available at 
+the end of a given scan cycle.
+</li>   
+</ul>
+
+<p>
+Services are often used to provide functionality to other components.
+For example the <code>UserService</code> is used to lookup and
+authenticate user accounts.  Many services such as protocol drivers
+also perform background work to service network messages.
+</p>
+
+<!--/////////////////////////////////////////////////////////-->
+<h1 id="sax">SAX Files</h1>
+<!--/////////////////////////////////////////////////////////-->
+
+<p>
+The SAX format is structured as follows:
+</p>                                    
+
+<pre>
+&lt;sedonaApp>
+&lt;schema>
+  &lt;kit name='sys'/>
+  ...
+&lt;/schema>
+&lt;app>
+  &lt;comp name="service" id="1" type="sys::Folder">
+    &lt;comp name="rampA" id="7" type="control::Ramp">
+      &lt;prop name="min" val="20.00000"/>
+      &lt;prop name="max" val="80.00000"/>          
+  ...
+&lt;/app>
+&lt;links>
+  &lt;link from="/play/rampA.out" to="/play/something.else"/>
+  ...
+&lt;/links>
+&lt;/sedonaApp>
+</pre>
+
+<p>
+<b>&lt;sedonaApp></b> root element which contains:
+</p>
+<ul>
+<li><b>&lt;schema></b>: contains <b>&lt;kit></b> elements</li>
+<li><b>&lt;app></b>: contains <b>&lt;comp></b> elements</li>
+<li><b>&lt;links></b>: contains <b>&lt;link></b> elements</li>
+</ul>           
+
+<p>
+<b>&lt;kit></b> defines the kits used by the application: 
+</p>
+<ul>
+<li><b>name</b>: required kit name</li>
+<li><b>checksum</b>: optional kit checksum; if omitted the latest 
+version of the kit is assumed</li>
+</ul>
+
+<p>
+<b>&lt;comp></b> defines each component in the application:
+</p>
+<ul>
+<li><b>&lt;comp></b>: nested elements map to nested components</li>
+<li><b>&lt;prop></b>: property configuration for the component</li>
+<li><b>name</b>: required name of component (limited in length)</li>
+<li><b>type</b>: required qname of the component's type</li>
+<li><b>id</b>: optional two byte identifier; if omitted an id is auto-generated</li>
+</ul>
+
+<p>
+<b>&lt;prop></b> defines the property value of a component
+within a <b>&lt;comp></b> element.  Supported attributes:
+</p>
+<ul>
+<li><b>name</b>: required name of property</li>
+<li><b>val</b>: required value.  Buf properties should be a base64 
+encoded value (unless asStr in which case just use string value).</li>
+</ul>
+
+<p>
+<b>&lt;link></b> element defines a link between two slots using
+the format of "/path/comp.slot":
+</p>
+<ul>
+<li><b>from</b>: the from component and slot name</li>
+<li><b>to</b>: the to component and slot name</li>
+</ul>
+
+<!--/////////////////////////////////////////////////////////-->
+<h1 id="sab">SAB Files</h1>
+<!--/////////////////////////////////////////////////////////-->
+
+<p>
+While XML is a nice representation for tools to work with
+app files, XML is too big and difficult to work with in an 
+embedded device.  So we use the SAB format when we need a compact 
+binary representation.  Sedona devices typically store their
+application as an SAB "file" in FLASH (although often it might
+just be location or sector of FLASH versus a real file system).
+</p>                         
+
+<p>
+Although SAB is a very compact format for applications it must
+be used with a matching <a href='schema.html'>schema</a>.  For
+example, in order for a Sedona device to load a given SAB file, its scode
+must have the exact same kits and checksums installed. 
+</p>
+
+<!--/////////////////////////////////////////////////////////-->
+<h1 id="apis">APIs</h1>
+<!--/////////////////////////////////////////////////////////-->
+
+<p>
+You can work with both SAX and SAB files in Java using the
+<code>sedona.offline</code> APIs:
+</p>
+
+<ul>
+<li>OfflineApp.encodeAppXml</li>
+<li>OfflineApp.decodeAppXml</li>
+<li>OfflineApp.encodeAppBinary</li>
+<li>OfflineApp.decodeAppBinary</li>
+</ul>
 
 <!-- TOC-FOOTER-START -->
 <!-- Auto-generated by sedonac -->
