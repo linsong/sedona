@@ -1,0 +1,55 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//    6 Sep 06  Brian Frank  Creation
+//   22 May 07  Brian Frank  Port from Java to Sedona
+//
+
+**
+** Service is a component which gets to execute background
+** work between execution cycles.  Services are also designed
+** by looked up by type within an application.
+**
+@niagaraIcon="module://icons/x16/gears.png"
+class Service
+  extends Component
+{
+
+////////////////////////////////////////////////////////////////
+// Service
+////////////////////////////////////////////////////////////////
+
+  **
+  ** Perform a chunk of background work.  Return true
+  ** is there is pending work or false if the Service is
+  ** done working this cycle.
+  **
+  virtual bool work()
+  {
+    return false
+  }
+
+  **
+  ** Callback when device is entering low-power sleep mode.
+  **
+  virtual void onHibernate() 
+  {
+  }
+
+  **
+  ** Callback when device is exiting low-power sleep mode.
+  **
+  virtual void onUnhibernate() 
+  {
+  }
+
+////////////////////////////////////////////////////////////////
+// Fields
+////////////////////////////////////////////////////////////////
+
+  ** Used for App's linked list of services
+  Service nextService
+
+}

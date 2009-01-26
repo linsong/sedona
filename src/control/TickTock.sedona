@@ -1,0 +1,59 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   21 Aug 06  Andy Saunders  Creation
+//   27 Apr 07  Brian Frank    Port from Java to Sedona
+//   16 May 07  Andy Saunders  completed required time processing
+//
+
+**
+** TickTock object
+**
+@niagaraIcon="module://icons/x16/control/util/sine.png"
+class TickTock
+  extends Component
+{
+
+  property bool out
+  @config property int tps = 1 
+
+  virtual override void execute()
+  {
+    int tpsValue = tps
+    if(tpsValue > 10)
+      tpsValue = 10
+    else if(tpsValue < 1)
+      tpsValue = 1
+
+    // calculate ticPeriod
+    if(lastTps != tps)
+    {
+      inited = false
+    }
+    long now = Sys.ticks()
+    long ticPeriod = 500ms / (long)tpsValue // ticPeriod is really state change time    
+    if(!inited)
+    {
+      this.lastExecTime = now
+      inited = true
+      this.nextTick = ticPeriod
+      lastTps = tps
+    }
+    long scratchTime = now - lastExecTime
+    if ( scratchTime > nextTick )
+    {
+      out = !out
+      lastExecTime = now
+      scratchTime -= ticPeriod
+      nextTick -= scratchTime
+    }
+  }
+
+  int  lastTps = 0
+  bool inited = false
+  long lastExecTime = 0L
+  long nextTick     = 0L
+
+}

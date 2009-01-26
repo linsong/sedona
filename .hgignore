@@ -1,0 +1,25 @@
+#
+# .hgignore
+# Files to ignore for version control
+#                
+
+syntax: glob
+
+*.pyc
+*.kit
+*.scode
+*.jar         
+*.class
+*libJar*
+
+# Ignore Eclipse metafiles
+*.classpath
+*.project
+
+syntax: regexp
+
+^manifests/
+^platforms/tridium/
+^temp/
+^test/ 
+^doc/.*/      
