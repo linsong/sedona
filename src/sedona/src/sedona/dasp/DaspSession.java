@@ -54,7 +54,7 @@ public class DaspSession
   static boolean option(Hashtable options, String key, boolean def)
   {
     String val = (String)options.get(key);
-    if (val != null) val.equals("true");
+    if (val != null) return val.equals("true");
     return sedona.Env.getProperty(key, def);
   }                                  
   
