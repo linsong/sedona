@@ -21,6 +21,8 @@ syntax: regexp
 
 ^manifests/
 ^platforms/tridium/
+^backup/
 ^temp/
+^temp-provision/
 ^test/ 
 ^doc/.*/      
