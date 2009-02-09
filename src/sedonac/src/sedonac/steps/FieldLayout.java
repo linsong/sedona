@@ -115,7 +115,7 @@ public class FieldLayout
 
     // layout the fields
     loc = new Location(type.qname);
-
+    
     // compute starting offset for instance fields which are always
     // laid out after their base class's fields (or the vtable)
     int off = 0;
@@ -285,11 +285,11 @@ public class FieldLayout
   private int layoutFields(IrField[] fields, int off, int sizeof)
   {
     if (off % sizeof != 0) throw new IllegalStateException();
-    int offIncr = sizeof;
     for (int i=0; i<fields.length; ++i)
     {
       IrField f = fields[i];
       Type type = f.type;
+      int offIncr = sizeof;
 
       boolean sizeMatch;
       if (type.isPrimitive())
@@ -315,7 +315,7 @@ public class FieldLayout
       }
 
       if (sizeMatch)
-      {
+      {                        
         f.offset = off;
         off += offIncr;
       }
@@ -358,16 +358,19 @@ public class FieldLayout
   private void dump()
   {
     System.out.println("==== FieldLayout =====");
-    if (true)
+    
+    IrType[] types = (IrType[])this.types.clone();
+    Arrays.sort(types, new Comparator()
     {
-      for (int i=0; i<types.length; ++i)
-      {
-        IrType type = types[i];
-        IrField[] ifields = type.instanceFields();
-        if (ifields.length == 0) continue;
-        System.out.println("  --- " + type.qname + " [sizeof " + type.sizeof + "] ---");
-        dumpFields(ifields);
-      }
+      public int compare(Object a, Object b) { return a.toString().compareTo(b.toString()); }
+    });
+    for (int i=0; i<types.length; ++i)
+    {
+      IrType type = types[i];
+      IrField[] ifields = type.instanceFields();
+      if (ifields.length == 0) continue;
+      System.out.println("  --- " + type.qname + " [sizeof " + type.sizeof + "] ---");
+      dumpFields(ifields);
     }
 
     System.out.println("  --- static fields [dataSize " + compiler.dataSize + "] ---");
