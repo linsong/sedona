@@ -284,7 +284,7 @@ public class Tokenizer
       else
       {
         x = Long.parseLong(str);
-        if (!isWide && (x < Integer.MIN_VALUE || Integer.MAX_VALUE < x))
+        if (!isWide && (x < Integer.MIN_VALUE || Integer.MAX_VALUE+1L < x))
           throw err("Invalid range for int: " + str, location());
       }
 
@@ -299,7 +299,7 @@ public class Tokenizer
       throw e;
     }
     catch (Exception e)
-    {                     
+    {                               
       throw err("Invalid number: " + str, location());
     }
   }

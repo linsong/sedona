@@ -307,7 +307,7 @@ public abstract class Expr
         case TRUE_LITERAL:       return "true";
         case FALSE_LITERAL:      return "false";
         case INT_LITERAL:        return value.toString();
-        case LONG_LITERAL:       return value.toString() + "L";
+        case LONG_LITERAL:       return ((java.lang.Long)value).longValue() == java.lang.Long.MIN_VALUE ? "0x8000_0000_0000_0000L" : value.toString() + "L";
         case FLOAT_LITERAL:      return Env.floatFormat(asFloat()) + "F";
         case DOUBLE_LITERAL:     return Env.doubleFormat(asDouble()) + "D";
         case TIME_LITERAL:       return value.toString() + "ns";

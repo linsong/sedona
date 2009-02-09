@@ -19,7 +19,27 @@ class Sys
   **
   ** Size in bytes of a reference/pointer on this system.
   **
-  define int sizeofRef = 0
+  define int sizeofRef = 0                  
+                   
+  **
+  ** Max value of a 32-bit signed integer: 2,147,483,647       
+  **                   
+  define int maxInt = 0x7fff_ffff
+
+  **
+  ** Min value of a 32-bit signed integer: -2,147,483,648 
+  **                   
+  define int minInt = 0x8000_0000
+
+  **
+  ** Max value of a 64-bit signed integer: 9,223,372,036,854,775,807  
+  **                   
+  define long maxLong = 0x7fff_ffff_ffff_ffffL
+
+  **
+  ** Min value of a 64-bit signed integer: -9,223,372,036,854,775,808  
+  **                   
+  define long minLong = 0x8000_0000_0000_0000L
 
 //////////////////////////////////////////////////////////////////////////
 // Fields
@@ -435,7 +455,7 @@ class Sys
     
     // default all log levels to message
     setBytes(Log.MESSAGE, logLevels, 0, logsLen)
-    
+        
     // install the platform 
     Type platformType = findType(platformType())
     if (platformType != null) 

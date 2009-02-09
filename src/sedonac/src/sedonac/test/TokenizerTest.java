@@ -47,7 +47,7 @@ public class TokenizerTest
     verifyInt("'\\''", '\'');     
     verifyBad("0x1aabbccdd");
     verifyBad("0xaabbccdd_00112233");
-    verifyBad("2147483648");
+    verifyBad("2147483649");
 
     // long literals
     verifyLong("0L", 0);
