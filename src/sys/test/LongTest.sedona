@@ -117,7 +117,7 @@ class LongTest
   static void testTime()
   {    
     assert(5ns == 5L) 
-    assert(2ms == 2_000_000L)                     
+    assert(+2ms == 2_000_000L)                     
     assert(-3sec == -3_000_000_000L)                     
     
     long x

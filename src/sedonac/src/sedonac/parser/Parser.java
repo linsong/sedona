@@ -863,8 +863,11 @@ public class Parser
   private Expr unaryExpr()
   {
     // plus is ignored
-    if (curt == Token.PLUS)
+    if (curt == Token.PLUS)  
+    {
+      consume();
       return parenExpr();       
+    }
     
     // new/delete
     if (curt == Token.NEW) return newExpr();
