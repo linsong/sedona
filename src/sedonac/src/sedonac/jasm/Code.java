@@ -88,6 +88,27 @@ public class Code
     // else we have to load from the constant pool
     return add( Jvm.LDC, cp.intConst(v) );
   }
+
+  public int addLongConst(long v)
+  {
+    if (v == 0L) return add(Jvm.LCONST_0);             
+    if (v == 1L) return add(Jvm.LCONST_1);             
+    return add(Jvm.LDC2_W, cp.longConst(v));
+  }
+
+  public int addFloatConst(float v)
+  {                             
+    if (v == 0.0f) return add(Jvm.FCONST_0);             
+    if (v == 1.0f) return add(Jvm.FCONST_1);             
+    return add(Jvm.LDC, cp.floatConst(v));
+  }
+
+  public int addDoubleConst(double v)
+  {                
+    if (v == 0.0) return add(Jvm.DCONST_0);             
+    if (v == 1.0) return add(Jvm.DCONST_1);             
+    return add(Jvm.LDC2_W, cp.doubleConst(v));
+  }
   
   public int addPad(int opcode)
   {

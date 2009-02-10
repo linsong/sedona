@@ -159,7 +159,7 @@ public class JavaClassAsm
       IrSlot slot = ir.declared[i];
       if (!slot.isField()) continue;
       IrField f = (IrField)slot;
-      if (f.isStatic() != statics) continue;      
+      if (f.isStatic() != statics) continue;    
       assembleInitField(code, f);      
     }      
   }
@@ -179,6 +179,13 @@ public class JavaClassAsm
     if (f.isDefine() && f.type().qname().equals("sys::Log"))
     {
       parent.logs.add(f);
+      return;
+    }
+    
+    // if this is an array literal define, handle special
+    if (f.isDefine() && f.type.isArray())
+    {        
+      assembleArrayLiteral(code, f);
       return;
     }
                        
@@ -214,31 +221,14 @@ public class JavaClassAsm
       pushLength.run();
             
       // create array     
-      if (of.isRef()) 
-      {      
-        code.add(ANEWARRAY, cp.cls(jname(of, true)));
-        if (f.arrayInit)  arrayInit(code, of, pushLength);
-      }
-      else 
-      {
-        switch (of.id())
-        {
-          case Type.boolId:   code.add(NEWARRAY, Jvm.T_BOOLEAN); break;
-          case Type.byteId:   code.add(NEWARRAY, Jvm.T_BYTE); break;
-          case Type.shortId:  code.add(NEWARRAY, Jvm.T_SHORT); break;
-          case Type.intId:    code.add(NEWARRAY, Jvm.T_INT); break;
-          case Type.longId:   code.add(NEWARRAY, Jvm.T_LONG); break;
-          case Type.floatId:  code.add(NEWARRAY, Jvm.T_FLOAT); break;
-          case Type.doubleId: code.add(NEWARRAY, Jvm.T_DOUBLE); break;
-          default: throw new IllegalStateException("assembleInitField: " + of);
-        }
-      }                       
+      assembleNewArray(code, of);
+      if (f.arrayInit)  arrayInit(code, of, pushLength);
     }
 
     // string
     else if (type.isStr())
     {                        
-      // byte array with 2 extra bytes for offset
+      // StrRef with size of buffer
       code.addIntConst(f.ctorLengthArg.toIntLiteral().intValue());
       code.add(INVOKESTATIC, cp.method("sedona/vm/StrRef", "make", "(I)Lsedona/vm/StrRef;"));
     }
@@ -257,7 +247,29 @@ public class JavaClassAsm
       code.add(PUTSTATIC, fieldRef(f));
     else
       code.add(PUTFIELD, fieldRef(f));
-  }                       
+  }                   
+  
+  /** 
+   * Add instr to create array; length must already push onto stack 
+   */
+  static void assembleNewArray(Code code, Type of)
+  {    
+    if (of.isRef()) 
+    {      
+      code.add(ANEWARRAY, code.cp.cls(jname(of, true)));
+    }
+    else switch (of.id())
+    {
+      case Type.boolId:   code.add(NEWARRAY, Jvm.T_BOOLEAN); break;
+      case Type.byteId:   code.add(NEWARRAY, Jvm.T_BYTE); break;
+      case Type.shortId:  code.add(NEWARRAY, Jvm.T_SHORT); break;
+      case Type.intId:    code.add(NEWARRAY, Jvm.T_INT); break;
+      case Type.longId:   code.add(NEWARRAY, Jvm.T_LONG); break;
+      case Type.floatId:  code.add(NEWARRAY, Jvm.T_FLOAT); break;
+      case Type.doubleId: code.add(NEWARRAY, Jvm.T_DOUBLE); break;
+      default: throw new IllegalStateException("assembleInitField: " + of);
+    }
+  }
     
   void arrayInit(Code code, Type of, Runnable pushLength)
   {                            
@@ -282,6 +294,44 @@ public class JavaClassAsm
     code.add(ILOAD_3);             // load index
     code.branch(IFNE, mark);       // if not zero loop to mark
     code.add(ALOAD_2);             // restore array to stack
+  }
+
+  void assembleArrayLiteral(Code code, IrField f)
+  { 
+    Type of = f.type.arrayOf();
+    Object[] array = f.define.asArray();
+    
+    // push length   
+    code.addIntConst(array.length);                                            
+    
+    // create array  
+    assembleNewArray(code, of);
+    
+    // set array values
+    for (int i=0; i<array.length; ++i)
+    {
+      Object v = array[i];
+      code.add(DUP);
+      code.addIntConst(i);
+      if (of.isStr())
+      {    
+        parent.loadStr(code, (String)v);
+        code.add(AASTORE);
+      }
+      else switch (of.id())
+      { 
+        case Type.byteId:   code.addIntConst(((Integer)v).intValue()); code.add(BASTORE); break;
+        case Type.shortId:  code.addIntConst(((Integer)v).intValue()); code.add(SASTORE); break;
+        case Type.intId:    code.addIntConst(((Integer)v).intValue()); code.add(IASTORE); break;
+        case Type.longId:   code.addLongConst(((Long)v).longValue()); code.add(LASTORE); break;
+        case Type.floatId:  code.addFloatConst(((Float)v).floatValue()); code.add(FASTORE); break;
+        case Type.doubleId: code.addDoubleConst(((Double)v).doubleValue()); code.add(DASTORE); break;
+        default: throw new IllegalStateException(of.toString());
+      }
+    }
+    
+    // save to field
+    code.add(PUTSTATIC, fieldRef(f));
   }
 
 ////////////////////////////////////////////////////////////////

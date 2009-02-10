@@ -310,15 +310,21 @@ class ArrayTest
   define double[] dd = {-10_000D, 0.2D}   
   
   define Str[] strd = {"a", "hi", "| \n \" \r \\ |"}
+
+  @javaSkip
+  static void testArraysInterned()
+  {
+    assert(bd != bdEmpty)
+    assert(bd == bdDup)
+    assert(bd != bdTwo)
+    assert(id == idDup)
+  }
     
   static void testArrayLiterals()
   {                              
     assert(bd[0] == 7)
     assert(bd[1] == 200)
     
-    assert(bd != bdEmpty)
-    assert(bd == bdDup)
-    assert(bd != bdTwo)
     assert(bdDup[1] == 200)
     assert(bdTwo[1] == 255)            
     
@@ -326,12 +332,11 @@ class ArrayTest
     assert(sd[1] == 30_000)
     assert(sd[2] == 50_000)
 
-    assert(id == idDup)
     assert(id[0] == -2)
     assert(id[1] == -1)
     assert(id[2] == 0)
     assert(id[3] == 0xabcd_ff00)
-                      
+
     assert(ld[0] == 0xaaaa_bbbb_ccccL)
     assert(ld[1] == 4hr)
 
@@ -342,7 +347,7 @@ class ArrayTest
     
     assert(strd[0].equals("a"))
     assert(strd[1].equals("hi"))       
-    assert(strd[2].equals("| \n \" \r \\ |"))      
+    assert(strd[2].equals("| \n \" \r \\ |"))     
   }
 
 }

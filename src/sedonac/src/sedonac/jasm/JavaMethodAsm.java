@@ -357,17 +357,17 @@ public class JavaMethodAsm
 
   void loadLong(long val)
   {
-    code.add(LDC2_W, parent.cp.longConst(val));
+    code.addLongConst(val);
   }
 
   void loadFloat(float val)
   {
-    code.add(LDC, parent.cp.floatConst(val));
+    code.addFloatConst(val);
   } 
 
   void loadDouble(double val)
   {
-    code.add(LDC2_W, parent.cp.doubleConst(val));
+    code.addDoubleConst(val);
   }
 
 ////////////////////////////////////////////////////////////////
