@@ -1,0 +1,19 @@
+<!--
+  -  Sedona Dir
+  -  Copyright (c) 2007 Tridium, Inc.
+  -  Licensed under the Academic Free License version 3.0
+  -->
+
+<sedonaDir>
+
+  <!-- Children Kits -->
+  <target name="sys" />
+  <target name="inet" />
+  <target name="sox" />
+  <target name="serial" />
+  <target name="web" />
+  <target name="control" />
+  <target name="driver" />
+
+</sedonaDir>
+

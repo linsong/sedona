@@ -1,0 +1,103 @@
+//
+// Copyright (c) 2009 Tridium, Inc
+// All Rights Reserved.
+//
+// History:
+//   03 Feb 2009  Dan Giorgis   creation
+//
+
+
+final class DateTime
+{    
+  **  Convert a local time to nanos since the Sedona epoch of 1 Jan 2000
+  **  Returns DateTime.invalid if any parameters are out of range
+  **
+  **  Year must be between 2000 and 2099
+  **  Month is 0 based, 0-11
+  **  day is 1-based
+  **  hour must be 0-23
+  **  min, sec are 0-59
+  **  ns represents fraction seconds, must be <= 999,999
+  **  utcOffset represents the local time offset (in nanos) from UTC
+  **  isDst is true if daylight savings time is currently active
+  **    dst is assumed to be a 1 hour difference     
+  static long toNanos(int year, int month, int day,
+                     int hour, int min, int sec,
+                     long ns, long utcOffset, bool isDst)
+  {  	
+    //  validate       	
+	  if (year < 2000 || year > 2099) return invalid
+	  if (month < 0 || month > 11)    return invalid
+	  if (day < 1) return invalid
+    if (day > (int)daysPerMonth[month])
+    {
+      if ((month != 1) || (day != 29) || !isLeapYear(year)) 
+        return invalid
+    }	    	  
+	  if (hour < 0 || hour > 23)      return invalid
+	  if (min < 0 || min > 59)        return invalid
+	  if (sec < 0 || sec > 59)        return invalid
+	  if (ns < 0L || ns > 999999999L)  return invalid
+ 
+    long nse = 0L;
+    int yse = year - 2000;
+  
+  	//  calculate hours, mins, seconds
+  	nse =  ns + 
+  	       ((long)sec * 1sec) +  
+  	       ((long)min * 1min) +
+  	       ((long)hour * 1hr) 
+
+
+  	//  calculate the days into the year
+  	int dayOfYear = day - 1;  	
+  	
+  	//  could optimize by calculating dayOfYear for each start of each month  	
+  	for (int i = 0; i < month; i++)  	 
+  	 dayOfYear += (int)daysPerMonth[i];
+   
+    //  add another day if it's a leap and it's after Feb
+    if ((month > 1) && isLeapYear(year))
+      dayOfYear++;      	 
+
+    //  account for years and day of year       	
+  	nse += (long)dayOfYear * 1days + 
+  	       (long)yse * 365days;  
+ 	
+  	//  Now account for all the leap years  	 
+	  for (int i = 0; i < yse; i++)	  
+	    if (isLeapYear(i + 2000)) nse += 1days; 
+	            	      	      		  	  
+    // Adjust for UTC offset and dst
+    nse -= utcOffset;
+    if (isDst) nse -= 1hr
+  	   	
+    return nse;
+  } 	           
+
+  **
+  **  Return true if given absolute year is a leap year
+  **    
+  static bool isLeapYear(int year)
+  {
+  	 return (((year) % 4) == 0 && (((year) % 100) != 0 || (((year) % 400) == 0)))
+  } 	
+  	
+  define byte[] daysPerMonth = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}
+     
+  define long invalid = -1L  	
+  
+  //  Max nanos is Sedona is 1 ns before 1 Jan 2100 
+  //    100 years + 25 leap days - 1 nanosecond
+  define long nanosMax = (100L * 365days + 25days - 1L)
+  	
+}
+
+
+  
+ 
+  
+    
+
+
+

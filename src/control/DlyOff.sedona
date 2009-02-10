@@ -1,0 +1,72 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   10 Jan 07  Andy Saunders  Creation
+//   27 Apr 07  Brian Frank    Port from Java to Sedona
+//
+
+**
+** DlyOff Delay Off object
+**
+**    Delays the on to off transition by a time delay
+**
+@niagaraIcon="module://icons/x16/control/control.png"
+class DlyOff
+  extends Component
+{
+
+  property bool out
+  property bool in
+  property float delayTime  // specified hold time in sec
+  property int hold         // remaining hold time in ms
+
+  virtual override void execute()
+  {
+    bool curIn = in
+    bool curOut = out
+    long now = Sys.ticks()
+        
+    if(state == 0)  // hold is not active
+    {  if(curIn)
+      {
+        out = true;
+      }
+      else if(curOut)  // transitioning hold active
+      {
+        long delayTimeInt = (long)(delayTime * 1000.0f)
+        holdTime = now + (1ms * delayTimeInt)
+        state = 1;
+        //Sys.log("startingOnDelay  = ").print(holdTime).nl();
+      }
+    }
+    else if(state == 1)  // hold is currently active
+    {
+      if(now > holdTime)
+      {
+        //Sys.log("State 1 delay Expired").nl();
+        out = false;
+        state = 2;
+        holdTime = 0ms
+      }
+    }
+    else if(state == 2)  // hold just expired
+    {
+      if(curIn)
+      {
+        //Sys.log("State 2 in so set out").nl();
+        out = true;
+        state = 0;
+      }
+    }
+    if(holdTime == 0L)
+      hold = 0
+    else
+     hold = (int)(holdTime - now)
+
+  }
+
+  private int state     = 0
+  private long holdTime = 0L
+}
