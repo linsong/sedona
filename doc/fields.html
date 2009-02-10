@@ -183,8 +183,9 @@ are immutable, and are actually stored within the scode
 memory itself.  So it is quite possible that these fields
 are stored in readonly memory such as ROM.  Attempts to set
 a const field will result in a compiler error.  You cannot
-create your own const fields - only the predefined sys types
-can use this keyword.
+create your own const fields directly - only the predefined sys types
+can use this keyword.  However you can use <code>define</code>
+keyword to declare user defined constants.
 </p>
 
 <!--/////////////////////////////////////////////////////////-->
@@ -228,7 +229,46 @@ The following types are supported for defines:
 <li><code>float</code>: 32-bit float literal value;</li>
 <li><code>double</code>: 64-bit float literal value;</li>
 <li><code>sys::Log</code>: see <a href='logging.html'>Logging</a>;</li>
+<li>Array literals: see <a href='#arrayLiterals'>next section</a></li>
 </ul>
+
+<!--/////////////////////////////////////////////////////////-->
+<h1 id="arrayLiterals">Array Literal Defines</h1>
+<!--/////////////////////////////////////////////////////////-->
+
+<p> 
+The <code>define</code> keyword may be used to create constant
+array literals.  This allows you to declare readonly data lookup 
+tables which will be stored in scode.  The following array literal 
+types are supported:
+</p>
+
+<ul>
+<li><code>byte[]</code></li>
+<li><code>short[]</code></li>
+<li><code>int[]</code></li>
+<li><code>long[]</code></li>
+<li><code>float[]</code></li>
+<li><code>double[]</code></li>
+<li><code>Str[]</code></li>
+</ul>
+
+<p>
+Array literals are declared using curly braces using a comma separator.  
+The values inside  an array literal must be literals themselves (they 
+cannot be expressions).  Examples:
+</p>
+
+<pre>
+define byte[] daysInMonths = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}
+define Str[] weekdays = {"sun", "mon", "tue", "wed", "thu", "fri", "sat" }
+</pre> 
+
+<p>
+Array literals are treated like <code>const</code> structures and
+are read-only.  It is a compile time error to assign to a array
+literal (or any define)
+</p>
 
 <!--/////////////////////////////////////////////////////////-->
 <h1 id="inline">Inline Fields</h1>
