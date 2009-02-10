@@ -160,7 +160,7 @@ public class TextUtil
         case '\r': s.append("\\r");   break;
         case '\t': s.append("\\t");   break;
         case '\\': s.append("\\\\");  break;
-        case '"':  s.append("\"");    break;
+        case '"':  s.append("\\\"");  break;
         case '$':  s.append("\\$");   break;
         default:
           if (c < ' ')

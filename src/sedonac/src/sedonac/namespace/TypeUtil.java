@@ -9,7 +9,10 @@
 package sedonac.namespace;
 
 import java.util.*;
+import sedona.Buf;
+import sedona.Env;
 import sedona.Facets;
+import sedona.util.TextUtil;
 import sedonac.ast.TypeDef;
 import sedonac.ir.IrType;
 
@@ -319,6 +322,81 @@ public class TypeUtil
       numParams += params[i].isWide() ? 2 : 1;
     if (!m.isStatic()) numParams++;
     return numParams;
+  }            
+  
+  /**
+   * Map a literal object to its code representation:
+   *   - null
+   *   - Boolean
+   *   - Integer
+   *   - Long
+   *   - Float
+   *   - Double
+   *   - String 
+   *   - Buf
+   *   - Type
+   *   - Slot
+   */          
+  public static String toCodeString(Object v)
+  {      
+    if (v == null)
+      throw new IllegalStateException("Unexpected null value");
+      
+    if (v instanceof Boolean) 
+      return v.toString();
+      
+    if (v instanceof Integer) 
+      return v.toString();
+      
+    if (v instanceof Long)    
+      return ((Long)v).longValue() == Long.MIN_VALUE ? 
+             "0x8000_0000_0000_0000L" : v.toString() + "L";
+
+    if (v instanceof Float)             
+      return Env.floatFormat(((Float)v).floatValue()) + "F";
+
+    if (v instanceof Double)             
+      return Env.doubleFormat(((Double)v).doubleValue()) + "D";
+
+    if (v instanceof String)             
+      return '"' + TextUtil.toLiteral(v.toString()) + '"';
+
+    if (v instanceof Buf)             
+      return ((Buf)v).toString();
+
+    if (v instanceof Type)             
+      return ((Type)v).qname();
+
+    if (v instanceof Slot)             
+      return ((Slot)v).qname();
+
+    if (v instanceof Object[])
+    {
+      Object[] array = (Object[])v;
+      if (array.length == 0) return "{,}";
+      StringBuffer s = new StringBuffer();
+      s.append("{");
+      for (int i=0; i<array.length; ++i)
+      {
+        if (i > 0) s.append(",");
+        s.append(toCodeString(array[i]));
+      }
+      s.append("}");
+      return s.toString();
+    }
+    
+    throw new IllegalStateException("Unexpected literal type: " + v.getClass().getName());
+  }                   
+  
+  /**
+   * Get the value as a code string, but make it safe such that it
+   * guaranteed no exception is thrown (for code reporting).
+   */
+  public static String toCodeStringSafe(Object v)
+  {                                         
+    try { return toCodeString(v); } catch (Exception e) {}
+    try { String.valueOf(v); } catch (Exception e) {}
+    return "???";
   }
 
 }

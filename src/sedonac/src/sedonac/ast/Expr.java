@@ -46,7 +46,8 @@ public abstract class Expr
   public static final int BUF_LITERAL    = 10;
   public static final int TYPE_LITERAL   = 11;
   public static final int SLOT_LITERAL   = 12;
-  public static final int SIZE_OF        = 13;  
+  public static final int ARRAY_LITERAL  = 13;
+  public static final int SIZE_OF        = 14;  
   public static final int NEGATE         = 20;  // Unary
   public static final int COND_NOT       = 21;
   public static final int BIT_NOT        = 22;
@@ -171,6 +172,8 @@ public abstract class Expr
 
   public boolean isDefine() { return false; }
 
+  public String  toCodeString() { throw new IllegalStateException("not literal: " + getClass().getName()); }
+
   public boolean isAssignable() { return false; }
   
   public Integer toIntLiteral() { return null; }
@@ -266,14 +269,15 @@ public abstract class Expr
       return null;
     }
 
-    public int asInt()       { return ((java.lang.Integer)value).intValue(); }
-    public long asLong()     { return ((java.lang.Long)value).longValue(); }
-    public float asFloat()   { return ((java.lang.Float)value).floatValue(); }
-    public double asDouble() { return ((java.lang.Double)value).doubleValue(); }
-    public String asString() { return (java.lang.String)value; }
-    public Buf asBuf()       { return (Buf)value; }
-    public Type asType()     { return (Type)value; }
-    public Slot asSlot()     { return (Slot)value; }
+    public int asInt()        { return ((java.lang.Integer)value).intValue(); }
+    public long asLong()      { return ((java.lang.Long)value).longValue(); }
+    public float asFloat()    { return ((java.lang.Float)value).floatValue(); }
+    public double asDouble()  { return ((java.lang.Double)value).doubleValue(); }
+    public String asString()  { return (java.lang.String)value; }
+    public Buf asBuf()        { return (Buf)value; }
+    public Type asType()      { return (Type)value; }
+    public Slot asSlot()      { return (Slot)value; }
+    public Object[] asArray() { return (Object[])value; }
 
     protected void doWalk(AstVisitor visitor)
     {
@@ -304,20 +308,10 @@ public abstract class Expr
     {
       switch (id)
       {
-        case TRUE_LITERAL:       return "true";
-        case FALSE_LITERAL:      return "false";
-        case INT_LITERAL:        return value.toString();
-        case LONG_LITERAL:       return ((java.lang.Long)value).longValue() == java.lang.Long.MIN_VALUE ? "0x8000_0000_0000_0000L" : value.toString() + "L";
-        case FLOAT_LITERAL:      return Env.floatFormat(asFloat()) + "F";
-        case DOUBLE_LITERAL:     return Env.doubleFormat(asDouble()) + "D";
-        case TIME_LITERAL:       return value.toString() + "ns";
-        case STR_LITERAL:        return '"' + TextUtil.toLiteral(value.toString()) + '"';
-        case BUF_LITERAL:        return value.toString();
-        case TYPE_LITERAL:       return asType().qname();
-        case SLOT_LITERAL:       return asSlot().qname();
-        case NULL_LITERAL:       return "null";
-        case SIZE_OF:            return asType().qname();
-        default:                 throw new IllegalStateException();
+        case NULL_LITERAL:  return "null";
+        case TIME_LITERAL:  return value.toString() + "ns";
+        case SIZE_OF:       return asType().qname();
+        default:            return TypeUtil.toCodeString(value);
       }
     }
 
@@ -342,10 +336,8 @@ public abstract class Expr
     }
 
     public String toString()
-    {
-      String s = String.valueOf(value);
-      if (id == TIME_LITERAL) s += "ns";
-      return s;
+    {                        
+      return toCodeString();
     }
 
     public Object value;

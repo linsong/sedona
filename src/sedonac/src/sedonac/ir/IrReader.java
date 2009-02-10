@@ -102,8 +102,11 @@ public class IrReader
     {
       consume();
       if ((flags & Field.DEFINE) != 0)
-      {
-        define = literal();
+      {                  
+        if (curt == Token.LBRACE)
+          define = arrayLiteral(flags, type); 
+        else
+          define = literal();
       }
       else
       {

@@ -13,6 +13,7 @@ import sedona.Buf;
 import sedona.manifest.*;
 import sedonac.*;
 import sedonac.Compiler;
+import sedonac.ast.*;
 import sedonac.ir.*;
 import sedonac.namespace.*;
 import sedonac.scode.*;
@@ -358,6 +359,124 @@ public class ConstPool
   }
 
 //////////////////////////////////////////////////////////////////////////
+// Arrays
+//////////////////////////////////////////////////////////////////////////
+
+  IrArray array(Expr.Literal literal)
+  {                                 
+    Type of = literal.type.arrayOf();
+    Object[] array = literal.asArray();
+    IrArray key = new IrArray(of, array);
+    IrArray x = (IrArray)arrays.get(key);
+    if (x == null)
+    {
+      x = key;
+      arrays.put(key, key);
+    }           
+    return x;
+  }
+
+  void arrays()
+  {    
+    Buf code = parent.code;
+    IrArray[] arrays = (IrArray[])this.arrays.values().toArray(new IrArray[this.arrays.size()]);
+    for (int i=0; i<arrays.length; ++i)
+    {     
+      IrArray a = arrays[i];
+      Type of = a.of;
+      Object[] array = a.array;
+      
+      // 1. align to nearest block boundary or primitive boundary
+      // 2. save block index
+      // 3. write array values
+      blockAlign();
+      switch (of.id())
+      {
+        case Type.byteId:
+          a.blockIndex = blockIndex();
+          for (int j=0; j<array.length; ++j)
+            code.u1(((Integer)array[j]).intValue());
+          break;
+
+        case Type.shortId:            
+          code.align(2);
+          a.blockIndex = blockIndex();          
+          for (int j=0; j<array.length; ++j)
+            code.u2(((Integer)array[j]).intValue());
+          break;
+
+        case Type.intId:            
+          code.align(4);
+          a.blockIndex = blockIndex();          
+          for (int j=0; j<array.length; ++j)
+            code.i4(((Integer)array[j]).intValue());
+          break;
+
+        case Type.longId:            
+          code.align(8);
+          a.blockIndex = blockIndex();          
+          for (int j=0; j<array.length; ++j)
+            code.i8(((Long)array[j]).longValue());
+          break;
+
+        case Type.floatId:            
+          code.align(4);
+          a.blockIndex = blockIndex();          
+          for (int j=0; j<array.length; ++j)
+            code.f4(((Float)array[j]).floatValue());
+          break;
+
+        case Type.doubleId:            
+          code.align(8);
+          a.blockIndex = blockIndex();          
+          for (int j=0; j<array.length; ++j)
+            code.f8(((Double)array[j]).doubleValue());
+          break;
+          
+        default:
+          throw new IllegalStateException("array literal: " + of);
+      }
+    }
+    blockAlign();
+  }
+
+  static class IrArray
+    implements IrAddressable
+  {
+    IrArray(Type of, Object[] array) 
+    { 
+      this.of = of; 
+      this.array = array;
+      this.hash = of.name().hashCode() ^ array.length;
+    }      
+    
+    public int hashCode()
+    {                     
+      return hash;
+    }             
+    
+    public boolean equals(Object that)
+    {
+      IrArray x = (IrArray)that;
+      if (!of.equals(x.of)) return false;
+      if (array.length != x.array.length) return false;
+      for (int i=0; i<array.length; ++i)  
+        if (!array[i].equals(x.array[i])) return false;
+      return true;
+    }
+
+    public int getBlockIndex() { return blockIndex; }
+    public void setBlockIndex(int i) { blockIndex = i; }
+
+    public boolean alignBlockIndex() { return true; }
+
+    final Type of;
+    final Object[] array;
+    final int hash;
+    int blockIndex;    
+  }
+
+//////////////////////////////////////////////////////////////////////////
 // QnameType
 //////////////////////////////////////////////////////////////////////////
 
@@ -479,6 +598,7 @@ public class ConstPool
   HashMap doubles    = new HashMap();
   HashMap strings    = new HashMap();
   HashMap bufs       = new HashMap();
+  HashMap arrays     = new HashMap();
   HashMap qnameTypes = new HashMap();
   HashMap qnameSlots = new HashMap();
 

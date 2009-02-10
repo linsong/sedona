@@ -124,7 +124,7 @@ public class CheckErrors
     checkFieldProp(f);
     checkFieldArray(f);
     checkFieldCtor(f);
-    checkFieldDepend(f);
+    checkFieldDepend(f);   
   }
 
   private void checkFieldFlags(FieldDef f)
@@ -175,6 +175,36 @@ public class CheckErrors
       else if (!type.isArray()) err("Cannot use '{...}' initializer on non-array type field", f.loc);
       else if (!type.arrayOf().isRef()) err("Cannot use '{...}' initializer on '" + type + "' field", f.loc);
     }
+    
+    if (f.init.id == Expr.ARRAY_LITERAL)
+    {                                    
+      Object[] array = ((Expr.Literal)f.init).asArray();
+      if (!type.isArray()) err("Cannot use array literal with non-array type", f.init.loc);     
+      Type of = type.arrayOf();
+      for (int i=0; i<array.length; ++i)
+      {                
+        Object v = array[i];
+        if (!isArrayLiteralValueOk(of, v))
+        { 
+          err("Invalid literal value " + TypeUtil.toCodeStringSafe(v) + " for " + type + " array literal", f.init.loc);
+          break;
+        }
+      }
+    }
+  }                          
+  
+  private boolean isArrayLiteralValueOk(Type of, Object val)
+  {                       
+    if (val == null) return false;                       
+    Class cls = val.getClass();
+    if (of.isByte())    return cls == Integer.class;
+    if (of.isShort())   return cls == Integer.class;
+    if (of.isInteger()) return cls == Integer.class;
+    if (of.isLong())    return cls == Long.class;
+    if (of.isFloat())   return cls == Float.class;
+    if (of.isDouble())  return cls == Double.class;
+    if (of.isStr())     return cls == String.class;
+    return false;
   }
 
   private void checkFieldDefine(FieldDef f)
@@ -189,17 +219,37 @@ public class CheckErrors
     }
     else 
     {
-      if (!f.init.isLiteral())
+      if (!f.init.isLiteral() && f.init.id != Expr.ARRAY_LITERAL)
         err("Define '" + qname + "' must be defined as literal", f.loc);
-    }
-
-    if (!f.type.isBool()   &&
-        !f.type.isInt()    &&
-        !f.type.isLong()   &&
-        !f.type.isFloat()  &&
-        !f.type.isDouble() &&
-        !f.type.isLog())
+    }        
+    
+    if (!isValidDefineType(f.type))
       err("Unsupported type '" + f.type + "' for define field", f.loc);
+  }                       
+  
+  private boolean isValidDefineType(Type t)
+  {
+    if (t.isArray())
+    {    
+      Type of = t.arrayOf();  
+      if (of.isByte())   return true;
+      if (of.isShort())  return true;
+      if (of.isInt())    return true;
+      if (of.isLong())   return true;
+      if (of.isFloat())  return true;
+      if (of.isDouble()) return true;
+      if (of.isStr())    return true;
+    }
+    else
+    {
+      if (t.isBool())    return true;
+      if (t.isInt())     return true;
+      if (t.isLong())    return true;
+      if (t.isFloat())   return true;
+      if (t.isDouble())  return true;
+      if (t.isLog())     return true;
+    }             
+    return false;
   }
 
   private void checkFieldProp(FieldDef f)

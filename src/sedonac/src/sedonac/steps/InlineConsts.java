@@ -107,6 +107,16 @@ public class InlineConsts
     {                                  
       op.opcode = SCode.LoadConstStatic;
       return op;
+    }                          
+    
+    // array literals use an internal bytecode which actually
+    // gets written as LoadBuf (to maintain compatibility with
+    // older SVMs); we stash the literal instance on the op itself
+    if (field.type.isArray())
+    {                          
+      op.opcode = SCode.LoadArrayLiteral;   
+      op.resolvedArg = field.define();
+      return op;
     }
     
     return CodeAsm.loadLiteral(field.define);

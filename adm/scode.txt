@@ -293,14 +293,15 @@ $opcodes
   LoadParam0Call method // param0 + call
   
   // misc
-  InitArray             // addr, length, sizeof on stack; setup inline obj array pointers
-  InitVirt    type      // init Virtual.vtable; this on stack
-  InitComp    type      // init Component.type; this on stack
-  SizeOf      type      // size of type in bytes (IR only)
-  Assert      u2        // assert top of stack, u2 is linenum
-  Switch      switch    // switch with index into jump table (u2 is table count)
-  MetaSlot    u2        // inline meta-data, index to slot qname triple
-  Cast        type      // only used for Java bytecode
+  InitArray              // addr, length, sizeof on stack; setup inline obj array pointers
+  InitVirt    type       // init Virtual.vtable; this on stack
+  InitComp    type       // init Component.type; this on stack
+  SizeOf      type       // size of type in bytes (IR only)
+  Assert      u2         // assert top of stack, u2 is linenum
+  Switch      switch     // switch with index into jump table (u2 is table count)
+  MetaSlot    u2         // inline meta-data, index to slot qname triple
+  Cast        type       // only used for Java bytecode
+  LoadArrayLiteral array // in SVM we use LoadBuf as pointer to array in code section
   
 -------------------------------------------------
 $constants

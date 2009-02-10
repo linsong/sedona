@@ -322,6 +322,7 @@ public class SCode
   public static final int Switch             = 235;  // switch with index into jump table (u2 is table count)
   public static final int MetaSlot           = 236;  // inline meta-data, index to slot qname triple
   public static final int Cast               = 237;  // only used for Java bytecode
+  public static final int LoadArrayLiteral   = 238;  // in SVM we use LoadBuf as pointer to array in code section
 
   // OpCodes by name
   public static final String[] names =
@@ -564,6 +565,7 @@ public class SCode
     "Switch",             // 235
     "MetaSlot",           // 236
     "Cast",               // 237
+    "LoadArrayLiteral",   // 238
   };
 
   // OpCodes arguments
@@ -665,6 +667,7 @@ public class SCode
       case Switch:              return switchArg;
       case MetaSlot:            return u2Arg;
       case Cast:                return typeArg;
+      case LoadArrayLiteral:    return arrayArg;
       default:                  return noArg;
     }
   }
@@ -702,6 +705,7 @@ public class SCode
   public static final int jmpArg    = 14;
   public static final int jmpfarArg = 15;
   public static final int switchArg = 16;
+  public static final int arrayArg  = 17; // array literal
 
 ////////////////////////////////////////////////////////////////
 // SCode Image Flags

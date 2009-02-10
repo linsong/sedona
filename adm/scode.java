@@ -51,6 +51,7 @@ public class SCode
   public static final int jmpArg    = 14;
   public static final int jmpfarArg = 15;
   public static final int switchArg = 16;
+  public static final int arrayArg  = 17; // array literal
 
 ////////////////////////////////////////////////////////////////
 // SCode Image Flags

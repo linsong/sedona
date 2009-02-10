@@ -24,7 +24,7 @@ public interface Field
   public Type type();
 
   /**
-   * If a define field return literal.
+   * If a define field return literal expr.
    */
   public Expr.Literal define();
 

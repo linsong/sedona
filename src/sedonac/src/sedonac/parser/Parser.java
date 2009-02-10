@@ -287,8 +287,11 @@ public class Parser
     {
       consume();
       if (curt == Token.LBRACE)
-      {
-        init = arrayInitializer();
+      {                  
+        if (peekt == Token.DOT)
+          init = arrayInitializer();
+        else                               
+          init = arrayLiteral(flags, type);
       }
       else
       {
@@ -312,6 +315,31 @@ public class Parser
     return new Expr.InitArray(loc);
   }
 
+  protected Expr.Literal arrayLiteral(int flags, Type type)
+  {                          
+    // verify this is a define                       
+    Location loc = this.loc;
+    if ((flags & Slot.DEFINE) == 0)
+      throw err("Array literals only supported on define fields", loc);
+      
+    // verify this is an array                       
+    if (!type.isArray())
+      throw err("Cannot use array literal with non-array field", loc);
+    
+    // parse array
+    ArrayList acc = new ArrayList();
+    consume(Token.LBRACE);        
+    if (curt == Token.COMMA) consume();
+    else while (true)
+    {
+      acc.add(literal().value);
+      if (curt != Token.COMMA) break;
+      consume(Token.COMMA);
+    }
+    consume(Token.RBRACE);        
+    return new Expr.Literal(loc, Expr.ARRAY_LITERAL, type, acc.toArray());
+  }                     
+  
 //////////////////////////////////////////////////////////////////////////
 // MethodDef
 //////////////////////////////////////////////////////////////////////////

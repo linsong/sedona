@@ -89,9 +89,9 @@ public class UnresolvedType
   public boolean isPublic()   { throw unresolved(); }
   public boolean isTestOnly() { throw unresolved(); }
 
-  public CompilerException unresolved()
+  public IllegalStateException unresolved()
   {
-    return new CompilerException("Type is unresolved '" + this + "'", loc);
+    return new IllegalStateException("Type is unresolved '" + this + "': " + loc);
   }
 
 //////////////////////////////////////////////////////////////////////////

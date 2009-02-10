@@ -15,6 +15,7 @@ import sedona.util.*;
 import sedona.xml.*;
 import sedonac.*;
 import sedonac.Compiler;
+import sedonac.ast.*;
 import sedonac.ir.*;
 import sedonac.namespace.*;
 import sedonac.scode.*;
@@ -61,6 +62,7 @@ public class ImageGen
     constPool.doubles();
     constPool.strings();
     constPool.bufs();
+    constPool.arrays();
     constPool.qnameTypes();
     constPool.qnameSlots();
     backpatch();
@@ -687,6 +689,16 @@ public class ImageGen
     else if (op.opcode == SCode.Switch)
     {
       switchOp(op);
+    }           
+    else if (op.opcode == SCode.LoadArrayLiteral)
+    {                        
+      // array literals use an internal bytecode which actually
+      // gets written as LoadBuf (to maintain compatibility with
+      // older SVMs); but effectively all we are doing is loading
+      // a pointer to the code section which is exactly what the
+      // LoadBuf opcode does
+      code.u1(SCode.LoadBuf);
+      opArg(op); 
     }
     else
     {
@@ -709,6 +721,7 @@ public class ImageGen
       case SCode.doubleArg: addBlockIndex(toDouble(op.argToDouble())); return;
       case SCode.strArg:    addBlockIndex(string(op.argToStr())); return;
       case SCode.bufArg:    addBlockIndex(buf(op.argToBuf())); return;
+      case SCode.arrayArg:  addBlockIndex(array((Expr.Literal)op.resolvedArg)); return;
       case SCode.methodArg: addBlockIndex(op.argToMethod().codeAddr); return;
       case SCode.jmpArg:    code.s1(0xff);            return;
       case SCode.jmpfarArg: code.s2(0xffff);          return;
@@ -746,6 +759,7 @@ public class ImageGen
       case SCode.jmpArg:    return 0;
       case SCode.jmpfarArg: return 2;
       case SCode.switchArg: return 2;
+      case SCode.arrayArg:  return 2;  // const ref to literal in code section
       default: throw new IllegalStateException(SCode.name(op.opcode));
     }
   }
@@ -887,6 +901,11 @@ public class ImageGen
   private ConstPool.IrBuf buf(Buf val)
   {
     return constPool.buf(val);
+  }
+
+  private ConstPool.IrArray array(Expr.Literal literal)
+  {
+    return constPool.array(literal);
   }
 
   private ConstPool.IrQnameType qnameType(Type type)

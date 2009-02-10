@@ -28,8 +28,8 @@ class ArrayTest
 
   inline static TestFoo[3] x = {...}
   inline static TestFoo[3] y
-  static TestFoo[] z = x
-
+  static TestFoo[] z = x      
+  
 ////////////////////////////////////////////////////////////////
 // Loop Reset
 ////////////////////////////////////////////////////////////////
@@ -288,5 +288,55 @@ class ArrayTest
     assert(rp[2] == x[2])   
   }              
   */
+
+//////////////////////////////////////////////////////////////////////////
+// Array Literal Defines
+//////////////////////////////////////////////////////////////////////////
+
+  define byte[] bd = {7, 200}
+  define byte[] bdEmpty = {,}
+  define byte[] bdDup = {7, 200}  // verify same arrays interned
+  define byte[] bdTwo = {7, 255}
+
+  define short[] sd = {10_000, 30_000, 50_000}
+
+  define int[] id = {-2, -1, 0, 0xabcd_ff00}
+  define int[] idDup = {-2, -1, 0, 0xabcd_ff00}
+
+  define long[] ld = {0xaaaa_bbbb_ccccL, 4hr}
+  
+  define float[] fd = {24f}
+
+  define double[] dd = {-10_000D, 0.2D}
+  
+  static void testArrayLiterals()
+  {
+    assert(bd[0] == 7)
+    assert(bd[1] == 200)
+    
+    assert(bd != bdEmpty)
+    assert(bd == bdDup)
+    assert(bd != bdTwo)
+    assert(bdDup[1] == 200)
+    assert(bdTwo[1] == 255)            
+    
+    assert(sd[0] == 10_000)
+    assert(sd[1] == 30_000)
+    assert(sd[2] == 50_000)
+
+    assert(id == idDup)
+    assert(id[0] == -2)
+    assert(id[1] == -1)
+    assert(id[2] == 0)
+    assert(id[3] == 0xabcd_ff00)
+                      
+    assert(ld[0] == 0xaaaa_bbbb_ccccL)
+    assert(ld[1] == 4hr)
+
+    assert(fd[0] == 24f)
+    
+    assert(dd[0] == -10_000D)
+    assert(dd[1] == 0.2D)
+  }
 
 }

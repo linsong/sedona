@@ -316,8 +316,10 @@
 #define Assert              234
 #define Switch              235
 #define MetaSlot            236
+#define Cast                237
+#define LoadArrayLiteral    238
 
-#define NumOpcodes          237
+#define NumOpcodes          239
 
 #endif
 
@@ -564,6 +566,8 @@
 &&Assert, \
 &&Switch, \
 &&MetaSlot, \
+&&Cast, \
+&&LoadArrayLiteral, \
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -812,6 +816,8 @@ const char* OpcodeNames[] =
   "Assert",             // 234
   "Switch",             // 235
   "MetaSlot",           // 236
+  "Cast",               // 237
+  "LoadArrayLiteral",   // 238
 };
 
 // pointer offset used for null pointer check
@@ -1054,6 +1060,8 @@ const int8_t OpcodePointerOffsets[] =
    -1,   // 234 Assert
    -1,   // 235 Switch
    -1,   // 236 MetaSlot
+   -1,   // 237 Cast
+   -1,   // 238 LoadArrayLiteral
 };
 
 #endif
