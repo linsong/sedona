@@ -275,17 +275,20 @@ public class ConstPool
     {
       IrStr str = (IrStr)strings.get(keys[i]);
       str.blockIndex = blockIndex();
-      String val = str.val;
-      // System.out.println("-- [" + str.blockIndex + "] \"" + val);
-      for (int j=0; j<val.length(); ++j)
-      {
-        int ch = val.charAt(j);
-        if (ch > 0xff) throw err("Invalid string literal: " + val);
-        code.u1(ch);
-      }
-      code.u1(0); // null terminator
-      blockAlign();
+      writeStrLiteral(code, str.val);
     }
+  }
+
+  void writeStrLiteral(Buf code, String val)
+  {
+    for (int i=0; i<val.length(); ++i)
+    {
+      int ch = val.charAt(i);
+      if (ch > 0xff) throw err("Invalid string literal: " + val);
+      code.u1(ch);
+    }             
+    code.u1(0);   // null terminator
+    blockAlign();
   }
 
   static class IrStr
@@ -389,8 +392,22 @@ public class ConstPool
       // 1. align to nearest block boundary or primitive boundary
       // 2. save block index
       // 3. write array values
-      blockAlign();
-      switch (of.id())
+      blockAlign(); 
+      if (of.isStr())
+      {
+        // first write the string values and save their block indices
+        int[] strIndices = new int[array.length];            
+        for (int j=0; j<array.length; ++j)        
+        {
+          strIndices[j] = blockIndex();
+          writeStrLiteral(code, (String)array[j]);
+        }                        
+        // now write the actual array of block indices
+        a.blockIndex = blockIndex();
+        for (int j=0; j<array.length; ++j)        
+          code.u2(strIndices[j]);
+      }
+      else switch (of.id())
       {
         case Type.byteId:
           a.blockIndex = blockIndex();
@@ -432,9 +449,9 @@ public class ConstPool
           for (int j=0; j<array.length; ++j)
             code.f8(((Double)array[j]).doubleValue());
           break;
-          
-        default:
-          throw new IllegalStateException("array literal: " + of);
+
+        default:      
+           throw new IllegalStateException("array literal: " + of);            
       }
     }
     blockAlign();

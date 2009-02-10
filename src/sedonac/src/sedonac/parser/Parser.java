@@ -300,6 +300,13 @@ public class Parser
     }
     endOfStmt();
 
+    // define implies const
+    if ((flags & Slot.DEFINE) != 0)
+    {                              
+      if ((flags & Slot.CONST) != 0) err("Cannot use 'const' modifier on define", loc);
+      flags |= Slot.CONST;
+    }
+
     return new FieldDef(loc, parent, flags, name, facets, type, init, ctorArgs);
   }
 

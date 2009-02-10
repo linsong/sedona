@@ -307,10 +307,12 @@ class ArrayTest
   
   define float[] fd = {24f}
 
-  define double[] dd = {-10_000D, 0.2D}
+  define double[] dd = {-10_000D, 0.2D}   
   
+  define Str[] strd = {"a", "hi", "| \n \" \r \\ |"}
+    
   static void testArrayLiterals()
-  {
+  {                              
     assert(bd[0] == 7)
     assert(bd[1] == 200)
     
@@ -336,7 +338,11 @@ class ArrayTest
     assert(fd[0] == 24f)
     
     assert(dd[0] == -10_000D)
-    assert(dd[1] == 0.2D)
+    assert(dd[1] == 0.2D)    
+    
+    assert(strd[0].equals("a"))
+    assert(strd[1].equals("hi"))       
+    assert(strd[2].equals("| \n \" \r \\ |"))      
   }
 
 }

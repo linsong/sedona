@@ -73,7 +73,7 @@ public class IrWriter
   {
     writeFacets(field.facets);
     indent();
-    writeFlags(field);
+    writeFlags(field);                     
     w(field.type);
     w(" ").w(field.name);
     if (field.isDefine() && !field.type.isLog())
@@ -161,6 +161,14 @@ public class IrWriter
 //////////////////////////////////////////////////////////////////////////
 // IO
 //////////////////////////////////////////////////////////////////////////
+
+  public IrWriter w(Type t)
+  {
+    String sig = t.signature();                       
+    if (sig.startsWith("const ")) sig = sig.substring(6);
+    print(sig);
+    return this;
+  }
 
   public IrWriter w(Object s)
   {

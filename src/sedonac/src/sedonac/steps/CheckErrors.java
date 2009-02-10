@@ -140,7 +140,6 @@ public class CheckErrors
 
     if (f.isDefine())
     {
-      if (f.isConst())      err("Cannot use 'const' modifier on define", loc);
       if (f.isInline())     err("Cannot use 'inline' modifier on define", loc);
     }
 
@@ -151,7 +150,7 @@ public class CheckErrors
       if (!f.isPublic())    err("Properties must be public", loc);
     }              
     
-    if (f.isConst())
+    if (f.isConst() && !f.isDefine())
     {
       if (!curType.kit().name().equals("sys"))
         err("Only sys types may use 'const' modifier", loc);
