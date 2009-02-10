@@ -693,7 +693,12 @@ public abstract class Expr
       this.index  = index;
     }
 
-    public boolean isAssignable() { return true; }
+    public boolean isAssignable() 
+    { 
+      if (target.id == FIELD && ((Field)target).field.isConst())
+        return false;
+      return true; 
+    }
 
     protected void doWalk(AstVisitor visitor)
     {

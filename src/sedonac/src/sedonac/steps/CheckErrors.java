@@ -861,12 +861,15 @@ public class CheckErrors
   private void checkAssignable(Expr expr)
   {
     if (!expr.isAssignable())
-    {
-      if (expr.id == Expr.FIELD)
+    {                    
+      Expr x = expr;
+      if (x.id == Expr.INDEX) x = ((Expr.Index)x).target;
+      if (x.id == Expr.FIELD)
       {
-        Field f = ((Expr.Field)expr).field;
+        Field f = ((Expr.Field)x).field;
         String kind = "Field";
         if (f.isInline()) kind = "Inline field";
+        else if (f.isDefine()) kind = "Define field";
         else if (f.isConst()) kind = "Const field";
         err(kind + " '" + f.qname() + "' is not assignable", expr.loc);
       }
