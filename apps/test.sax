@@ -6,7 +6,8 @@
   <kit name='control'/>
   <kit name='web'/>
 </schema>
-<app>
+<app>               
+  <prop name="appName" val="demo"/>
   <!-- /service -->
   <comp name="service" id="1" type="sys::Folder">
     <prop name="meta" val="33685505"/>

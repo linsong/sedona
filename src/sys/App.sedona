@@ -831,6 +831,9 @@ class App
 ////////////////////////////////////////////////////////////////
 // Properties
 ////////////////////////////////////////////////////////////////
+
+  ** Logical name for the device, up to 15 ASCII chars long
+  @config @asStr property Buf(16) appName
   
   ** Scan cycle period in milliseconds.  
   @config property int scanPeriod = 50

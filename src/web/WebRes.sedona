@@ -133,7 +133,22 @@ class WebRes
       case Type.longId:    printLong(c.getLong(prop));     break
       case Type.floatId:   printFloat(c.getFloat(prop));   break
       case Type.doubleId:  printDouble(c.getDouble(prop)); break
-      default:             w("????")
+      case Type.bufId:     
+        Buf buf = c.getBuf(prop);
+        if (prop.isAsStr()) w(buf.toStr())
+        else                
+        {                 
+          w("0x")
+          for (int i=0; i<buf.size; ++i)
+          {
+            int x = buf.get(i)
+            if (x < 0x10) w("0")
+            w(Sys.hexStr(x))
+          }
+        }
+        break
+      default: 
+        w("????")
     }
     return this
   }
