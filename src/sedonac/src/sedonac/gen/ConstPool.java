@@ -403,6 +403,7 @@ public class ConstPool
           writeStrLiteral(code, (String)array[j]);
         }                        
         // now write the actual array of block indices
+        code.align(2);
         a.blockIndex = blockIndex();
         for (int j=0; j<array.length; ++j)        
           code.u2(strIndices[j]);

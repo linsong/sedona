@@ -22,6 +22,7 @@ public class Upload
   {        
     try
     {
+      String baseUri = "http://sedonadev.org/download/upload";
       String vendor   = null;
       String password = null;
       int options = 0;
@@ -43,6 +44,13 @@ public class Upload
           {
             printHelp();
             System.exit(-1);
+          }
+          else if (arg.equals("-u"))
+          {
+            if (i+1 >= args.length || args[i+1].charAt(0) == '-')
+              err("ERROR: Missing uri argument");
+            baseUri = args[++i];
+            options += 2;
           }
           else if (arg.equals("-v"))
           {
@@ -72,8 +80,8 @@ public class Upload
       if (!file.exists()) err("ERROR: File not found: " + file);
 
       // type off of file extension
-      if (file.getName().endsWith(".zip"))      upload("build", vendor, password, file);
-      else if (file.getName().endsWith(".xml")) upload("kitManifest", vendor, password, file);
+      if (file.getName().endsWith(".zip"))      upload(baseUri, "build", vendor, password, file);
+      else if (file.getName().endsWith(".xml")) upload(baseUri, "kitManifest", vendor, password, file);
       else err("ERROR: Unknown file type: " + file.getCanonicalPath());
     }
     catch (Exception e)
@@ -84,7 +92,7 @@ public class Upload
   }    
   
 
-  static void upload(String type, String vendor, String password, File file)
+  static void upload(String baseUri, String type, String vendor, String password, File file)
     throws Exception
   {    
     System.out.println("Upload " + type + " [" + file.getCanonicalPath() + "]");
@@ -151,9 +159,11 @@ public class Upload
     System.out.println("usage:");
     System.out.println("  upload [options] <file>");
     System.out.println("options:");
-    System.out.println("  -v <vendor>    the vendor name used to authenticate");
-    System.out.println("  -p <password>  the password used to authenticate");
-    System.out.println("  -? -help       print this usage synopsis");
+    System.out.println("  -u <uri>       The uri to upload to.");
+    System.out.println("                 If omitted, http://sedonadev.org/download/upload is used.");
+    System.out.println("  -v <vendor>    The vendor name used to authenticate");
+    System.out.println("  -p <password>  The password used to authenticate");
+    System.out.println("  -? -help       Print this usage synopsis");
     System.out.println("");
   }
   
@@ -164,7 +174,7 @@ public class Upload
     System.exit(-1);
   }
   
-  static final String baseUri = "http://sedonadev.org/download/upload";
+//  static final String baseUri = "http://209.96.240.217/download/upload";
   //static final String baseUri = "http://localhost/download/upload";
 
 }

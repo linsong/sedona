@@ -472,10 +472,11 @@ public class JavaMethodAsm
         case Expr.FLOAT_LITERAL:  loadFloat(literal.asFloat()); return;
         case Expr.DOUBLE_LITERAL: loadDouble(literal.asDouble()); return;
         case Expr.TIME_LITERAL:   loadLong(literal.asLong()); return;
+        case Expr.STR_LITERAL:    kitAsm.loadStr(code, literal.asString()); return;
         case Expr.NULL_LITERAL:   op(ACONST_NULL); return;
       }
-    }
-    
+    }         
+        
     loadField(op);
   }
 

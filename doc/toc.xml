@@ -50,6 +50,7 @@
 
 <section name="Appendix">
   <chapter name="License" href="license.html" blurb="Academic Free License 3.0"/>
+  <chapter name="Conventions" href="conventions.html" blurb="Coding conventions"/>
   <chapter name="SCode Format" href="scodeFormat.html" blurb="reference for scode image binary format"/>
   <chapter name="Change Log" href="changeLog.html" blurb="history of changes"/>
 </section>

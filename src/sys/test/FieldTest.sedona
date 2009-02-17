@@ -51,7 +51,8 @@ class FieldTest
   define float  df1 = 2.08
   define float  df2 = -123_000f
   define double dd1 = 0d
-  define double dd2 = -5608.008d
+  define double dd2 = -5608.008d        
+  define Str    ds1 = "def"
 
 //////////////////////////////////////////////////////////////////////////
 // Reset
@@ -84,8 +85,8 @@ class FieldTest
 //////////////////////////////////////////////////////////////////////////
 
   static void testDefines()
-  {                                                     
-    /*
+  {                    
+    /*           
     Sys.out.print(">>> define dz1=").printBool(dz1).nl()
     Sys.out.print(">>> define dz2=").printBool(dz2).nl()
     Sys.out.print(">>> define di1=").printInt(di1).nl()
@@ -98,6 +99,7 @@ class FieldTest
     Sys.out.print(">>> define df2=").printFloat(df2).nl()
     Sys.out.print(">>> define dd1=").printDouble(dd1).nl()
     Sys.out.print(">>> define dd2=").printDouble(dd2).nl()
+    Sys.out.print(">>> define sd1=").print(ds1).nl()     
     */
 
     assert(!dz1)
@@ -111,7 +113,8 @@ class FieldTest
     assert(df1 == 2.08)
     assert(df2 == -123_000f)
     assert(dd1 == 0d)
-    assert(dd2 == -5608.008d)
+    assert(dd2 == -5608.008d)     
+    assert(ds1.equals("def"))
   }
 
 //////////////////////////////////////////////////////////////////////////

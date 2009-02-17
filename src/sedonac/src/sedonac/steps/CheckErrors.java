@@ -246,6 +246,7 @@ public class CheckErrors
       if (t.isLong())    return true;
       if (t.isFloat())   return true;
       if (t.isDouble())  return true;
+      if (t.isStr())     return true;
       if (t.isLog())     return true;
     }             
     return false;
