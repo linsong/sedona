@@ -14,6 +14,7 @@
   <target name="web" />
   <target name="control" />
   <target name="driver" />
+  <target name="datetime" />
 
 </sedonaDir>
 

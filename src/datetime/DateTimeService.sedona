@@ -1,0 +1,34 @@
+//
+// Copyright (c) 2009 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   18 Feb 09  Dan Giorgis   creation
+//
+
+class DateTimeService 
+  extends Service
+{
+	
+  **
+  **  Return the current UTC date/time on the system in nanoseconds, or 
+  **  DateTime.invalid if not supported, i.e. platform does not have clock
+  **  capability
+  **    
+  virtual long now() { return DateTime.invalid }
+  
+  **
+  **  Set the current UTC date/time in nanoseconds.  Returns DateTime.invalid
+  **  if time cannot be set on the platform.
+  **  
+  virtual long set(long nanos) { return DateTime.invalid }   
+
+
+////////////////////////////////////////////////////////////////
+// Fields
+////////////////////////////////////////////////////////////////
+  define Log log  
+
+  inline protected DateTime dt
+
+}

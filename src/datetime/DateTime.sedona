@@ -6,7 +6,7 @@
 //   03 Feb 09  Dan Giorgis   creation
 //
 
-final class DateTime
+class DateTime extends Virtual
 {    
   **
   **  Year (2000-2099).  Only valid after successful fromNanos() call.
@@ -160,8 +160,6 @@ final class DateTime
     //  could optimize by calculating dayOfYear for each start of each month    
     for (int i = 1; i < month; i++)    
      dayOfYear += (int)daysPerMonth[i-1]
-
-//Sys.out.print("dayOfYear : ").printInt(dayOfYear).nl()
    
     //  add another day if it's a leap and it's after Feb
     if ((month > Month.feb) && isLeapYear(year))
@@ -180,7 +178,7 @@ final class DateTime
         
     return nse;
   }              
-   
+      
   **
   **  Return true if given absolute year is a leap year
   **    

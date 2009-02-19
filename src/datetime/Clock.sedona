@@ -1,0 +1,135 @@
+//
+// Copyright (c) 2009 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   18 Dec 08  Elizabeth McKenney   creation
+//   19 Feb 09  Dan Giorgis          move to DateTime kit
+//
+
+**
+** Clock provides component interface to RT clock
+**
+class Clock
+  extends Component    
+{
+
+////////////////////////////////////////////////////////////////
+// Properties
+////////////////////////////////////////////////////////////////
+
+  ** Hour field of time (as of last read or write)
+  property int hour
+
+  ** Minute field of time (as of last read or write)
+  property int minute
+
+  ** Second field of time (as of last read or write)
+  property int second
+
+  ** Year field of time (as of last read or write)
+  property int year
+
+  ** Month field of time (as of last read or write)
+  property int month
+
+  ** Day field of time (as of last read or write)
+  property int day
+
+  ** Refresh interval in msec
+  ** Set to 0 to disable automatic refresh
+  @config property int refreshIntervalMsec = 0
+
+
+////////////////////////////////////////////////////////////////
+// Actions
+////////////////////////////////////////////////////////////////
+
+  ** Read current timestamp (once)
+  action void readTime()
+  {
+    long ns = dtSrvc.now()    
+    dt.reset()
+    if (dt.fromNanos(ns) != -1)
+    {   
+      // Extract props from data
+      hour   = dt.hour
+      minute = dt.minute
+      second = dt.second
+      year   = dt.year 
+      month  = dt.month
+      day    = dt.day
+    }       
+  }
+
+
+  ** Set timestamp using current prop values
+  action void setTime()
+  {
+    dt.reset()
+    dt.hour    = hour
+    dt.minute = minute
+    dt.second = second
+    dt.year   = year 
+    dt.month  = month
+    dt.day    = day
+    long nanos = dt.toNanos()
+    if (nanos != DateTime.invalid)
+      dtSrvc.set(nanos)
+    
+  }
+
+////////////////////////////////////////////////////////////////
+// Component methods
+////////////////////////////////////////////////////////////////
+
+  **
+  ** Initialize the component
+  **
+  virtual override void start()
+  {
+    dtSrvc = (DateTimeService)Sys.app.lookupService(DateTimeService.type)
+    if (dtSrvc == null) App.log.error("Missing DateTimeService")
+  }
+
+  **
+  ** Execute the component
+  **
+  virtual override void execute() 
+  {  
+    // Refresh time unless interval == 0 (disabled)
+    if (refreshIntervalMsec != 0)
+    {
+      long now = Sys.ticks()
+
+      if (now > nextUpdateTime)
+      {
+        readTime()
+        nextUpdateTime = now + refreshIntervalNsec
+      }
+    }
+  }
+
+
+  //
+  // changed() - behaviors to execute when a property is changed externally
+  // 
+  override void changed(Slot slot)
+  {
+    super.changed(slot)
+
+    if (slot == Clock.refreshIntervalMsec)
+      refreshIntervalNsec = (long)refreshIntervalMsec * 1000_000L
+  }
+
+////////////////////////////////////////////////////////////////
+// Fields
+////////////////////////////////////////////////////////////////
+
+  DateTimeService dtSrvc 
+  inline DateTime dt
+
+  long nextUpdateTime = 0L
+  long refreshIntervalNsec = 0L
+
+}
