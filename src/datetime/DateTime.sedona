@@ -24,6 +24,11 @@ class DateTime extends Virtual
   byte day
 
   **
+  **  Day of week (Sun = 0).  Only valid after successful fromNanos() call.
+  **  
+  byte dayOfWeek
+
+  **
   **  Hour of day (0-23).  Only valid after successful fromNanos() call.
   ** 
   byte hour
@@ -71,6 +76,8 @@ class DateTime extends Virtual
   **  
   int fromNanos(long nanos)
   {   
+  	int daysSinceEpoch = 0;
+  	
     //  Range check
     if ((nanos < 0L) || (nanos > DateTime.nanosMax))
       return -1;
@@ -80,28 +87,38 @@ class DateTime extends Virtual
     int y = 0;    
     for(;;)
     {     
-      long nanosInYear = DateTime.isLeapYear(y+2000) ? 366days : 365days;    
+    	bool isLeap = DateTime.isLeapYear(y+2000)
+      long nanosInYear = isLeap ? 366days : 365days
+      int daysInYear = isLeap ? 366 : 365
       if (rem < nanosInYear)
         break;
+
       y++;          
+      daysSinceEpoch += daysInYear
       rem -= nanosInYear;                            
     }         
     
     //  Adjust for utcOffset 
-    rem += utcOffset;
+    rem += utcOffset
     
     //  Determine month 
-    int m = 1;
+    int m = 1
+    bool isLeap = DateTime.isLeapYear(y+2000)
     for (;;)
     {
-      long nanosInMonth = (long)DateTime.daysPerMonth[m-1] * 1days;
-      if ((m == Month.feb) && DateTime.isLeapYear(y+2000))
-        nanosInMonth += 1days;       
-
+    	int daysInMonth = (int)DateTime.daysPerMonth[m-1]
+      long nanosInMonth = (long)daysInMonth * 1days;      
+      if ((m == Month.feb) && isLeap)
+      {
+        nanosInMonth += 1days
+        daysInMonth++
+      }
+              
       if (rem < nanosInMonth)      
         break;      
-
-      rem -= nanosInMonth;
+               
+      rem -= nanosInMonth
+      daysSinceEpoch += daysInMonth 
                  
       m++;
     }
@@ -115,6 +132,9 @@ class DateTime extends Virtual
     second = (int)(rem / 1sec); rem %= 1sec;
     nanosecond = (int)rem;
     
+    daysSinceEpoch+=day
+    dayOfWeek = ((daysSinceEpoch-1) + epochDayOfWeek) % 7 
+     
     return 0;
   }         
 
@@ -186,6 +206,9 @@ class DateTime extends Virtual
   {
   	 return (((year) % 4) == 0 && (((year) % 100) != 0 || (((year) % 400) == 0)))
   } 	
+  
+  //  Jan 1,2000 was a Saturday
+  define int epochDayOfWeek = 6;
   	
   define byte[] daysPerMonth = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}
      

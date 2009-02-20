@@ -449,6 +449,59 @@ class DateTimeTest
     assert(dt.minute == 0)
     assert(dt.second == 0)
     assert(dt.nanosecond == 0)
+
+
+//////////////////////////////////////////////////////////////// 
+//  Day of Week tests 
+////////////////////////////////////////////////////////////////    
+    //  Jan 1 2000 is Sat
+    dt.reset(); setupDt(2000,Month.jan,1,0,0,0,0,0L)
+    nse = dt.toNanos();  assert(nse != DateTime.invalid);
+    assert(dt.fromNanos(nse) == 0)
+    assert(dt.dayOfWeek == DayOfWeek.sat)
+
+    //  Feb 29 2000 is Tuesday
+    dt.reset(); setupDt(2000,Month.feb,29,0,0,0,0,0L)
+    nse = dt.toNanos();  assert(nse != DateTime.invalid);
+    assert(dt.fromNanos(nse) == 0)
+    assert(dt.dayOfWeek == DayOfWeek.tue)
+
+    //  Mar 1 2000 is Wed
+    dt.reset(); setupDt(2000,Month.mar,1,0,0,0,0,0L)
+    nse = dt.toNanos();  assert(nse != DateTime.invalid);
+    assert(dt.fromNanos(nse) == 0)
+    assert(dt.dayOfWeek == DayOfWeek.wed)
+
+    //  Jan 1 2001 is Mon
+    dt.reset(); setupDt(2001,Month.jan,1,0,0,0,0,0L)
+    nse = dt.toNanos();  assert(nse != DateTime.invalid);
+    assert(dt.fromNanos(nse) == 0)
+    assert(dt.dayOfWeek == DayOfWeek.mon)
+
+    //  Dec 31 2001 is Mon
+    dt.reset(); setupDt(2001,Month.dec,31,0,0,0,0,0L)
+    nse = dt.toNanos();  assert(nse != DateTime.invalid);
+    assert(dt.fromNanos(nse) == 0)
+    assert(dt.dayOfWeek == DayOfWeek.mon)
+
+    //  Apr 15 2009 is Wed
+    dt.reset(); setupDt(2009,Month.apr,15,0,0,0,0,0L)
+    nse = dt.toNanos();  assert(nse != DateTime.invalid);
+    assert(dt.fromNanos(nse) == 0)
+    assert(dt.dayOfWeek == DayOfWeek.wed)
+
+    //  Jul 4 2050 is Monday
+    dt.reset(); setupDt(2050,Month.jul,4,0,0,0,0,0L)
+    nse = dt.toNanos();  assert(nse != DateTime.invalid);
+    assert(dt.fromNanos(nse) == 0)
+    assert(dt.dayOfWeek == DayOfWeek.mon)
+
+    //  Dec 25 2099 is Friday
+    dt.reset(); setupDt(2099,Month.dec,25,0,0,0,0,0L)
+    nse = dt.toNanos();  assert(nse != DateTime.invalid);
+    assert(dt.fromNanos(nse) == 0)
+    assert(dt.dayOfWeek == DayOfWeek.fri)
+
          
   }
 }
