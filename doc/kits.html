@@ -111,31 +111,32 @@ The <code>sedona.Depend</code> class provides an API for parsing
 and comparing dependencies:
 </p>
 
-<pre>
-depend        := name space* constraints
-constraints   := constraint [space* "," space* constraint]*
-constraint    := versionSimple | versionPlus | versionRange | checksum
-versionSimple := version
-versionPlus   := version space* "+"
-versionRange  := version space* "-" space* version
-version       := digit ["." digit]*                                   
-checksum      := "0x" 8 hex digits
-digit         := "0" - "9"
-</pre>
+ <pre>
+ depend        := name space* constraints
+ constraints   := constraint [space* "," space* constraint]*
+ constraint    := versionSimple | versionPlus | versionExact | versionRange | checksum
+ versionSimple := version
+ versionPlus   := version space* "+"
+ versionExact  := version space* "="
+ versionRange  := version space* "-" space* version
+ version       := digit ["." digit]*                                   
+ checksum      := "0x" 8 hex digits
+ digit         := "0" - "9"
+ </pre>
 
-<p>
-Note a simple version constraint such as "foo 1.2" really means
-"1.2.*" - it  will match all build numbers and patch numbers
-within "1.2".  Likewise "foo 1.2.64" will match all patch numbers
-within the "1.2.64" build.  The "+" plus sign is used to specify a
-given version and anything greater.  The "-" dash is used to
-specify an inclusive range.  When using a range, then end version
-is matched using the same rules as a simple version - for example
-"4", "4.2", and "4.0.99 " are all matches for "foo 1.2-4".  You may
-specify a list of potential constraints separated by commas.  Multiple
-version dependencies are evaluated using a logical OR - any one match
-is considered an overall match.  A version constraint and a checksum
-constraint are evaluated using a logical AND. 
+<p>Note a simple version constraint such as "foo 1.2" really means
+"1.2.*" - it will match all build numbers and patch numbers within
+"1.2". Likewise "foo 1.2.64" will match all patch numbers within the
+"1.2.64" build. The "+" plus sign is used to specify a given version and
+anything greater. The "=" equals sign is used to specify an exact
+version match. Hence, "foo 1.2.64=" would match "1.2.64", but not "1.2",
+or "1.2.64.1". The "-" dash is used to specify an inclusive range. When
+using a range, then end version is matched using the same rules as a
+simple version - for example "4", "4.2", and "4.0.99 " are all matches
+for "foo 1.2-4". You may specify a list of potential constraints
+separated by commas. Multiple version dependencies are evaluated using a
+logical OR - any one match is considered an overall match. A version
+constraint and a checksum constraint are evaluated using a logical AND.
 </p> 
 
 <p>
@@ -147,6 +148,8 @@ Examples:
 "foo 1.2.64"     Any version of foo 1.2.64 with any patch number
 "foo 0+"         Any version of foo - version wildcard
 "foo 1.2+"       Any version of foo 1.2 or greater
+"foo 1.2.64="    Only foo version 1.2.64
+"foo 1.2.64=,0xaabbccdd" Only foo version 1.2.64 with checksum 0xaabbccdd
 "foo 1.2-1.4"    Any version between 1.2 and 1.4 inclusive
 "foo 1.2,1.4"    Any version of 1.2 or 1.4
 "foo 0x1b02d4fc" Any version of foo with a checksum of 0x1b02d4fc

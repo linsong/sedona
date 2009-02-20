@@ -90,7 +90,8 @@ public class InitImageCompile
         err("Missing kit dependency '" + depend + "'", loc);
         continue;
       }
-        
+      log.verbose("    "+kitFile.toString());   
+      
       IrKit kit = kits[i] = new IrKit(loc, kitFile);
       String t = elem.get("test", null);
       if (t != null)

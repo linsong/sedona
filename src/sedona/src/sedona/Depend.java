@@ -17,43 +17,46 @@ import sedona.xml.*;
 import sedona.util.*;
 
 /**
- * Depend models a dependency as a kit name and a version
- * constraint.  Convention for Sedona kits is a four part
- * version format of ' major.minor.build.patch'.
- *
+ * Depend models a dependency as a kit name and a version constraint. Convention
+ * for Sedona kits is a four part version format of ' major.minor.build.patch'.
+ * 
  * The string format for Depend:
- *
+ * 
  * <pre>
  *   depend        := name space* constraints
- *   constraints   := constraint [space* "," space* constraint]*
- *   constraint    := versionSimple | versionPlus | versionRange | checksum
+ *   constraints   := constraint [space* &quot;,&quot; space* constraint]*
+ *   constraint    := versionSimple | versionPlus | versionExact | versionRange | checksum
  *   versionSimple := version
- *   versionPlus   := version space* "+"
- *   versionRange  := version space* "-" space* version
- *   version       := digit ["." digit]*                                   
- *   checksum      := "0x" 8 hex digits
- *   digit         := "0" - "9"
+ *   versionPlus   := version space* &quot;+&quot;
+ *   versionExact  := version space* &quot;=&quot;
+ *   versionRange  := version space* &quot;-&quot; space* version
+ *   version       := digit [&quot;.&quot; digit]*                                   
+ *   checksum      := &quot;0x&quot; 8 hex digits
+ *   digit         := &quot;0&quot; - &quot;9&quot;
  * </pre>
- *
- * Note a simple version constraint such as "foo 1.2" really means
- * "1.2.*" - it  will match all build numbers and patch numbers
- * within "1.2".  Likewise "foo 1.2.64" will match all patch numbers
- * within the "1.2.64" build.  The "+" plus sign is used to specify a
- * given version and anything greater.  The "-" dash is used to
- * specify an inclusive range.  When using a range, then end version
- * is matched using the same rules as a simple version - for example
- * "4", "4.2", and "4.0.99 " are all matches for "foo 1.2-4".  You may
- * specify a list of potential constraints separated by commas.  Multiple
- * version dependencies are evaluated using a logical OR - any one match
- * is considered an overall match.  A version constraint and a checksum
- * constraint are evaluated using a logical AND. 
- *
+ * 
+ * Note a simple version constraint such as "foo 1.2" really means "1.2.*" - it
+ * will match all build numbers and patch numbers within "1.2". Likewise
+ * "foo 1.2.64" will match all patch numbers within the "1.2.64" build. The "+"
+ * plus sign is used to specify a given version and anything greater. The "="
+ * equals sign is used to specify an exact version match. Hence, "foo 1.2.64="
+ * would match "1.2.64", but not "1.2", or "1.2.64.1". The "-" dash is used to
+ * specify an inclusive range. When using a range, then end version is matched
+ * using the same rules as a simple version - for example "4", "4.2", and
+ * "4.0.99 " are all matches for "foo 1.2-4". You may specify a list of
+ * potential constraints separated by commas. Multiple version dependencies are
+ * evaluated using a logical OR - any one match is considered an overall match.
+ * A version constraint and a checksum constraint are evaluated using a logical
+ * AND.
+ * 
  * <pre>
  * Examples:
  *    "foo 1.2"        Any version of foo 1.2 with any build or patch number
  *    "foo 1.2.64"     Any version of foo 1.2.64 with any patch number
  *    "foo 0+"         Any version of foo - version wildcard
  *    "foo 1.2+"       Any version of foo 1.2 or greater
+ *    "foo 1.2.64="    Only foo version 1.2.64
+ *    "foo 1.2.64=,0xaabbccdd" Only foo version 1.2.64 with checksum 0xaabbccdd
  *    "foo 1.2-1.4"    Any version between 1.2 and 1.4 inclusive
  *    "foo 1.2,1.4"    Any version of 1.2 or 1.4
  *    "foo 0x1b02d4fc" Any version of foo with a checksum of 0x1b02d4fc
@@ -147,6 +150,12 @@ public class Depend
       if (cur == '+')
       {
         c.isPlus = true;
+        consume();
+        consumeSpaces();
+      }
+      else if (cur == '=')
+      {
+        c.isExact = true;
         consume();
         consumeSpaces();
       }
@@ -316,6 +325,7 @@ public class Depend
       {
         s.append(c.version);
         if (c.isPlus) s.append('+');
+        if (c.isExact) s.append('=');
         if (c.endVersion != null) s.append('-').append(c.endVersion);
       }
     }
@@ -335,6 +345,7 @@ public class Depend
    * Get the version constraint at specified index:
    *   - versionSimple: returns the version
    *   - versionPlus:   returns the version
+   *   - versionExact:  returns the version
    *   - versionRange:  returns the start version
    *   - checksum:      returns null
    */
@@ -347,6 +358,7 @@ public class Depend
    * Return if the constraint at the specified index is a versionPlus:
    *   - versionSimple: returns false
    *   - versionPlus:   returns true
+   *   - versionExact:  returns false
    *   - versionRange:  returns false
    *   - checksum:      returns false
    */
@@ -354,11 +366,25 @@ public class Depend
   {
     return constraints[index].isPlus;
   }
+  
+  /**
+   * Return if the constraint at the specified index is a versionPlus:
+   *   - versionSimple: returns false
+   *   - versionPlus:   returns false
+   *   - versionExact:  returns true
+   *   - versionRange:  returns false
+   *   - checksum:      returns false
+   */  
+  public boolean isExact(int index)
+  {
+    return constraints[index].isExact;
+  }
 
   /**
    * Return if the constraint at the specified index is a versionRange:
    *   - versionSimple: returns false
    *   - versionPlus:   returns false
+   *   - versionExact:  returns false
    *   - versionRange:  returns true
    *   - checksum:      returns false
    */
@@ -371,6 +397,7 @@ public class Depend
    * Return the ending version if versionRange:
    *   - versionSimple: returns null
    *   - versionPlus:   returns null
+   *   - versionExact:  returns null
    *   - versionRange:  returns end version
    *   - checksum:      returns null
    */
@@ -383,6 +410,7 @@ public class Depend
    * Get the checksum constraint at specified index:
    *   - versionSimple: returns -1
    *   - versionPlus:   returns -1
+   *   - versionExact:  returns -1
    *   - versionRange:  returns -1
    *   - checksum:      returns the checksum
    */
@@ -468,6 +496,11 @@ public class Depend
       // versionPlus
       return c.version.compareTo(v) <= 0;
     }
+    else if (c.isExact)
+    {
+      // versionExact
+      return c.version.compareTo(v) == 0;
+    }
     else if (c.endVersion != null)
     {
       // versionRange
@@ -518,6 +551,7 @@ public class Depend
   {
     Version version;
     boolean isPlus;
+    boolean isExact;
     Version endVersion;
     int checksum = -1;
   }

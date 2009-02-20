@@ -33,37 +33,42 @@ public class KitDbTest
     
     d = Depend.parse("foo 1.2.3");
     verifyEq(d.size(), 1);
-    verifyDepend(d, 0, new Version("1.2.3"), false, null, -1);
+    verifyDepend(d, 0, new Version("1.2.3"), false, false, null, -1);
 
     d = Depend.parse("foo 1.2.3+");
     verifyEq(d.size(), 1);
-    verifyDepend(d, 0, new Version("1.2.3"), true, null, -1);
+    verifyDepend(d, 0, new Version("1.2.3"), true, false, null, -1);
+    
+    d = Depend.parse("foo 1.2.3=");
+    verifyEq(d.size(), 1);
+    verifyDepend(d, 0, new Version("1.2.3"), false, true, null, -1);
 
     d = Depend.parse("foo 1.2.3-1.2.4");
     verifyEq(d.size(), 1);
-    verifyDepend(d, 0, new Version("1.2.3"), false, new Version("1.2.4"), -1);
+    verifyDepend(d, 0, new Version("1.2.3"), false, false, new Version("1.2.4"), -1);
     
     d = Depend.makeChecksum("foo", 0xffeeddcc);
     verifyEq(d.size(), 1);
-    verifyDepend(d, 0, null, false, null, 0xffeeddcc);
+    verifyDepend(d, 0, null, false, false, null, 0xffeeddcc);
     
     d = Depend.parse("foo 10.20, 10.30");
     verifyEq(d.size(), 2);
-    verifyDepend(d, 0, new Version("10.20"), false, null, -1);
-    verifyDepend(d, 1, new Version("10.30"), false, null, -1);
+    verifyDepend(d, 0, new Version("10.20"), false, false, null, -1);
+    verifyDepend(d, 1, new Version("10.30"), false, false, null, -1);
     
     d = Depend.parse("foo 10+, 0x12345678, 20-30");
     verifyEq(d.size(), 3);
-    verifyDepend(d, 0, new Version("10"), true, null, -1);
-    verifyDepend(d, 1, null, false, null, 0x12345678);
-    verifyDepend(d, 2, new Version("20"), false, new Version("30"), -1);
+    verifyDepend(d, 0, new Version("10"), true, false, null, -1);
+    verifyDepend(d, 1, null, false, false, null, 0x12345678);
+    verifyDepend(d, 2, new Version("20"), false, false, new Version("30"), -1);
   }         
   
-  void verifyDepend(Depend d, int index, Version ver, boolean plus, Version end, int checksum)
+  void verifyDepend(Depend d, int index, Version ver, boolean plus, boolean exact, Version end, int checksum)
   {
     verifyEq(d.name(), "foo");
     verifyEq(d.version(index), ver);
     verifyEq(d.isPlus(index), plus);
+    verifyEq(d.isExact(index), exact);
     verifyEq(d.endVersion(index), end);
     verifyEq(d.checksum(index), checksum);
     
@@ -72,6 +77,7 @@ public class KitDbTest
     verifyEq(x.name(), "foo");
     verifyEq(x.version(index), ver);
     verifyEq(x.isPlus(index), plus);
+    verifyEq(x.isExact(index), exact);
     verifyEq(x.endVersion(index), end);
     verifyEq(x.checksum(index), checksum);
   }                   
@@ -111,7 +117,20 @@ public class KitDbTest
     verifyEq(d.match(new Version("10.3")), true);                          
     verifyEq(d.match(0xaabbccdd), false);                          
     verifyEq(d.match(new Version("1.2.3"), 0xaabbccdd), true);                          
-    verifyEq(d.match(new Version("1.0"), 0xaabbccdd), false);                          
+    verifyEq(d.match(new Version("1.0"), 0xaabbccdd), false);      
+    
+    // exact
+    d = Depend.parse("foo 1.2=");
+    verifyEq(d.match(new Version("1")), false);
+    verifyEq(d.match(new Version("1.2")), true);
+    verifyEq(d.match(new Version("1.2.1")), false);
+    verifyEq(d.match(new Version("1.2"), 0xaabbccdd), true);
+    verifyEq(d.match(0xaabbccdd), false);
+    verifyEq(d.match(new Version("1"), 0xaabbccdd), false);
+    d = Depend.parse("foo 1.2=,0xaabbccdd");
+    verifyEq(d.match(new Version("1.2"), 0xaabbccdd), true);
+    verifyEq(d.match(new Version("1.2"), 0xffbbccdd), false);
+    verifyEq(d.match(new Version("1"), 0xaabbccdd), false);
 
     // range    
     d = Depend.parse("foo 3.2-3.4");
@@ -177,6 +196,7 @@ public class KitDbTest
     {          
       // build some dummy kit files
       makeKitFile(dir, 0x12345678, "1.0.3400");  
+      makeKitFile(dir, 0x12345678, "1.0.3400.1");
       makeKitFile(dir, 0x12345678, "1.0.3401");  
       makeKitFile(dir, 0x12345678, "1.0.3402");  
       makeKitFile(dir, 0xaaaaaaaa, "1.0.3403");  
@@ -187,22 +207,24 @@ public class KitDbTest
       // list
       KitFile[] kits;
       kits = KitDb.list("testKitDb");
-      verifyEq(kits.length, 7);
-      verifyKitFile(kits[0], 0x12345678, "1.0.3400");  
-      verifyKitFile(kits[1], 0x12345678, "1.0.3401");  
-      verifyKitFile(kits[2], 0x12345678, "1.0.3402");  
-      verifyKitFile(kits[3], 0xaaaaaaaa, "1.0.3403");  
-      verifyKitFile(kits[4], 0xaaaaaaaa, "1.1.3500");  
-      verifyKitFile(kits[5], 0xbbbbbbbb, "1.1.3501");  
-      verifyKitFile(kits[6], 0xcccccccc, "1.2.3600");  
+      verifyEq(kits.length, 8);
+      verifyKitFile(kits[0], 0x12345678, "1.0.3400.1");
+      verifyKitFile(kits[1], 0x12345678, "1.0.3400");
+      verifyKitFile(kits[2], 0x12345678, "1.0.3401");  
+      verifyKitFile(kits[3], 0x12345678, "1.0.3402");  
+      verifyKitFile(kits[4], 0xaaaaaaaa, "1.0.3403");  
+      verifyKitFile(kits[5], 0xaaaaaaaa, "1.1.3500");  
+      verifyKitFile(kits[6], 0xbbbbbbbb, "1.1.3501");  
+      verifyKitFile(kits[7], 0xcccccccc, "1.2.3600");  
       
       // matchAll: 1.0
       kits = KitDb.matchAll(Depend.parse("testKitDb 1.0"));
-      verifyEq(kits.length, 4);
-      verifyKitFile(kits[0], 0x012345678, "1.0.3400");  
-      verifyKitFile(kits[1], 0x012345678, "1.0.3401");  
-      verifyKitFile(kits[2], 0x012345678, "1.0.3402");  
-      verifyKitFile(kits[3], 0x0aaaaaaaa, "1.0.3403");              
+      verifyEq(kits.length, 5);
+      verifyKitFile(kits[0], 0x012345678, "1.0.3400.1");
+      verifyKitFile(kits[1], 0x012345678, "1.0.3400");  
+      verifyKitFile(kits[2], 0x012345678, "1.0.3401");  
+      verifyKitFile(kits[3], 0x012345678, "1.0.3402");  
+      verifyKitFile(kits[4], 0x0aaaaaaaa, "1.0.3403");              
       
       // matchAll: 1.1+
       kits = KitDb.matchAll(Depend.parse("testKitDb 1.1+"));
@@ -237,6 +259,18 @@ public class KitDbTest
       // matchBest: 1.3
       kit = KitDb.matchBest(Depend.parse("testKitDb 1.3"));
       verify(kit == null);        
+      
+      // matchBest: 1.0.3400=
+      kit = KitDb.matchBest(Depend.parse("testKitDb 1.0.3400="));
+      verifyKitFile(kit, 0x12345678, "1.0.3400");
+      
+      // matchBest: 1.0.3400.1=
+      kit = KitDb.matchBest(Depend.parse("testKitDb 1.0.3400.1="));
+      verifyKitFile(kit, 0x12345678, "1.0.3400.1");
+      
+      // matchBest: 1.0=
+      kit = KitDb.matchBest(Depend.parse("testKitDb 1.0="));
+      verify(kit == null);
     }
     finally
     {
