@@ -584,19 +584,13 @@ public class CheckErrors
   }
 
   private void checkBreak(Stmt.Break stmt)
-  {
-    /* TODO
-    if (stmt.loop == null)
-      err("Break outside of loop", stmt.location)
-    */
+  {                    
+    // use of break inside a loop checked in CodeAsm
   }
 
   private void checkContinue(Stmt.Continue stmt)
   {
-    /* TODO
-    if (stmt.loop == null)
-      err("Continue outside of loop", stmt.location)
-    */
+    // use of continue inside a loop checked in CodeAsm
   }
 
   private void checkReturn(Stmt.Return stmt)

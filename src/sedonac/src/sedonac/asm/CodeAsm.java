@@ -335,6 +335,9 @@ public class CodeAsm
 
   private void breakStmt(Stmt.Break stmt)
   {
+    if (loopStack.size() == 0)
+      throw err("Break outside of loop", stmt.loc);
+      
     // right now we don't have labeled loops,
     // so we must be matched to the current loop
     Loop loop = (Loop)loopStack.peek();
@@ -346,6 +349,9 @@ public class CodeAsm
 
   private void continueStmt(Stmt.Continue stmt)
   {
+    if (loopStack.size() == 0)
+      throw err("Continue outside of loop", stmt.loc);
+    
     // right now we don't have labeled loops,
     // so we must be matched to the current loop
     Loop loop = (Loop)loopStack.peek();
