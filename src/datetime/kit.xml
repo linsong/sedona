@@ -6,7 +6,6 @@
 <sedonaKit
   name="datetime"
   vendor="Tridium"
-  version="1.0"
   description="date time functions"
   includeSource="true">
 	<!--  Source Directories  -->
