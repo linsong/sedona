@@ -64,7 +64,7 @@ are used to create a native method:
 <p>
 When running on the Java VM, native methods are implemented in the
 Java language - see the <a href='jvm.html#nativeMethods'>Java VM</a>
-chatper.            
+chapter.            
 </p>
 
 <!-- /////////////////////////////////////////////////////// -->
@@ -177,9 +177,34 @@ typedef Cell (*NativeMethod)(Cell* params);
 The parameters are passed as a Cell pointer to the first parameter.  You
 can manually extract the individual parameters using array indexing.  If
 the native method is not static, then the implicit <code>this</code> pointer
-is always parameter 0.  Also note that all native methods return a Cell value
-even when the Sedona signature has a <code>void</code> return.  An example
-implementation of the <code>foo::Type2.test</code> method illustrated above:
+is always parameter 0.  
+</p>
+<p>
+It is important to note that all native methods return a Cell value
+even when the Sedona signature has a <code>void</code> return.  You can use
+the constant  <code>nullCell</code> as a return from a <code>void</code> method.  
+Constants <code>trueCell</code> and <code>falseCell</code> can be used for
+<code>bool</code> returns.
+</p>
+
+<p>
+An example implementation of the <code>foo::Type2.add</code> method:
+</p>
+
+<pre>
+Cell foo_Type2_add(Cell* params)
+{
+  int32_t a = params[0].ival;
+  int32_t b = params[1].ival;
+  Cell result;
+  
+  result.ival = a+b;
+  
+  return result
+}
+</pre>
+<p>
+An example implementation of the <code>foo::Type2.test</code> method:
 </p>
 
 <pre>
@@ -188,17 +213,17 @@ Cell foo_Type2_test(Cell* params)
   int32_t z = params[0].ival;
   int32_t b = params[1].ival;
   float   f = params[2].fval;
-  Cell ret;
-
+  
   printf("test %d %d %f\n", z, b, f);
 
-  ret.ival = 0;
-  return ret;
+  return nullCell;
 }
 </pre>
 
+
+
 <p>
-Note in the example above how each parameter is extracted using array indexing
+Note in the examples above how each parameter is extracted using array indexing
 and the union member name.  Pointers should use the <code>aval</code> member,
 <code>floats</code> the <code>fval</code> member, and all other primitives are
 accessed using the <code>ival</code> member.  Note that a Sedona <code>bool</code>
