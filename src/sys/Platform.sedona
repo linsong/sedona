@@ -58,6 +58,11 @@ class Platform
   **
   ** Return max allowed file size, given file name.
   **
-  virtual int maxFileSize(Str fname) { return 0x7fffffff }
+  virtual int maxFileSize(Str fname) { return Sys.maxInt }
+     
+  **
+  ** Return available runtime memory, in bytes
+  **
+  virtual long memAvailable() { return 0L }
      
 }
