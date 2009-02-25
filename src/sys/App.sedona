@@ -785,7 +785,8 @@ class App
       int r = saveApp(file.out)
       file.close()
       if (r == 0)
-        log.message("saved")
+        //log.message("saved")
+        log.message("saved (${file.size()} bytes)")
       else
         log.error("save failed")
     }
