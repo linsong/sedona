@@ -10,25 +10,128 @@ class DateTimeService
   extends Service
 {
 	
+////////////////////////////////////////////////////////////////
+// Properties
+////////////////////////////////////////////////////////////////
+
+  ** Nanos since epoch
+  property long nanos
+
+  ** Hour 
+  property int hour
+
+  ** Minute 
+  property int minute
+
+  ** Second 
+  property int second
+
+  ** Year 
+  property int year
+
+  ** Month of year (see also datetime::Month)
+  property int month
+
+  ** Day of month
+  property int day
+	
+	** Day of week (see also datetime::DayOfWeek)
+	property int dayOfWeek
+
+
+////////////////////////////////////////////////////////////////
+// Actions
+////////////////////////////////////////////////////////////////
+	
+  **
+  **  Refreshes all property fields with current value 
+  **    
+  action void refresh()
+  {
+    long n = now()    
+    dt.reset()
+  	if (dt.fromNanos(n) != -1)
+      updateProperties(n)
+  } 	
+
+  **
+  **  Sets the system clock and refreshes properties.  May not
+  **  be supported on all properties
+  **
+  action void setSysClock(long nanos) 
+  {
+    setClock(nanos)
+    refresh()
+  }
+
+
+////////////////////////////////////////////////////////////////
+//  Override points
+////////////////////////////////////////////////////////////////
+
   **
   **  Return the current UTC date/time on the system in nanoseconds, or 
   **  DateTime.invalid if not supported, i.e. platform does not have clock
   **  capability
   **    
   virtual long now() { return DateTime.invalid }
-  
-  **
-  **  Set the current UTC date/time in nanoseconds.  Returns DateTime.invalid
-  **  if time cannot be set on the platform.
-  **  
-  virtual long set(long nanos) { return DateTime.invalid }   
 
+  **
+  **  Set the system clock to the given UTC value.  May
+  **  not be supported on all platform.
+  ** 
+  protected virtual void setClock(long nanos) {}
+  	
+////////////////////////////////////////////////////////////////
+// Service
+////////////////////////////////////////////////////////////////
+
+  **
+  **  Callback when component first started
+  **
+  virtual override void start()
+  {
+    refresh()
+  }
+
+  **
+  ** Perform a chunk of background work.  Return true
+  ** is there is pending work or false if the Service is
+  ** done working this cycle.
+  **
+  virtual override bool work()
+  {
+  	long ticks = Sys.ticks()
+  	if ((ticks - lastRefreshTicks) > 1sec)  //  only update once per second
+  	{   		
+  		lastRefreshTicks = ticks; 	
+  		refresh()
+  	}		
+    return false
+  }
+
+
+  ** 
+  **  Update the property fields with values stored in dt  
+  ** 
+  protected void updateProperties(long n)
+  { 	
+    nanos = n
+    year = dt.year
+    month = dt.month
+    day = dt.day
+    dayOfWeek = dt.dayOfWeek
+    hour = dt.hour
+    minute = dt.minute
+    second = dt.second            
+  }
 
 ////////////////////////////////////////////////////////////////
 // Fields
 ////////////////////////////////////////////////////////////////
   define Log log  
 
+  long lastRefreshTicks
   inline protected DateTime dt
 
 }
