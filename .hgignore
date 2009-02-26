@@ -12,6 +12,7 @@ syntax: glob
 *.class    
 *.sab
 *libJar*
+*.swp
 
 # Ignore Eclipse metafiles
 *.classpath
