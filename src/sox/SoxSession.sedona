@@ -141,7 +141,7 @@ class SoxSession
     // bad authenticate headers
     if (digestLen != 20 || username == null) return 
     
-    // authenitcate
+    // authenticate
     if (!authenticate(service, username, digest, digestOff, digestLen))
     {    
       close(service, Dasp.NOT_AUTHENTICATED)
@@ -150,12 +150,18 @@ class SoxSession
                         
     // send back welcome - use the defaults for
     // absMax, receiveMax, and receiveTimeout
+    //
+    //   Shouldn't use defaults here; this is last msg in handshake
+    //   so we need to specify the values that we will be using.
+    //
     OutStream out = prepare(service, Dasp.WELCOME, sendWindow.seqNum)
-    out.write(Dasp.IDEAL_MAX << 2 | Dasp.U2);    
-      out.writeI2(Dasp.IDEAL_MAX_VAL)
-    out.write(Dasp.RECEIVE_MAX << 2 | Dasp.U2); 
-      out.writeI2(Sys.platform.propInt("sox.receiveMax", 8))
-    service.packet.bytes[4] |= 2  // header count    
+    out.write(Dasp.IDEAL_MAX << 2 | Dasp.U2)
+    out.writeI2(Dasp.IDEAL_MAX_VAL)
+    out.write(Dasp.RECEIVE_MAX << 2 | Dasp.U2)
+    out.writeI2(Sys.platform.propInt("sox.receiveMax", 8))
+    out.write(Dasp.RECEIVE_TIMEOUT << 2 | Dasp.U2)
+    out.writeI2(receiveTimeout)
+    service.packet.bytes[4] |= 3  // header count    
     service.send(this)    
   }                             
   
@@ -205,7 +211,7 @@ class SoxSession
 //    else if (now - lastReceiveTicks > (long)receiveTimeout*0.9sec)
 //    {              
 //      // DIAG
-//      Sys.out.print("Session ${Sys.hexStr(id())} about to time out!\n")
+//      Sys.out.print("Session ${Sys.hexStr(id())} about to time out! [${receiveTimeout}sec]\n")
 //    }
 
     // check for retries
