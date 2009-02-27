@@ -233,7 +233,7 @@ public class InitKitCompile
       try
       {
         // check to see if both test and testOnly were specified.
-        boolean deprecatedTestOnly = xml.getb("test");
+        boolean deprecatedTestOnly = xsource.getb("test");
         err("Attributes 'test' and 'testonly' cannot both be present. Use 'testonly'.", loc); 
       }
       catch (XException e)
