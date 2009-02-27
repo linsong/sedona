@@ -11,7 +11,7 @@
 	<!--  Source Directories  -->
 	
   <source dir="." />
-  <source dir="test" test="true" />
+  <source dir="test" testonly="true" />
 	
   <!-- Dependencies -->
   <depend on="sys 1.0" />

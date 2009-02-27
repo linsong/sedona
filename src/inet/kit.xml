@@ -17,7 +17,7 @@
 
   <!-- Source Directories -->
   <source dir="."/>
-  <source dir="test" test="true"/>
+  <source dir="test" testonly="true"/>
 
   <!-- Natives -->
   <native qname="inet::TcpSocket.connect"         id="3::0"  />

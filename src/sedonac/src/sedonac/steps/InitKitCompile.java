@@ -199,7 +199,7 @@ public class InitKitCompile
     File dir = new File(kitFile.getParentFile(), dirName);
     if (!dir.exists() || !dir.isDirectory())
       throw err("Unknown source directory '" + dirName + "'", new Location(xml));
-    boolean testOnly = xml.getb("test", false);
+    boolean testOnly = isTestonly(xml);
 
     File[] list = dir.listFiles();
     for (int i=0; i<list.length; ++i)
@@ -220,7 +220,40 @@ public class InitKitCompile
         }
       }
     }
-  }                      
+  }
+  
+  private boolean isTestonly(XElem xsource)
+  {
+    Location l = new Location(xsource);
+    final String loc = "["+l.toFileName()+":"+l.line+"]";
+    boolean testonly = false;
+    try
+    {
+      testonly = xsource.getb("testonly");
+      try
+      {
+        // check to see if both test and testOnly were specified.
+        boolean deprecatedTestOnly = xml.getb("test");
+        err("Attributes 'test' and 'testonly' cannot both be present. Use 'testonly'.", loc); 
+      }
+      catch (XException e)
+      {
+      }
+    }
+    catch (XException e)
+    {
+      // see if deprecated 'test' attribute is used instead
+      try
+      {
+        testonly = xsource.getb("test");
+        log.warning("The 'test' attribute is deprecated. Use 'testonly' instead. " + loc);
+      }
+      catch (XException ee)
+      {
+      }
+    }
+    return testonly;
+  }
   
   File kitFile;
   File kitDir;

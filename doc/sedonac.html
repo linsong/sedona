@@ -88,7 +88,7 @@ on a "kit.xml" file or a directory which contains a "kit.xml" file.
 
   &lt;!-- Source Directories -->
   &lt;source dir="."/>
-  &lt;source dir="test" test="true"/>
+  &lt;source dir="test" testonly="true"/>
 
   &lt;!-- Natives -->
   &lt;native qname="serial::SerialPort.doInit"   id="4::0" />
@@ -135,7 +135,7 @@ added to the serial kit:
 <ul>
 <li><b>dir</b>: required directory path relative to top directory
 where "kit.xml" is located</li>
-<li><b>test</b>: optional boolean indicating which infers the 
+<li><b>testonly</b>: optional boolean indicating which infers the 
 <code>@testonly</code> facet on all the classes in that directory.  
 Default is false.</li>
 </ul>
