@@ -52,11 +52,6 @@ final class Buf
   void copyFromBuf(Buf that)
   {             
     copyFromBytes(that.bytes, 0, that.size)
-
-//    int newSize = that.size
-//    if (newSize > bytesLen) newSize = bytesLen      
-//    this.size = newSize
-//    Sys.copy(that.bytes, 0, this.bytes, 0, newSize)
   }
 
   
