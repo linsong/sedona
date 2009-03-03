@@ -162,7 +162,7 @@ public class XParser
         }
         else if (type == EOF)
         {
-          throw new EOFException();
+          throw new EOFException("Unexpected EOF in XML element");
         }
       }
       return root;
@@ -292,7 +292,7 @@ public class XParser
     {
       if (type == ELEM_END && depth == toDepth) return;
       int type = next();
-      if (type == EOF) throw new EOFException();
+      if (type == EOF) throw new EOFException("Unexpected EOF in XML");
     }
   }
 
@@ -751,7 +751,7 @@ public class XParser
 
     // read the next character
     c = in.read();
-    if (c < 0) throw new EOFException();
+    if (c < 0) throw new EOFException("Unexpected EOF in XML input");
 
     // update line:col and normalize line breaks (2.11)
     if (c == '\n')

@@ -223,7 +223,7 @@ public class FileUtil
       while (copied < size)
       {
         int n = in.read(buf, 0, buf.length);
-        if (n < 0) throw new EOFException();
+        if (n < 0) throw new EOFException("Early EOF in input file");
         out.write(buf, 0, n);
         copied += n;
       }
