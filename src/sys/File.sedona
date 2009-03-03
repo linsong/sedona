@@ -3,7 +3,8 @@
 // Licensed under the Academic Free License version 3.0
 //
 // History:
-//   5 Jun 07  Brian Frank  Creation
+//   5 Jun 07  Brian Frank        Creation
+//  27 Feb 09  Elizabeth McKenney Add buffering for single-byte writes
 //
 
 **
@@ -77,6 +78,9 @@ final class File
     bool ok = true
     if (fp != null)
     {
+      if (mode?.startsWith("r")) in.close()
+      if (mode?.startsWith("w")) out.close()
+
       ok = doClose(fp, name, mode)
       this.fp = null
       this.mode = null
@@ -102,6 +106,10 @@ final class File
   **
   bool seek(int pos)
   {
+    // flush any buffered output before changing file pos
+    if (mode?.startsWith("w")) 
+      out.flush()   
+
     return doSeek(fp, pos)
   }             
   
@@ -131,7 +139,7 @@ final class File
 
   Obj fp                    // native handle for open file
   Str name                  // name of the file
-  inline FileOutStream out  // stream to write file
+  inline FileOutStream out  // stream to write file (buffered)
   inline FileInStream in    // stream to read file
   internal Str mode         // mode string if open
 }
@@ -139,16 +147,75 @@ final class File
 ****************************************************************
 ** FileOutStream
 ****************************************************************
+//
+// This version is modelled in part on BufOutStream.
+//   Single-byte writes are buffered, but block writes are not.
+//   This minimizes code size, but is inefficient for small block 
+//   writes, or single-byte writes mixed in with block writes.
+//   It is assumed that in general files will be written
+//   exclusively via single-byte writes OR moderately-sized
+//   block writes.
+//
+internal class FileOutStream extends OutStream
+{
+  override bool write(int b) 
+  { 
+    // If buffer is full, write contents to file
+    if (fbuf.size >= fbuf.bytesLen) 
+    {
+      if (!writeBufToFile()) return false
+    }
+    fbuf.bytes[fbuf.size++] = b
+    return true
+  }
 
+  override bool writeBytes(byte[] b, int off, int len) 
+  {
+    // Write any accumulated data in buf first
+    if (fbuf.size>0) writeBufToFile()
+
+    // Now write contents of b
+    return File.doWriteBytes(file.fp, b, off, len) 
+  }
+
+  override void flush() 
+  { 
+    if (fbuf.size>0) writeBufToFile()
+    File.doFlush(file.fp) 
+  }
+
+  override void close() { if (fbuf.size>0) writeBufToFile() }
+
+  internal bool writeBufToFile()
+  { 
+    // Write contents of buf to file
+    if (!File.doWriteBytes(file.fp, fbuf.bytes, 0, fbuf.size)) 
+      return false
+
+    // Clear contents of buf
+    fbuf.clear()
+    return true
+  }
+
+  inline Buf(64) fbuf             // internal buffer for single-byte writes
+
+  internal File file
+}
+
+/*   old version
 internal class FileOutStream extends OutStream
 {
   override bool write(int b) { return File.doWrite(file.fp, b) }
-  override bool writeBytes(byte[] b, int off, int len) { return File.doWriteBytes(file.fp, b, off, len) }
+  override bool writeBytes(byte[] b, int off, int len) 
+  { 
+    return File.doWriteBytes(file.fp, b, off, len) 
+  }
   override void flush() { File.doFlush(file.fp) }
   override void close() { file.close() }
 
   internal File file
 }
+*/
 
 ****************************************************************
 ** FileInStream
@@ -157,8 +224,12 @@ internal class FileOutStream extends OutStream
 internal class FileInStream extends InStream
 {
   override int read() { return File.doRead(file.fp) }
-  override int readBytes(byte[] b, int off, int len) { return File.doReadBytes(file.fp, b, off, len) }
-  override void close() { file.close() }
+  override int readBytes(byte[] b, int off, int len) 
+  { 
+    return File.doReadBytes(file.fp, b, off, len) 
+  }
+
+  override void close() { /* file.close() */ }
 
   internal File file
 }
