@@ -769,7 +769,7 @@ class App
   **
   int load()
   {
-    if (!file.open("rb")) return Err.cannotOpenFile
+    if (!file.open("r")) return Err.cannotOpenFile
     int r = loadApp(file.in)
     file.close()  
     return r
@@ -780,12 +780,11 @@ class App
   **
   action void save()
   {
-    if (file.open("wb"))
+    if (file.open("w"))
     {            
       int r = saveApp(file.out)
       file.close()
       if (r == 0)
-        //log.message("saved")
         log.message("saved (${file.size()} bytes)")
       else
         log.error("save failed")
