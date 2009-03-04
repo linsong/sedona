@@ -542,7 +542,9 @@ public abstract class Expr
 
     public int maxStack()
     {
-      return target == null ? 0 : target.maxStack();
+      int maxStack = target == null ? 0 : target.maxStack();
+      if (safeNav) maxStack++;
+      return maxStack;
     }
 
     public Expr target;
