@@ -217,9 +217,9 @@ class SendPacket
   // managed by SoxCommands
   byte cmd        // sox command
   byte replyNum   // sox reply number
-  Obj   refData   // pointer data for retry (we also use to store u2)
-  short u2Data1    // two byte data for retry  
-  short u2Data2    // two byte data for retry  
+  Obj   refData   // pointer data for retry
+  short u2Data1   // two byte data for retry  
+  short u2Data2   // two byte data for retry  
 }
 
 

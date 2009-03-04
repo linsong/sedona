@@ -48,6 +48,7 @@ public class SoxTest
     verifyReorder();
     verifyDelete();
     verifyLinks();          
+    verifyQuery();              
     verifyFileTransfer(); 
     verifyFileRename();
     verifyClose();
@@ -852,6 +853,41 @@ public class SoxTest
       verifyLink(ct.links()[0], s, "f1", t, "f2");
 
     client.unsubscribe(new SoxComponent[] {cr, cs, ct}, LINKS);
+  }
+
+//////////////////////////////////////////////////////////////////////////
+// Query
+//////////////////////////////////////////////////////////////////////////
+
+  private void verifyQuery()
+    throws Exception
+  { 
+    // sox service                                                                 
+    int[] ids = client.queryService(schema.type("sox::SoxService"));
+    verifyEq(ids.length, 1);
+    verifyEq(ids[0], sox.id());    
+    
+    // user service
+    ids = client.queryService(schema.type("sys::UserService"));
+    verifyEq(ids.length, 1);
+    verifyEq(ids[0], users.id());    
+    
+    // web service
+    ids = client.queryService(schema.type("web::WebService"));
+    verifyEq(ids.length, 1);
+    verifyEq(ids[0], web.id());    
+    
+    // all services
+    ids = client.queryService(schema.type("sys::Service"));
+    verifyEq(ids.length, 4);
+    // zero entry is platform service (which might go away)
+    verifyEq(ids[1], users.id());    
+    verifyEq(ids[2], web.id());    
+    verifyEq(ids[3], sox.id());    
+    
+    // bad services
+    ids = client.queryService(schema.type("sys::User"));
+    verifyEq(ids.length, 0);
   }
 
 //////////////////////////////////////////////////////////////////////////

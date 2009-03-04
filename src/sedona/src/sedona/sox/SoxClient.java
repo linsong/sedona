@@ -805,6 +805,44 @@ public class SoxClient
     res.checkResponse('L');
   }
 
+////////////////////////////////////////////////////////////////
+// Query
+////////////////////////////////////////////////////////////////
+
+  /**
+   * Query for the installed service type.  Return the
+   * list of component ids which implement the service or
+   * an empty list if service is not installed.
+   */
+  public synchronized int[] queryService(Type serviceType)
+    throws Exception
+  {
+    // build request
+    Msg req = Msg.prepareRequest('q');
+    req.u1('s');
+    req.u1(serviceType.kit.id);
+    req.u1(serviceType.id);
+
+    // send request
+    Msg res = request(req);
+
+    // parse response
+    res.checkResponse('Q');
+    int[] temp = new int[256];
+    int n = 0;
+    while (true)
+    {
+      int id = res.u2();
+      if (id == 0xffff) break;
+      temp[n++] = id;
+    }             
+    
+    // trim int array   
+    int[] result = new int[n];
+    System.arraycopy(temp, 0, result, 0, n);
+    return result;
+  }
+
 //////////////////////////////////////////////////////////////////////////
 // File Transfer
 //////////////////////////////////////////////////////////////////////////

@@ -43,8 +43,8 @@ class SoxCommands
     // route
     switch (cmd)
     {              
-      // used:  a b c d f i k l n o r s u v w y z
-      // avail: e g h j m p q t x
+      // used:  a b c d f i k l n o q r s u v w y z
+      // avail: e g h j m p t x
       case 'r': readPropReq(service, session, res);      break
       case 'c': readCompReq(service, session, res);      break
       case 'i': invokeReq(service, session, res);        break
@@ -56,6 +56,7 @@ class SoxCommands
       case 'n': renameReq(service, session, res);        break
       case 'o': reorderReq(service, session, res);       break
       case 'l': linkReq(service, session, res);          break
+      case 'q': queryReq(service, session, res);         break
       case 'v': res.cmd = 'V';                           break
       case 'y': res.cmd = 'Y';                           break
       case 'f': fileOpenReq(service, session, res);      break
@@ -80,6 +81,7 @@ class SoxCommands
       case 'A': addRes(service, session, res);         break
       case 'V': versionRes(service, session, res);     break
       case 'Y': versionMoreRes(service, session, res); break
+      case 'Q': queryRes(service, session, res);       break
       case 'F': fileOpenRes(service, session, res);    break
       case 'Z': fileCloseRes(service, session, res);   break
       
@@ -251,7 +253,6 @@ class SoxCommands
     out.write(prop.type.id)
     comp.saveProp(out, prop)
   }               
-
   
 ////////////////////////////////////////////////////////////////
 // Read Comp: tree structure, config props, runtime props, or links.
@@ -939,6 +940,78 @@ class SoxCommands
     out.writeI2(0xffff)
     return true
   }
+
+////////////////////////////////////////////////////////////////
+// Query
+////////////////////////////////////////////////////////////////
+
+  **
+  ** req
+  ** {
+  **   u1   'q'
+  **   u1   replyNum
+  **   u1   queryType
+  **   u1[] queryReq
+  ** }
+  **                 
+  ** queryType 's': query service
+  ** req-service
+  ** {
+  **   u1  kitId
+  **   u1  typeId
+  ** }
+  **
+  static void queryReq(SoxService service, SoxSession session, SendPacket res) 
+  {      
+    BufInStream in = service.in         
+    
+    // only support 's' query service
+    int queryType =  in.read()          
+    if (queryType != 's') { res.error("bad query"); return }
+    
+    res.cmd = 'Q'
+    res.u2Data1 = in.read()   // kitId
+    res.u2Data2 = in.read()   // typeId
+  }                              
+  
+  **
+  ** res
+  ** {
+  **   u1   'Q'
+  **   u1   replyNum
+  **   u1[] queryRes
+  ** }
+  **
+  ** queryType 's': query service
+  ** res-service
+  ** {
+  **   u2[num]  compIds
+  **   u2       0xffff end marker
+  ** }
+  **
+  static void queryRes(SoxService service, SoxSession session, SendPacket res) 
+  {
+    // only support 's' query service
+    
+    // lookup service type               
+    Kit kit = Sys.kit(res.u2Data1)
+    Type serviceType = null
+    if (kit != null)
+    {
+      serviceType = kit.type(res.u2Data2)
+    }
+    if (serviceType == null) { res.error("bad type"); return }
+    
+    // prepare res
+    OutStream out = prepareRes(service, session, res)
+    Service s = Sys.app.services
+    while (s != null)
+    {
+      if (s.type.is(serviceType)) out.writeI2(s.id)
+      s = s.nextService
+    }    
+    out.writeI2(0xffff)
+  }               
 
 ////////////////////////////////////////////////////////////////
 // File Open
