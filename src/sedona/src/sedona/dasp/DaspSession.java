@@ -217,9 +217,6 @@ public class DaspSession
     // if already closed short circuit
     if (isClosed) return;
 
-    // shutdown the session
-    shutdown(cause);
-                
     // build close message    
     DaspMessage close = new DaspMessage();        
     close.msgType   = CLOSE;        
@@ -241,15 +238,9 @@ public class DaspSession
       try { Thread.sleep(50); } catch (InterruptedException e) {}
       send(close);
     }                
-    
-    try
-    {                     
-      if (listener != null) listener.daspSessionClosed(this);
-    }
-    catch (Exception e)
-    {
-      e.printStackTrace();
-    }
+
+      // shutdown the session
+    shutdown(cause);
   }  
   
   /**
@@ -271,6 +262,16 @@ public class DaspSession
       // kill send and receive queues
       sendWindow.kill();
       receiveQueue.kill();    
+    }
+
+    // Notify listener that session has closed (should this come first?)
+    try
+    {                     
+      if (listener != null) listener.daspSessionClosed(this);
+    }
+    catch (Exception e)
+    {
+      e.printStackTrace();
     }
   }                
 
@@ -313,8 +314,11 @@ public class DaspSession
       default:
         throw new DaspException("Expected welcome, not " + welcome.msgType);      
     }    
+
+    System.out.println(" >> Dasp receive timeout is " + receiveTimeout + " (msec)");   // DIAG
   }
     
+
   DaspMessage hello()
     throws Exception
   {
@@ -599,7 +603,7 @@ public class DaspSession
     
     // send keep-alive if we have pending acks or 
     // just haven't sent anything in a while
-    if (receiveWindow.unacked() || ticks() - lastSend > receiveTimeout/2)
+    if (receiveWindow.unacked() || ticks() - lastSend > receiveTimeout/3)
       keepAlive();             
   } 
   
