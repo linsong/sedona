@@ -3,15 +3,17 @@
 // Licensed under the Academic Free License version 3.0
 //
 // History:
-//   30 May 06  Brian Frank  Creation
+//   30 May 06  Brian Frank        Creation
+//    5 Mar 09  Elizabeth McKenney Added options for timestamp & prefix
 //
 
 package sedona.util;
 
 import java.io.*;
+import java.util.Calendar;
 
 /**
- * Log is responsible for outputing messages
+ * Log is responsible for outputting messages
  */
 public class Log extends PrintWriter
 {
@@ -25,8 +27,42 @@ public class Log extends PrintWriter
   {
     super(out, true);
   }                    
+
+  public Log(String pre)
+  {
+    super(System.out, true);
+    prefix = pre;
+  }                    
                    
-  public void message(String msg)
+  public Log(OutputStream out, String pre)
+  {
+    super(out, true);
+    prefix = pre;
+  }                    
+                   
+  public void println(String msg)
+  {
+    if (prefix!=null)
+    {
+      // Timestamp
+      print("[");
+      print( Abstime.now().toString() );
+      print("]");    
+
+      // Prefix
+      if (prefix.length()>0)
+      {
+        print("[");
+        print(prefix);
+        print("]");    
+      }
+    }
+
+    // print msg
+    super.println(msg);
+  }
+
+   public void message(String msg)
   {
     println(msg);
   }
@@ -54,5 +90,5 @@ public class Log extends PrintWriter
   }
 
   public boolean verbose;
-
+  String prefix = null;
 }
