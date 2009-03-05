@@ -197,25 +197,11 @@ internal class FileOutStream extends OutStream
     return true
   }
 
-  inline Buf(64) fbuf             // internal buffer for single-byte writes
+  inline Buf(32) fbuf             // internal buffer for single-byte writes
 
   internal File file
 }
 
-/*   old version
-internal class FileOutStream extends OutStream
-{
-  override bool write(int b) { return File.doWrite(file.fp, b) }
-  override bool writeBytes(byte[] b, int off, int len) 
-  { 
-    return File.doWriteBytes(file.fp, b, off, len) 
-  }
-  override void flush() { File.doFlush(file.fp) }
-  override void close() { file.close() }
-
-  internal File file
-}
-*/
 
 ****************************************************************
 ** FileInStream
