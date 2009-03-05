@@ -1,0 +1,17 @@
+//
+// Copyright (c) 2009 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   5 Mar 09  Brian Frank  Create
+//
+
+**
+** PlatformService is a service designed for a 
+** specific hardware/OS platform.  
+**
+@niagaraIcon="module://icons/x16/platform.png"
+class PlatformService
+  extends Service
+{      
+}
