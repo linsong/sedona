@@ -492,7 +492,7 @@ int vmCall(SedonaVM* vm, uint16_t method, Cell* args, int argc)
       Case LoadL1:        ++sp; *((int64_t*)sp) = 1; ++sp; ++cp; EndInstr;
       Case LoadF0:        (++sp)->fval = 0.0f; ++cp; EndInstr;
       Case LoadF1:        (++sp)->fval = 1.0f; ++cp; EndInstr;
-      Case LoadNullFloat: (++sp)->fval = NULLFLOAT; ++cp; EndInstr;
+      Case LoadNullFloat: (++sp)->ival = NULLFLOAT; ++cp; EndInstr;
       Case LoadNullDouble: ++sp; *((uint64_t*)sp) = NULLDOUBLE; ++sp; ++cp; EndInstr;
       Case LoadD0:        ++sp; *((double*)sp) = 0.0; ++sp; ++cp; EndInstr;
       Case LoadD1:        ++sp; *((double*)sp) = 1.0; ++sp; ++cp; EndInstr;      
