@@ -66,7 +66,7 @@ class SoxSession
     // tune the session parameters
     this.remoteId       = remoteId      
     this.idealMax       = Sys.max(Dasp.IDEAL_MAX_VAL, remoteIdealMax)
-    this.receiveTimeout = Sys.max(Dasp.RECEIVE_TIMEOUT_VAL, remoteTimeout)
+    this.receiveTimeout = Sys.max(Dasp.RECEIVE_TIMEOUT_MIN, remoteTimeout)
 
     // check version
     if (version != Dasp.VERSION_VAL)
@@ -211,7 +211,8 @@ class SoxSession
 //    else if (now - lastReceiveTicks > (long)receiveTimeout*0.9sec)
 //    {              
 //      // DIAG
-//      Sys.out.print("Session ${Sys.hexStr(id())} about to time out! [${receiveTimeout}sec]\n")
+//      Sys.out.print("Now=${now/1sec}s: Session ${Sys.hexStr(id())} about to time out!")
+//      Sys.out.print(" [last=${lastReceiveTicks/1sec}s]\n")
 //    }
 
     // check for retries
@@ -251,7 +252,8 @@ class SoxSession
   void close(SoxService service, int errorCode)
   {                         
 //    // DIAG
-//    Sys.out.print("Closing session ${Sys.hexStr(id())} at ${Sys.ticks()/1sec}s, err=$errorCode\n")
+//    Sys.out.print("Closing session ${Sys.hexStr(id())} at ${Sys.ticks()/1sec}s, err=$errorCode")
+//    Sys.out.print(" [last=${lastReceiveTicks/1sec}s]\n")
 
     // prepare close message
     OutStream out = prepare(service, Dasp.CLOSE, 0xffff)
