@@ -314,8 +314,6 @@ public class DaspSession
       default:
         throw new DaspException("Expected welcome, not " + welcome.msgType);      
     }    
-
-    System.out.println(" >> Dasp receive timeout is " + receiveTimeout + " (msec)");   // DIAG
   }
     
 
