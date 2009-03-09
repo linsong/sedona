@@ -64,7 +64,7 @@ class SpyWeblet
   public void index(WebReq req, WebRes res)
   {
     App app = Sys.app   
-    Platform plat = Sys.platform
+    PlatformService plat = app.platform
     res.w("Summary:\n");
     res.w("<table border='0'>\n")                                                  
     

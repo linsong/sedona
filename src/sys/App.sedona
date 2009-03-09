@@ -77,20 +77,34 @@ class App
 ////////////////////////////////////////////////////////////////    
   
   **
-  ** Start all the components.
+  ** Start all the components.  Return 0 on success, 
+  ** error code on failure.
   **
-  void startApp()
-  {
+  int startApp(Str[] args, int argsLen)
+  {                       
+    // find platform service in this app
+    platform = (PlatformService)lookupService(PlatformService.type)
+    if (platform == null) return Err.noPlatformService
+    
+    // verify platform service is correct type for this hw/os platform
+    Type expected = Sys.findType(Sys.platformType());
+    if (expected != null && !platform.type.is(expected)) 
+      return Err.badPlatformService
+    
+    // given platform its initialization hook
+    int r = platform.init(args, argsLen)
+    if (r != 0) return r
+  
+    // log/notify starting
     log.message("starting")
-    Sys.platform.notify("app", "starting")
-
-    // install platform as an unmounted service
-    Sys.platform.nextService = services
-    services = Sys.platform
+    platform.notify("app", "starting")
 
     // init every component
     foreach (Component c : comps, compsLen)
       if (c != null) c.start()
+    
+    // success
+    return 0
   }
 
   **
@@ -99,7 +113,7 @@ class App
   void stopApp()
   {
     log.message("stopping")
-    Sys.platform.notify("app", "stopping")
+    platform.notify("app", "stopping")
     
     foreach (Component c : comps, compsLen)
       if (c != null) c.stop()
@@ -112,7 +126,7 @@ class App
   int runApp()
   {
     log.message("running")
-    Sys.platform.notify("app", "running")
+    platform.notify("app", "running")
     
     isRunning = true
     runStatus = 0
@@ -816,7 +830,7 @@ class App
   @confirmRequired
   action void restart()
   {
-    Sys.platform.restart()                  
+    platform.restart()                  
   }
 
   **
@@ -825,7 +839,7 @@ class App
   @confirmRequired
   action void reboot()
   {
-    Sys.platform.reboot()                  
+    platform.reboot()                  
   }
 
 ////////////////////////////////////////////////////////////////
@@ -854,6 +868,9 @@ class App
 
   ** Linked list of services
   Service services
+
+  ** PlatformService installed in this application
+  PlatformService platform
 
   ** This counter is incremented at the start of each engine cycle
   long cycleCount

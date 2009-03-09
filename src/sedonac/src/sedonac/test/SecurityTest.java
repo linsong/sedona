@@ -504,7 +504,8 @@ public class SecurityTest
     this.app = new OfflineApp(schema);
     this.app.setInt("meta", 0xf);
     this.service = app.add(app, new OfflineComponent(schema.type("sys::Component"), "service"));
-    this.sox = app.add(service, new OfflineComponent(schema.type("sox::SoxService"), "sox"));
+    this.plat  = app.add(service, new OfflineComponent(schema.type("sys::PlatformService"), "plat"));
+    this.sox   = app.add(service, new OfflineComponent(schema.type("sox::SoxService"), "sox"));
     this.users = app.add(service, new OfflineComponent(schema.type("sys::UserService"), "users"));
     
     this.root = newUser("root", 0x01, 0x7f7f7f7f, provSvm);
@@ -573,6 +574,7 @@ public class SecurityTest
 
   OfflineApp app;
     OfflineComponent service;
+      OfflineComponent plat;
       OfflineComponent sox;
       OfflineComponent users;
         OfflineComponent root;

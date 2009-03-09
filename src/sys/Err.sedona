@@ -45,10 +45,12 @@ class Err
   define int cannotInsert         = 50
   define int cannotLoadLink       = 51
   define int invalidAppEndMarker  = 52
+  define int noPlatformService    = 53
+  define int badPlatformService   = 54
 
   // non-recoverable: Component
-  define int invalidCompEndMarker = 53
-  define int nameTooLong          = 54
+  define int invalidCompEndMarker = 60
+  define int nameTooLong          = 61
 
   // special codes
   define int hibernate            = 255

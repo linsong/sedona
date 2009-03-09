@@ -158,7 +158,7 @@ class SoxSession
     out.write(Dasp.IDEAL_MAX << 2 | Dasp.U2)
     out.writeI2(Dasp.IDEAL_MAX_VAL)
     out.write(Dasp.RECEIVE_MAX << 2 | Dasp.U2)
-    out.writeI2(Sys.platform.propInt("sox.receiveMax", 8))
+    out.writeI2(service.receiveMax)
     out.write(Dasp.RECEIVE_TIMEOUT << 2 | Dasp.U2)
     out.writeI2(receiveTimeout)
     service.packet.bytes[4] |= 3  // header count    

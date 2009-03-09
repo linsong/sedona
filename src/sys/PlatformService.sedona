@@ -13,5 +13,47 @@
 @niagaraIcon="module://icons/x16/platform.png"
 class PlatformService
   extends Service
-{      
+{ 
+
+  **
+  ** Get the platform identifier which defines how 
+  ** this Sedona device should be provisioned.
+  **
+  virtual Str platformId() { return "unknown" }     
+
+  **
+  ** Initialize the platform with the command line arguments. 
+  ** Return 0 on success.  Return  non-zero on failure, which will
+  ** terminate the process.
+  **
+  virtual int init(Str[] args, int argsLen) { return 0 }
+
+  **
+  ** Restart this Sedona application on the host platform.
+  ** This typically means restart just the Sedona process.
+  **
+  virtual void restart() {}
+
+  **
+  ** Restart the entire host platform.  This typically 
+  ** means to reboot the entire operating sytem.
+  **
+  virtual void reboot() {}
+  
+  **
+  ** Notify the platform of a name/value pair setting
+  ** or state change.
+  **
+  virtual void notify(Str key, Str val) {}
+     
+  **
+  ** Return max allowed file size, given file name.
+  **
+  virtual int maxFileSize(Str fname) { return Sys.maxInt }
+     
+  **
+  ** Return available runtime memory, in bytes
+  **
+  virtual long memAvailable() { return 0L }
+     
 }

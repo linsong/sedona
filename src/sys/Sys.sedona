@@ -64,16 +64,12 @@ class Sys
 // Platform
 //////////////////////////////////////////////////////////////////////////
   
-  **
-  ** Platform instance used to access services of the 
-  ** underlying operating system and hardware.
-  **
-  static Platform platform
 
   **
-  ** Get the qualified name of the platform type to install.
-  ** Return "sys::Platform" to install the default no-op
-  ** platform implementation.
+  ** Get the qualified name of the PlatformService type which is
+  ** required by this hardware/OS platform.  There must be exactly
+  ** one PlatformService defined in the App which implements this
+  ** type in order to boot the system.
   **
   native internal static Str platformType()
 
@@ -255,7 +251,6 @@ class Sys
         app.stopApp()
         app.cleanupApp()
       }
-      delete platform
     }   
     return result
   }
@@ -456,22 +451,6 @@ class Sys
     // default all log levels to message
     setBytes(Log.MESSAGE, logLevels, 0, logsLen)
         
-    // install the platform 
-    Type platformType = findType(platformType())
-    if (platformType != null) 
-    {
-      platform = (Platform)platformType.malloc()
-    }
-    else
-    {   
-      Sys.out.print("ERROR: Invalid platform: ").print(platformType()).nl()
-      platform = (Platform)Platform.type.malloc()
-    }                      
-    
-    // let platform process the args
-    int r = platform.init(args, argsLen)
-    if (r != 0) return r;
-
     // process args
     Str appFile = null
     foreach (Str arg : args, argsLen)
@@ -484,7 +463,7 @@ class Sys
     // load application
     if (appFile == null) return Err.invalidArgs
     app.file.name = appFile
-    r = app.load()
+    int r = app.load()
     if (r != 0)
     {
       Sys.out.print("ERROR: Cannot load app err=$r").nl()
@@ -492,7 +471,12 @@ class Sys
     }               
     
     // start and run application
-    app.startApp()
+    r = app.startApp(args, argsLen)
+    if (r != 0)
+    {
+      Sys.out.print("ERROR: Cannot start app err=$r").nl()
+      return r
+    }
     return shutdown(app.runApp())
   }
 

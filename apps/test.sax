@@ -11,6 +11,8 @@
   <!-- /service -->
   <comp name="service" id="1" type="sys::Folder">
     <prop name="meta" val="33685505"/>
+    <!-- /service/plat -->
+    <comp name="plat" type="sys::PlatformService"/>
     <!-- /service/users -->
     <comp name="users" id="3" type="sys::UserService">
       <prop name="meta" val="17367041"/>

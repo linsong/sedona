@@ -39,7 +39,7 @@ class WebService
     }       
     
     log.message("started port=$port")
-    Sys.platform.notify("web", Sys.intStr(port))
+    Sys.app.platform.notify("web", Sys.intStr(port))
   }
 
   override bool work()

@@ -880,10 +880,12 @@ public class SoxTest
     // all services
     ids = client.queryService(schema.type("sys::Service"));
     verifyEq(ids.length, 4);
+    
     // zero entry is platform service (which might go away)
-    verifyEq(ids[1], users.id());    
-    verifyEq(ids[2], web.id());    
-    verifyEq(ids[3], sox.id());    
+    verifyEq(ids[0], users.id());    
+    verifyEq(ids[1], web.id());    
+    verifyEq(ids[2], sox.id());    
+    verifyEq(ids[3], plat.id());    
     
     // bad services
     ids = client.queryService(schema.type("sys::User"));
@@ -1094,8 +1096,9 @@ public class SoxTest
 
     this.app = new OfflineApp(schema);
     this.service = app.add(app, new OfflineComponent(schema.type("sys::Component"), "service"));
-    this.sox = app.add(service, new OfflineComponent(schema.type("sox::SoxService"), "sox"));
-    this.web = app.add(service, new OfflineComponent(schema.type("web::WebService"), "web"));
+    this.plat    = app.add(service, new OfflineComponent(schema.type("sys::PlatformService"), "plat"));
+    this.sox     = app.add(service, new OfflineComponent(schema.type("sox::SoxService"), "sox"));
+    this.web     = app.add(service, new OfflineComponent(schema.type("web::WebService"), "web"));
     this.soxTest = app.add(sox, new OfflineComponent(this.soxTestType = schema.type("sox::SoxTest"), "soxtest"));
     this.users   = app.add(service, new OfflineComponent(schema.type("sys::UserService"), "users"));
     this.admin   = app.add(users, new OfflineComponent(schema.type("sys::User"), "admin"));
@@ -1244,6 +1247,7 @@ public class SoxTest
   //
   // app
   //   service
+  //     plat:      PlatformService
   //     sox:       SoxService
   //     web:       WebService
   //     soxText:   SoxTest
@@ -1268,6 +1272,7 @@ public class SoxTest
   //
   OfflineApp app;
     OfflineComponent service;
+      OfflineComponent plat;
       OfflineComponent sox;
       OfflineComponent web;
       OfflineComponent soxTest;

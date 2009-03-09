@@ -21,7 +21,10 @@ class SoxService
 ////////////////////////////////////////////////////////////////
 
   ** UDP port for listening
-  @config property short port = 1876
+  @config property short port = 1876   
+  
+  ** Max of number of messages in receiving window.
+  @config property byte receiveMax = 8
 
 ////////////////////////////////////////////////////////////////
 // Sessions
@@ -120,7 +123,7 @@ class SoxService
     }
 
     log.message("started port=$port")
-    Sys.platform.notify("sox", Sys.intStr(port))
+    Sys.app.platform.notify("sox", Sys.intStr(port))
     return isPortOpen = true
   }
 

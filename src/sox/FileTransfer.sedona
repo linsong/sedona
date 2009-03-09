@@ -79,7 +79,7 @@ class FileTransfer
 
     // notify platform - Jennic uses this to auto-tune the network 
     // since we expect a burst of incoming messages on put
-    Sys.platform.notify("sox.put", "c")
+    Sys.app.platform.notify("sox.put", "c")
       
     // send close message to let other side know we are done
     res.cmd = 'z'
