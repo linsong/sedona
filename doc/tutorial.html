@@ -244,12 +244,21 @@ create a new "app.sax" file:
   &lt;kit name='tutorial'/>
 &lt;/schema>
 &lt;app>
+  &lt;comp name="plat" type="sys::PlatformService"/>
+  &lt;comp name="users" type="sys::UserService">
+    &lt;comp name="admin" type="sys::User">
+      &lt;prop name="cred" val="hE49ksThgAeLkWB3NUU1NWeDO54="/>
+      &lt;prop name="perm" val="2147483647"/>
+      &lt;prop name="prov" val="255"/>
+    &lt;/comp>
+  &lt;/comp>
+  &lt;comp name="sox" type="sox::SoxService"/>
   &lt;comp name="web" type="web::WebService">  
     &lt;prop name="port" val="8080"/>
   &lt;/comp>
   &lt;comp name="rampA" type="control::Ramp"/>
   &lt;comp name="rampB" type="control::Ramp"/>
-  &lt;comp name="add"   type="tutorial::Add"/>
+  &lt;comp name="add"   type="tutorial::Add" id="12"/>
 &lt;/app>
 &lt;links>
   &lt;link from="/rampA.out" to="/add.in1"/>
@@ -318,6 +327,7 @@ blockSize: 4
 refSize:   4
 
 -- MESSAGE [sys::App] starting
+-- MESSAGE [sox::SoxService] started port=1876
 -- MESSAGE [web::WebService] started port=8080
 -- MESSAGE [sys::App] running
 </pre>                        
@@ -331,10 +341,16 @@ SVM from source - see <a href='porting.html'>Porting</a>.
 <p>
 Assuming you have your SVM running the application, you should be able
 to hit it with your browser at <a href='http://localhost:8080/'>http://localhost:8080/</a>.
-If you go to the URL <a href='http://localhost:8080/spy/app/4'>http://localhost:8080/spy/app/4</a> 
+If you go to the URL <a href='http://localhost:8080/spy/app/12'>http://localhost:8080/spy/app/12</a> 
 you should see the current values of your <code>tutorial::Add</code> component.  
 Hit refresh a couple times to see how the inputs and output change in real-time.
-</p>       
+</p>
+
+<p>
+If you have a programming tool such as the Sedona Workbench, you should now
+be able to connect to Sox port 1876 with the username "admin" and password
+of "".  Refer to your Sedona tool documentation for more information.
+</p> 
 
 <p>
 Congratulations, you've just built and deployed your first Sedona
