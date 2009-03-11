@@ -33,7 +33,7 @@ public class JavaClassAsm
   
   static int toClassFlags(IrType ir)
   {
-    int flags = Jvm.ACC_PUBLIC;
+    int flags = ir.isInternal() ? 0 : Jvm.ACC_PUBLIC;
     if (ir.isAbstract()) flags |= Jvm.ACC_ABSTRACT;
     return flags;
   }
