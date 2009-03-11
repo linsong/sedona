@@ -261,6 +261,7 @@ public class TypeUtil
     if (t.isAbstract()) s.append("abstract ");
     if (t.isConst())    s.append("const ");
     if (t.isFinal())    s.append("final ");
+    if (t.isInternal()) s.append("internal ");
 
     return s.toString();
   }

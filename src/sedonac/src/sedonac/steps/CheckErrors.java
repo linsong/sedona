@@ -78,6 +78,9 @@ public class CheckErrors
 
     if (t.base.isFinal())
       err("Cannot extend final class '" + t.base + "'", t.loc);
+    
+    if (t.base.isInternal() && !t.base.kit().name().equals(t.kit().name()))
+      err("Cannot extend internal class '" + t.base + "'. Not in same kit.", t.loc);
 
     checkDepend(t.base, t.loc);
   }
