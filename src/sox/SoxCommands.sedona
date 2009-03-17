@@ -802,6 +802,8 @@ class SoxCommands
         Slot fromSlot = fromComp.type.slot(fromSlotId)
         Slot toSlot   = toComp.type.slot(toSlotId)
         success = app.addLink(fromComp, fromSlot, toComp, toSlot) != null // handles null slots
+
+        if (!success) { res.error("could not add link"); return }
       }
     }
 
@@ -811,9 +813,10 @@ class SoxCommands
       Link link = app.lookupLink(fromCompId, fromSlotId, toCompId, toSlotId)
       if (link != null)
         success = app.removeLink(link)
+      else { res.error("could not find link"); return }
+
+      if (!success) { res.error("could not delete link"); return }
     }                
-    
-    if (!success) { res.error(""); return }
     
     res.cmd = 'L'
   }       
