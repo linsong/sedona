@@ -28,6 +28,16 @@ const class Log
   }          
 
   **
+  ** Set the severity level for this Log.  
+  ** Possible levels are NONE, ERROR, WARNING, MESSAGE, 
+  ** and TRACE.  (no error checking on arg)
+  **
+  void setLevel(int newLevel) 
+  {                              
+    Sys.logLevels[id] = newLevel
+  }          
+
+  **
   ** Is current level error or greater.
   **  
   bool isError() 
