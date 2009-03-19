@@ -78,6 +78,16 @@ class AppTest
     assert(a.addLink(y, i2, z, i2) != null)
     // link:  z.i1 -> y.i1
     assert(a.addLink(z, i1, y, i1) != null)
+    
+    // duplicate links should fail
+    assert(a.addLink(x, i1, y, i2) == null)
+    assert(a.addLink(x, i1, z, i1) == null)
+    assert(a.addLink(y, i2, z, i2) == null)
+    assert(a.addLink(z, i1, y, i1) == null)
+    
+    // we do not allow multiple links into the same slot
+    assert(a.addLink(x, i1, z, i2) == null)
+    assert(a.addLink(y, i2, z, i1) == null)
 
     // sanity check what we just built
     verifyTestApp(a, s1, x, y, z, s2)

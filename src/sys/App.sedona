@@ -439,13 +439,23 @@ class App
 
   **
   ** Add a new Link into the application by registering it in both
-  ** the "to" and "from" component's list linked of Links.  Return
+  ** the "to" and "from" component's linked-list of Links.  Return
   ** the new Link or null on error.
   **
   Link addLink(Component from, Slot fromSlot, Component to, Slot toSlot)
   {
     if (from == null || fromSlot == null || to == null || toSlot == null)
       return null
+    
+    // no duplicate links
+    if (lookupLink(from.id, fromSlot.id, to.id, toSlot.id) != null)
+      return null
+      
+    // toSlot must not already be linked to (no "fan-in")
+    for (Link x = to.linksTo; x != null; x = x.nextTo)
+    {
+      if (x.toSlot == toSlot.id) return null
+    }
 
     // create link
     Link link = new Link()
