@@ -76,8 +76,8 @@ class DateTime extends Virtual
   **  
   int fromNanos(long nanos)
   {   
-  	int daysSinceEpoch = 0;
-  	
+    int daysSinceEpoch = 0;
+    
     //  Range check
     if ((nanos < 0L) || (nanos > DateTime.nanosMax))
       return -1;
@@ -87,7 +87,7 @@ class DateTime extends Virtual
     int y = 0;    
     for(;;)
     {     
-    	bool isLeap = DateTime.isLeapYear(y+2000)
+      bool isLeap = DateTime.isLeapYear(y+2000)
       long nanosInYear = isLeap ? 366days : 365days
       int daysInYear = isLeap ? 366 : 365
       if (rem < nanosInYear)
@@ -106,7 +106,7 @@ class DateTime extends Virtual
     bool isLeap = DateTime.isLeapYear(y+2000)
     for (;;)
     {
-    	int daysInMonth = (int)DateTime.daysPerMonth[m-1]
+      int daysInMonth = (int)DateTime.daysPerMonth[m-1]
       long nanosInMonth = (long)daysInMonth * 1days;      
       if ((m == Month.feb) && isLeap)
       {
@@ -204,15 +204,15 @@ class DateTime extends Virtual
   **    
   static bool isLeapYear(int year)
   {
-  	 return (((year) % 4) == 0 && (((year) % 100) != 0 || (((year) % 400) == 0)))
-  } 	
+     return (((year) % 4) == 0 && (((year) % 100) != 0 || (((year) % 400) == 0)))
+  }   
   
   //  Jan 1,2000 was a Saturday
   define int epochDayOfWeek = 6;
-  	
+    
   define byte[] daysPerMonth = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}
      
-  define long invalid = -1L  	
+  define long invalid = -1L    
   
   //  Max nanos is Sedona is 1 ns before 1 Jan 2100 
   //    100 years + 25 leap days - 1 nanosecond

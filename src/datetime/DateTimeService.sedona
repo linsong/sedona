@@ -9,7 +9,7 @@
 class DateTimeService 
   extends Service
 {
-	
+  
 ////////////////////////////////////////////////////////////////
 // Properties
 ////////////////////////////////////////////////////////////////
@@ -34,15 +34,15 @@ class DateTimeService
 
   ** Day of month
   property int day
-	
-	** Day of week (see also datetime::DayOfWeek)
-	property int dayOfWeek
+  
+  ** Day of week (see also datetime::DayOfWeek)
+  property int dayOfWeek
 
 
 ////////////////////////////////////////////////////////////////
 // Actions
 ////////////////////////////////////////////////////////////////
-	
+  
   **
   **  Refreshes all property fields with current value 
   **    
@@ -50,9 +50,9 @@ class DateTimeService
   {
     long n = now()    
     dt.reset()
-  	if (dt.fromNanos(n) != -1)
+    if (dt.fromNanos(n) != -1)
       updateProperties(n)
-  } 	
+  }   
 
   **
   **  Sets the system clock and refreshes properties.  May not
@@ -81,7 +81,7 @@ class DateTimeService
   **  not be supported on all platform.
   ** 
   protected virtual void setClock(long nanos) {}
-  	
+    
 ////////////////////////////////////////////////////////////////
 // Service
 ////////////////////////////////////////////////////////////////
@@ -101,12 +101,12 @@ class DateTimeService
   **
   virtual override bool work()
   {
-  	long ticks = Sys.ticks()
-  	if ((ticks - lastRefreshTicks) > 1sec)  //  only update once per second
-  	{   		
-  		lastRefreshTicks = ticks; 	
-  		refresh()
-  	}		
+    long ticks = Sys.ticks()
+    if ((ticks - lastRefreshTicks) > 1sec)  //  only update once per second
+    {       
+      lastRefreshTicks = ticks;   
+      refresh()
+    }    
     return false
   }
 
@@ -115,7 +115,7 @@ class DateTimeService
   **  Update the property fields with values stored in dt  
   ** 
   protected void updateProperties(long n)
-  { 	
+  {   
     nanos = n
     year = dt.year
     month = dt.month
