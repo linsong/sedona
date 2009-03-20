@@ -24,6 +24,8 @@ public final class Byte
 
   public static Byte make(int val)
   {
+    if (val < 0 || val > MAX.val)
+      throw new IllegalArgumentException("Valid Byte range [0-"+MAX.val+"]: val = " + val);
     return predefined[val];
   }
 
@@ -36,6 +38,7 @@ public final class Byte
       predefined[i] = new Byte(i);
   }
   static final Byte ZERO = predefined[0];
+  static final Byte MAX  = predefined[255];
 
 //////////////////////////////////////////////////////////////////////////
 // Identity

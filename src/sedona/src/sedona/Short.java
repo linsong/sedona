@@ -24,6 +24,8 @@ public final class Short
 
   public static Short make(int val)
   {
+    if (val < 0 || val > MAX.val)
+      throw new IllegalArgumentException("Valid Short range [0-"+MAX.val+"]: val = " + val);
     if (val < predefined.length)
       return predefined[val];
     return new Short(val);
@@ -38,6 +40,7 @@ public final class Short
       predefined[i] = new Short(i);
   }
   static final Short ZERO = predefined[0];
+  static final Short MAX  = new Short(Character.MAX_VALUE);
 
 //////////////////////////////////////////////////////////////////////////
 // Identity
