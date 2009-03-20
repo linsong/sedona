@@ -193,7 +193,8 @@ public class OfflineApp
   }
 
   /**
-   * Remove a child component.
+   * Remove a child component. All children of this component will be
+   * recursively removed first.
    */
   public void remove(OfflineComponent kid)
   {
@@ -202,6 +203,11 @@ public class OfflineApp
       throw new IllegalStateException("Can't delete app itself!");
     if (kid.app != this || lookup(kid.id) != kid)
       throw new IllegalStateException("Not in this app: " + kid);
+    
+    // remove component tree - from the bottom-up
+    OfflineComponent[] kidKids = kid.children();
+    for (int i=0; i<kidKids.length; ++i)
+      remove(kidKids[i]);
 
     // remove any links that reference it
     OfflineLink[] links = getLinks();
