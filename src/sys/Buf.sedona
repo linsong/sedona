@@ -105,7 +105,7 @@ final class Buf
     {
       int ch = s.get(i)
       bytes[i] = ch
-      if (ch == 0) { size = i; return true }
+      if (ch == 0) { size = (i+1); return true }
     }
     bytes[max-1] = 0
     size = max

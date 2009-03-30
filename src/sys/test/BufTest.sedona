@@ -20,6 +20,7 @@ class BufTest
 
   define int bufLen = 400
   static inline Buf(bufLen) buf
+  static inline Buf(4) copyBuf
   static inline BufInStream(buf) in
   static inline BufOutStream(buf) out
   static inline byte[10] bytes
@@ -27,6 +28,37 @@ class BufTest
   static Buf literalA = 0x[cafe babe 0003 dead beef]
   static Buf literalB = 0x[cafe babe 0003 dead beef]
 
+////////////////////////////////////////////////////////////////
+// Copy
+////////////////////////////////////////////////////////////////
+
+  static void testCopy()
+  {
+    buf.copyFromStr("")
+    copyBuf.copyFromBuf(buf)
+    assert(copyBuf.size == 1)
+    assert(copyBuf.toStr().equals(""))
+    
+    buf.copyFromStr("a")
+    copyBuf.copyFromBuf(buf)
+    assert(copyBuf.size == 2)
+    assert(copyBuf.toStr().equals("a"))
+    
+    buf.copyFromStr("ab")
+    copyBuf.copyFromBuf(buf)
+    assert(copyBuf.size == 3)
+    assert(copyBuf.toStr().equals("ab"))
+    
+    buf.copyFromStr("abc")
+    copyBuf.copyFromBuf(buf)
+    assert(copyBuf.size == 4)
+    assert(copyBuf.toStr().equals("abc"))
+    
+    buf.copyFromStr("too big for copyBuf")
+    copyBuf.copyFromBuf(buf)
+    assert(copyBuf.size == 4)
+  }
+  
 ////////////////////////////////////////////////////////////////
 // Write
 ////////////////////////////////////////////////////////////////
