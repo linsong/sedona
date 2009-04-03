@@ -139,6 +139,18 @@ public class Inherit
       def.overrides = def;
       return;
     }
+    
+    // cannot change from action to non-action, or vice-versa
+    if (def.isAction() && !slot.isAction())
+    {
+      err("'" + def.qname + "' cannot be declared an action because it overrides non-action '" + qname + "'", def.loc);
+      return;
+    }
+    else if (slot.isAction() && !def.isAction())
+    {
+      err("'" + def.qname + "' must be decalred as an action because it overrides action '" + qname + "'", def.loc);
+      return;
+    }
 
     if (!slot.isVirtual())
     {
