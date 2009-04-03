@@ -380,9 +380,6 @@ public class CheckErrors
 
     if (m.isAction())
     {
-      if (m.isAbstract()) err("Cannot use 'abstract' modifier on action", loc);
-      else if (m.isVirtual()) err("Cannot use 'virtual' modifier on action", loc);
-      if (m.isOverride()) err("Cannot use 'override' modifier on action", loc);
       if (m.isStatic()) err("Cannot use 'static' modifier on action", loc);
       if (!m.isPublic()) err("Actions must be public", loc);
     }

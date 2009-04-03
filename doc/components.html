@@ -192,14 +192,13 @@ are serialized as text rather than base64 in XML files.
 <h1 id="actions">Actions</h1>
 <!--/////////////////////////////////////////////////////////-->
 
-<p>
-Actions are normal instance methods which are annotated with the 
-<code>action</code> keyword.  Actions are typically used as commands
-on a component.  As methods, actions "do something" rather than store
-or display a value.  Actions methods must be declared to return void
-and must have zero or one parameter.  If a parameter is specified then 
-it must be one of the following types:
-</p>                    
+<p>Actions are normal instance methods which are annotated with the
+<code>action</code> keyword. Every action is implicitly defined to be <code>virtual</code>,
+so they can be overridden. Actions are typically used as commands on a
+component. As methods, actions "do something" rather than store or
+display a value. Actions methods must be declared to return void and
+must have zero or one parameter. If a parameter is specified then it
+must be one of the following types:</p>
 
 <ul>
 <li><code>bool</code></li>
@@ -225,6 +224,14 @@ class Foo extends Component
   @asStr action void actionStr(Buf x)                            
   { 
     Sys.out.print(x.toStr()).nl() 
+  }
+}
+
+class FooOverride extends Foo
+{
+  override action void actionNoArg()
+  {
+    Sys.out.print("Override actionNoArg").nl()
   }
 }
 </pre>

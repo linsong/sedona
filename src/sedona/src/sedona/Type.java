@@ -207,29 +207,43 @@ public class Type
     }
 
     // inherit base type slots
-    slots = new Slot[inherited.length +  manifest.slots.length];
-    slotsByName = new HashMap(slots.length*2);
+    ArrayList working = new ArrayList();
+    slotsByName = new HashMap(inherited.length * 2);
     for (int i=0; i<inherited.length; ++i)
-      addSlot(inherited[i]);
+      addSlot(working, inherited[i]);
 
     // map manifest's declared slots to my slots
     for (int i=0; i<manifest.slots.length; ++i)
     {
-      int id = inherited.length + i;
-      addSlot(new Slot(this, id, manifest.slots[i]));
+      int id = working.size();
+      addSlot(working, new Slot(this, id, manifest.slots[i]));
     }
+    slots = (Slot[])working.toArray(new Slot[working.size()]);
   }
 
-  private void addSlot(Slot slot)
+  private void addSlot(ArrayList working, Slot slot)
     throws Exception
   {
-    if (slots[slot.id] != null)
+    if (slot.id < working.size())
       throw new IllegalStateException();
 
-    if (slotsByName.get(slot.name) != null)
-      throw new Exception("Duplicate slot name '" + slot.name + "' in '" + qname + "'");
-
-    slots[slot.id] = slot;
+    Slot sameName = (Slot)slotsByName.get(slot.name);
+    if (sameName != null)
+    {
+      if (sameName.isAction() && slot.isAction())
+      {
+        // Action override - It should have same id as the slot it is
+        // overriding, but it should reference the SlotManifest for the
+        // this Type.
+        slot = new Slot(this, sameName.id, slot.manifest);
+        working.set(sameName.id, slot);
+      }
+      else
+        throw new Exception("Duplicate slot name '" + slot.name + "' in '" + qname + "'");
+    }
+    else
+      working.add(slot);
+    
     slotsByName.put(slot.name, slot);
   }
 

@@ -8,7 +8,6 @@
 
 package sedonac.namespace;
 
-import java.util.*;
 import sedona.Buf;
 import sedona.Env;
 import sedona.Facets;
@@ -282,7 +281,7 @@ public class TypeUtil
     }
 
     if (slot.isAbstract()) s.append("abstract ");
-    else if (slot.isVirtual()) s.append("virtual ");
+    else if (slot.isVirtual() && !slot.isAction()) s.append("virtual ");
 
     if (slot.isDefine()) s.append("define ");
     else if (slot.isStatic()) s.append("static ");

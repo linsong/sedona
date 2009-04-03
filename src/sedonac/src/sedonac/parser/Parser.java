@@ -242,9 +242,13 @@ public class Parser
       flags |= Slot.STATIC;
     }
 
-    // action implies public
+    // action implies public and virtual
     if ((flags & Slot.ACTION) != 0)
     {
+      if (((flags & Slot.VIRTUAL) != 0) && ((flags & Slot.ABSTRACT) == 0))
+        err("The 'virtual' modifier is implied by 'action'", loc);
+      flags |= Slot.VIRTUAL;
+      
       if ((flags & Slot.PUBLIC) != 0)
         err("The 'public' modifier is implied by 'action'", loc);
     }

@@ -57,7 +57,23 @@ public class AssignSlotIds
     for (int i=0; i<t.declared.length; ++i)
     {
       IrSlot slot = t.declared[i];
-      if (slot.isProperty() || slot.isAction())
+      if (slot.isAction() && slot.isOverride())
+      {
+        // Handle action override
+        for (int j=0; j<acc.size(); ++j)
+        {
+          IrSlot inheritedSlot = (IrSlot)acc.get(j);
+          if (inheritedSlot.isAction() && inheritedSlot.name().equals(slot.name()))
+          {
+            if (j != inheritedSlot.id) throw new IllegalStateException();
+            slot.id = inheritedSlot.id;
+            acc.set(j, slot);
+            break;
+          }
+        }
+        if (slot.id < 0) throw new IllegalStateException("Did not override action: " + slot);
+      }
+      else if (slot.isProperty() || slot.isAction())
       {
         slot.id = acc.size();
         acc.add(slot);

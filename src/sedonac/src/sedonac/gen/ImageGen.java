@@ -466,7 +466,8 @@ public class ImageGen
         addTypeBlockIndex(m.params[0]);
       else
         throw err("Invalid number of params for action: ", m.qname());
-      addBlockIndex(m.codeAddr);
+      if (!slot.isAbstract())
+        addBlockIndex(m.codeAddr);
     }
 
     blockAlign();
