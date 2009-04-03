@@ -69,7 +69,7 @@ class SpyWeblet
     res.w("<table border='0'>\n")                                                  
     
     res.w("  <tr>").td().w("platformType: ").td().w(plat.type.kit.name).w("::").w(plat.type.name).w("</td></tr>\n");
-    res.w("  <tr>").td().w("platformId: ").td().w(plat.platformId()).w("</td></tr>\n");
+    res.w("  <tr>").td().w("platformId: ").td().w(plat.platformId.toStr()).w("</td></tr>\n");
     res.w("  <tr>").td().w("name: ").td().w(app.name).w("</td></tr>\n");
     res.w("  <tr>").td().w("uptime: ").td().printElapsed(Sys.bootTime).w("</td></tr>\n");
     res.w("  <tr>").td().w("cycleCount: ").td().printLong(app.cycleCount).print("</td></tr>\n");

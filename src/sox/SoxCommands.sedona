@@ -195,7 +195,7 @@ class SoxCommands
   static void versionMoreRes(SoxService service, SoxSession session, SendPacket res) 
   {
     OutStream out = prepareRes(service, session, res)
-    out.writeStr(Sys.app.platform.platformId())
+    out.writeStr(Sys.app.platform.platformId.toStr())
     out.write(Sys.scodeAddr()[23]) // scode flags fixed at 23 byte offset
     foreach (Kit kit : Sys.kits, Sys.kitsLen)
       out.writeStr(kit.version)
@@ -1085,7 +1085,7 @@ class SoxCommands
         fileSize = file.size()
         break
       case 'p':
-        if (fileSize > Sys.app.platform.maxFileSize(uri)) { res.error("too big"); return }
+        //if (fileSize > Sys.app.platform.maxFileSize(uri)) { res.error("too big"); return }
         openMode = "w"
         txMode   = FileTransfer.put
         // notify platform - Jennic uses this to auto-tune the network 

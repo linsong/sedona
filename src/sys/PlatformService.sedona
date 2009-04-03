@@ -4,6 +4,7 @@
 //
 // History:
 //   5 Mar 09  Brian Frank  Create
+//  25 Mar 09  Matthew Giannini make more tool friendly
 //
 
 **
@@ -16,12 +17,6 @@ class PlatformService
 { 
 
   **
-  ** Get the platform identifier which defines how 
-  ** this Sedona device should be provisioned.
-  **
-  virtual Str platformId() { return "unknown" }     
-
-  **
   ** Initialize the platform with the command line arguments. 
   ** Return 0 on success.  Return  non-zero on failure, which will
   ** terminate the process.
@@ -29,31 +24,80 @@ class PlatformService
   virtual int init(Str[] args, int argsLen) { return 0 }
 
   **
-  ** Restart this Sedona application on the host platform.
-  ** This typically means restart just the Sedona process.
-  **
-  virtual void restart() {}
-
-  **
-  ** Restart the entire host platform.  This typically 
-  ** means to reboot the entire operating sytem.
-  **
-  virtual void reboot() {}
-  
-  **
   ** Notify the platform of a name/value pair setting
   ** or state change.
   **
   virtual void notify(Str key, Str val) {}
-     
+  
   **
-  ** Return max allowed file size, given file name.
+  ** Convenience to set the platformId property, and call changed()
   **
-  virtual int maxFileSize(Str fname) { return Sys.maxInt }
-     
+  void updatePlatformId(Str id)
+  {
+    platformId.copyFromStr(id)
+    changed(PlatformService.platformId)
+  }
+  
   **
-  ** Return available runtime memory, in bytes
+  ** Convenience to invoke the refreshMemory action and return the newly
+  ** updated memAvailable property.
   **
-  virtual long memAvailable() { return 0L }
+  long getMemAvailable() 
+  {
+    refreshMemory()
+    return memAvailable
+  }
+  
+////////////////////////////////////////////////////////////////
+// Service
+////////////////////////////////////////////////////////////////
+
+  override virtual void start()
+  {
+    super.start()
+    updatePlatformId("unknown")
+  }
+
+////////////////////////////////////////////////////////////////
+// Actions
+////////////////////////////////////////////////////////////////
+
+  **
+  ** Action to restart the Sedona application on the host platform.  
+  ** This typically means restart just the Sedona process.
+  **
+  @confirmRequired
+  action void restart() { }
+
+  **
+  ** Action to reboot the entire host platform.  This typically 
+  ** means to reboot the entire operating system.
+  **
+  @confirmRequired
+  action void reboot() { }
+  
+  **
+  ** Action to refresh the amount of available memory. This action must 
+  ** update the memAvailable property to reflect the current amount of 
+  ** available memory.
+  **
+  action void refreshMemory() { }
+  
+////////////////////////////////////////////////////////////////
+// Properties
+////////////////////////////////////////////////////////////////
+
+  **
+  ** The platform identifier which defines how this
+  ** Sedona device should be provisioned.
+  **
+  @readonly @asStr property Buf(128) platformId
+  
+  **
+  ** The amount of available runtime memory, in bytes. This property
+  ** is only guaranteed to be accurate as of the last invocation of the
+  ** refeshMemory action.
+  **
+  @readonly property long memAvailable = 0L
      
 }
