@@ -12,12 +12,10 @@
 
 package sedonac.steps;
 
-import java.io.*;
 import java.util.*;
 import sedonac.*;
 import sedonac.Compiler;
 import sedonac.ast.*;
-import sedonac.parser.*;
 import sedonac.namespace.*;
 import sedonac.scode.*;
 
@@ -157,6 +155,12 @@ public class CheckErrors
     {
       if (!curType.kit().name().equals("sys"))
         err("Only sys types may use 'const' modifier", loc);
+    }
+    
+    if (f.isInline())
+    {
+      if (type.isAbstract())
+        err("Cannot inline fields whose type is abstract", loc);
     }
 
     if (f.isInline() && !curType.kit.name.equals("sys"))
