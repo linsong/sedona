@@ -1,0 +1,91 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   11 Sep 06  Brian Frank  Creation
+//   06 Jun 07  Brian Frank  Port from Java to Sedona
+//
+
+**
+** Weblet is the base class for Components which handle
+** HTTP requests for a specified URI prefix.
+**
+abstract class Weblet
+  extends Component
+{
+
+////////////////////////////////////////////////////////////////
+// Weblet
+////////////////////////////////////////////////////////////////
+
+  **
+  ** Get the weblet's prefix which should be a simple
+  ** name (no slash) used for routing URIs to this Weblet.
+  **
+  abstract Str prefix()
+
+  **
+  ** Service the specified request.  Default implementation
+  ** routes to get(), head(), post(), put(), or delete().
+  **
+  virtual void service(WebReq req, WebRes res)
+  {
+    Str method = req.method;
+    if (method.equals("GET"))         get(req, res)
+    else if (method.equals("HEAD"))   head(req, res)
+    else if (method.equals("POST"))   post(req, res)
+    else if (method.equals("PUT"))    put(req, res)
+    else if (method.equals("DELETE")) doDelete(req, res)
+    else res.writeStatus(405)
+  }
+
+  **
+  ** Service a GET request.
+  **
+  virtual void get(WebReq req, WebRes res)
+  {
+    res.writeStatus(200)
+    res.writeContentType("text/plain")
+    res.finishHeaders()
+    req.dump(res)
+  }
+
+  **
+  ** Service a HEAD request.
+  **
+  virtual void head(WebReq req, WebRes res)
+  {
+    res.writeStatus(405)
+  }
+
+  **
+  ** Service a POST request.
+  **
+  virtual void post(WebReq req, WebRes res)
+  {
+    res.writeStatus(405)
+  }
+
+  **
+  ** Service a PUT request.
+  **
+  virtual void put(WebReq req, WebRes res)
+  {
+    res.writeStatus(405)
+  }
+
+  **
+  ** Service a DELETE request.
+  **
+  virtual void doDelete(WebReq req, WebRes res)
+  {
+    res.writeStatus(405)
+  }
+
+//////////////////////////////////////////////////////////////////////////
+// Fields
+//////////////////////////////////////////////////////////////////////////
+
+  internal Weblet nextWeblet
+}

@@ -1,0 +1,129 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   22 Aug 06  Brian Frank  Creation
+//   08 May 07  Brian Frank  Port from Java to Sedona
+//
+
+**
+** UdpSocketTest
+**
+class UdpSocketTest
+  extends Test
+{
+
+  static inline UdpDatagram out
+  static inline UdpDatagram in
+  static inline byte[1024] outBuf
+  static inline byte[1024] inBuf
+  static inline UdpSocket s
+  static inline IpAddr addr
+  static inline Str(10) loopback = "127.0.0.1"
+
+////////////////////////////////////////////////////////////////
+// Test Socket
+////////////////////////////////////////////////////////////////
+
+  static void testSocket()
+  {
+    // setup datagrams
+    out.buf = outBuf
+    in.buf = inBuf
+
+    // make server socket
+    assert(s.isClosed())
+    if (!s.open()) { assert(false); return }
+    assert(!s.isClosed())
+
+    // bind server socket
+    if (!s.bind(1973)) { assert(false); return }
+    assert(!s.isClosed())
+
+    // check nothing to read
+    assert(!s.receive(in))
+    in.len = 1024
+    assert(!s.receive(in))
+    assert(in.len  == 0)
+    assert(in.port == -1)
+    assert(in.addr == null)
+
+    // send packet to myself
+    assert(addr.parse(loopback))
+    out.addr = addr
+    out.port = 1973
+    out.buf[0] = 'h'; out.buf[1] = 'i'; out.len = 2
+    if (!s.send(out)) { assert(false); return }
+
+    // receive packet from myself
+    delay()
+    in.len = 1024
+    if (!s.receive(in)) { assert(false); return }
+    assert(in.len    == 2)
+    assert(in.buf[0] == 'h')
+    assert(in.buf[1] == 'i')
+    assert(in.port   == 1973)
+    assert(in.addr.toStr().equals(loopback))
+
+    // check nothing to read
+    in.len = 1024
+    assert(!s.receive(in))
+    assert(in.len  == 0)
+    assert(in.port == -1)
+    assert(in.addr == null)
+
+    // send offset packet to myself
+    out.buf[100] = 'x'; out.buf[101] = 'y'; out.buf[102] = 'z'; out.len = 3
+    out.buf = out.buf
+    out.off = 100
+    if (!s.send(out)) { assert(false); return }
+    out.buf = outBuf
+
+    // receive packet using offset with len limit
+    delay()
+    in.buf = in.buf
+    in.off = 10
+    in.len = 3
+    if (!s.receive(in)) { assert(false); return }
+    in.buf = inBuf
+    assert(in.len     == 3)
+    assert(in.buf[10] == 'x')
+    assert(in.buf[11] == 'y')
+    assert(in.buf[12] == 'z')
+    assert(in.port    == 1973)
+    assert(in.addr.toStr().equals(loopback))
+
+    // send offset packet to myself
+    out.buf[0] = 'a'; out.buf[1] = 'b'; out.buf[2] = 'c'; out.len = 3
+    if (!s.send(out)) { assert(false); return }
+
+    // verify receive a message too long (past len); on Java
+    // this is silent, in C it is an error; for now don't actually
+    // assert false since Java behaves differently
+    delay()
+    in.buf = in.buf
+    in.off = 10
+    in.len = 2
+    s.receive(in) /*assert(s.receive(in) == false)*/
+    in.buf = inBuf
+
+    // close
+    assert(!s.isClosed())
+    s.close()
+    assert(s.isClosed())
+    assert(!s.send(out))
+    assert(!s.receive(in))
+  }
+
+////////////////////////////////////////////////////////////////
+// Utils
+////////////////////////////////////////////////////////////////
+
+  static void delay()
+  {
+    Sys.out.print(".")
+    Sys.sleep(300ms)
+  }
+
+}
