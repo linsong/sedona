@@ -18,6 +18,7 @@
   <package name="sedona.sox"       doc="true" src="true" />
   <package name="sedona.upload"    doc="true" src="true" />
   <package name="sedona.util"      doc="true" src="true" />
+  <package name="sedona.web"       doc="true" src="true" />
   <package name="sedona.xml"       doc="true" src="true" />
   <package name="sedona.vm"        doc="true" src="true" />
   <package name="sedona.vm.sys"    doc="true" src="true" edition="j2se"/>

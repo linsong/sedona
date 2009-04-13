@@ -10,6 +10,7 @@ package sedona.util;
 
 import java.io.*;
 import java.text.*;
+import java.util.*;
 
 /**
  * TextUtil.
@@ -400,6 +401,17 @@ public class TextUtil
     c[0] = toLowerCase( c[0] );
     return new String(c);
   }
+
+  /**
+   * Comparator for two strings with ASCII case insensitivity.
+   */
+  public static Comparator caseInsensitiveComparator = new Comparator()
+  {
+    public int compare(Object a, Object b)
+    {       
+      return toLowerCase(a.toString()).compareTo(toLowerCase(b.toString()));
+    }
+  };
 
 ////////////////////////////////////////////////////////////////
 // Class

@@ -25,6 +25,7 @@ packages = [
   "sedona.sox",
   "sedona.upload",
   "sedona.util",
+  "sedona.web",
   "sedona.xml",
   "sedona.vm",
   "sedona.vm.sys",
