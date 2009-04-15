@@ -466,8 +466,8 @@ public class ImageGen
         addTypeBlockIndex(m.params[0]);
       else
         throw err("Invalid number of params for action: ", m.qname());
-      if (!slot.isAbstract())
-        addBlockIndex(m.codeAddr);
+      // all actions are by definition virtual
+      code.u2(m.vindex, false);
     }
 
     blockAlign();

@@ -266,20 +266,38 @@ Cell sys_Component_doSetDouble(SedonaVM* vm, Cell* params)
 // Invokes
 //////////////////////////////////////////////////////////////////////////
 
+/**
+ * This function will return the method offset for an action.  All actions are
+ * by definition virtual. When you obtain the slot handle of the slot parameter
+ * for an action, the handle contains the vtable index for the action method -
+ * not the method offset.
+ *
+ * Given the code base, the instance object, and the vtable index, we can 
+ * lookup the method implementation for the action.  Typical usage in an
+ * invoke<Type> action method might be:
+ *
+ *  uint16_t methodOffset = 
+ *    getActionMethod(vm->codeBaseAddr, params[0].aval, getSlotType(vm, params[1].aval)); 
+ */
+uint16_t getActionMethod(const uint8_t* cb, const uint8_t* self, const uint16_t vidx)
+{
+  return ((uint16_t*)block2addr(cb, *(uint16_t*)self))[vidx];
+}
+
 // void Component.invokeVoid(Slot)
 Cell sys_Component_invokeVoid(SedonaVM* vm, Cell* params)
 {
   uint8_t* self   = params[0].aval;
   void* slot      = params[1].aval;
   int typeId      = getTypeId(vm, getSlotType(vm, slot));
-  uint16_t offset = getSlotHandle(vm, slot);
+  uint16_t vidx   = getSlotHandle(vm, slot);
   Cell args[1];
 
   if (typeId != VoidTypeId)
     return accessError(vm, "invokeVoid", self, slot);
 
   args[0].aval = self;
-  vm->call(vm, offset, args, 1);
+  vm->call(vm, getActionMethod(vm->codeBaseAddr, self, vidx), args, 1);
 
   return nullCell;
 }
@@ -291,7 +309,7 @@ Cell sys_Component_invokeBool(SedonaVM* vm, Cell* params)
   void* slot      = params[1].aval;
   uint8_t val     = params[2].ival;
   int typeId      = getTypeId(vm, getSlotType(vm, slot));
-  uint16_t offset = getSlotHandle(vm, slot);
+  uint16_t vidx   = getSlotHandle(vm, slot);
   Cell args[2];
 
   if (typeId != BoolTypeId)
@@ -299,7 +317,7 @@ Cell sys_Component_invokeBool(SedonaVM* vm, Cell* params)
 
   args[0].aval = self;
   args[1].ival = val;
-  vm->call(vm, offset, args, 2);
+  vm->call(vm, getActionMethod(vm->codeBaseAddr, self, vidx), args, 2);
 
   return nullCell;
 }
@@ -311,7 +329,7 @@ Cell sys_Component_invokeInt(SedonaVM* vm, Cell* params)
   void* slot      = params[1].aval;
   int32_t val     = params[2].ival;
   int typeId      = getTypeId(vm, getSlotType(vm, slot));
-  uint16_t offset = getSlotHandle(vm, slot);
+  uint16_t vidx   = getSlotHandle(vm, slot);
   Cell args[2];
 
   if (typeId != IntTypeId)
@@ -319,7 +337,7 @@ Cell sys_Component_invokeInt(SedonaVM* vm, Cell* params)
 
   args[0].aval = self;
   args[1].ival = val;
-  vm->call(vm, offset, args, 2);
+  vm->call(vm, getActionMethod(vm->codeBaseAddr, self, vidx), args, 2);
 
   return nullCell;
 }
@@ -331,7 +349,7 @@ Cell sys_Component_invokeLong(SedonaVM* vm, Cell* params)
   void* slot      = params[1].aval;
   int64_t val     = *(int64_t*)(params+2);
   int typeId      = getTypeId(vm, getSlotType(vm, slot));
-  uint16_t offset = getSlotHandle(vm, slot);
+  uint16_t vidx   = getSlotHandle(vm, slot);
   Cell args[3];
 
   if (typeId != LongTypeId)
@@ -339,7 +357,7 @@ Cell sys_Component_invokeLong(SedonaVM* vm, Cell* params)
 
   args[0].aval = self;
   *(int64_t*)(args+1) = val;
-  vm->call(vm, offset, args, 3);
+  vm->call(vm, getActionMethod(vm->codeBaseAddr, self, vidx), args, 3);
 
   return nullCell;
 } 
@@ -351,7 +369,7 @@ Cell sys_Component_invokeFloat(SedonaVM* vm, Cell* params)
   void* slot      = params[1].aval;
   float val       = params[2].fval;
   int typeId      = getTypeId(vm, getSlotType(vm, slot));
-  uint16_t offset = getSlotHandle(vm, slot);
+  uint16_t vidx   = getSlotHandle(vm, slot);
   Cell args[2];
 
   if (typeId != FloatTypeId)
@@ -359,7 +377,7 @@ Cell sys_Component_invokeFloat(SedonaVM* vm, Cell* params)
 
   args[0].aval = self;
   args[1].fval = val;
-  vm->call(vm, offset, args, 2);
+  vm->call(vm, getActionMethod(vm->codeBaseAddr, self, vidx), args, 2);
 
   return nullCell;
 } 
@@ -371,7 +389,7 @@ Cell sys_Component_invokeDouble(SedonaVM* vm, Cell* params)
   void* slot      = params[1].aval;
   int64_t val     = *(int64_t*)(params+2);
   int typeId      = getTypeId(vm, getSlotType(vm, slot));
-  uint16_t offset = getSlotHandle(vm, slot);
+  uint16_t vidx   = getSlotHandle(vm, slot);
   Cell args[3];
 
   if (typeId != DoubleTypeId)
@@ -379,7 +397,7 @@ Cell sys_Component_invokeDouble(SedonaVM* vm, Cell* params)
 
   args[0].aval = self;
   *(int64_t*)(args+1) = val;
-  vm->call(vm, offset, args, 3);
+  vm->call(vm, getActionMethod(vm->codeBaseAddr, self, vidx), args, 3);
 
   return nullCell;
 } 
@@ -391,7 +409,7 @@ Cell sys_Component_invokeBuf(SedonaVM* vm, Cell* params)
   void* slot      = params[1].aval;
   uint8_t* val    = params[2].aval;
   int typeId      = getTypeId(vm, getSlotType(vm, slot));
-  uint16_t offset = getSlotHandle(vm, slot);
+  uint16_t vidx   = getSlotHandle(vm, slot);
   Cell args[2];
 
   if (typeId != BufTypeId)
@@ -399,7 +417,7 @@ Cell sys_Component_invokeBuf(SedonaVM* vm, Cell* params)
 
   args[0].aval = self;
   args[1].aval = val;
-  vm->call(vm, offset, args, 2);
+  vm->call(vm, getActionMethod(vm->codeBaseAddr, self, vidx), args, 2);
 
   return nullCell;
 }

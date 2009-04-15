@@ -1072,7 +1072,7 @@ const int8_t OpcodePointerOffsets[] =
 
 #define vmMagic        0x5ED0BA07
 #define vmMajorVer     0x01
-#define vmMinorVer     0x04
+#define vmMinorVer     0x05
 #define vmMaxParams    255
 #define vmMaxLocals    255
 #define vmBigEndian    'B'

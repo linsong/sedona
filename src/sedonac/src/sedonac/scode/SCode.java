@@ -678,7 +678,7 @@ public class SCode
 
   public static final int vmMagic        = 0x5ED0BA07; // 4 byte magic
   public static final int vmMajorVer     = 0x01;    // 1 byte major version
-  public static final int vmMinorVer     = 0x04;    // 1 byte minor version
+  public static final int vmMinorVer     = 0x05;    // 1 byte minor version
   public static final int vmMaxParams    = 255;     // max num method parameters
   public static final int vmMaxLocals    = 255;     // max num method locals
   public static final int vmBigEndian    = 'B';     // big endian constant

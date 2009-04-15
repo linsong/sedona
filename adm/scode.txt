@@ -309,7 +309,7 @@ $constants
 
   int vmMagic        = 0x5ED0BA07  // 4 byte magic
   int vmMajorVer     = 0x01        // 1 byte major version
-  int vmMinorVer     = 0x04        // 1 byte minor version
+  int vmMinorVer     = 0x05        // 1 byte minor version
   int vmMaxParams    = 255         // max num method parameters
   int vmMaxLocals    = 255         // max num method locals
 
