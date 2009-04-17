@@ -1068,7 +1068,7 @@ class SoxCommands
     if (chunkSize + 18 >= Dasp.ABS_MAX_VAL)
       chunkSize = Dasp.ABS_MAX_VAL - 18
 
-    // check for file too big
+    // check for file too big (max chunkNum won't fit into 2 bytes)
     if (fileSize >= chunkSize * 0xffff) { res.error("too big"); return }
 
     // handle get or put:
@@ -1085,7 +1085,6 @@ class SoxCommands
         fileSize = file.size()
         break
       case 'p':
-        //if (fileSize > Sys.app.platform.maxFileSize(uri)) { res.error("too big"); return }
         openMode = "w"
         txMode   = FileTransfer.put
         // notify platform - Jennic uses this to auto-tune the network 
