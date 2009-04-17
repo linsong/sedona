@@ -118,7 +118,7 @@ public class Inherit
       // if slot was marked override, then report mismatch signatures
       if (declared.isOverride())
       {
-        err("Overriden method '" + name + "' has different signature than '" + qname + "'", def.loc);
+        err("Overridden method '" + name + "' has different signature than '" + qname + "'", def.loc);
         def.overrides = def;
         return;
       }
