@@ -10,7 +10,8 @@
 
 import os
 import env
-import compilejar          
+import compilejar
+import time          
 
 depends = []
 srcDir  = os.path.join(env.src, "sedona", "src")
@@ -32,14 +33,21 @@ packages = [
   "sedona.vm.inet",
 ]
 
-# Make
+# Compile
 def compile():
-  try:
-    compilejar.compile(srcDir, depends, packages, jarFile)
+  try:                   
+    compilejar.compile(srcDir, depends, packages, jarFile, lambda d: writeVerFile(d))
   except env.BuildError:
     print "**"
     print "** FAILED [" + jarFile + "]"
     print "**"
+    
+# Write Version File
+def writeVerFile(dir):  
+  f = open(os.path.join(dir, "version.txt"), "w")
+  f.write("version=" + env.buildVersion() + "\n")
+  f.write("time=" + time.strftime("%Y-%m-%d %H:%M") + "\n")
+  f.close()  
     
 # Main
 if __name__ == '__main__': 

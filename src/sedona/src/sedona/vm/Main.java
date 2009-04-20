@@ -30,6 +30,7 @@ public class Main
       
       // -test runs test suite
       String arg = args[0];      
+      if (arg.equals("-ver")) { Env.printVersion("Sedona Runtime for Java"); return; }
       if (arg.equals("-test")) { runTests(); return; }
       if (arg.equals("-testloop")) { runTestLoop(); return; }
       
@@ -68,6 +69,7 @@ public class Main
     println("usage:");
     println("  jsvm <app>  run sab or sax application");
     println("  jsvm -test  run test suite");
+    println("  jsvm -ver   print version information");
   }
 
   public static void println(String s)

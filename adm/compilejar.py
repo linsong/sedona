@@ -18,8 +18,9 @@ import fileutil
 #   depends:  absolute paths to dependent jars (rt.jar is implied)
 #   packages: list of dotted names
 #   jarFile:  absolte path of resulting jar file to build 
+#   func:     function called with tempDir after compile but before jar
 #
-def compile(srcDir, depends, packages, jarFile):  
+def compile(srcDir, depends, packages, jarFile, func=None):  
   print "Compile [" + os.path.basename(jarFile) + "]"
   # init jarTemp dir
   temp = os.path.join(env.home, "tempJar")  
@@ -39,6 +40,10 @@ def compile(srcDir, depends, packages, jarFile):
   status = os.system(cmd)
   if status:
     raise env.BuildError("FATAL: makejar " + jarFile)
+    
+  # if we have a function call it
+  if (func != None):
+    func(temp) 
   
   # jar up using jar.exe
   cmd = env.jar + " cf " + jarFile + " -C " + temp + " ."

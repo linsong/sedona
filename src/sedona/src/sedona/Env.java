@@ -22,7 +22,7 @@ public class Env
 
   public static File home;
   public static final String hostname;
-  public static final String version = "Version 2009.01";
+  public static final String version;
   public static final String copyright = "Copyright (c) 2007-2009 Tridium, Inc.";
 
 ////////////////////////////////////////////////////////////////
@@ -54,6 +54,19 @@ public class Env
   }
   
   static final DecimalFormat floatFormat = new DecimalFormat("#0.00000#", new DecimalFormatSymbols(Locale.ENGLISH));
+
+  /**
+   * Print version information to standard output.
+   */
+  public static void printVersion(String programName)
+  {
+    System.out.println(programName + " " + version);
+    System.out.println(copyright);
+    System.out.println("sedona.version = " + version);
+    System.out.println("sedona.home    = " + home);
+    System.out.println("java.home      = " + System.getProperty("java.home"));
+    System.out.println("java.version   = " + System.getProperty("java.version"));
+  }
 
 ////////////////////////////////////////////////////////////////
 // Properties
@@ -226,7 +239,25 @@ public class Env
       System.out.println("WARNING: Cannot load properties file: " + propsFile);
       if (!(e instanceof FileNotFoundException))
         System.out.println("  " + e);
+    }          
+    
+    // version            
+    String ver;
+    try
+    {                                         
+      Properties props = new Properties();
+      InputStream in = Env.class.getResourceAsStream("/version.txt");      
+      props.load(in);
+      in.close();
+      ver = props.getProperty("version");
+    } 
+    catch (Exception e)
+    {
+      System.out.println("WARNING: Cannot load version.txt from jar");
+      System.out.println("  " + e);
+      ver = "Unknown";
     }
+    version = ver;   
   }
 
 }

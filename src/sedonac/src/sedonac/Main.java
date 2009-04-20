@@ -42,15 +42,6 @@ public class Main
     println("  -noOptimize  skip const folding and optimization steps");
   }
 
-  public static void printVersion()
-  {
-    println("Sedona Compiler " + Env.version);
-    println(Env.copyright);
-    println("sedona.home  = " + Env.home);
-    println("java.home    = " + System.getProperty("java.home"));
-    println("java.version = " + System.getProperty("java.version"));
-  }
-
   public static void println(String msg)
   {
     System.out.println(msg);
@@ -144,7 +135,7 @@ public class Main
       }
       else if (arg.equals("-ver"))
       {
-        printVersion();
+        Env.printVersion("Sedona Compiler");
         return 1;
       }
       else if (arg.equals("-v"))
