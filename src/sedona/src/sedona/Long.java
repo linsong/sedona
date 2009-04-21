@@ -71,7 +71,7 @@ public final class Long
 
   public Value decodeString(String s)
   {
-    return Long.make(java.lang.Long.parseLong(s));
+    return Long.make(java.lang.Long.decode(s).longValue());
   }
 
   public void encodeBinary(Buf out)
