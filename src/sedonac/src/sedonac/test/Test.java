@@ -37,11 +37,12 @@ public class Test
         "sedonac.test.ParserTest",
         "sedonac.test.ManifestTest",
         "sedonac.test.KitDbTest",
-        "sedonac.test.AppTest",
+        "sedonac.test.AppTest",        
         "sedonac.test.DocParserTest",
         "sedonac.test.DaspTest",
         "sedonac.test.SoxTest",
-        "sedonac.test.SecurityTest",
+        "sedonac.test.SecurityTest",        
+        "sedonac.test.PrimitiveDecodeTest",
       };
 
       for (int i=0; i<tests.length; ++i)

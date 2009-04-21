@@ -68,8 +68,8 @@ public final class Short
   }
 
   public Value decodeString(String s)
-  {
-    return make(Integer.parseInt(s));
+  {    
+    return make(Integer.decode(s).intValue());
   }
 
   public void encodeBinary(Buf out)
