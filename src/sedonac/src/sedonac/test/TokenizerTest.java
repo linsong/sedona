@@ -61,19 +61,36 @@ public class TokenizerTest
 
     // float literals
     verifyFloat("0f", 0.0f);
+    verifyFloat("0e0", 0.0f);
+    verifyFloat("0e10000", 0.0f);
     verifyFloat("2f", 2f);
     verifyFloat("0.0", 0.0f);
+    verifyFloat("0.0e0", 0.0f);
     verifyFloat("0.2", 0.2f);
+    verifyFloat("2e-1", 0.2f);
+    verifyFloat("0.2e-1", 0.02f);
     verifyFloat("200f", 200f);
+    verifyFloat("2e2", 200f);
+    verifyFloat("2e+2", 200f);
     verifyFloat("12345.0088", 12345.0088f);
+    verifyFloat("1_0e__1__", 100.0f);
+    verifyFloat("1e2f", 100.0f);
+    verifyFloat("1.2e1", 12.0f);
 
     // double literals
     verifyDouble("0d", 0.0d);
+    verifyDouble("0e0d", 0.0d);
+    verifyDouble("0e100d", 0.0d);
     verifyDouble("2D", 2d);
     verifyDouble("0.0d", 0.0d);
+    verifyDouble("0.0e0d", 0.0d);
     verifyDouble("0.2d", 0.2d);
+    verifyDouble("2e-1d", 0.2d);
     verifyDouble("200D", 200d);
+    verifyDouble("2e2d", 200d);
+    verifyDouble("2e+2d", 200d);
     verifyDouble("12345.0088D", 12345.0088d);
+    verifyDouble("1.23450088e4D", 12345.0088d);
 
     // time literals
     verifyTime("0ns",        0);

@@ -184,11 +184,41 @@ value and <code>double</code> to 64-bit floating point.
 Floating point literals are expressed in decimal format using a "."
 dot as the decimal point.  The "F" or "f" character may be used as
 a suffix (required if not using a decimal point).  The "D" or "d" 
-character is rquired as a suffix for a 64-bit double.  Currently
-Sedona does not support exponential notation.  You may use the "_"
+character is required as a suffix for a 64-bit double. You may use the "_"
 underbar as a separator.
 </p>
 
+<p>
+Sedona supports specifying floating point literals in scientific notation. All
+numbers given in scientific notation are of type <code>float</code> unless
+explicitly marked as a <code>double</code> using "D" or "d". A floating-point
+literal in Sedona has the following format:
+</p>
+
+<ul>
+<pre>
+<i>
+FloatingPointLiteral:
+  Digits . Digits<sub><i>opt</i></sub><code> </code>ExponentPart<sub><i>opt</i></sub><code> </code>FloatTypeSuffix<sub><i>opt
+   </i></sub>Digits<code> </code>ExponentPart<code> </code>FloatTypeSuffix<sub><i>opt
+   </i></sub>Digits<code> </code>ExponentPart<sub><i>opt</i></sub><code> </code>FloatTypeSuffix
+
+ExponentPart:
+  ExponentIndicator<code> </code>SignedInteger
+
+ExponentIndicator: one of</i>
+  e E<i>
+
+SignedInteger:
+  Sign<sub><i>opt</i></sub><code> </code>Digits
+
+Sign: one of</i>
+  + -<i>
+
+FloatTypeSuffix: one of</i>
+  <code>f F d D
+</code>
+</ul>
 <p>
 The keyword <code>null</code> is used to represent not-a-number
 for situations requiring indication of an invalid float or double.  

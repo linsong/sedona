@@ -39,21 +39,21 @@ public class Env
 
   /**
    * Format a 32-bit floating point value to a String.
+   * @see java.lang.Float#toString(float)
    */
   public static String floatFormat(float f)
   {
-    return floatFormat.format(f);
+    return java.lang.Float.toString(f);
   }                         
 
   /**
    * Format a 64-bit floating point value to a String.
+   * @see java.lang.Double#toString(double)
    */
   public static String doubleFormat(double f)
   {
-    return floatFormat.format(f);
+    return java.lang.Double.toString(f);
   }
-  
-  static final DecimalFormat floatFormat = new DecimalFormat("#0.00000#", new DecimalFormatSymbols(Locale.ENGLISH));
 
   /**
    * Print version information to standard output.

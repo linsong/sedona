@@ -209,10 +209,17 @@ public class Tokenizer
 
     // read number into string buffer
     StringBuffer s  = new StringBuffer();
-    while (isDigit(cur) || cur == '.' || cur == '_' || (isHex && isHex(cur)))
+    while (isDigit(cur) || cur == '.' || cur == '_' || 
+        cur == 'E' || cur == 'e' || (isHex && isHex(cur)))
     {
       if (cur == '_') { consume(); continue; }
       if (cur == '.') isFloat = true;
+      if (!isHex && (cur == 'E' || cur == 'e'))
+      {
+        isFloat = true;
+        s.append((char)consume()).append(exponentialPart());
+        break;
+      }
       s.append((char)consume());
     }
     String str = s.toString();
@@ -241,6 +248,7 @@ public class Tokenizer
       case 'L':
         consume();
         isWide = true;
+        if (isFloat) throw err("Type mismatch. Cannot convert from floating point number to long: " + str + "L", location());
         break;
     }
 
@@ -302,6 +310,27 @@ public class Tokenizer
     {                               
       throw err("Invalid number: " + str, location());
     }
+  }
+  
+  /**
+   * Parse the Exponential part of a number that is in scientific notation.
+   * Assumes the 'E' or 'e' has already been consumed.
+   * 
+   * @return a String containing the exponential part of the number.
+   */
+  private String exponentialPart()
+  {
+    StringBuffer sb = new StringBuffer();
+    
+    while (cur == '_') consume();
+    if (cur == '+' || cur == '-') sb.append((char)consume());
+    while (cur == '_' || isDigit(cur))
+    {
+      if (cur == '_' ) { consume(); continue; }
+      sb.append((char)consume());
+    }
+    
+    return sb.toString();
   }
 
   /**
