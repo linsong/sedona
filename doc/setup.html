@@ -95,8 +95,36 @@ java.version   = 1.6.0_05
 <h2 id="unix">Unix</h2>
 
 <p> 
-TODO
+There is a bash shell script in "adm/unix" that you can use and modify to
+initialize your Sedona development environment. It is called <i>init.sh</i>. 
+In order to use this script, you must first
 </p>
+<ol>
+<li>export JAVA_HOME in your login script.</li>
+<li>create a symbolic link in your home directory called "sedonadev" that
+points to your actual <dfn>Sedona home</dfn> directory. For example,
+<pre>~/sedonadev -> ~/repos/sedona-1.0/pub</pre>
+If you don't want to use this symbolic link, edit init.sh to explicitly set
+the sedona_home environment variable.</li>
+</ol>
+<p>
+After doing the above configuration, change your login script to run "init.sh".
+This script will also make sure some key programs are in your PATH, make
+sure that all the python scripts have executable permissions, and create
+some useful aliases.  
+</p>
+<p>
+There are two UNIX specific commands that you should use for building in a
+UNIX environment
+</p>
+
+<ul>
+<li><b>makeunixvm.py</b>:
+  compile the unix svm using gcc. Run <i>makeunixvm -h</i> for more details</li>
+
+<li><b>makeunixdev.py</b>:
+  Builds sedona.jar, sedonac.jar, all opensource kits, and makes the unix svm.</li>
+</ul>
 
 <h2 id="java">Java Command Line</h2>     
 
