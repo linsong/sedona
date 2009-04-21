@@ -43,9 +43,11 @@ find $sedona_home/adm -name "*.py" -exec chmod 755 '{}' \; 2> /dev/null
 
 # aliases
 alias makeunixvm='makeunixvm.py'
+alias makeunixdev='makeunixdev.py'
 alias makesedona='makesedona.py'
 alias makesedonac='makesedonac.py'
 alias sedonac='sedonac.sh'
+alias jsvm='jsvm.sh'
 
 # functions
 
