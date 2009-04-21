@@ -138,7 +138,7 @@ of Point is 8 bytes.  Note the three different field declarations in
 to an array of <code>Points</code> - so <code>a</code> is allocated
 enough memory to store a pointer (most likely 4 bytes).</li>
 
-<li><b>Shape.a</b>:  The sedona field <code>Point.b</code> allocates
+<li><b>Shape.b</b>:  The sedona field <code>Point.b</code> allocates
 enough memory to store <i>3 references to Points</i>, but doesn't allocate
 any memory for actual <code>Point</code> instances - so <code>b</code>
 would allocate 12 bytes on a 32-bit machine.</li>
