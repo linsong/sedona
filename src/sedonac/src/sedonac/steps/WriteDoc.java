@@ -381,6 +381,10 @@ public class WriteDoc
       typeLink(t.arrayOf(), out, shorten);
       out.w("[]");
     }
+    else if (!t.isPublic())
+    {
+      typeLink(t.base(), out, shorten);
+    }
     else
     {
       String name = shorten ? t.name() : t.qname();
