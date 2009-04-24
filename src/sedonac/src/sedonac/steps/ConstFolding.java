@@ -163,11 +163,6 @@ public class ConstFolding
       return new Expr.Literal(expr.loc, ns, Expr.DOUBLE_LITERAL, d);
     }
     
-    // (byte) and (short) casts are really casts to (int) since the svm
-    // will always expand byte/short fields to 32-bit int when loading them.
-    // This behavior is sort of weird, so we're only going to do it when
-    // optimization is on.
-    
     return expr;
   }
 
