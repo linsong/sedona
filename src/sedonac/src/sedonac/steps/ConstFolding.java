@@ -55,6 +55,10 @@ public class ConstFolding
       // maybe fold interpolation...
       if (expr instanceof Expr.Interpolation)
         return fold((Expr.Interpolation)expr);
+      
+      // maybe fold cast...
+      if (expr instanceof Expr.Cast)
+        return fold((Expr.Cast)expr);
 
       // if optimize is turned off then bail
       if (!compiler.optimize) return expr;
@@ -118,6 +122,53 @@ public class ConstFolding
     expr.parts = folded;
     // size can only be 1 if folded to a single STR_LITERAL
     return folded.size() == 1 ? (Expr)folded.get(0) : expr;
+  }
+ 
+////////////////////////////////////////////////////////////////
+// Cast
+////////////////////////////////////////////////////////////////
+
+  private Expr fold(Expr.Cast expr)
+  {
+    if (!expr.target.isLiteral()) return expr;
+
+    if (expr.type.isInteger()) 
+    {
+      // (byte) and (short) casts are really casts to (int) since the svm
+      // will always expand byte/short fields to 32-bit int when loading them.
+      // This behavior is sort of weird, so we're only going to do it when
+      // optimization is on.
+      if (!compiler.optimize && (expr.type.isByte() || expr.type.isShort()))
+        return expr;
+      
+      Integer i = new Integer(((Number)expr.target.toLiteral().value).intValue());
+      return new Expr.Literal(expr.loc, ns, Expr.INT_LITERAL, i);
+    }
+    
+    if (expr.type.isLong())
+    {
+      Long l = new Long(((Number)expr.target.toLiteral().value).longValue());
+      return new Expr.Literal(expr.loc, ns, Expr.LONG_LITERAL, l);
+    }
+    
+    if (expr.type.isFloat())
+    {
+      Float f = new Float(((Number)expr.target.toLiteral().value).floatValue());
+      return new Expr.Literal(expr.loc, ns, Expr.FLOAT_LITERAL, f);
+    }
+    
+    if (expr.type.isDouble())
+    {
+      Double d = new Double(((Number)expr.target.toLiteral().value).doubleValue());
+      return new Expr.Literal(expr.loc, ns, Expr.DOUBLE_LITERAL, d);
+    }
+    
+    // (byte) and (short) casts are really casts to (int) since the svm
+    // will always expand byte/short fields to 32-bit int when loading them.
+    // This behavior is sort of weird, so we're only going to do it when
+    // optimization is on.
+    
+    return expr;
   }
 
 ////////////////////////////////////////////////////////////////
