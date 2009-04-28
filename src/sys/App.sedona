@@ -106,10 +106,7 @@ class App
     // start() callback for every component
     foreach (Component c : comps, compsLen)
       if (c != null) c.start()
-    
-    // refresh available memory to get accurate starting point
-    platform.refreshMemory()
-    
+        
     // success
     return 0
   }
