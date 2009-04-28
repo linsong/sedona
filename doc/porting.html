@@ -63,8 +63,8 @@ OS platforms using the following steps:
 <p>
 Your porting journey starts with "<a href="../src/vm/sedona.h">sedona.h</a>"
 which is sourced in the "src/vm" directory.  If you take 
-a look at this file you can see that there is a section for major targets
-platform such as Win32, QNX, and GCC.  Each platform section should 
+a look at this file you can see that there is a section for major target
+platforms such as Win32, QNX, and GCC.  Each platform section should 
 be wrapped by an <code>#ifdef</code> directive for your target compiler/platform.
 </p>
 
@@ -78,13 +78,13 @@ endianness and block sizes.
 <p>
 If you wish your changes to be merged back into the standard
 distribution, just email your changes back to us.  You can also
-put your definitions into the "sedona-local.h" file which if included
-by default is none of the existing "sedona.h" sections are matched.
+put your definitions into the "sedona-local.h" file which is included
+by default if none of the existing "sedona.h" sections are matched.
 </p>
 
 <p>
 You might also take a peek at the bottom of the "sedona.h" header
-file.  This where key types like <code>Cell</code> and
+file.  This is where key types like <code>Cell</code> and
 <code>SedonaVM</code> are defined as well as the function
 declarations for working with the VM.
 </p>
@@ -99,7 +99,7 @@ if you don't care about serial port connectivity, then you probably
 don't need to worry about the <code>serial</code> kit.  You also don't 
 need to worry about kits which don't have native methods.  Once you have
 selected your kits, you will have the complete list of native
-methods your must supply.  If you aren't boned up on all the
+methods which you must supply.  If you aren't boned up on all the
 ins-and-outs of native methods, then review the
 <a href="nativeMethods.html">Native Methods</a> chapter.
 </p>
@@ -110,8 +110,8 @@ using the appropriate naming conventions which implements that
 native method for your target platform.  Often you will be able
 to use implementations which have already been written.  For
 example some native methods like <code>sys::Sys.copy</code>
-can be written in portable ANSI C.  Other methods such
-<code>sys::Sys.ticks</code> almost always require a custom
+can be written in portable ANSI C.  Other methods, such as
+<code>sys::Sys.ticks</code>, almost always require a custom
 implementation for each hardware or OS platform.
 </p>
 
@@ -278,7 +278,7 @@ directory which is the portable code. We pull from "native/std" which is
 portable if using stdlib. And we pull from "native/win32" which is win32
 specific code. We also need the "src/vm" code itself and we use the standard
 bootstrap code from "src/boot/std". You can take advantage of the platform
-database's ability to include other platform files if you have a multiple
+database's ability to include other platform files if you have multiple
 binaries to build.
 </p>
 
