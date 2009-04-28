@@ -38,15 +38,6 @@ class PlatformService
     changed(PlatformService.platformId)
   }
   
-  **
-  ** Convenience to invoke the refreshMemory action and return the newly
-  ** updated memAvailable property.
-  **
-  long getMemAvailable() 
-  {
-    refreshMemory()
-    return memAvailable
-  }
   
 ////////////////////////////////////////////////////////////////
 // Service
@@ -63,6 +54,17 @@ class PlatformService
     refreshMemory()
   }
 
+////////////////////////////////////////////////////////////////
+// PlatformService
+////////////////////////////////////////////////////////////////
+
+  **  
+  ** Update the memAvailable property to reflect the current amount of 
+  ** available memory.
+  **
+  virtual void refreshMemory() 
+  { 
+  }
   
 ////////////////////////////////////////////////////////////////
 // Actions
@@ -82,13 +84,6 @@ class PlatformService
   @confirmRequired
   action void reboot() { }
   
-  **
-  ** Action to refresh the amount of available memory. This action must 
-  ** update the memAvailable property to reflect the current amount of 
-  ** available memory.
-  **
-  action void refreshMemory() { }
-  
 ////////////////////////////////////////////////////////////////
 // Properties
 ////////////////////////////////////////////////////////////////
@@ -101,8 +96,7 @@ class PlatformService
   
   **
   ** The amount of available runtime memory, in bytes. This property
-  ** is only guaranteed to be accurate as of the last invocation of the
-  ** refeshMemory action.
+  ** must be updated during execute()  
   **
   @readonly property long memAvailable = 0L
      
