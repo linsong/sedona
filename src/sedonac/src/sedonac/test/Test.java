@@ -43,6 +43,7 @@ public class Test
         "sedonac.test.SoxTest",
         "sedonac.test.SecurityTest",        
         "sedonac.test.PrimitiveDecodeTest",
+        "sedonac.test.PstoreTest",
       };
 
       for (int i=0; i<tests.length; ++i)

@@ -1,0 +1,31 @@
+//
+// Copyright (c) 2009 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   28 Apr 09  Brian Frank  Creation
+//
+
+**
+** TestPstoreFile
+**
+class TestPstoreFile
+  extends PstoreFile
+{
+
+
+  property int result
+
+  action void verifyRead(int offset)
+  {
+    result = read(offset)
+  }
+
+  action void verifyWrite(int x)
+  {
+    int offset = x >> 8
+    int val    = x & 0xff
+    result = write(offset, val) ? 1 : 0
+  }
+
+}

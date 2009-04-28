@@ -223,6 +223,12 @@ public abstract class AbstractSoxTest
     client.invoke(comp.id(), comp.type.slot(slotName, true), arg);
   }
 
+  public void invoke(OfflineComponent comp, String slotName, int arg)
+    throws Exception
+  {
+    invoke(comp, slotName, Int.make(arg));
+  }
+
 //////////////////////////////////////////////////////////////////////////
 // Utils
 //////////////////////////////////////////////////////////////////////////
@@ -236,6 +242,16 @@ public abstract class AbstractSoxTest
     throws Exception
   {
     Thread.sleep(100);
+  }
+
+  OfflineComponent addAdmin(OfflineComponent users, String name, String pass)
+  {                                  
+    Schema schema = users.type.schema;
+    OfflineComponent u = users.app().add(users, new OfflineComponent(schema.type("sys::User"), name));
+    u.setBuf("cred", new Buf(UserUtil.credentials(name, pass)));  
+    u.setInt("perm", 0xffffffff);  
+    u.setInt("prov", 0xff);     
+    return u;
   }
 
 //////////////////////////////////////////////////////////////////////////
