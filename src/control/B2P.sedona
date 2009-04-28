@@ -1,0 +1,31 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   10 Jan 07  Andy Saunders  Creation
+//   27 Apr 07  Brian Frank    Port from Java to Sedona
+//
+
+**
+** B2P Boolean to pulse object
+**
+** out = +in for one scan cycle
+**
+@niagaraIcon="module://icons/x16/control/control.png"
+class B2P
+  extends Component
+{
+
+  property bool out
+  property bool in
+
+  virtual override void execute()
+  {
+    bool cur = in
+    out = (cur && !lastValue)
+    lastValue = cur
+  }
+
+  private bool lastValue
+}

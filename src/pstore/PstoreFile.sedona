@@ -1,0 +1,178 @@
+//
+// Copyright (c) 2009 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   27 Apr 09  Brian Frank  Creation
+//
+
+**
+** PstoreFile is added as a direct child of a PstoreService 
+** to reserves a range of bytes for application use as determined 
+** by the "resvOffset" and "resvSize" properties.
+**
+@niagaraIcon="module://icons/x16/file.png"
+ class PstoreFile
+  extends Service
+{                                       
+
+//////////////////////////////////////////////////////////////////////////
+// Status Codes
+//////////////////////////////////////////////////////////////////////////
+
+  ** File is mapped to storage correctly
+  define int statusOk = 0 
+  
+  ** File component is not actively running
+  define int statusInactive = 1 
+
+  ** Indicates that PstoreFile is not directly mounted under PstoreService
+  define int statusBadParent = 2
+
+  ** Indicates that the parent PstoreService is in an error state.
+  define int statusServiceErr = 3 
+
+  ** Reservation offset is out of range
+  define int statusBadOffset = 4 
+
+  ** Reservation size is out of range
+  define int statusBadSize = 5 
+
+  ** Reservation overlaps with another PstoreFile
+  define int statusDupRange = 6 
+
+//////////////////////////////////////////////////////////////////////////
+// Properties
+//////////////////////////////////////////////////////////////////////////
+
+  **
+  ** Status code for storage file access, see the
+  ** statusXXX defines for the various codes.
+  **
+  property byte status = statusInactive           
+          
+  **     
+  ** Offset of this file's storage reservation relative to the
+  ** storage device modeled by the parent PstoreService.
+  **
+  @config property int resvOffset
+
+  **     
+  ** Size of this file's reservation in bytes.
+  **
+  @config property int resvSize
+
+//////////////////////////////////////////////////////////////////////////
+// I/O
+//////////////////////////////////////////////////////////////////////////
+  
+  **
+  ** Read a byte with an offset relative to this file's range.
+  ** Return -1 on error.
+  **
+  int read(int offset) 
+  {              
+    if (service == null ||offset < 0 || offset >= resvSize)  
+      return -1                           
+      
+    return service.read(offset+resvOffset)
+  }
+
+  **
+  ** Write a byte with an offset relative to this file's range.
+  ** Return true on success, false on error.
+  **
+  bool write(int offset, int val)
+  {
+    if (service == null ||offset < 0 || offset >= resvSize)  
+      return false
+      
+    return service.write(offset+resvOffset, val)
+  }            
+
+//////////////////////////////////////////////////////////////////////////
+// Component
+//////////////////////////////////////////////////////////////////////////
+
+  **
+  ** On startup we need to validate our reservation range.
+  **
+  override void start()
+  {    
+    // validate parent as PstoreService               
+    Component p = Sys.app.lookup(parent)
+    if (p == null || !p.type.is(PstoreService.type))
+    {
+      status = statusBadParent
+      return
+    }                               
+    PstoreService service = (PstoreService)p
+    
+    // validate parent size
+    if (service.size <= 0)
+    {
+      status = statusServiceErr
+      return
+    }
+    
+    // validate starting offset    
+    if (resvOffset < 0 || resvOffset >= service.size)
+    {                                     
+      status = statusBadOffset
+      return
+    }
+
+    // validate ending offset    
+    if (resvSize <= 0 || resvOffset+resvSize >= service.size)
+    {                                     
+      status = statusBadSize
+      return
+    }
+
+    // validate that this file doesn't overlap 
+    // with any other file defined under the service
+    Component kid = Sys.app.lookup(service.children)
+    while (kid != null)
+    {                 
+      if (overlaps(kid))
+      {                                              
+        status = statusDupRange
+        return
+      }
+      kid = Sys.app.lookup(kid.nextSibling)       
+    }
+    
+    // file is now active   
+    this.status = statusOk
+    this.service = service
+  }                 
+  
+  **
+  ** If the given component is a PstoreFile, then 
+  ** compute if this file's range overlaps with it.
+  **
+  private bool overlaps(Component c)
+  {                                
+    if (this == c) return false
+    if (!c.type.is(PstoreFile.type)) return false
+    PstoreFile x = (PstoreFile)c
+    
+    int s1 = this.resvOffset
+    int e1 = s1 + this.resvSize
+    int s2 = x.resvOffset
+    int e2 = s2 + x.resvSize   
+    
+    // !(e1 <= s2 || e2 <= s1)
+    return e1 > s2 && e2 > s1
+  }
+
+//////////////////////////////////////////////////////////////////////////
+// Fields
+//////////////////////////////////////////////////////////////////////////
+  
+  **
+  ** Parent service is this file is configured correctly 
+  ** or null if this file is in error.
+  **
+  private PstoreService service
+}
