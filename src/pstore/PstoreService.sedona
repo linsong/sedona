@@ -1,0 +1,43 @@
+//
+// Copyright (c) 2009 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   27 Apr 09  Brian Frank  Creation
+//
+
+**
+** PstoreService is used to manage a block of random access
+** persistent storage.  Pstores are typically backed by
+** EEPROM, static-RAM, or a file system.  PstoreFiles are
+** added as direct children of the service to reserve a range
+** of bytes for application functionality.
+**
+@niagaraIcon="module://icons/x16/database.png"
+abstract class PstoreService
+  extends Service
+{
+    
+  **     
+  ** Size in bytes of storage available.  A zero value indicates
+  ** an error condition or that the no storage is available.
+  **
+  ** This value must be initialized by the service in the 
+  ** loaded() callback so that is available for error checking
+  ** in the PStoreFile.start callback.
+  **
+  @readonly property int size = 0
+  
+  **
+  ** Read a byte with a storage device offset.
+  ** Return -1 on error.
+  **
+  abstract int read(int offset)
+
+  **
+  ** Write a byte with a storage device offset.
+  ** Return true on success, false on error.
+  **
+  abstract bool write(int offset, int val)
+  
+}

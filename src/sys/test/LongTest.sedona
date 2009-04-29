@@ -1,0 +1,130 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   31 Oct 07  Brian Frank  Creation
+//
+
+**
+** LongTest
+**
+class LongTest
+  extends Test
+{                      
+
+  static long x(long v) { return v }
+
+  static void testOps()
+  {                       
+    // arithmetic operators
+    assert(x(1L) + 2L == 3L)
+    assert(x(2L) + 123456L == 123458L)
+    assert(x(9388563L) - 18563L == 9370000L)
+    assert(x(24L) * 5L == 120L)
+    assert(x(10_234_000_000L) * 123L == 1258782000000L)
+    assert(-x(6312L) / 3L == -2104L)
+
+    // bitwise operators
+    assert((x(0xabcd1234ffff4567L) & 0x3b585acf7800df39L) == 0x2b48120478004521L)
+    assert((x(0xabcd1234ffff4567L) | 0x3b585acf7800df39L) == 0xbbdd5affffffdf7fL)
+    assert((x(0xabcd1234ffff4567L) ^ 0x3b585acf7800df39L) == 0x909548fb87ff9a5eL)
+    assert(x(0xabcd1234ffff4567L) << 3 == 0x5e6891a7fffa2b38L)
+    assert(x(0xabcd1234ffff4567L) >> 2 == 0xeaf3448d3fffd159L)
+    assert(~x(0xabcd1234ffff4567L) == 0x5432edcb0000ba98L)
+
+    // comparision operators
+    assert(x(2L) != -2L)
+    assert(x(1234L) >= 1234L)       
+    assert(x(10_234_000_000L) >= 1233L)
+    assert(x(-1L) > -2L)
+    assert(x(0xabcd12345678L) <= 0xabcd12345678L)
+    assert(x(0xabcd12345678L) <= 0xfbcd12345678L)
+    assert(-x(707L) < -706L)   
+    
+    // verify pop wide with no leave
+    x(4L)
+  }
+
+  static long y(long a, long b) 
+  { 
+    long c = a
+    long d = b
+    return a + b + c + d
+  }
+  
+  static void testStack()
+  {     
+    assert(y(2L, -2L) == 0L)          
+    assert(y(1234567898765L, 987654321000L) == 4444444439530L)
+  }
+
+  static void testAssigns()
+  {
+    verifyAssigns(2L);
+  }               
+  
+  static void verifyAssigns(long  p)
+  {                   
+    // param increment/decrement
+    p = 3L; ++p; assert(p == 4L)
+    p = 3L; p--; assert(p == 2L)
+    p = 3L; assert(++p == 4L); assert(p == 4L)
+    p = 3L; assert(p++ == 3L); assert(p == 4L)
+    p = 3L; assert(--p == 2L); assert(p == 2L)
+    p = 3L; assert(p-- == 3L); assert(p == 2L)     
+
+    // local increment/decrement
+    long x
+    x = 3L; assert(++x == 4L); assert(x == 4L)
+    x = 3L; assert(x++ == 3L); assert(x == 4L)
+    x = 3L; assert(--x == 2L); assert(x == 2L)
+    x = 3L; assert(x-- == 3L); assert(x == 2L)
+
+
+    // param +=, -=, etc
+    p += 3L; assert(p == 5L)
+    p -= 1L; assert(p == 4L)
+    p *= 5L; assert(p == 20L)
+    p /= 2L; assert(p == 10L)
+    p %= 3L; assert(p == 1L)
+    p = 0x7bc2L
+    p &= 0x32feL; assert(p == 0x32c2L)
+    p |= 0xc435L; assert(p == 0xf6f7L)
+    p ^= 0x89f3L; assert(p == 0x7f04L)
+    p <<= 4;      assert(p == 0x7f040L)
+    p >>= 8;      assert(p == 0x7f0L)
+
+    // local +=, -=, etc              
+    assert((x += 3L) == 5L); assert(x == 5L)
+    assert((x -= 1L) == 4L);  assert(x == 4L)
+    assert((x *= 5L) == 20L); assert(x == 20L)
+    assert((x /= 2L) == 10L); assert(x == 10L)
+    assert((x %= 3L) == 1L);  assert(x == 1L)
+    x = 0x7bc2L
+    assert((x &= 0x32feL) == 0x32c2L); assert(x == 0x32c2L)
+    assert((x |= 0xc435L) == 0xf6f7L); assert(x == 0xf6f7L)
+    assert((x ^= 0x89f3L) == 0x7f04L); assert(x == 0x7f04L)
+    assert((x <<= 4) == 0x7f040L);     assert(x == 0x7f040L)
+    assert((x >>= 8) == 0x7f0L);       assert(x == 0x7f0L)
+
+    // asignment
+    assert((p = x = 1234567898765L) == 1234567898765L)
+    assert(p == 1234567898765L)
+    assert(x == 1234567898765L)      
+  }
+
+  static void testTime()
+  {    
+    assert(5ns == 5L) 
+    assert(+2ms == 2_000_000L)                     
+    assert(-3sec == -3_000_000_000L)                     
+    
+    long x
+    x = 1min; assert(x - 2sec == 58sec)
+    x = 0.5days; x += 3hr; assert(x == 15hr)
+    x = 1234days; assert((x *= 2L) == 2468days); assert(x == 2468days)
+    x = 22min; assert(x/11L == 2min)        
+  }
+    
+}

@@ -1,0 +1,71 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   11 Jan 07  Andy Saunders  Creation
+//   27 Apr 07  Brian Frank    Port from Java to Sedona
+//
+
+**
+** UpDn Up down counter object
+**
+@niagaraIcon="module://icons/x16/control/control.png"
+class UpDn
+  extends Component
+{
+
+  ** current count
+  property float out
+  
+  ** overflow indicator
+  property bool ovr
+  
+  ** plus edge pulse count input
+  property bool in
+  
+  ** reset input
+  property bool rst
+  
+  ** count down input else count up.
+  property bool cDwn
+  
+  ** overflow limit
+  @config property float limit
+  
+  ** stop counting when limit reached or not.
+  @config property bool holdAtLimit
+  
+  virtual override void execute()
+  {
+    bool currentIn = in
+    float currentOut = out
+    float currentLimit = limit
+    bool isHoldAtLimit = holdAtLimit
+    if( currentIn && !lastIn ) // positive edge
+    {
+      if(cDwn)
+        currentOut--
+      else
+        currentOut++
+      if(currentOut < 0.0f)
+        currentOut = 0.0f
+      if(isHoldAtLimit && currentOut > currentLimit)
+         currentOut = currentLimit
+      out = currentOut
+      if( currentOut >= currentLimit )
+         ovr = true
+    }
+    lastIn = currentIn
+    if(rst)
+    {
+      ovr = false
+      out = 0.0
+    }
+
+  }
+
+  private bool lastIn = false
+
+
+}

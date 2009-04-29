@@ -1,0 +1,55 @@
+//
+// Copyright (c) 2009 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   28 Apr 09  Brian Frank  Creation
+//
+
+**
+** PstoreService implementation for a file system.
+**
+@niagaraIcon="module://icons/x16/database.png"
+ class FsPstoreService
+  extends PstoreService
+{                
+
+  **
+  ** File name used as the backing store.
+  ** TODO: default doesn't actually work
+  **
+  @config @asStr property Buf(32) filename = "data.pstore"
+  
+  **
+  ** Configured size of file made available for storage.
+  **
+  @config int fileSize = 32768
+  
+  override void loaded()
+  {                                 
+    fp = doOpen("data.pstore", fileSize)
+    size = fp == null ? 0 : fileSize
+  }      
+  
+  override void stop()
+  {
+    doClose(fp)
+  }
+      
+  override int read(int offset)
+  {
+    return doRead(fp, offset)
+  }
+
+  override bool write(int offset, int val)
+  {
+    return doWrite(fp, offset, val)
+  } 
+  
+  internal native static Obj doOpen(Str filename, int size)  
+  internal native static void doClose(Obj fp)  
+  internal native static int doRead(Obj fp, int offset)  
+  internal native static bool doWrite(Obj fp, int offset, int val)  
+  
+  Obj fp
+}

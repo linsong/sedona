@@ -1,0 +1,29 @@
+<!--
+  -  Sedona Kit
+  -  Copyright (c) 2009 Tridium, Inc.
+  -  Licensed under the Academic Free License version 3.0
+  -->
+
+<sedonaKit
+ name = "pstoreFS"
+ vendor = "Tridium"
+ description = "Persistent Storage implementation for File Systems"
+ includeSource = "true"
+ doc = "true"
+>
+
+  <!-- Dependencies -->
+  <depend on="sys 1.0"  />
+  <depend on="pstore 1.0"  />
+
+  <!-- Source Directories -->
+  <source dir="."/>
+
+  <!-- Natives -->
+  <native qname="pstoreFS::FsPstoreService.doOpen"   id="21::0"  />
+  <native qname="pstoreFS::FsPstoreService.doClose"  id="21::1"  />
+  <native qname="pstoreFS::FsPstoreService.doRead"   id="21::2"  />
+  <native qname="pstoreFS::FsPstoreService.doWrite"  id="21::3"  />
+
+</sedonaKit>
+
