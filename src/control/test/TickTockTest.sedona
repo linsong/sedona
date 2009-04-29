@@ -27,7 +27,7 @@ class TickTockTest
     int count = 0;
     freq.in = curOut
     long startTime = Sys.ticks()
-    tickTock.tps = pps
+    tickTock.ticksPerSec = pps
     //while(t1.compare(1100ms) == -1)
     while(count < pps || curOut)
     {

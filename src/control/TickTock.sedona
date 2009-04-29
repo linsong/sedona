@@ -17,18 +17,18 @@ class TickTock
 {
 
   property bool out
-  @config property int tps = 1 
+  @config property int ticksPerSec = 1 
 
   virtual override void execute()
   {
-    int tpsValue = tps
+    int tpsValue = ticksPerSec
     if(tpsValue > 10)
       tpsValue = 10
     else if(tpsValue < 1)
       tpsValue = 1
 
     // calculate ticPeriod
-    if(lastTps != tps)
+    if(lastTps != ticksPerSec)
     {
       inited = false
     }
@@ -39,7 +39,7 @@ class TickTock
       this.lastExecTime = now
       inited = true
       this.nextTick = ticPeriod
-      lastTps = tps
+      lastTps = ticksPerSec
     }
     long scratchTime = now - lastExecTime
     if ( scratchTime > nextTick )
