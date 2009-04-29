@@ -140,8 +140,8 @@ be in dynamic memory to allow runtime modification.
 <!--/////////////////////////////////////////////////////////-->
 
 <p>                         
-All logs are identified by a qname (qualified name) which
-is based on the define field's qname:
+All logs are identified by a <a href="lang.html#namespaces">qname</a> 
+(qualified name) which is based on the define field's qname:
 </p>                         
 
 <ol>
@@ -162,9 +162,9 @@ For example this class in a kit named "acme":
 <pre>                       
 class MyService
 {
-  define Log log     // log qname is "acme:MyService"
-  define Log reqLog  // log qname is "acme:MyService.req"
-  define Log stuff   // log qname is "acme:MyService.stuff"
+  define Log log     // log qname is "acme::MyService"
+  define Log reqLog  // log qname is "acme::MyService.req"
+  define Log stuff   // log qname is "acme::MyService.stuff"
 }  
 </pre>
 

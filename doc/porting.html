@@ -46,12 +46,10 @@ OS platforms using the following steps:
 
 <ol>
 <li>Add platform specific declarations to "sedona.h"</li>
-<li>Decide which kits you are going to support - this will
-    determine the list of native methods you need to support</li>
-<li>Write custom implementations for native methods which
-    are platform specific</li>
-<li>Write your bootstrap code to run the VM</li>
-<li>Stage your VM code using an XML build script</li>
+<li>Select the kits with native methods that you plan to support</li>
+<li>Write custom implementations for native methods where needed</li>
+<li>Write bootstrap code to start the Sedona VM</li>
+<li>Stage the VM code and natives using an XML build script</li>
 <li>Compile the C code using your platform's C compiler</li>
 <li>Run the test suite to verify a successful port</li>
 </ol>
@@ -61,125 +59,140 @@ OS platforms using the following steps:
 <!--/////////////////////////////////////////////////////////-->
 
 <p>
-Your porting journey starts with "<a href="../src/vm/sedona.h">sedona.h</a>"
-which is sourced in the "src/vm" directory.  If you take 
-a look at this file you can see that there is a section for major target
-platforms such as Win32, QNX, and GCC.  Each platform section should 
-be wrapped by an <code>#ifdef</code> directive for your target compiler/platform.
+Porting to a new target platform begins with "<a href="../src/vm/sedona.h">sedona.h</a>"
+which is located in the "src/vm" directory.  This file is included by 
+every native source file, and contains essential definitions required
+for building the native layer of Sedona.
+It contains sections for major target
+platforms such as Win32, QNX, and UNIX.  Each platform's section is 
+wrapped by an <code>#if defined()</code> directive for the
+given target compiler/platform.  If none of the existing sections is
+matched, the preprocessor will look for a file named "sedona-local.h" in
+the include path, and include its contents in place of the other target
+sections.
 </p>
 
 <p>
-Follow the instructions at the top of the header file.  It lists
-a whole bunch of types and macros which you must define correctly
-including things like the ANSI C 99 integer types and macros for
-endianness and block sizes.
+Definitions for a new platform can be added in a new
+<code>#elif defined()</code> section in sedona.h, but the modified sedona.h
+will then need to be updated manually if any changes are made to the public
+version of the file.  A simpler solution is to create a local "sedona-local.h"
+file to hold the definitions for the new platform.  This file will then automatically
+be included in the build and can be maintained separately from the core Sedona
+distribution.
 </p>
 
 <p>
-If you wish your changes to be merged back into the standard
-distribution, just email your changes back to us.  You can also
-put your definitions into the "sedona-local.h" file which is included
-by default if none of the existing "sedona.h" sections are matched.
-</p>
-
-<p>
-You might also take a peek at the bottom of the "sedona.h" header
-file.  This is where key types like <code>Cell</code> and
-<code>SedonaVM</code> are defined as well as the function
-declarations for working with the VM.
+There are instructions at the top of sedona.h that describe
+the types and macros that must be defined for each platform, such as
+the ANSI C 99 integer types and macros for endianness and block sizes.
+Definitions for key types like <code>Cell</code> and
+<code>SedonaVM</code> are defined at the bottom of the file, 
+as well as the function declarations for working with the VM.
 </p>
 
 <!--/////////////////////////////////////////////////////////-->
 <h1 id="natives">Natives</h1>
 <!--/////////////////////////////////////////////////////////-->
 
+
 <p>
-The next step is to determine which kits to support.  For example
-if you don't care about serial port connectivity, then you probably 
-don't need to worry about the <code>serial</code> kit.  You also don't 
-need to worry about kits which don't have native methods.  Once you have
-selected your kits, you will have the complete list of native
-methods which you must supply.  If you aren't boned up on all the
-ins-and-outs of native methods, then review the
-<a href="nativeMethods.html">Native Methods</a> chapter.
+Kits without native methods require no changes to run on a new target platform.
+For each kit with native methods, the existing code must first be examined to 
+see what additional work needs to be done.
 </p>
 
 <p>
-For every native method you will have to supply a C function
-using the appropriate naming conventions which implements that
-native method for your target platform.  Often you will be able
-to use implementations which have already been written.  For
-example some native methods like <code>sys::Sys.copy</code>
-can be written in portable ANSI C.  Other methods, such as
-<code>sys::Sys.ticks</code>, almost always require a custom
-implementation for each hardware or OS platform.
+As described in the <a href="nativeMethods.html">Native Methods</a> chapter,
+every native method must have an appropriately-named C function 
+that implements that method for the target platform.  
+However some C functions are more portable across platforms than others.  
+For example a native method like <code>sys::Sys.copy</code> may be written 
+in ANSI C and shared by many or perhaps all platforms.  
+Other methods, such as <code>sys::Sys.ticks</code>, almost always require a 
+custom implementation for each hardware or OS platform.
 </p>
 
 <p>
-Follow existing conventions for naming and organizing your native
-code.  For example let's pretend we have a kit named "hogwarts"
-which contains a class "Wizard" with a couple native methods.
-Your source tree should be organized into the following directories:
+All the native source code is organized under a directory called "native" in
+the kit directory.  Native functions that are portable
+across <i>all</i> platforms should be contained in C files
+located directly in the "native" directory, one file per class 
+using the naming convention "<i>{kit}_{class}.c</i>".
+Any native functions that are implemented separately for each platform
+should be located in sub-directories under "native", one per platform.
+Code files under these directories are named using the convention
+"<i>{kit}_{type}_{platform}.c</i>".  This helps avoid file name collisions.
 </p>
 
+
+<p>
+For example, given a kit "myKit" with one class "MyClass" that has native functions,
+some portable and some platform-specific, the code would be organized as follows:
+</p>
 <pre id="dirStruct">
-hogwarts/
-  +- native/
-  |    +- qnx/
-  |    |    +- hogwarts_Wizard_qnx.c
-  |    +- win32/
-  |    |    +- hogwarts_Wizard_win32.c
-  |    +- hogwarts_Wizard.c
-  +- test/
-  |    +- WizardTest.sedona
+myKit/
   +- kit.xml
-  +- Wizard.sedona
+  +- MyClass.sedona
+  +- native/
+  |    +- myKit_MyClass.c
+  |    +- qnx/
+  |    |    +- myKit_MyClass_qnx.c
+  |    +- win32/
+  |    |    +- myKit_MyClass_win32.c
+  +- test/
+  |    +- MyClassTest.sedona
 </pre>
 
 <p>
-All native code is organized under a directory called "native" under
-the source base directory.  If you have native code which is portable
-across <i>all</i> platforms then you create a C file per class using
-the naming convention "<i>{kit}_{type}.c</i>" directly under the "native"
-directory.
+All the source code files for the native methods are stored under the folder "myKit/native".
+Functions that can be shared across all platforms are in the file named 
+"myKit_MyClass.c", located in the "native" folder.  These functions should not need to
+be implemented again when porting to a new platform.
+</p>
+<p>
+Source files for platform-specific implementations are located in a separate subfolder 
+for each platform, and the platform name is appended to the source file name.  
+When porting the kit to a new platform "newPlat", simply create a new folder "native/newPlat"
+and put the native method implementations into a source file "myKit_MyClass_newPlat.c"
+under the new folder.
 </p>
 
-<p>
-If you have native code which is specific to target platforms
-then you create sub-directories under "native" for each platform.
-For example "win32" is the standard name for Win32 target code.
-Code under these directories is named using the convention
-"<i>{kit}_{type}_{platform}.c</i>".  It is important to follow naming
-conventions to ensure no file name collisions occur.
-</p>
 
 <!--/////////////////////////////////////////////////////////-->
 <h1 id="bootstrap">Bootstrap</h1>
 <!--/////////////////////////////////////////////////////////-->
 
 <p>
-In addition to the native methods, you also need to write a
-bit of C code to bootstrap the VM.  If you have access to stdlib
-and a file system, then you can just use "<a href="../src/vm/main.c">main.c</a>"
-which loads the scode from a file and boots the VM.
+In addition to the native methods for each kit, the new platform port will need
+some native bootstrapping code to start the Sedona VM.  For sophisticated devices
+with an OS and a file system (such as a PC), it may be sufficient to build and run
+the code provided in "<a href="../src/vm/main.c">main.c</a>".  This function can
+be executed from the OS command line, giving it the filenames for the scode image
+and the Sedona app to be run.  (Even with platforms that cannot support
+"main.c", it may still be useful as a guide for writing the new bootstrap code.)
 </p>
 
 <p>
-On many devices you won't be so lucky to have stdlib or a file
-system.  In this case you need to perform the following initialization
-using a <code>SedonaVM struct</code>:
+On smaller, simpler platforms, new bootstrap code will need to be written.
+Every platform will have a unique implementation, but at some point the Sedona VM
+will need to be started by calling <code>vmRun(SedonaVM*)</code>.  
+(Both <code>vmRun</code> and the <code>SedonaVM</code> struct are defined in sedona.h.)
+Before calling <code>vmRun</code>, a SedonaVM struct must be created and then initialized as
+follows:
 </p>
+
 
 <ol>
 <li>Configure <code>codeBaseAddr</code> and <code>codeSize</code>
-to point to your scode image.  Typically the scode is stored in FLASH
-or loaded into RAM.  To get started you can compile the scode
-into a big C string and link it into your executable using
-the command line utility: <code>sedonac sedonac.util.CStrGen</code>.
+to point to the scode image.  Typically the scode is stored in a disk file
+or in FLASH, and loaded into RAM at this point.  If so then <code>codeBaseAddr</code>
+is simply a pointer to the scode image in RAM.
 </li>
 
 <li>Configure <code>stackBaseAddr</code> and <code>stackMaxSize</code>
-to point to an area of RAM which can be used for the Sedona stack.
+to point to an area of RAM that can be used for the Sedona stack.
+Most commonly this is a static or dynamically-allocated array of the desired size.
 </li>
 
 <li>Configure <code>args</code> and <code>argsLen</code>
@@ -188,69 +201,79 @@ pointer should reference a normal array of C null terminated strings (just
 like a standard C main signature).
 </li>
 
-<li>Configure a callback function for <code>onAssertFailure</code>
-to report assertion failures.  This is how you will know if
-your <a href="testing.html">tests</a> are failing.
+<li>Configure a callback function for <code>onAssertFailure</code>.
+This function is generally used in test code, and is called whenever an assert 
+condition fails.   More details on using the Sedona test facility
+may be found in the <a href="testing.html">Test</a> chapter.
 </li>
 
-<li>Configure the <code>call</code> function pointer to point to
-<code>vmCall</code>.  We use this indirection to allow patching a
-ROM based VM.
+<li>Configure the <code>call</code> function pointer to point to <code>vmCall</code>.  
+This indirection provides a hook for patching a ROM based VM.
 </li>
 
 <li>Configure a pointer to the <code>nativeTable</code> array generated
-automatically during the VM code generation stage.  See
-<a href="nativeMethods.html">Native Methods</a> chapter.
-</li>
-
-<li>Run the vm using the <code>vmRun()</code> function.  If
-this function returns non-zero, then there is a problem.  Take
-a look at "errorcodes.h" to see what the error might be.
-</li>
-
-<li>Consider your device's hibernation strategy.  Typically if 
-<code>vmRun()</code> returns <code>ERR_HIBERNATE</code> then you should
-put your device into a low-power state. Upon awaking you can re-enter
-the vm using the <code>vmUnhibernate()</code> function.  See
-the <a href='memory.html#hibernation'>Hibernation</a> section for
-more details.
-</li>
-
-<li>After the VM exits normally you can use <code>assertSuccesses</code>
-and <code>assertFailures</code> to report the number of calls
-to <code>assert</code> which passed and failed.
+automatically during the VM code generation stage.  See the
+<a href="nativeMethods.html">Native Methods</a> chapter for more information.
 </li>
 </ol>
 
-<p>
-Even if you aren't using "<a href="../src/vm/main.c">main.c</a>",
-you should still use it as a reference to help you write your
-own bootstrap code.
+<p>When the <code>SedonaVM</code> struct has been initialized, start the Sedona VM 
+by calling the <code>vmRun()</code> function and passing a pointer to the struct.  
+If <code>vmRun</code> returns a non-zero value (other than <code>ERR_HIBERNATE</code>, 
+discussed below), then there is a problem.  Errors in the scode
+image or the app will generally produce an error code defined in src/sys/Err.sedona;
+errors in the VM itself are usually indicated by an error code in "src/vm/errorcodes.h".
 </p>
+
+<p>Each platform requires the implmentation of an appropriate hibernation strategy.
+When <code>vmRun()</code> returns <code>ERR_HIBERNATE</code> then the application
+has requested that the platform go into a low-power or sleep state.  Awakening from
+this state is under the control of the device, not the Sedona application.
+Upon awaking, call the <code>vmUnhibernate()</code> function to start the Sedona VM
+again from where it left off.
+See the <a href='memory.html#hibernation'>Hibernation</a> section for
+more details.
+</p>
+
+<p>If the VM exits normally, the global variables <code>assertSuccesses</code>
+and <code>assertFailures</code> will contain the number of calls
+to <code>assert</code> that passed and failed, respectively.
+</p>
+
+
 
 <!--/////////////////////////////////////////////////////////-->
 <h1 id="staging">Staging</h1>
 <!--/////////////////////////////////////////////////////////-->
 
+
 <p>
-Now you should have an implementation for every native method:
-either one already written or a custom native for your target
-platform.  This code is spread out across the source tree in
-oodles of directories.  The next step is to <i>stage</i> the VM
-and native code which basically means copy the source files we need 
-into one big flat directory so that we can compile them.
+Once the native code has been implemented, the next step is to <i>stage</i> the VM
+and native code.  This copies the relevant native source files into a single directory in
+order to compile them using the appropriate native toolchain.
 </p>
 
 <p>
-Staging is driven by a <a href='platforms.html#manifest'>platform XML</a> file
-passed to <code>sedonac</code>. Here is the generic Windows platform XML file
-which contains the compiler directives to stage the native code:
+Staging is performed by a <a href='platforms.html#manifest'>platform XML</a> file
+that is processed by <code>sedonac</code>. 
+The platform XML file lists all of the directories that contain C files 
+required to build the Sedona VM for the target platform.
+(The platform toolchain may add additional non-Sedona files when it builds the final executable.)
+</p>
+<p>
+For example, consider the generic Windows platform XML file:
 </p>
 
 <pre>
 &lt;sedonaPlatform id="generic-win32">
 
-  &lt;compile endian="little" blockSize="4" refSize="4">
+  &lt;compile 
+    endian="little" 
+    blockSize="4" 
+    refSize="4"
+    debug="false"
+    test="false"
+  >
   
     &lt;!-- Native Kits -->
     &lt;nativeKit depend="sys  1.0" />
@@ -271,48 +294,50 @@ which contains the compiler directives to stage the native code:
 </pre>
 
 <p>
-The platform XML file lists of all the directories containing the C files we
-need to compile for our target platform. For example to implement all the
-native methods for the <code>sys</code> kit we pull from the common "native"
-directory which is the portable code. We pull from "native/std" which is
-portable if using stdlib. And we pull from "native/win32" which is win32
-specific code. We also need the "src/vm" code itself and we use the standard
-bootstrap code from "src/boot/std". You can take advantage of the platform
-database's ability to include other platform files if you have multiple
-binaries to build.
+The platform XML file supplies some basic information about the platform, 
+then lists the kits with native code that will be supported by the VM.
+Kits without native methods do not need to be mentioned in the platform XML.
+Finally it identifies the path to each directory containing native code that
+will be required by the VM at runtime.  This includes not only the relevant
+Sedona native methods implementations, but also the source for the Sedona VM itself.
+(On platforms where some portion of the VM is in ROM, only the RAM-based
+code may need to be included here.)
 </p>
+
 
 <p>
-You run the staging script by passing the platform XML file and
-the target directory via the <code>-outDir</code> option.  For
-example to stage generic win32 might look like this:
+Staging is performed by calling <code>sedonac</code> with the platform XML file,
+specifying the target directory via the <code>-outDir</code> option.  For
+example the command line to stage generic-win32 might look like this:
 </p>
-
 <pre>       
   sedonac platforms/generic/win32/generic-win32.xml -outDir tempStageDir
 </pre>
 
 <p>
-The compiler will nuke the stage directory to start fresh, copy the source 
-files to the stage directory, and generate a file called "nativetable.c"
-which specifies the native function lookup 
-<a href="nativeMethods.html#tables">tables</a>.
+This results in the following:
 </p>
+
+<ul>
+  <li> All existing files are removed from the folder <code>tempStageDir</code> </li>
+  <li> All source files are copied from the listed paths into <code>tempStageDir</code> </li>
+  <li> The file "nativetable.c" is generated, which defines the native function 
+  <a href="nativeMethods.html#tables">lookup table</a> </li>
+</ul>
 
 <!--/////////////////////////////////////////////////////////-->
 <h1 id="wrapUp">Wrap Up</h1>
 <!--/////////////////////////////////////////////////////////-->
 
 <p>
-Once you stage the VM code, you have one big flat directory of
-all the source files needed to compile a complete VM.  This makes
-it easy to run your C compiler using something like "cc *.c".
+Note that <code>sedonac</code> does not build the C code, it simply assembles the files
+together into a single directory.  The C code must then be built with the appropriate
+toolchain for the target platform.
 </p>
 
 <p>
-Once you have successfully built your VM executable, you should
-run the <a href="testing.html">test harness</a> to verify a
-successful port.
+Once the VM executable has been built, a good next step is to run the 
+<a href="testing.html">test harness</a> and verify the port was successful.
 </p>
 
 <!-- TOC-FOOTER-START -->
