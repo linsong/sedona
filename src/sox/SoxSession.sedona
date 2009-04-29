@@ -208,12 +208,6 @@ class SoxSession
       close(service, Dasp.TIMEOUT)
       return true
     }
-//    else if (now - lastReceiveTicks > (long)receiveTimeout*0.9sec)
-//    {              
-//      // DIAG
-//      Sys.out.print("Now=${now/1sec}s: Session ${Sys.hexStr(id())} about to time out!")
-//      Sys.out.print(" [last=${lastReceiveTicks/1sec}s]\n")
-//    }
 
     // check for retries
     if (sendWindow.sendRetries(service, this))
@@ -251,10 +245,6 @@ class SoxSession
   **
   void close(SoxService service, int errorCode)
   {                         
-//    // DIAG
-//    Sys.out.print("Closing session ${Sys.hexStr(id())} at ${Sys.ticks()/1sec}s, err=$errorCode")
-//    Sys.out.print(" [last=${lastReceiveTicks/1sec}s]\n")
-
     // prepare close message
     OutStream out = prepare(service, Dasp.CLOSE, 0xffff)
     out.write(Dasp.ERROR_CODE << 2 | Dasp.U2); 
