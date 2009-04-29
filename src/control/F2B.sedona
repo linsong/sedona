@@ -1,0 +1,53 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   10 Jan 07  Andy Saunders  Creation
+//   27 Apr 07  Brian Frank    Port from Java to Sedona
+//
+
+**
+** F2b float 16 bit decoder object
+**
+** out1 to out16 = decode with out1 = LSB and out16 = MSB
+**
+@niagaraIcon="module://icons/x16/control/util/switch.png"
+class F2B
+  extends Component
+{
+
+  property float in
+  property bool out1
+  property bool out2
+  property bool out3
+  property bool out4
+  property bool out5
+  property bool out6
+  property bool out7
+  property bool out8
+  property bool out9
+  property bool out10
+  property bool out11
+  property bool out12
+  property bool out13
+  property bool out14
+  property bool out15
+  property bool out16
+  property bool ovrf
+
+  virtual override void execute()
+  {
+    int value = (int)in
+    ovrf = value > 0xffff
+    int mask = 1
+
+    //loop through out1 - out16 setting values
+    for(int i = F2B.out1.id; i <= F2B.out16.id; i++)
+    {
+      setBool(type.slots[i], (value & mask) != 0)
+      mask = mask << 1
+    }
+  }
+
+}

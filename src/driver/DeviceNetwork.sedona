@@ -1,0 +1,43 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   23 Aug 07  Andy Saunders  Creation
+//
+
+**
+** Auto-generated template Sedona Class
+**
+class DeviceNetwork
+  extends Service 
+{
+  @config property int pingTimeSec = 30  
+
+  virtual override void start()
+  {
+    this.app = Sys.app
+  }
+
+  
+  Device getFirstDevice()
+  {
+  	App app = Sys.app
+    for (Component c = app.lookup(children); c != null; c = app.lookup(c.nextSibling))
+      if (c.type.is(Device.type))
+        return (Device)c
+    return null
+  }
+
+  Device getNextDevice(Device device)
+  {
+  	App app = Sys.app
+    for (Component c = app.lookup(device.id); c != null; c = app.lookup(c.nextSibling))
+      if (c.id != device.id && c.type.is(Device.type))
+        return (Device)c
+    return null
+  }
+  
+  
+  App app
+}
