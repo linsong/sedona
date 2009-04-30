@@ -395,7 +395,7 @@ public class CodeAsm
     // check if range is contiguous enough
     if (delta > 30 && num*3 < delta)       
     {        
-      err("Switch range too big: " + min + " to " +  max + "; use if/else", stmt.loc);
+      err("Switch cases too sparse: only " + num + " cases from " + min + " to " +  max + "; use if/else", stmt.loc);
       return;
     }                       
     
