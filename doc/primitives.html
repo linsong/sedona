@@ -46,11 +46,11 @@ primitive types:
 
 <ul>
 
-<li><code>bool</code>: boolean of <code>true</code> or <code>false</code></li>
+  <li><code>bool</code>: boolean value</li>
 
-<li><code>byte</code>: unsigned 8-bit integer (fields/arrays only)</li>
+<li><code>byte</code>: unsigned 8-bit integer (as field or array only)</li>
 
-<li><code>short</code>: unsigned 16-bit integer (fields/arrays only)</li>
+<li><code>short</code>: unsigned 16-bit integer (as field or array only)</li>
 
 <li><code>int</code>: signed 32-bit integer</li>
 
@@ -73,6 +73,8 @@ language support for literal representation:
 <li><code>Buf</code>: chunk of bytes in memory</li>
 
 </ul>
+
+These types are described in more detail below.
 
 <!--/////////////////////////////////////////////////////////-->
 <h1 id="bool">Bool</h1>
@@ -112,28 +114,29 @@ Sedona provides four integer types of varying widths:
 </p>
 
 <ul>
-<li><code>byte</code>: unsigned 8-bit integer (fields/arrays only)</li>
-<li><code>short</code>: unsigned 16-bit integer (fields/arrays only)</li>
+<li><code>byte</code>: unsigned 8-bit integer (as field or array only)</li>
+<li><code>short</code>: unsigned 16-bit integer (as field or array only)</li>
 <li><code>int</code>: signed 32-bit integer</li>
 <li><code>long</code>: signed 64-bit integer</li>
 </ul>
 
 <p>
+Both <code>byte</code> and <code>short</code> are special types
+which may only be used as fields or in arrays.    
+Attempting to use <code>byte</code> or <code>short</code> as a return 
+type, parameter type, or local variable type is a compiler error.
 Note that unlike Java both <code>byte</code> and <code>short</code> 
 are <i>unsigned</i>.  Currently there is no signed 8-bit or 16-bit 
-integer type.
+integer type in Sedona.
 </p>
 
 <p>
-Both <code>byte</code> and <code>short</code> are special types
-which may only be used as fields or in arrays.  All integer operations
+All integer operations
 on the Sedona VM stack are performed using signed 32-bit integers.
 When a <code>byte</code> and <code>short</code> is loaded from a
 field or array it is automatically expanded into a 32-bit signed
 value.  Likewise when it is stored back into a field or array it
-is narrowed from a 32-bit signed value.  Attempting to use <code>byte</code>
-or <code>short</code> as a return type, parameter type, or local variable
-type is a compiler error.
+is narrowed from a 32-bit signed value.
 </p>
 
 <p id="charEscapes">
@@ -224,7 +227,7 @@ The keyword <code>null</code> is used to represent not-a-number
 for situations requiring indication of an invalid float or double.  
 The string representation for <code>null</code> floats and doubles
 is always "null".  The "==" operator will return true when comparing
-two <code>null</code> floating point values (different than Java
+two <code>null</code> floating point values (different from Java
 and IEEE).  How arithmetic and comparisions operate with <code>null</code> 
 is unspecified by the Sedona VM.
 </p>
@@ -246,7 +249,7 @@ null
 <!--/////////////////////////////////////////////////////////-->
 
 <p>
-Sedona models time as a 64-bit long as a number of nanosecond ticks.
+Sedona represents time in nanosecond ticks, stored as a 64-bit long.
 When working with time, Sedona supports a special literal representation
 for <code>longs</code> using the following suffixes on a decimal number:
 </p>
@@ -286,14 +289,13 @@ Examples of <code>long</code> time literals and what they represent:
 <p>
 The <code>sys::Str</code> class models a string of ASCII characters.
 Sedona strings are stored in memory like C strings using a null
-terminator (a byte value of zero).  You should limit yourself to 7-bit
-ASCII characters (high bit is clear) for future UTF-8 and Unicode
-support.
+terminator (a byte value of zero).  It is recommended to use only 7-bit
+ASCII characters (clear high bit) for future UTF-8 and Unicode support.
 </p>
 
 <p>
-The internal representation of a Str differs between the SVM and the 
-JVM.  For the most part the Str APIs hide any storage differences between
+The internal representation of a Str differs between the Sedona VM and the 
+Java VM.  For the most part the Str APIs hide any storage differences between
 the SVM and JVM platforms.  But it helps to know what is going on under
 the covers:
 </p>
@@ -311,7 +313,7 @@ reference as a normal C string (<code>char*</code>) when writing your
 <p>
 On the Java VM, Str is represented by the <code>sedona.vm.StrRef</code> class
 which encapsulates a reference to a <code>byte[]</code> and an offset
-into that byte array.  This allows us simulate "pointer arithmetic" when
+into that byte array.  This allows the simulation of "pointer arithmetic" when
 parsing strings out of static buffers.
 </p>                     
 
@@ -337,7 +339,7 @@ Examples of <code>Str</code> literals:
 <p>
 Note that the compiler automatically adds the null terminator.  For example
 a pointer to the literal <code>"abc"</code> is really a pointer to four bytes
-of memory storing <code>"abc\0"</code>.  <code>Str</code> literals should
+of memory containing <code>"abc\0"</code>.  <code>Str</code> literals should
 be considered read-only memory - never try to change the contents of
 a <code>Str</code> literal.
 </p>

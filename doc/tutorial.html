@@ -66,10 +66,11 @@ Sedona environment  <a href='setup.html'>setup</a> correctly before.
 Kits are modules used to organize Sedona code.  For this
 example we will create a new kit called <code>tutorial</code>.
 In our kit we will create a component called <code>Add</code>,
-which adds to two inputs together.  First let's create a directory
-called "tutorial" with two files:
+which adds two inputs together.  
+</p>
+<p>
+First let's create a directory called "tutorial" with two files:
 </p>                             
-
 <pre> 
 tutorial/
   +- kit.xml
@@ -95,9 +96,9 @@ The "kit.xml" file is used to define the kit's meta-data for the compiler:
 <p>
 The "kit.xml" file specifies the name of our kit, a short description,
 dependencies, and the directories of source code. The vendor attribute
-specifies the company who developed the kit - for the purposes of the tutorial
+specifies the company that developed the kit - for the purposes of the tutorial
 leave this as "Tridium" because otherwise the kit name must be prefixed with
-the name. For more information see <a href='kits.html'>Kits</a> and 
+the vendor name. For more information see <a href='kits.html'>Kits</a> and 
 <a href='sedonac.html#compileKit'>Sedonac</a>.
 </p>    
 
@@ -156,17 +157,17 @@ trouble running sedonac, then see <a href='setup.html'>Setup</a>.
 <p>
 Kits are units of deployment, but are not run directly by the 
 Sedona VM.  First we have to compile a set of kits into an scode
-image which can be run directly by the Sedona VM.  Create a new 
+image that can be run directly by the Sedona VM.  Create a new 
 directory called "tutorialApp" with one file:
 </p>                  
 
 <pre> 
 tutorialApp/
-  +- code.xml
+  +- kits.xml
 </pre>         
 
 <p>
-The "code.xml" file specifies the kits we wist to compile into
+The "kits.xml" file specifies the kits we wist to compile into
 an image:
 </p>
 
@@ -196,9 +197,9 @@ Run sedonac on this file to produce an scode image:
 </p>
 
 <pre>              
-D:\sedona\tutorialApp>sedonac code.xml
+D:\sedona\tutorialApp>sedonac kits.xml
   ReadKits [6 kits]
-  WriteImage [D:\sedona\tutorialApp\code.scode] (79340 bytes)
+  WriteImage [D:\sedona\tutorialApp\kits.scode] (79340 bytes)
   +----------------------------------
   |  Data:      6.3kb (6448 bytes)
   |  Code:     77.5kb (79340 bytes)
@@ -210,12 +211,12 @@ D:\sedona\tutorialApp>dir
 
  Directory of D:\sedona\baseline\pub\tutorialApp
 
-01/19/2009  02:24 PM    79,340 code.scode
-01/19/2009  02:20 PM       342 code.xml
+01/19/2009  02:24 PM    79,340 kits.scode
+01/19/2009  02:20 PM       342 kits.xml
 </pre>
 
 <p>
-If successful, then you should have now have a "code.scode" file.
+If successful, then you should have now have a "kits.scode" file.
 </p>
 
 
@@ -224,7 +225,7 @@ If successful, then you should have now have a "code.scode" file.
 <!--/////////////////////////////////////////////////////////-->
 
 <p>
-Sedona is a component oriented language which enables you to 
+Sedona is a component oriented language that enables you to 
 build new applications by assembling components.  The application
 file stores a tree of components, their configuration properties,
 and how they are linked together.  Typically applications are built
@@ -268,13 +269,34 @@ create a new "app.sax" file:
 </pre>
 
 <p>
-The file above declares four components. The <code>WebService</code> component
-will run an HTTP server so we can use a browser for debugging. We set the web
-server's port to 8080. We declare two <code>control::Ramp</code> components
-which are used to generate dummy data. Finally we declare a <code>tutorial::Add</code> 
+The file above declares four Service components. 
+<ul>
+  <li>
+  The <code>PlatformService</code> component provides access to platform properties
+  and other platform-specific features.
+  </li>
+  <li>
+The <code>UserService</code> component
+contains an entry for each authorized user, specifying the user's credentials and privileges.
+  </li>
+  <li>
+The <code>SoxService</code> component
+is required in order to create and use a Sox connection to or from the device.
+  </li>
+  <li>
+  The <code>WebService</code> component will run an HTTP server so we can use a 
+  browser for debugging. The web server's port is set to 8080.  
+  (Note that platforms with limited resources may not be able to run a web server.)
+  </li>
+</ul>
+We then declare two <code>control::Ramp</code> components
+which are used to generate dummy data. 
+Finally we declare a <code>tutorial::Add</code> 
 component which is the component we built ourselves in the step above. 
-The links section is used to link the output of the two ramps to the 
-inputs of our <code>Add</code> block to create control flow.
+</p>
+<p>
+In the links section we create links between the Ramp component outputs and
+the inputs to our <code>Add</code> block to create control flow.
 </p>
 
 <p>
@@ -308,7 +330,7 @@ If you have followed the steps above, we have:
 
 <ul>
 <li>Built a new kit called "tutorial" with a component called "Add"</li>
-<li>Compiled our new kit into an scode image called "code.scode"</li>
+<li>Compiled our new kit into an scode image called "kits.scode"</li>
 <li>Defined and compiled an app into a file called "app.sab"</li>
 </ul>
 
@@ -318,7 +340,7 @@ we are running on Windows we can run our application as follows:
 </p>
 
 <pre>                          
-D:\sedona\tutorialApp>svm code.scode app.sab
+D:\sedona\tutorialApp>svm kits.scode app.sab
 
 Sedona VM 1.0
 buildDate: Dec  2 2008 12:58:55
@@ -348,8 +370,8 @@ Hit refresh a couple times to see how the inputs and output change in real-time.
 
 <p>
 If you have a programming tool such as the Sedona Workbench, you should now
-be able to connect to Sox port 1876 with the username "admin" and password
-of "".  Refer to your Sedona tool documentation for more information.
+be able to connect to Sox port 1876 with the username "admin" and empty password.  
+Refer to your Sedona tool documentation for more information.
 </p> 
 
 <p>

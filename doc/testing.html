@@ -40,7 +40,7 @@
 <!--/////////////////////////////////////////////////////////-->
 
 <p>
-We all love test driven development!  So Sedona comes with built-in
+We all love test driven development!  Sedona comes with built-in
 support for writing and running unit tests.  You won't have
 any excuses to skip unit testing.  The Sedona test framework is
 based upon the following principles:
@@ -55,7 +55,7 @@ to enable you to bundle unit tests for each kit with the kit itself
 <i>test only</i> so that we can include or exclude test code
 easily</li>
 
-<li><b>Test Methods</b>: classes which subclass from <code>sys::Test</code>
+<li><b>Test Methods</b>: classes that extend <code>sys::Test</code>
 are automatically scanned for <i>test methods</i> and added to the
 test harness</li>
 
@@ -81,7 +81,7 @@ in your "kit.xml" build file:
 </pre>
 
 <p>
-The snippet of XML above illustrates a kit build file which
+The snippet of XML above illustrates a kit build file that
 contains two source directories.  The "." directory contains the
 normal runtime classes.  On the other hand, all the classes defined
 in the "test" directory are automatically marked <i>test only</i>.  If
@@ -95,11 +95,11 @@ place all test code in a subdirectory called "test" off your source tree.
 <!--/////////////////////////////////////////////////////////-->
 
 <p>
-Tests are organized into <i>test classes</i> which is any class
-extending from <code>sys::Test</code>.  Every method inside
-a test class which starts with "test" is a <i>test method</i>.
+Tests are organized into <i>test classes</i> which are classes that
+extend <code>sys::Test</code>.  Every method inside
+a test class that starts with "test" is a <i>test method</i>.
 Test methods are the primary unit of test execution.  Test methods
-must be public, static, non-native methods which return void and
+must be public, static, non-native methods that return void and
 declare no parameters.
 </p>
 
@@ -146,9 +146,10 @@ is <code>false</code> then these attributes are ignored).</li>
 
 <li>Build the test version of your scode</li>
 
-<li>Run the VM using the "<code>-test"</code>" argument which
-will execute all the test methods and report assert failures:<br/>
-<code>svm kits.scode -test</code>
+<li>Run the VM using the "<code>-test"</code>" argument, which
+will execute all the test methods and report assert successes
+and failures:<br/>
+<pre>svm kits.scode -test</pre>
 </li>
 </ol>
 

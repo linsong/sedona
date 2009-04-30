@@ -45,10 +45,10 @@ Sedona's security model is based upon the following principles:
 
 <ul>
 <li>Users represent an authenticated user account (human or machine)</li>
-<li>Components are assigned into one or more of four groups</li>
-<li>Slots are assigned as operator level or admin level</li>
+<li>Components are assigned to one or more of four security groups</li>
+<li>Slots are designated as operator level or admin level</li>
 <li>Users are assigned permission levels for the four groups</li>
-<li>All network access such as Sox checks permissions before any operation</li>
+<li>Any network access such as Sox checks permissions before any operation</li>
 </ul>
 
 <!-- /////////////////////////////////////////////////////// -->
@@ -56,8 +56,8 @@ Sedona's security model is based upon the following principles:
 <!-- /////////////////////////////////////////////////////// -->
 
 <p> 
-Any Sedona application which wishes to utilize security must include
-an instance of the <code>sys::UserService</code> which contains at least 
+Any Sedona application that wishes to utilize security must include
+an instance of the <code>sys::UserService</code> containing at least 
 one <code>sys::User</code> component.  Each <code>sys::User</code> component
 represents a user account.  User components must be direct children of
 the UserService.  The <code>Component.name</code> of the User component is 
@@ -69,7 +69,7 @@ the username.
 <!-- /////////////////////////////////////////////////////// -->
 
 <p>
-Each User component stores a 20 byte <code>cred</code> property
+Each User component stores a 20 byte <code>cred</code> property,
 which is the credentials hash of the user's password.  Because 
 credentials are a one-way hash, the password is never readable.  
 Credentials are computed as follows:
@@ -94,7 +94,7 @@ Base64: dAkbwqH0MQjfVigbanSXW6uGI28=
 </pre>          
 
 <p>
-Network protocols which support authentication should work as follows:
+Network protocols that support authentication should work as follows:
 </p>
 
 <ol>
@@ -109,7 +109,7 @@ Network protocols which support authentication should work as follows:
 
 <p>
 If a protocol doesn't support authentication, then it should define
-a configuration property which references a user account to use for
+a configuration property that references a user account to use for
 security checking.
 </p> 
 
@@ -131,9 +131,9 @@ nibble in the <code>Component.meta</code> property:
 </table>
 
 <p>
-Components can be in multiple groups.  For example to set a component
-in groups 2 and 3, then set the bottom nibble of <code>Component.meta</code>
-to be 0x06.  If a component is not included in any groups, then
+Components can be in multiple groups.  For example: to assign a component
+to groups 2 and 3, set the bottom nibble of <code>Component.meta</code>
+to 0x06.  If a component is not included in any groups, then
 that component is not network accessible.
 </p>
 

@@ -40,7 +40,7 @@
 <!--/////////////////////////////////////////////////////////-->
 
 <p>
-The <i>Sox</i> protocol is the standard protocol used to communicate
+<i>Sox</i> is the standard protocol used to communicate
 with Sedona devices.  Sox provides the following services:
 </p>
 
@@ -52,7 +52,7 @@ with Sedona devices.  Sox provides the following services:
 <li><b>RPC</b>: ability to invoke component actions remotely.</li>
 <li><b>Programming</b>: ability to add/remove/rename/link/unlink components.</li>
 <li><b>File Transfer</b>: ability to get or put arbitrary streams of bytes.</li>
-<li><b>Provisioning</b>: ability to backup/upgrade the SVM, kits, or app thru file transfers.</li>
+<li><b>Provisioning</b>: ability to backup/upgrade the SVM, kits, or app via file transfers.</li>
 </ul>
 
 <!--/////////////////////////////////////////////////////////-->
@@ -70,14 +70,14 @@ Sox messages against a user account.</li>
 <li>Dasp manages reliability. When Sox sends a message, it doesn't
 have to worry about retries - Dasp ensures the message gets delivered.</li>
 <li>Dasp manages flow control.  Communication such as a file transfer
-which creates bursts of packets is automatically throttled to the network's
+that creates bursts of packets is automatically throttled to the network's
 capacity by Dasp.</li>
 <li>Dasp is full duplex - once a session is established, either side may
 initiate a message send.</li>
 </ul>
 
 <p>
-Dasp also defines some restrictions which Sox must take into consideration:
+Dasp also defines some restrictions that Sox must take into consideration:
 </p>
 
 <ul>
@@ -103,7 +103,7 @@ u1[]  payload
 </pre>
 
 <p>
-Every request is assigned a command identifier which is a lower
+Every request is assigned a command identifier, which is a lower
 case ASCII letter.  For example <code>'r'</code> indicates a read
 property request.  Responses to a request use a capitalized
 ASCII letter, for example a read property response has a cmd
@@ -240,13 +240,13 @@ The following Sox message commands are defined:
   <td>Close a file transfer operation</td></tr>
 
 <tr><td>!</td><td><a href='#error'>error</a></td>
-    <td>Response id for a command which could not be processed</td></tr>
+    <td>Response id for a command that could not be processed</td></tr>
 
 </table>
 
 <h2 id="add">add</h2>
 <p>The add command is used to add a new component to the application.
-The configProps must match up to the schema definition for the type.</p>
+The configProps must match the schema definition for the type.</p>
 <pre>
 req
 {
@@ -295,9 +295,9 @@ into four sections:
 </p>
 
 <ul>
-<li>tree: this is the components id, name, parent, and children</li>
-<li>config: all the persistent properties marked with <code>@config</code> facet</li>
-<li>runtime: all the transient properties not marked with <code>@config</code> facet</li>
+<li>tree: the component's id, name, parent, and children</li>
+<li>config: all the persistent properties (marked with <code>@config</code> facet)</li>
+<li>runtime: all the transient properties (not marked with <code>@config</code> facet)</li>
 <li>links: all the links to and from the component</li>
 </ul>
 
@@ -346,7 +346,7 @@ compLinks
 
 <h2 id="delete">delete</h2>
 <p>Delete a component from the application.  This command automatically
-deletes any children components and removes any links to or from the
+deletes any child components as well as any links to or from the
 deleted components.</p>
 
 <pre>
@@ -386,7 +386,7 @@ req
 <p>
 The fileOpen command is used to initiate a get or put file transfer.
 The chunk size is negotiated such that chunk messages fit within the
-underlying transports packet size (for example if running over 6LoWPAN
+underlying transport's packet size (for example if running over 6LoWPAN
 we want to fit each chunk into a single 802.15.4 packet).
 </p>
 
@@ -483,7 +483,7 @@ res
 </pre>
 
 <h2 id="reorder">reorder</h2>
-<p>Reorder a component's children components.</p>
+<p>Reorder a component's child components.</p>
 
 <pre>
 req
@@ -568,7 +568,7 @@ res
 </pre>
 
 <h2 id="version">version</h2>
-<p>Get the list of installed kits and their checksums which defines
+<p>Get the list of installed kits and their checksums, which defines
 the <a href='schema.html'>schema</a>.</p>
 
 <pre>
@@ -613,7 +613,7 @@ res
 
 <h2 id="versionMore">versionMore</h2>
 <p>
-Get extra version information which includes the version of
+Get extra version information, which includes the version of
 the installed kits plus platform specific name/value pairs.
 </p>
 
@@ -699,8 +699,8 @@ res
 </pre>
 
 <h2 id="error">error</h2>
-<p>The error response is sent back as a potential response to
-any request.  It indicates to the client that that request could
+<p>The error response may sent back as a response to any request.  
+It indicates to the client that the request could
 not be processed.  The cause of failure is returned as a short
 string in the message.</p>
 
