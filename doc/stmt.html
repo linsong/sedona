@@ -365,8 +365,22 @@ switch (i)
 <p>
 Like C, case blocks fall through to the next case block - use a break 
 statement to break out of the switch statement.  The default block handles 
-any value without an matching case label.  The default block is optional, if 
-omitted then unmatched values fall through to the next statement.  
+any value without an matching case label.  The default block is optional; if 
+omitted then unmatched values fall through to the next statement after the switch.  
+However, if the default block exists, it must be the last label in the switch statement.
+</p>
+
+<h2 id="limits">Limits on Case Values</h2>
+<p>
+To reduce code size, case values must not be too widely spaced.
+For a difference <code>delta</code> between the minimum and maximum case values, 
+and total number of case values <code>num</code>, at least
+one of the following must be true:
+<ul>
+  <li> <code>delta &lt;= 30</code>
+  <li> <code>num*3 &gt;= delta</code>
+</ul>
+It is a compile time error if both conditions are false.
 </p>
 
 <!--/////////////////////////////////////////////////////////-->
