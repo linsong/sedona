@@ -56,7 +56,8 @@ the native code for a specific platform binary</li>
 <li><a href='#compileApp'>Compile App</a>: convert between
 sax and sab formats</li>             
 <li><a href='#run'>Run</a>: run an arbitrary class within "sedona.jar" 
-or "sedoanc.jar".</li>             
+or "sedoanc.jar".</li>      
+<li><a href='#docs'>Build Docs</a>: auto-generate HTML documentation </li>             
 </ul>
 
 <!--/////////////////////////////////////////////////////////-->
@@ -272,8 +273,8 @@ The output file is placed in the same directory as the input file:
 </p>       
 
 <pre> 
-D:\sedona\baseline\pub\apps>sedonac test.sax
-  ConvertAppFile [D:\sedona\baseline\pub\apps\test.sax -> D:\sedona\baseline\pub\apps\test.sab]
+D:\sedona\pub\apps>sedonac test.sax
+  ConvertAppFile [D:\sedona\pub\apps\test.sax -> D:\sedona\pub\apps\test.sab]
   +----------------------------------
   |  RAM:     14.2kb (14588 bytes)
   |  FLASH:    0.4kb (382 bytes)
@@ -307,6 +308,45 @@ Base64: yk0f2aCJ/51Qqx8dxOR3Kmskxrs=
 
 <p> 
 The class must be defined in "sedona.jar" or "sedonac.jar":
+</p>
+
+
+
+<!--/////////////////////////////////////////////////////////-->
+<h1 id="docs">Build Docs</h1>
+<!--/////////////////////////////////////////////////////////-->
+
+<p> 
+The <code>-doc</code> switch builds HTML documentation along with the scode.  For example:
+</p> 
+
+<pre>    
+D:\sedona>sedonac -doc pub/src/sys
+  Parse [44 files]
+  WriteKit [D:\sedona\pub\kits\sys\sys-b0ce639-1.0.36.kit]
+  WriteDoc [D:\sedona\pub\doc\sys]
+*** Success! ***
+
+D:\sedona\sedonac -doc pub/doc/toc.xml
+  TableOfContents [D:\sedona\pub\doc -> D:\sedona\pub\doc]
+  CheckHtmlLinks [D:\sedona\pub\doc]
+*** Success! ***
+
+D:\sedona\sedonac
+</pre>
+
+<p> 
+If the input file is a directory of Sedona kit source folders, then it will build 
+the kits and automatically generate HTML documentation for each class, as well as
+a summary page for each kit.
+All fields and methods for each class will be included in the documentation, 
+and any <code>**</code> style comments above a given field or method
+will be included with the entry for that field or method.
+</p>
+<p>
+If instead the input file to <code>sedonac -doc</code> is an XML file,
+it will be processed for information on generating a table of contents.
+See the file <code>doc/toc.xml</code> for an example.
 </p>
 
 
