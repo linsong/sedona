@@ -1,0 +1,69 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   30 Nov 07  Andy Saunders  Creation
+//
+
+**
+** Tstat Provides On/Off or Floating Thermostat control
+**
+**   raise & lower outputs operate independent of isHeating mode.
+**     lower will be set to true if cv > (sp + diff/2) and will
+**           remain set until cv < sp.
+**     raise will be set to true if cv < (sp - diff/2) and will
+**           remain set until CV > sp.
+**
+**   out will be set based on isHeating mode.
+**     if isHeating
+**        out = raise
+**     else
+**        out = lower
+**
+@niagaraIcon="module://icons/x16/control/util/switch.png"
+class Tstat
+  extends Component
+{
+
+  @config property float diff    = 0.0f
+  @config property bool isHeating = false
+  property float sp
+  property float cv
+  property bool out
+  property bool raise
+  property bool lower
+
+  virtual override void execute()
+  {
+  	float delta   = diff/2.0f
+  	float hiValue = sp + delta
+  	float loValue = sp - delta
+    
+    if(cv > hiValue) 
+    {
+    	lower = true
+    	raise = false
+    }
+    else if( cv < loValue )
+    {
+    	lower = false
+    	raise = true
+    }
+    else if( lower && cv < sp )
+    {
+    	lower = false
+    }
+    else if( raise && cv > sp )
+    {
+    	raise = false
+    }
+    if(isHeating)
+      out = raise
+    else 
+      out = lower
+  	
+  	//Sys.out.print("     tstat::").printFloat(sp).print(", ").printFloat(diff).print(", ").printFloat(cv).print(", ").printBool(out).print(", ").printBool(raise).print(", ").printBool(lower).nl()
+  }
+
+}
