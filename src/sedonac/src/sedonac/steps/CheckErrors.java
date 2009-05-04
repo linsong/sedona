@@ -654,21 +654,6 @@ public class CheckErrors
         dups.put(literal, literal);
       }
     }              
-    
-    // normalize cases, by removing any cases 
-    // which fall-thru to default
-    if (stmt.defaultBlock != null)
-    {
-      int trim = stmt.cases.length-1;
-      while (trim >= 0) 
-      {
-        if (stmt.cases[trim].block != null) break;
-        trim--;
-      }
-      Stmt.Case[] trimmed = new Stmt.Case[trim+1];
-      System.arraycopy(stmt.cases, 0, trimmed, 0, trim+1);
-      stmt.cases = trimmed;
-    }
   }
 
 //////////////////////////////////////////////////////////////////////////

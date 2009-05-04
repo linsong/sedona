@@ -434,6 +434,27 @@ public class CodeAsm
       int label = c.label.toIntLiteral().intValue();
       jumps[label-min] = mark();
       if (c.block != null) block(c.block);
+      if (i == (cases.length - 1))
+      {
+        // TODO: add static code analysis to determine if fall-through to
+        // default block is necessary. The current check is not very smart.
+        // It won't catch cases like
+        /*
+         * ...
+         * case 1:
+         *   if (true) break
+         *   else break
+         *   // we will insert a JUMP to the default block here even
+         *   // though it won't be reached.
+         * default: ...
+         */
+        // However, in the worst case, we are adding a single unreachable
+        // opcode. This seems like a reasonable trade-off for now.
+        
+        // Last case statement will fall-through to default block.
+        if (c.block.stmts()[c.block.stmts().length-1].id != Stmt.BREAK)
+          op(SCode.Jump, defStart);
+      }
     }
     
     // fill in any no cased jumps to default

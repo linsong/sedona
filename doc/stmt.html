@@ -370,6 +370,24 @@ omitted then unmatched values fall through to the next statement after the switc
 However, if the default block exists, it must be the last label in the switch statement.
 </p>
 
+<p>
+If the last case statement does not break and there is a default block, 
+the last case statement will fall through into the default block.
+</p>
+
+<pre>
+switch(i)
+{
+  case 0: 
+    reset()
+    break
+  case 1:
+    init() // fall through to default block
+  default:
+    work() // whenever i is not zero
+}
+</pre>
+
 <h2 id="limits">Limits on Case Values</h2>
 <p>
 To reduce code size, case values must not be too widely spaced.
@@ -380,7 +398,8 @@ one of the following must be true:
   <li> <code>delta &lt;= 30</code></li>
   <li> <code>num*3 &gt;= delta</code></li>
 </ul>
-It is a compile time error if both conditions are false.
+It is a compile time error if both conditions are false. If you get this
+compiler error, you should change your code to use the <code>if/else if/.../else</code> idiom.
 </p>
 
 <!--/////////////////////////////////////////////////////////-->

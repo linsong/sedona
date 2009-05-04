@@ -384,8 +384,8 @@ class StmtTest
     assert(switchB(26) == 999)
     
     assert(switchC(20) == 200)
-    assert(switchC(30) == 300)
-    assert(switchC(39) == 300)
+    assert(switchC(30) == 301)
+    assert(switchC(39) == 1000)
     
   }
 
@@ -431,8 +431,9 @@ class StmtTest
         r = 200;
         break
       case 30:
+        r = 300
       default:
-        r = 300;  
+        ++r
         break
     }
     return r;

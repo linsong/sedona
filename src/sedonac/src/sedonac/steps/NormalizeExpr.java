@@ -45,6 +45,37 @@ public class NormalizeExpr
     walkAst(WALK_TO_EXPRS);
     quitIfErrors();
   }
+  
+//////////////////////////////////////////////////////////////////////////
+// Statements
+//////////////////////////////////////////////////////////////////////////
+
+  public void enterStmt(Stmt s)
+  {
+    super.enterStmt(s);
+    switch (s.id)
+    {
+      case Stmt.SWITCH: normalizeSwitch((Stmt.Switch)s); break;
+    }
+  }
+  
+  private void normalizeSwitch(Stmt.Switch stmt)
+  {
+    // normalize cases, by removing any cases 
+    // which fall-thru to default
+    if (stmt.defaultBlock != null)
+    {
+      int trim = stmt.cases.length-1;
+      while (trim >= 0) 
+      {
+        if (stmt.cases[trim].block != null) break;
+        trim--;
+      }
+      Stmt.Case[] trimmed = new Stmt.Case[trim+1];
+      System.arraycopy(stmt.cases, 0, trimmed, 0, trim+1);
+      stmt.cases = trimmed;
+    }
+  }
 
 //////////////////////////////////////////////////////////////////////////
 // Expr
