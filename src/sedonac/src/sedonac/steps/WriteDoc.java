@@ -266,7 +266,7 @@ public class WriteDoc
 
     // Print facets
     if ((t.facets()!=null) && (!t.facets().isEmpty())) 
-      out.w(t.facets().toString());
+      out.safe(t.facets().toString());
     out.w("<br>\n");
 
     out.w("<hr/>\n");
@@ -353,7 +353,7 @@ public class WriteDoc
 
     // If any facets, print them last
     if ((slot.facets()!=null) && (!slot.facets().isEmpty())) 
-      out.w(" " + slot.facets().toString());
+      out.safe(" " + slot.facets().toString());
 
     out.w("\n\n");
   }
