@@ -259,6 +259,16 @@ public class WriteDoc
     if (spaces > 0) out.w(TextUtil.getSpaces(spaces));
     out.w(t.qname).w("\n");
     out.w("</pre>\n");
+
+    // Print modifiers
+    typeModifiers(t, out, "em");
+    out.w(" class <b>" + t.name() + "</b>  ");
+
+    // Print facets
+    if ((t.facets()!=null) && (!t.facets().isEmpty())) 
+      out.w(t.facets().toString());
+    out.w("<br>\n");
+
     out.w("<hr/>\n");
     
     // type doc
@@ -304,7 +314,7 @@ public class WriteDoc
     if (slot.isField())
     {
       FieldDef f = (FieldDef)slot;
-      modifiers(slot, out);
+      slotModifiers(slot, out, "em");
       out.w("<b>");
       typeLink(f.type(), out);
       out.w(" ").w(f.name());
@@ -313,7 +323,7 @@ public class WriteDoc
     else
     {
       MethodDef m = (MethodDef)slot;
-      modifiers(slot, out);
+      slotModifiers(slot, out, "em");
       out.w("<b>");
       typeLink(m.returnType(), out);
       out.w(" ").w(m.name()).w("(");
@@ -334,25 +344,42 @@ public class WriteDoc
     out.w("\n\n");
   }
 
+
   /**
-   * Print any modifiers associated with this slot
+   * Print all modifiers associated with this type
    */
-  void modifiers(SlotDef slot, XWriter out)
+  void typeModifiers(TypeDef t, XWriter out, String htag)
   {
-    if (slot.isAbstract())  out.w("<em>abstract</em> ");
-    if (slot.isAction())    out.w("<em>action</em> ");
+    if ((htag!=null) && (htag.length()>0)) out.w("<" + htag + ">");
+    if (t.isPublic())    out.w("public ");
+    if (t.isInternal())  out.w("internal ");
+    if (t.isAbstract())  out.w("abstract ");
+    if (t.isConst())     out.w("const ");
+    if (t.isFinal())     out.w("final ");
+    if ((htag!=null && (htag.length()>0))) out.w("</" + htag + ">");
+  }
+
+  /**
+   * Print all modifiers associated with this slot
+   */
+  void slotModifiers(SlotDef slot, XWriter out, String htag)
+  {
+    if ((htag!=null) && (htag.length()>0)) out.w("<" + htag + ">");
+    if (slot.isPublic())    out.w("<em>public</em> ");
+    if (slot.isProtected()) out.w("<em>protected</em> ");
+    if (slot.isPrivate())   out.w("<em>private</em> ");
+    if (slot.isInternal())  out.w("<em>internal</em> ");
+    if (slot.isStatic())    out.w("<em>static</em> ");
+    if (slot.isAbstract())  out.w("<em>abstract</em> ");       // abstract implies virtual
+    else if (slot.isAction())    out.w("<em>action</em> ");    // action implies virtual
+    else if (slot.isVirtual())   out.w("<em>virtual</em> ");
+    if (slot.isNative())    out.w("<em>native</em> ");
+    if (slot.isOverride())  out.w("<em>override</em> ");
     if (slot.isConst())     out.w("<em>const</em> ");
     if (slot.isDefine())    out.w("<em>define</em> ");
     if (slot.isInline())    out.w("<em>inline</em> ");
-    if (slot.isInternal())  out.w("<em>internal</em> ");
-    if (slot.isNative())    out.w("<em>native</em> ");
-    if (slot.isOverride())  out.w("<em>override</em> ");
-    if (slot.isPrivate())   out.w("<em>private</em> ");
     if (slot.isProperty())  out.w("<em>property</em> ");
-    if (slot.isProtected()) out.w("<em>protected</em> ");
-    if (slot.isPublic())    out.w("<em>public</em> ");
-    if (slot.isStatic())    out.w("<em>static</em> ");
-    if (slot.isVirtual())   out.w("<em>virtual</em> ");
+    if ((htag!=null) && (htag.length()>0)) out.w("</" + htag + ">");
   }
 
 //////////////////////////////////////////////////////////////////////////
