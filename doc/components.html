@@ -40,7 +40,7 @@
 <!--/////////////////////////////////////////////////////////-->
 
 <p>
-Sedona is a <i>component oriented</i> language which means that programs
+Sedona is a <i>component oriented</i> language, which means that programs
 are developed as reusable chunks of code designed to be snapped together
 much like Lego building blocks.  This chapter discusses components
 themselves; the <a href='apps.html'>Apps</a> chapter discusses how
@@ -48,7 +48,7 @@ components are assembled into applications.
 </p>
 
 <p>
-A Sedona component is any class which extends
+A Sedona component is any class that extends
 <code><a href='sys/Component.html'>sys::Component</a></code>.
 Components include several features:
 </p>
@@ -68,7 +68,7 @@ Components include several features:
 <!--/////////////////////////////////////////////////////////-->
 
 <p>
-Properties are normal instance fields which are annotated with
+Properties are normal instance fields that are annotated with
 the <code>property</code> keyword.  Properties are how components
 expose configuration and runtime state.  Properties are restricted
 to the following types:
@@ -168,7 +168,7 @@ class Foo extends Component
 </pre>
 
 <p>
-The <code>Buf</code> size is the total capacity which includes
+The <code>Buf</code> size is the total capacity including
 the null terminator - so in the example above we can store a
 string with a max of seven characters.  The <code><a href='sys/Buf.html'>Buf</a></code>
 class has convenience methods when storing a string such as
@@ -192,7 +192,7 @@ are serialized as text rather than base64 in XML files.
 <h1 id="actions">Actions</h1>
 <!--/////////////////////////////////////////////////////////-->
 
-<p>Actions are normal instance methods which are annotated with the
+<p>Actions are normal instance methods that are annotated with the
 <code>action</code> keyword. Every action is implicitly defined to be <code>virtual</code>,
 so they can be overridden. Actions are typically used as commands on a
 component. As methods, actions "do something" rather than store or
@@ -237,8 +237,8 @@ class FooOverride extends Foo
 </pre>
 
 <p>
-Note that you can use the "asStr" facet to annotate an action which
-takes a Buf if the argument should be a null-terminated string.
+Note that you can use the "asStr" facet to annotate an action that
+takes a Buf, if the argument should be a null-terminated string.
 </p>
 
 

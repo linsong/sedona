@@ -141,7 +141,7 @@ be in dynamic memory to allow runtime modification.
 
 <p>                         
 All logs are identified by a <a href="lang.html#namespaces">qname</a> 
-(qualified name) which is based on the define field's qname:
+(qualified name), which is based on the define field's qname:
 </p>                         
 
 <ol>
@@ -192,7 +192,7 @@ To embed logging into your code, call one of following the
 
 <p>
 All of the logging methods take a <code>Str</code> and return an 
-<code>OutStream</code> which permits <a href='expr.html#interpolation'>string 
+<code>OutStream</code>, which permits <a href='expr.html#interpolation'>string 
 interpolation</a>:
 </p>                                                                     
 
@@ -241,7 +241,7 @@ Sys.logLevels[log.id] = Log.TRACE
 </pre>                        
 
 <p>
-The current level defines the maximum severity which is
+The current level defines the maximum severity that is
 logged.  For example a level or WARNING will log calls
 to <code>error</code> and <code>warning</code>, but not
 calls to <code>message</code> and <code>trace</code>.  All

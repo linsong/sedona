@@ -64,12 +64,12 @@ the file "Thing.sedona".
 <p>
 By default a class is <code>public</code>, or you can explicitly
 use the <code>public</code> keyword.  Alternatively use the <code>internal</code>
-keyword to declare a class which only has visibility within its kit.
+keyword to declare a class that only has visibility within its kit.
 </p>
 
 <p>
-The <code>abstract</code> keyword is used with classes which can 
-never be instantiated directly.  Any class which declares 
+The <code>abstract</code> keyword is used with classes that can 
+never be instantiated directly.  Any class that declares 
 <a href='methods.html#abstract'>abstract methods</a> must be marked 
 abstract.
 </p>
@@ -91,7 +91,7 @@ any type of multiple inheritance.
 
 <p>
 In order to support polymorphism (virtual methods), your class hierarchy 
-must extend from <code>sys::Virtual</code> which allocates space for the virtual 
+must extend from <code>sys::Virtual</code>, which allocates space for the virtual 
 table.  Note that <code>Virtual</code> imposes a two byte overhead per instance, 
 plus a global table for each type in the code section.
 </p>

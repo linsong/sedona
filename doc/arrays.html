@@ -86,8 +86,8 @@ allocates 20 bytes.
 </p>
 
 <p>
-In the example above <code>Foo.x</code> is just a pointer so you can
-set <code>x</code> to any value which points to 5 ints.  For example
+In the example above <code>Foo.x</code> is just a pointer, so you can
+set <code>x</code> to any value that points to 5 ints.  For example
 the assignment <code>x=y</code> updates <code>x</code> to point to the
 block of memory allocated by <code>y</code>.
 </p>
@@ -128,7 +128,7 @@ class Shape
 </pre>
 
 <p>
-The <code>Point</code> class stores two ints which means a single instance
+The <code>Point</code> class stores two ints, which means a single instance
 of Point is 8 bytes.  Note the three different field declarations in
 <code>Shape</code>:
 </p>
@@ -193,7 +193,7 @@ final class Buf
 
 <p>
 The code snippet above illustrates how to declare an unsized
-inline array.  The constructor must have a statement which
+inline array.  The constructor must have a statement that
 assigns to the "length field" of the array.  The right hand
 side of the assignment must be a parameter of the constructor (it
 can't be a calculated value).

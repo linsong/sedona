@@ -122,7 +122,7 @@ Sedona provides four integer types of varying widths:
 
 <p>
 Both <code>byte</code> and <code>short</code> are special types
-which may only be used as fields or in arrays.    
+that may only be used as fields or in arrays.    
 Attempting to use <code>byte</code> or <code>short</code> as a return 
 type, parameter type, or local variable type is a compiler error.
 Note that unlike Java both <code>byte</code> and <code>short</code> 
@@ -312,7 +312,7 @@ reference as a normal C string (<code>char*</code>) when writing your
 
 <p>
 On the Java VM, Str is represented by the <code>sedona.vm.StrRef</code> class
-which encapsulates a reference to a <code>byte[]</code> and an offset
+that encapsulates a reference to a <code>byte[]</code> and an offset
 into that byte array.  This allows the simulation of "pointer arithmetic" when
 parsing strings out of static buffers.
 </p>                     
@@ -347,7 +347,7 @@ a <code>Str</code> literal.
 <p>
 Because <code>Str</code> is an <a href="arrays.html#unsizedClasses">unsized class</a>,
 you must specify the length of the string when declaring an inline <code>Str</code>.
-For example to declare a <code>Str</code> which can hold a max of 8
+For example to declare a <code>Str</code> that can hold a max of 8
 characters (including the null terminator):
 </p>
 

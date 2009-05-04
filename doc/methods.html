@@ -46,7 +46,7 @@ The following keywords may be applied to a method declaration:
 
 <ul>
 <li><code>static</code>: class based method versus instance based</li>
-<li><code>virtual</code>: indicates method which may be polymorphically overridden</li>      
+<li><code>virtual</code>: indicates method that may be polymorphically overridden</li>      
 <li><code>abstract</code>: indicates a pure virtual method</li>      
 <li><code>override</code>: required to indicate an override of an inherited method</li>
 <li><code>native</code>: indicates a method implemented in native C or Java code</li>      
@@ -120,7 +120,7 @@ int five = add(2, 3) // implicit (only inside Example or subclasses)
 
 <p>
 Instance methods are declared whenever the <code>static</code> keyword 
-is omitted.  Instance methods contain an implicit <code>this</code> parameter 
+is omitted.  Instance methods contain an implicit <code>this</code> parameter,
 which is the instance the method is called on:
 </p>
 
@@ -198,7 +198,7 @@ kitten.talk()      // prints mew!
 </pre>         
 
 <p>
-Classes which declare virtual methods must derive from <code>sys::Virtual</code>.
+Classes that declare virtual methods must derive from <code>sys::Virtual</code>.
 Be aware that virtual classes have the overhead of an extra pointer for
 their vtable (typically 4 extra bytes).
 </p>
@@ -242,7 +242,7 @@ kitten.talk()      // now prints meow
 <!--/////////////////////////////////////////////////////////-->
 
 <p>
-A class may have one constructor which compiles into a method called 
+A class may have one constructor, which compiles into a method called 
 <code>_iInit</code>.  Whenever a class declares instance fields with 
 a <a href='fields.html#defaults'>default value</a>, the compiler auto-generates 
 a constructor for you.  A class may declare an explicit constructor using 
@@ -289,7 +289,7 @@ class Foo
 </pre> 
 
 <p>
-Inline static fields are initialized in declaration order on VM startup
+Inline static fields are initialized in declaration order on VM startup,
 which calls the appropriate constructors.  These constructor calls often 
 result in instance constructor calls, which in turn recursively chain for 
 nested inline fields.  
