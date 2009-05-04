@@ -289,7 +289,16 @@ public class WriteDoc
         out.w("<dl>\n");
         dl = true;
       }
-      out.w("<dt>").w(slot.name).w("</dt>\n");
+
+      // Print name of method - except if cstr, print type name instead of _iInit
+      String sname = slot.name;
+      if (slot.isMethod())
+      {
+        MethodDef m = (MethodDef)slot;
+        if (m.isInstanceInit()) sname = m.parent.name();
+      }
+      out.w("<dt>").w(sname).w("</dt>\n");
+
       out.w("<dd>");
 
       out.w("<p class='sig'><code>");
@@ -326,7 +335,12 @@ public class WriteDoc
       slotModifiers(slot, out, "em");
       out.w("<b>");
       typeLink(m.returnType(), out);
-      out.w(" ").w(m.name()).w("(");
+
+      // Print name of method - if cstr, print type name instead of _iInit
+      String mname = m.name();
+      if (m.isInstanceInit()) mname = m.parent.name();
+      out.w(" ").w( mname ).w("(");
+
       for (int i=0; i<m.params.length; i++)
       {
         if (i > 0) out.w(", ");
