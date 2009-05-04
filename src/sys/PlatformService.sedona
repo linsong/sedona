@@ -1,0 +1,103 @@
+//
+// Copyright (c) 2009 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   5 Mar 09  Brian Frank  Create
+//  25 Mar 09  Matthew Giannini make more tool friendly
+//
+
+**
+** PlatformService is a service designed for a 
+** specific hardware/OS platform.  
+**
+@niagaraIcon="module://icons/x16/platform.png"
+class PlatformService
+  extends Service
+{ 
+
+  **
+  ** Initialize the platform with the command line arguments. 
+  ** Return 0 on success.  Return  non-zero on failure, which will
+  ** terminate the process.
+  **
+  virtual int init(Str[] args, int argsLen) { return 0 }
+
+  **
+  ** Notify the platform of a name/value pair setting
+  ** or state change.
+  **
+  virtual void notify(Str key, Str val) {}
+  
+  **
+  ** Convenience to set the platformId property, and call changed()
+  **
+  void updatePlatformId(Str id)
+  {
+    platformId.copyFromStr(id)
+    changed(PlatformService.platformId)
+  }
+  
+  
+////////////////////////////////////////////////////////////////
+// Service
+////////////////////////////////////////////////////////////////
+
+  override virtual void start()
+  {
+    super.start()
+    updatePlatformId("unknown")
+  }
+  
+  override virtual void execute()
+  {
+    refreshMemory()
+  }
+
+////////////////////////////////////////////////////////////////
+// PlatformService
+////////////////////////////////////////////////////////////////
+
+  **  
+  ** Update the memAvailable property to reflect the current amount of 
+  ** available memory.
+  **
+  virtual void refreshMemory() 
+  { 
+  }
+  
+////////////////////////////////////////////////////////////////
+// Actions
+////////////////////////////////////////////////////////////////
+
+  **
+  ** Action to restart the Sedona application on the host platform.  
+  ** This typically means restart just the Sedona process.
+  **
+  @confirmRequired
+  action void restart() { }
+
+  **
+  ** Action to reboot the entire host platform.  This typically 
+  ** means to reboot the entire operating system.
+  **
+  @confirmRequired
+  action void reboot() { }
+  
+////////////////////////////////////////////////////////////////
+// Properties
+////////////////////////////////////////////////////////////////
+
+  **
+  ** The platform identifier which defines how this
+  ** Sedona device should be provisioned.
+  **
+  @readonly @asStr property Buf(128) platformId
+  
+  **
+  ** The amount of available runtime memory, in bytes. This property
+  ** must be updated during execute()  
+  **
+  @readonly property long memAvailable = 0L
+     
+}

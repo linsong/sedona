@@ -1,0 +1,26 @@
+<!--
+  -  Sedona Platform Manifest
+  -->
+
+<sedonaPlatform id="generic-win32">
+
+  <compile endian="little" blockSize="4" refSize="4">
+  
+    <!-- Native Kits -->
+    <nativeKit depend="sys 1.0" />
+    <nativeKit depend="inet 1.0" />
+
+    <!-- Native Sources -->
+    <nativeSource path="/src/vm" />
+    <nativeSource path="/src/sys/native" />
+    <nativeSource path="/src/sys/native/std" />
+    <nativeSource path="/src/sys/native/win32" />
+    <nativeSource path="/src/inet/native" />
+    <nativeSource path="/src/inet/native/std" />
+    <nativeSource path="/src/inet/native/sha1" />
+      
+  </compile>
+       
+</sedonaPlatform>
+
+
