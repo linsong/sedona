@@ -7,17 +7,18 @@
   name="osdatetime"
   vendor="Tridium"  
   description="OS date time service implementation"
-  includeSource="true">
-	<!--  Source Directories  -->
-	
+  includeSource="true"
+  doc = "true"
+>
+
+  <!--  Source Directories  -->
   <source dir="." />
-	<!--source dir="test" test="true" /-->
 	
   <!-- Dependencies -->
   <depend on="sys 1.0" />
   <depend on="datetime 1.0" />
   
-    <!-- Natives -->
+  <!-- Natives -->
   <native qname="osdatetime::OsDateTimeService.doNow"          id="10::0"  />
   <native qname="osdatetime::OsDateTimeService.doSetClock"     id="10::1"  />
 
