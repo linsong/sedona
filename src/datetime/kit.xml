@@ -7,7 +7,9 @@
   name="datetime"
   vendor="Tridium"
   description="date time functions"
-  includeSource="true">
+  includeSource="true" 
+  doc = "true"
+>
 	<!--  Source Directories  -->
 	
   <source dir="." />

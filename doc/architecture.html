@@ -94,7 +94,7 @@ characteristics of the Sedona language include:
 
 <p>
 Sedona's standard API includes a special class called <code>Component</code>.
-Classes which extend from <code>Component</code> are designed to be
+Classes that extend <code>Component</code> are designed to be
 used by integrators to assemble applications.  All components have
 the following characteristics designed to enable component-oriented
 application assembly:
@@ -109,11 +109,11 @@ application assembly:
 </ul>
 
 <p>
-Slots are the members of a component class which specify how
+Slots are the members of a component class that specify how
 the component is exposed to an integrator during the assembly
-process.  There are two types of slots: <i>properties</i> define
-a configuration or runtime variable and <i>actions</i> define a
-command which can be invoked.
+process.  There are two types of slots: <i>property</i> defines
+a configuration or runtime variable and <i>action</i> defines a
+command that can be invoked.
 </p>
 
 <!--/////////////////////////////////////////////////////////-->
@@ -129,13 +129,13 @@ is like a Java JAR file or a .NET DLL.
 </p>
 
 <p>
-Kits are stored as a single file which ends with the ".kit" extension.
+Kits are stored as a single file that ends with the ".kit" extension.
 The file itself is a standard PKZIP file you can open using
 your favorite zip tool.  Inside the kit file is an XML
-<a href="schema.html#manifest">manifest</a>  file which specifies
+<a href="schema.html#manifest">manifest</a>  file that specifies
 meta-data about the kit such as its name, version, vendor,
 and description.  The manifest also enumerates all the kit's
-component types which are available for application assembly.
+component types that are available for application assembly.
 </p>
 
 <p>
@@ -144,10 +144,10 @@ the <code>sedonac</code> compiler.  During the compilation all
 the classes in the kit are checked for validity, and compiled
 into a special format called <i>IR</i> for <i>intermediate
 representation</i>.  The IR format is a text based "assembly
-language" for Sedona.  IR code is portable which means one kit
-file can be deployed for all platforms.  The compiler also 
-generates a Java classfile for each of the Sedona classes
-during this step which can be run on the <a href='#java'>Java 
+language" for Sedona.  IR code is portable, which means one kit
+file can be deployed for all platforms.  During this step the compiler 
+also generates a Java classfile for each of the Sedona classes,
+which can be run on the <a href='#java'>Java 
 VM</a>.
 </p>                                   
 
@@ -161,7 +161,7 @@ Even though we've compiled source language down to IR, we still
 don't have a format suitable for machine execution.  The next step
 is to compile a set of kits into a single file called an <i>scode
 image</i>.  SCode is a very compact, binary representation of the
-code which is designed to be executed directly by the Sedona VM.
+code, which is designed to be executed directly by the Sedona VM.
 </p>
 
 <p>

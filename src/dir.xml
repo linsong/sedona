@@ -15,6 +15,7 @@
   <target name="control" />
   <target name="driver" />
   <target name="datetime" />
+  <target name="osdatetime" />
   <target name="pstore" />
   <target name="pstoreFS" />
 

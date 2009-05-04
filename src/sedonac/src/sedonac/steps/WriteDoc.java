@@ -304,12 +304,17 @@ public class WriteDoc
     if (slot.isField())
     {
       FieldDef f = (FieldDef)slot;
+      modifiers(slot, out);
+      out.w("<b>");
       typeLink(f.type(), out);
-      out.w(" ").w(f.name()).w("\n\n");
+      out.w(" ").w(f.name());
+      out.w("</b>");
     }
     else
     {
       MethodDef m = (MethodDef)slot;
+      modifiers(slot, out);
+      out.w("<b>");
       typeLink(m.returnType(), out);
       out.w(" ").w(m.name()).w("(");
       for (int i=0; i<m.params.length; i++)
@@ -318,8 +323,36 @@ public class WriteDoc
         typeLink(m.params[i].type, out);
         out.w(" ").w(m.params[i].name);
       }
-      out.w(")\n\n");
+      out.w(")");
+      out.w("</b>");
     }
+
+    // If any facets, print them last
+    if ((slot.facets()!=null) && (!slot.facets().isEmpty())) 
+      out.w(" " + slot.facets().toString());
+
+    out.w("\n\n");
+  }
+
+  /**
+   * Print any modifiers associated with this slot
+   */
+  void modifiers(SlotDef slot, XWriter out)
+  {
+    if (slot.isAbstract())  out.w("<em>abstract</em> ");
+    if (slot.isAction())    out.w("<em>action</em> ");
+    if (slot.isConst())     out.w("<em>const</em> ");
+    if (slot.isDefine())    out.w("<em>define</em> ");
+    if (slot.isInline())    out.w("<em>inline</em> ");
+    if (slot.isInternal())  out.w("<em>internal</em> ");
+    if (slot.isNative())    out.w("<em>native</em> ");
+    if (slot.isOverride())  out.w("<em>override</em> ");
+    if (slot.isPrivate())   out.w("<em>private</em> ");
+    if (slot.isProperty())  out.w("<em>property</em> ");
+    if (slot.isProtected()) out.w("<em>protected</em> ");
+    if (slot.isPublic())    out.w("<em>public</em> ");
+    if (slot.isStatic())    out.w("<em>static</em> ");
+    if (slot.isVirtual())   out.w("<em>virtual</em> ");
   }
 
 //////////////////////////////////////////////////////////////////////////

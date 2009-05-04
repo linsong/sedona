@@ -276,9 +276,9 @@ it evaluates to <code>f</code>:
 <!--/////////////////////////////////////////////////////////-->
 
 <p>
-Sedona supports string interpolation which allows for concise 
+Sedona supports string interpolation, which allows for concise 
 string formatting.  String interpolation can be used with any method 
-which has one <code>Str</code> parameter and returns an <code>OutStream</code>.  
+that has one <code>Str</code> parameter and returns an <code>OutStream</code>.  
 You may use the <code>"+"</code> operator to concatenate multiple 
 expressions to a string literal:
 </p>
@@ -294,7 +294,7 @@ expressions to a string literal:
 
 <p>
 The example above illustrates why interpolation is only used
-with methods which take a <code>Str</code> and return an 
+with methods that take a <code>Str</code> and return an 
 <code>OutStream</code>.  The compiler doesn't actually create
 a new string, rather it chains multiple print calls.
 </p>

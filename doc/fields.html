@@ -157,7 +157,7 @@ For example in the <code>Display</code> class declared above, the
 <p>
 Static fields are initialized when the VM is booted.  The
 compiler will automatically create a synthetic method called 
-<code>_sInit()</code> which executes the initialization code
+<code>_sInit()</code>, which executes the initialization code
 for static fields.
 </p>
 
@@ -240,7 +240,7 @@ The following types are supported for defines:
 <p> 
 The <code>define</code> keyword may be used to create constant
 array literals.  This allows you to declare readonly data lookup 
-tables which will be stored in scode.  The following array literal 
+tables that will be stored in scode.  The following array literal 
 types are supported:
 </p>
 
@@ -276,7 +276,7 @@ literal (or any define)
 <!--/////////////////////////////////////////////////////////-->
 
 <p>
-Fields which store a non-primitive are always a reference to
+Fields that store a non-primitive are always a reference to
 a <code>sys::Obj</code> object.  By default an object field is a pointer
 to an object.  For example on a 32-bit machine, an object field 
 would allocate 4 bytes for a pointer.  However, often we wish the 
@@ -306,7 +306,7 @@ two 32-bit ints).
 Inline fields play an important role in Sedona's static memory management.
 They allow you to develop fairly complex data structures where memory
 is laid out by the compiler.  Often these structures are contained by
-a component which allows tools to determine ahead of time exactly how 
+a component that allows tools to determine ahead of time exactly how 
 much memory a component requires (versus allowing the component to allocate 
 its own memory from the heap).
 </p>

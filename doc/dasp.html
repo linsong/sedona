@@ -42,8 +42,8 @@
 <p>
 This document specifies the Datagram Authenticated Session Protocol or DASP.
 This protocol is designed to provide an unordered, reliable, secure session for
-full-duplex datagram exchange which can be implemented for low power wireless
-networks and low cost devices. Specifically we target networks which include
+full-duplex datagram exchange that can be implemented for low power wireless
+networks and low cost devices. Specifically we target networks that include
 6LoWPAN. These networks are typically comprised of devices without the
 resources to run a protocol such as TCP and must implement their protocol stacks
 in under 100KB of memory.
@@ -109,7 +109,7 @@ establish or reject the session. Once a session is established it is assigned
 an unsigned 16-bit identifier called the <i>sessionId</i>. The sessionId is
 included in all subsequent messaging within the context of that session.
 Messages within the session are consecutively numbered with an unsigned 16-bit
-value which we call the <i>sequence number</i> or <i>seqNum</i>. Each endpoint
+value, which we call the <i>sequence number</i> or <i>seqNum</i>. Each endpoint
 of the session maintains its own sequence and sliding window of outstanding
 datagrams. This sliding window is used to implement reliability and flow
 control. Sessions are terminated explicitly via a special control message, or
@@ -130,7 +130,7 @@ DASP messages are described as a data structure using the following primitive ty
 <li><b>u2</b>: an unsigned 16-bit integer in network byte order</li>
 <li><b>str</b>: UTF-8 encoded text, followed by a null terminate (zero) byte</li>
 <li><b>bytes</b>: an unsigned 8-bit length n, followed by n bytes</li>
-<li><b>x[]</b>: an array of type x which contains zero or more occurrences</li>
+<li><b>x[]</b>: an array of type x that contains zero or more elements</li>
 </ul>
 
 <p>
@@ -167,7 +167,7 @@ below.</li>
 <li><b>numFields</b>: 4-bits specify how many header fields follow in the
 message.</li>
 
-<li><b>headerFields</b>: a list of zero or more fields which carry additional
+<li><b>headerFields</b>: a list of zero or more fields that carry additional
 data about the request much like HTTP header fields. Header fields are detailed
 in a separate section below.</li>
 
@@ -299,7 +299,7 @@ header fields apply:
 
 <ul>
 <li><b>version</b> (required): specifies the protocol version to be used. The
-version of this specification is 1.0 which is represented as 0x0100 in a 16-bit
+version of this specification is 1.0, which is represented as 0x0100 in a 16-bit
 unsigned integer.</li>
 
 <li><b>remoteId</b> (required): the client side sessionId used for messages
@@ -315,7 +315,7 @@ the client perspective - see Tuning. If not specified 512 is assumed.</li>
 receiving windowing (number of messages). If not specified, then a window size
 of 31 messages is assumed.</li>
 
-<li><b>receiveTimeout</b> (optional): the number of seconds which may elapse
+<li><b>receiveTimeout</b> (optional): the number of seconds that may elapse
 without receiving a message before the session is timed out from client
 perspective; if not specified then a default of 30 seconds is assumed.</li>
 </ul>
@@ -359,7 +359,7 @@ by the client to the server.</li>
 <li><b>digestAlgorithm</b> (optional): this specifies the digest algorithm to
 use for hashing the username, password, and nonce returned by the authenticate
 message. If this field is unspecified, then "SHA-1" is assumed. Other values
-which might be used are "MD5", "SHA-256", "SHA-384", and "SHA-512".
+that might be used are "MD5", "SHA-256", "SHA-384", and "SHA-512".
 Implementations are only required to implement "SHA-1", so this field should
 only be used when knowledge of client capability is known. Values of this field
 should always use upper case.</li>
@@ -374,7 +374,7 @@ nonce should only be used once to prevent replay attacks.</li>
 <p>
 If the server doesn't support the version specified by the client in the hello
 message, then it should send the close message with the incompatibleVersion
-error code. The close message returned should include the version header field
+error code. The close message returned should include the version header field,
 which tells the client which version the server does support. The client may
 then choose to retry the handshake if supports the server's version.
 </p>
@@ -408,7 +408,7 @@ digest      = digestAlgorithm(credentials + nonce)
 </pre>
 
 <p>
-First we hash the UTF-8 encoded credentials string which is the username and
+First we hash the UTF-8 encoded credentials string, which is the username and
 password separated by a single ":" colon character. We call this hash the
 credentials. We then run the hash function against the credentials and the
 nonce, which produces a one-time use digest. This mechanism permits DASP
@@ -468,7 +468,7 @@ the server perspective - see Tuning. If not specified 512 is assumed.</li>
 receiving windowing (number of messages). If not specified, then a window size
 of 31 messages is assumed.</li>
 
-<li><b>receiveTimeout</b> (optional): the number of seconds which may elapse
+<li><b>receiveTimeout</b> (optional): the number of seconds that may elapse
 without receiving a message before the session is timed out from server
 perspective; if not specified then a default of 30 seconds is assumed.</li>
 
@@ -487,17 +487,17 @@ with the notAuthenticated error code.
 <p>
 The absMax and idealMax header fields are used to negotiate message sizes
 between the client and server. The absMax is the absolute maximum number of
-bytes which a message may contain including the DASP headers, but not the
+bytes that a message may contain including the DASP headers, but not the
 transport headers (such as the UDP headers themselves). Typically this value
 maps to the amount of buffer space a device can dedicate to processing DASP
-messages. For example a device which can only allocate 256 bytes to buffering
+messages. For example a device that can only allocate 256 bytes to buffering
 an DASP message will not be able to handle larger messages.
 </p>
 
 <p>
 The idealMax header field specifies the ideal maximum number of bytes a message
 should contain including the DASP headers (not including the transport
-headers). Often DASP is running over a network like 6LoWPAN which can support
+headers). Often DASP is running over a network like 6LoWPAN that can support
 UDP packets larger than the MTU of a 802.15.4 frame. However if implementing a
 protocol like file transfer, it is desirable to chunk the stream such that
 messages fit within individual 802.15.4 frames without additional fragmentation
@@ -508,7 +508,7 @@ overhead. The idealMax header provides for this optimization.
 Both absMax and idealMax negotiation works the same way. The client specifies
 its absMax and idealMax fields in its hello message. If either of the header
 fields are omitted, then they are implied to be 512 bytes. The server has its
-own absMax and idealMax which it returns in the welcome message (or they
+own absMax and idealMax, which it returns in the welcome message (or else they
 default to 512). The actual absMax and idealMax used for the session is the
 minimum between the client and server. For example:
 </p>
@@ -600,7 +600,7 @@ endpoint.
 If an endpoint has received messages with gaps in the sequence numbering, it
 can use the ackMore header to enumerate the seqNums it has received. This
 allows us to avoid resending those messages just because we've had partial
-failures. The ackMore is encoded as a list of bits which indicate messages
+failures. The ackMore is encoded as a list of bits that indicate messages
 received (bit is set), and messages not received (bit is zero). The least
 significant bit corresponds to the seqNum in the ack header, and the most
 significant bit n corresponds to ackNum+n. The ackMore header must always be
@@ -633,8 +633,8 @@ message sent to the remote endpoint with the timeout error code.
 
 <p> 
 DASP supports full duplex messaging - either side may initiate application
-messages which are identified with a 16-bit sequence number. An endpoint can
-have multiple outstanding messages which have not been acknowledged. The
+messages, which are identified with a 16-bit sequence number. An endpoint can
+have multiple outstanding messages that have not been acknowledged. The
 sequence of unacknowledged messages sent is called the <i>sending window</i>.
 </p>
 
@@ -668,7 +668,7 @@ wraps from 65530 to 3 inclusively.
 <p>
 Sequence numbers and the sliding window are only used for datagram messages.
 The client's handshake hello and authenticate messages define the client's
-starting sequence number which is the seqNum of the client's first datagram.
+starting sequence number, which is the seqNum of the client's first datagram.
 The server's handshake challenge and welcome define the sequence number of the
 server's first datagram. The close and keepAlive messages should always use a
 sequence number of 0xffff.
@@ -775,7 +775,7 @@ acknowledgments when there are no outgoing application messages.
 If there are no outgoing datagram messages to piggyback an ack header, then an
 endpoint should sent a keepAlive to acknowledge received messages.
 Implementations can send these acknowledgements immediately or may use a small
-delay which we call the <i>ackDelay</i>. The ackDelay provides a period of time 
+delay called the <i>ackDelay</i>. The ackDelay provides a period of time 
 to coalesce multiple acknowledgements and wait for an outgoing datagram message 
 to be generated.
 </p>
@@ -792,7 +792,7 @@ alives should only be used when no application datagrams are being transmitted.
 <p>
 KeepAlives are themselves never part of the sliding window. The seqNum of a
 keepAlives should be 0xffff. When a keep alive is received, it is never checked
-against the receiving window and is never acknowledged. An endpoint which sends
+against the receiving window and is never acknowledged. An endpoint that sends
 a keepAlive should never attempt to retry the keepAlive, since no
 acknowledgement is expected.
 </p>
