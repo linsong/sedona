@@ -181,7 +181,7 @@
   **
   ** Validate this file's reservation range and update its status.
   **
-  void validate()
+  virtual void validate()
   {               
     // clear service
     service = null  
