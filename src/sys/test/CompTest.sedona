@@ -271,7 +271,7 @@ class CompTest
     assert(c.getDouble(d2) == 256d)
     assert(c.getBuf(bufA).toStr().equals(""))
     assert(c.getBuf(bufB).toStr().equals(""))
-    assert(c.getBuf(str).toStr().equals(""))
+    assert(c.getBuf(str).toStr().equals("foo"))
 
     // check reflection setters
     clear(c); c.setInt(meta, 0xe0d); assert(c.meta == 0xe0d); verifyEvent(c, 'c')

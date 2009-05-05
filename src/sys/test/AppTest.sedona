@@ -49,6 +49,7 @@ class AppTest
     x.b1 = 0x98
     x.i1 = 1972
     x.f1 = 0.0002467
+    x.str.copyFromStr("bar")
 
     // Component y (child of app)
     TestComp y = (TestComp)a.add(a, "y", TestComp.type)
@@ -217,9 +218,11 @@ class AppTest
     assert(x.b1 == 0x98)
     assert(x.i1 == 1972)
     assert(x.f1 == 0.0002467)
+    assert(x.str.toStr().equals("bar"))
     verifyRuntimeDefaults(x)
 
     // Component y (child of app)
+    assert(y.str.toStr().equals("foo"))
     verifyRuntimeDefaults(y)
 
     // Component z (child of x)

@@ -133,6 +133,10 @@ public class Normalize
         initFieldInstance(f);
         initFieldStr(f);
       }
+      else if (f.init.id == Expr.BUF_LITERAL)
+      {
+        initFieldBuf(f);
+      }
       else
       {
         initFieldExpr(f);
@@ -155,6 +159,33 @@ public class Normalize
 
     MethodDef m = makeInitMethod(f);
     m.code.add(m.initStmtIndex++, assign.toStmt());
+  }
+  
+  private void initFieldBuf(FieldDef f)
+  {
+    // sanity check - bail and catch later in CheckErrors
+    if (!f.type.isBuf() || f.init.id != Expr.BUF_LITERAL)
+      return;
+
+    if (f.isStatic())
+    {
+      // Buf literal: static Buf literalA = 0x[cafe babe]
+      initFieldExpr(f);
+    }
+    else if (f.isInline())
+    {
+      // inlined Buf: inline Buf(4) buf = 0x[cafe babe]
+      initFieldInstance(f);
+      
+      Location loc = f.init.loc;
+      Integer len = f.ctorArgs[0].toIntLiteral();
+      if (len == null) return;
+      Method copyFromBuf = (Method)f.type.slot("copyFromBuf");
+      Expr call = new Expr.Call(loc, toFieldExpr(loc, f), copyFromBuf, new Expr[] {f.init});
+      
+      MethodDef m = makeInitMethod(f);
+      m.code.add(m.initStmtIndex++, call.toStmt());
+    }
   }
 
   private void initFieldStr(FieldDef f)

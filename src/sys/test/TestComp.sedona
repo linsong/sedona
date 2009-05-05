@@ -38,7 +38,7 @@ class TestComp extends AbstractTestComp
   property double d2 = 256d
   @config property Buf(4) bufA
   property Buf(2) bufB
-  @config @asStr property Buf(5) str         
+  @config @asStr property Buf(5) str = "foo"
   
   /* LOOPTEST
   virtual void reset()
@@ -62,7 +62,7 @@ class TestComp extends AbstractTestComp
     d2 = 256d     
     bufA.copyFromStr("")
     bufB.copyFromStr("")
-    str.copyFromStr("")
+    str.copyFromStr("foo")
   }
   */
 

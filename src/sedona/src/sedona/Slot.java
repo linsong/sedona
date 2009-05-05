@@ -59,9 +59,6 @@ public class Slot
    */
   public Value def()
   {
-    // we doc that Buf should be treated as immutable, but
-    // just to be safe clone when asked
-    if (def instanceof Buf) return new Buf();
     return def;
   }
 

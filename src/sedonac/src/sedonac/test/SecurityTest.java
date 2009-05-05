@@ -209,7 +209,7 @@ public class SecurityTest
       verifyEq(c.getInt("i1"), 0);
       verifyEq(c.getDouble("d1"), 0d);
       verifyEq(c.getDouble("d2"), 256d);
-      verifyEq(c.getStr("str"), "");
+      verifyEq(c.getStr("str"), "foo");
       
       // verify can't see links
       verifyEq(c.links().length, 0);
