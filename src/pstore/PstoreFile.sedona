@@ -40,6 +40,9 @@
 
   ** Reservation overlaps with another PstoreFile
   define int statusDupRange = 6 
+  
+  ** Used by subclasses when an format error is detected
+  define int statusFormatErr = 7 
 
 //////////////////////////////////////////////////////////////////////////
 // Properties
@@ -154,8 +157,9 @@
  
   **
   ** If the reservation props are changed, re-validate.
+  ** If this method is override, must call super!
   **
-  override void changed(Slot slot)
+  override virtual void changed(Slot slot)
   {
     super.changed(slot)
     if (!Sys.app.isRunning()) return
@@ -167,8 +171,9 @@
 
   **
   ** On startup we need to validate our reservation range.
+  ** If this method is override, must call super!
   **
-  override void start()
+  override virtual void start()
   {   
     validate()
   } 
