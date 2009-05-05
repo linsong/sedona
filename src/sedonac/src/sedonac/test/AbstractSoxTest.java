@@ -217,6 +217,12 @@ public abstract class AbstractSoxTest
     return ((Str)client.readProp(comp.id(), comp.type.slot(slotName, true))).val;
   }
 
+  public void write(OfflineComponent comp, String slotName, int val)
+    throws Exception
+  {
+    client.write(comp.id(), comp.type.slot(slotName, true), Int.make(val));
+  }
+
   public void invoke(OfflineComponent comp, String slotName, Value arg)
     throws Exception
   {

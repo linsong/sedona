@@ -74,7 +74,15 @@ class App
 
 ////////////////////////////////////////////////////////////////
 // Run
-////////////////////////////////////////////////////////////////    
+//////////////////////////////////////////////////////////////// 
+   
+  **
+  ** Is the application current running.
+  ** 
+  bool isRunning()
+  {                     
+    return running
+  }   
   
   **
   ** Start all the components.  Return 0 on success, 
@@ -132,9 +140,9 @@ class App
     log.message("running")
     platform.notify("app", "running")
     
-    isRunning = true
+    running = true
     runStatus = 0
-    while (isRunning)
+    while (running)
     {
       // update our cycle counter
       cycleCount++
@@ -150,7 +158,7 @@ class App
       // as long as we have spare time in this cycle and
       // isRunning has not become false
       bool more = true
-      while (more && isRunning)
+      while (more && running)
       {                                 
         // give each service a chance to do a chunk of work
         more = false
@@ -263,7 +271,7 @@ class App
     }                         
     
     // start child is app is running
-    if (isRunning) { c.loaded(); c.start() }
+    if (running) { c.loaded(); c.start() }
  
     // fire tree changed on parent
     parent.fireTreeChanged()
@@ -353,7 +361,7 @@ class App
     if (parent == null) return false
 
     // stop child is app is running
-    if (isRunning) c.stop()
+    if (running) c.stop()
 
     // recursively remove any children first
     Component kid = lookup(c.children)
@@ -835,7 +843,7 @@ class App
   action void quit()
   {                
     save()
-    isRunning = false
+    running = false
   }
 
   **
@@ -894,7 +902,7 @@ class App
   inline Watch[Watch.max] watches
 
   ** Flag to keep executing
-  internal bool isRunning
+  internal bool running
 
   ** File for loading and saving application
   internal inline File file

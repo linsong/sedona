@@ -151,12 +151,36 @@
 //////////////////////////////////////////////////////////////////////////
 // Component
 //////////////////////////////////////////////////////////////////////////
+ 
+  **
+  ** If the reservation props are changed, re-validate.
+  **
+  override void changed(Slot slot)
+  {
+    super.changed(slot)
+    if (!Sys.app.isRunning()) return
+    if (slot == PstoreFile.resvOffset || slot == PstoreFile.resvSize)
+    {                   
+      validate()
+    }
+  }
 
   **
   ** On startup we need to validate our reservation range.
   **
   override void start()
-  {    
+  {   
+    validate()
+  } 
+  
+  **
+  ** Validate this file's reservation range and update its status.
+  **
+  void validate()
+  {               
+    // clear service
+    service = null  
+   
     // validate parent as PstoreService               
     Component p = Sys.app.lookup(parent)
     if (p == null || !p.type.is(PstoreService.type))

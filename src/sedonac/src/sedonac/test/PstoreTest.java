@@ -47,6 +47,7 @@ public class PstoreTest
     System.out.println("Connected to pstore VM");    
     verifyStatus();   
     verifyReadWrite();   
+    verifyResvChange();   
     client.close();     
   }  
 
@@ -96,6 +97,7 @@ public class PstoreTest
     verifyRemote(c, "verifyWrite", 'a', 1); verifyRemote(c, "verifyTell", 1);
     verifyRemote(c, "verifyWrite", 'b', 1); verifyRemote(c, "verifyTell", 2);
     verifyRemote(c, "verifyWrite", 'c', 1); verifyRemote(c, "verifyTell", 3);
+    verifyRemote(c, "verifyWriteI4", 0xab03cc0f, 1); verifyRemote(c, "verifyTell", 7);
     
     verifyRemote(c, "verifySeek",  99, 1);  verifyRemote(c, "verifyTell", 99);
     verifyRemote(c, "verifyWrite", n, 1);   verifyRemote(c, "verifyTell", 100);
@@ -104,6 +106,7 @@ public class PstoreTest
     verifyRemote(c, "verifyRead", 'a');     
     verifyRemote(c, "verifyRead", 'b');     
     verifyRemote(c, "verifyRead", 'c');     
+    verifyRemote(c, "verifyReadS4", 0xab03cc0f);         
     verifyRemote(c, "verifySeek",  99, 1);  verifyRemote(c, "verifyTell", 99);
     verifyRemote(c, "verifyRead", n);    
   }
@@ -120,6 +123,28 @@ public class PstoreTest
   {
     invoke(c, name, null);  
     verifyEq(readInt(c, "result"), expected);
+  }
+
+////////////////////////////////////////////////////////////////
+// ResvChange
+////////////////////////////////////////////////////////////////
+
+  public void verifyResvChange()
+    throws Exception
+  {          
+    verifyEq(readByte(b, "status"), 0);
+    write(b, "resvSize", 0); Thread.sleep(100);    
+    verifyEq(readByte(b, "status"), 5);
+    write(b, "resvSize", 150); Thread.sleep(100);    
+    verifyEq(readByte(b, "status"), 6);
+    write(b, "resvSize", 100); Thread.sleep(100);    
+    verifyEq(readByte(b, "status"), 0);
+    write(c, "resvOffset", 150); Thread.sleep(100);    
+    verifyEq(readByte(b, "status"), 0);
+    verifyEq(readByte(c, "status"), 6);
+    write(c, "resvOffset", 200); Thread.sleep(100);    
+    verifyEq(readByte(b, "status"), 0);
+    verifyEq(readByte(c, "status"), 0);
   }
   
 ////////////////////////////////////////////////////////////////

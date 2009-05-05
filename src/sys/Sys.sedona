@@ -228,7 +228,7 @@ class Sys
         
     // have application terminate with special error code
     app.runStatus = Err.hibernate                        
-    app.isRunning = false
+    app.running = false
   }
 
   **
