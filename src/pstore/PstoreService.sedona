@@ -50,7 +50,7 @@ class PstoreService
 
   override void loaded()
   {                                 
-    file.name = "data.pstore" // TODO filename.toStr()  
+    file.name = filename.toStr()  
     if (!file.open("m")) return                             
     this.size = file.size() 
     if (this.size < fileSize)
