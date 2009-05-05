@@ -197,6 +197,18 @@ public class CheckErrors
         }
       }
     }
+    
+    if (f.type.isBuf() && f.isInline())
+    {
+      int max = f.ctorArgs[0].toIntLiteral().intValue();
+      
+      // Note: STR_LITERAL check makes sure there is room for the null terminator
+      if ((f.init.id == Expr.BUF_LITERAL && f.init.toLiteral().asBuf().size > max) ||
+          (f.init.id == Expr.STR_LITERAL && f.init.toLiteral().asString().length() >= max))
+      {
+        err("Buf is too small to hold initial value: " + f.toString(), f.init.loc); 
+      }
+    }
   }                          
   
   private boolean isArrayLiteralValueOk(Type of, Object val)

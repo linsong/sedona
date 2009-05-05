@@ -73,7 +73,7 @@ public class SlotManifest
     Value def = null;
     if ((flags & Slot.AS_STR) != 0)
     {
-      def = Str.make("");
+      def = Str.make(xml.get("default", ""));
     }
     else if ((flags & Slot.ACTION) == 0)
     {

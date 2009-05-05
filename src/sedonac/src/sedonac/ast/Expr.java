@@ -295,6 +295,7 @@ public abstract class Expr
         case DOUBLE_LITERAL:     return Double.make(asDouble());
         case TIME_LITERAL:       return Long.make(asLong());
         case STR_LITERAL:        return Str.make(value.toString());
+        case BUF_LITERAL:        return Buf.fromString(asBuf().toString());
         case NULL_LITERAL:  
           if (type.isBool())     return Bool.NULL;
           if (type.isFloat())    return Float.NULL;                                 
