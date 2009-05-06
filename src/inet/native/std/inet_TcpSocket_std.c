@@ -199,9 +199,13 @@ Cell inet_TcpSocket_read(SedonaVM* vm, Cell* params)
   buf = buf + off;
 
   result.ival = recv(sock, buf, len, 0);
-  if (result.ival > 0) return result;  // 1+ is ok, zero is graceful shutdown
-  if (inet_errorIsWouldBlock()) return zeroCell;
-  inet_TcpSocket_close(vm, params);
+  if (result.ival > 0)
+    return result;  // 1+ is ok, zero is graceful shutdown
+  else if (result.ival==0)
+    inet_TcpSocket_close(vm, params);
+  else if (inet_errorIsWouldBlock())
+    return zeroCell;
+
   return negOneCell;
 }
 
