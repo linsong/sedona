@@ -1,0 +1,43 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   10 Jan 07  Andy Saunders  Creation
+//   27 Apr 07  Brian Frank    Port from Java to Sedona
+//
+
+**
+** Reset rescale in value to out value object
+**
+@niagaraIcon="module://icons/x16/control/math/reset.png"
+class Reset
+  extends Component
+{
+
+  property float out
+  property float in
+  @config property float iMax = 4095.0
+  @config property float iMin = 0.0
+  @config property float oMax = 100.0
+  @config property float oMin = 0.0
+
+  virtual override void execute()
+  {
+    float x = in
+    float inHi = iMax
+    float inLow = iMin
+    float outHi = oMax
+    float outLow = oMin
+    float y = 0.0f
+
+    if (x <= inLow)
+      y = outLow
+    else if (x >= inHi)
+      y = outHi
+    else
+      y =  ((outHi-outLow)/(inHi-inLow) * (x-inLow) + outLow)
+    out = y
+  }
+
+}
