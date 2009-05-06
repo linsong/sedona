@@ -11,6 +11,14 @@
 #include <time.h>
 #include <stdio.h>
 
+#ifdef _WIN32
+extern long _timezone;
+extern int _daylight;
+#else
+extern long timezone;
+extern int daylight;
+#endif
+
 //  Difference in seconds between ANSI C Epoch of midnight Jan 1 1970 and
 //  the Sedona epoch of midnight Jan 1 2000.  There were 7 leap years
 //  in this timeframe - 72,76,80,84,88,92,96
@@ -31,7 +39,6 @@ int64_t datetimeStd_DateTimeServiceStd_doNow(SedonaVM* vm, Cell* params)
   return nanos;
 }
 
-
  //  Setting system time not implemented on Win32
   
 // void doSetClock 
@@ -42,3 +49,29 @@ Cell datetimeStd_DateTimeServiceStd_doSetClock(SedonaVM* vm, Cell* params)
   return nullCell;
 }
 
+Cell datetimeStd_DateTimeServiceStd_doGetUtcOffset(SedonaVM* vm, Cell* params)
+{
+  Cell result;
+   
+  //  Per Microsoft CRT docs, timezone global variable is updated whenever 
+  //  localtime is called.  QNX follows same convention.
+  //  timezone is difference between localtime and GMT, so we must negate to 
+  //  get utcOffset as we define it.
+  time_t now = time(NULL);
+  struct tm *lcltime = localtime(&now);
+  
+  #ifdef _WIN32
+    result.ival = -(int)_timezone;
+    if (_daylight)
+      result.ival += 3600;  //  if daylight savings active, advance one hour
+  #else
+    result.ival = -(int)timezone;
+    if (daylight)
+      result.ival += 3600;  //  if daylight savings active, advance one hour
+  #endif
+
+//printf("timezone %lld result.ival %d\n", _timezone, result.ival);
+
+  return result;
+  
+}  

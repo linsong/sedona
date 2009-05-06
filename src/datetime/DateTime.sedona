@@ -51,9 +51,9 @@ class DateTime extends Virtual
 
   
   **
-  **  UTC offset used in to/from Nanos calculations.
+  **  UTC offset in seconds.  Used in to/from Nanos calculations.  
   ** 
-  long utcOffset
+  int utcOffset
 
 
   **
@@ -66,6 +66,7 @@ class DateTime extends Virtual
     month = 1
     day = 1
     hour = minute = second = nanosecond = 0 
+    utcOffset = 0
   }   
 
 
@@ -99,7 +100,7 @@ class DateTime extends Virtual
     }         
     
     //  Adjust for utcOffset 
-    rem += utcOffset
+    rem += (long)utcOffset * 1sec
     
     //  Determine month 
     int m = 1
@@ -147,7 +148,7 @@ class DateTime extends Virtual
   **  hour must be 0-23
   **  min, sec are 0-59
   **  ns represents fraction seconds, must be <= 999,999,999
-  **  utcOffset represents the local time offset (in nanos) from UTC,
+  **  utcOffset represents the local time offset (in seconds) from UTC,
   **    including daylight savings time adjustment (if any)
   long toNanos()
   {   
@@ -194,7 +195,7 @@ class DateTime extends Virtual
       if (isLeapYear(i + 2000)) nse += 1days; 
                                         
     // Adjust for UTC offset
-    nse -= utcOffset;
+    nse -= (long)utcOffset * 1sec;
         
     return nse;
   }              

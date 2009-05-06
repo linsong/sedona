@@ -17,7 +17,7 @@ class DateTimeService
   ** Nanos since epoch
   property long nanos
 
-  ** Hour 
+  ** Hour, adjusted for UTC offset
   property int hour
 
   ** Minute 
@@ -38,6 +38,8 @@ class DateTimeService
   ** Day of week (see also datetime::DayOfWeek)
   property int dayOfWeek
 
+  ** Current UTC offset
+  property int utcOffset
 
 ////////////////////////////////////////////////////////////////
 // Actions
@@ -49,7 +51,14 @@ class DateTimeService
   action void refresh()
   {
     long n = now()    
+ 
+    //  If impl can report utcOffset, use it.  If not, use
+    //  configured value   
+    if (isUtcOffsetKnown())
+      utcOffset = getUtcOffset()
+    
     dt.reset()
+    dt.utcOffset = utcOffset
     if (dt.fromNanos(n) != -1)
       updateProperties(n)
   }   
@@ -75,6 +84,17 @@ class DateTimeService
   **  capability
   **    
   virtual long now() { return DateTime.invalid }
+
+  ** 
+  ** Return true if the underlying implementation can report the utcOffset
+  ** 
+  virtual bool isUtcOffsetKnown() { return false }
+
+  **
+  ** Return the current UTC offset in seconds, including adjustment for
+  ** daylight savings time if necessary
+  **    
+  virtual int getUtcOffset() { return 0 }
 
   **
   **  Set the system clock to the given UTC value.  May
@@ -133,5 +153,7 @@ class DateTimeService
 
   long lastRefreshTicks
   inline protected DateTime dt
+
+
 
 }

@@ -21,7 +21,7 @@ class DateTimeTest
                  int minute,
                  int second,
                  int ns,
-                 long utcOffset)
+                 int utcOffset)
   {
     dt.year = (short)year
     dt.month =(byte) month
@@ -45,44 +45,44 @@ class DateTimeTest
     ////////////////////////////////////////////////////////////
     //  Test out of range values   
     ////////////////////////////////////////////////////////////
-    setupDt(1900,0,1,0,0,0,0,0L)
+    setupDt(1900,0,1,0,0,0,0,0)
     assert(dt.toNanos() == DateTime.invalid)
         
-    setupDt(2100,0,1,0,0,0,0,0L) 
+    setupDt(2100,0,1,0,0,0,0,0) 
     assert(dt.toNanos() == DateTime.invalid)
     
-    setupDt(2000,0,1,0,0,0,0,0L) 
+    setupDt(2000,0,1,0,0,0,0,0) 
     assert(dt.toNanos() == DateTime.invalid)
     
-    setupDt(2000,13,1,0,0,0,0,0L) 
+    setupDt(2000,13,1,0,0,0,0,0) 
     assert(dt.toNanos() == DateTime.invalid)
     
-    setupDt(2000,0,32,0,0,0,0,0L) 
+    setupDt(2000,0,32,0,0,0,0,0) 
     assert(dt.toNanos() == DateTime.invalid)        
     
-    setupDt(2001,2,29,0,0,0,0,0L) 
+    setupDt(2001,2,29,0,0,0,0,0) 
     assert(dt.toNanos() == DateTime.invalid)
     
-    setupDt(2001,0,1,-1,0,0,0,0L) 
+    setupDt(2001,0,1,-1,0,0,0,0) 
     assert(dt.toNanos() == DateTime.invalid)
     
-    setupDt(2001,0,1,60,0,0,0,0L) 
+    setupDt(2001,0,1,60,0,0,0,0) 
     assert(dt.toNanos() == DateTime.invalid)
     
-    setupDt(2001,0,1,0,60,0,0,0L) 
+    setupDt(2001,0,1,0,60,0,0,0) 
     assert(dt.toNanos() == DateTime.invalid)
     
-    setupDt(2001,0,1,0,0,60,0,0L) 
+    setupDt(2001,0,1,0,0,60,0,0) 
     assert(dt.toNanos() == DateTime.invalid)
     
-    setupDt(2001,0,1,0,0,0,-1,0L) 
+    setupDt(2001,0,1,0,0,0,-1,0) 
     assert(dt.toNanos() == DateTime.invalid)
     
-    setupDt(2001,0,1,0,0,0,1_000_000_000,0L) 
+    setupDt(2001,0,1,0,0,0,1_000_000_000,0) 
     assert(dt.toNanos() == DateTime.invalid)
     
     //  Verify Feb 29 is OK on leap year
-    setupDt(2000,Month.feb,29,0,0,0,0,0L)
+    setupDt(2000,Month.feb,29,0,0,0,0,0)
     assert(dt.toNanos() != DateTime.invalid)
 
     ////////////////////////////////////////////////////////////     
@@ -267,7 +267,7 @@ class DateTimeTest
     ////////////////////////////////////////////////////////////
     //  Round trip conversions from local time to nanos and back
     //
-    dt.reset(); setupDt(2001,Month.jan,12,12,34,56,78,0L);
+    dt.reset(); setupDt(2001,Month.jan,12,12,34,56,78,0);
     nse = dt.toNanos(); assert(nse != DateTime.invalid);
     dt.reset(); assert(dt.fromNanos(nse) == 0)
     assert(dt.year == 2001)
@@ -279,7 +279,7 @@ class DateTimeTest
     assert(dt.nanosecond == 78)
 
     //  Test Feb 29/Mar1 in leap year close to epoch     
-    dt.reset(); setupDt(2004,Month.feb,29,0,0,0,0,0L);
+    dt.reset(); setupDt(2004,Month.feb,29,0,0,0,0,0);
     nse = dt.toNanos(); assert(nse != DateTime.invalid);
     dt.reset(); assert(dt.fromNanos(nse) == 0)    
     assert(dt.year == 2004)
@@ -290,7 +290,7 @@ class DateTimeTest
     assert(dt.second == 0)
     assert(dt.nanosecond == 0)
    
-    dt.reset(); setupDt(2004,Month.mar,1,0,0,0,0,0L);
+    dt.reset(); setupDt(2004,Month.mar,1,0,0,0,0,0);
     nse = dt.toNanos(); assert(nse != DateTime.invalid);
     dt.reset(); assert(dt.fromNanos(nse) == 0)    
     assert(dt.year == 2004)
@@ -302,7 +302,7 @@ class DateTimeTest
     assert(dt.nanosecond == 0)
 
     //  Test Feb 28/Mar1 in a non-leap year close to epoch    
-    dt.reset(); setupDt(2005,Month.feb,28,0,0,0,0,0L);
+    dt.reset(); setupDt(2005,Month.feb,28,0,0,0,0,0);
     nse = dt.toNanos(); assert(nse != DateTime.invalid);
     dt.reset(); assert(dt.fromNanos(nse) == 0)    
     assert(dt.year == 2005)
@@ -313,7 +313,7 @@ class DateTimeTest
     assert(dt.second == 0)
     assert(dt.nanosecond == 0)
    
-    dt.reset(); setupDt(2005,Month.mar,1,0,0,0,0,0L);
+    dt.reset(); setupDt(2005,Month.mar,1,0,0,0,0,0);
     nse = dt.toNanos(); assert(nse != DateTime.invalid);
     dt.reset(); assert(dt.fromNanos(nse) == 0)    
     assert(dt.year == 2005)
@@ -326,7 +326,7 @@ class DateTimeTest
     
     //  Test Feb 29/Mar1 in leap year far away from epoch
     //  to make sure cumulative leap years are handled 
-    dt.reset(); setupDt(2096,Month.feb,29,0,0,0,0,0L);
+    dt.reset(); setupDt(2096,Month.feb,29,0,0,0,0,0);
     nse = dt.toNanos(); assert(nse != DateTime.invalid);
     dt.reset(); assert(dt.fromNanos(nse) == 0)    
     assert(dt.year == 2096)
@@ -337,7 +337,7 @@ class DateTimeTest
     assert(dt.second == 0)
     assert(dt.nanosecond == 0)
    
-    dt.reset(); setupDt(2096,Month.mar,1,0,0,0,0,0L);
+    dt.reset(); setupDt(2096,Month.mar,1,0,0,0,0,0);
     nse = dt.toNanos(); assert(nse != DateTime.invalid);
     dt.reset(); assert(dt.fromNanos(nse) == 0)    
     assert(dt.year == 2096)
@@ -350,7 +350,7 @@ class DateTimeTest
     
     //  Test Feb 28/Mar1 in a non-leap year far away from epoch
     //  to make sure cumulative leap years are handled
-    dt.reset(); setupDt(2099,Month.feb,28,0,0,0,0,0L);
+    dt.reset(); setupDt(2099,Month.feb,28,0,0,0,0,0);
     nse = dt.toNanos(); assert(nse != DateTime.invalid);
     dt.reset(); assert(dt.fromNanos(nse) == 0)    
     assert(dt.year == 2099)
@@ -361,7 +361,7 @@ class DateTimeTest
     assert(dt.second == 0)
     assert(dt.nanosecond == 0)
    
-    dt.reset(); setupDt(2099,Month.mar,1,0,0,0,0,0L);
+    dt.reset(); setupDt(2099,Month.mar,1,0,0,0,0,0);
     nse = dt.toNanos(); assert(nse != DateTime.invalid);
     dt.reset(); assert(dt.fromNanos(nse) == 0)    
     assert(dt.year == 2099)
@@ -378,9 +378,9 @@ class DateTimeTest
     //    
    
     //  7:00 New York is 12:00 GMT
-    dt.reset(); setupDt(2000,Month.jan,1,7,0,0,0,-5hr);
+    dt.reset(); setupDt(2000,Month.jan,1,7,0,0,0,(int)(-5hr/1sec));
     nse = dt.toNanos(); assert(nse == 12hr);
-    dt.reset(); dt.utcOffset = -5hr; assert(dt.fromNanos(nse) == 0)    
+    dt.reset(); dt.utcOffset = (int)(-5hr/1sec); assert(dt.fromNanos(nse) == 0)    
     assert(dt.year == 2000)
     assert(dt.month == Month.jan)
     assert(dt.day == 1)
@@ -390,9 +390,9 @@ class DateTimeTest
     assert(dt.nanosecond == 0)
    
     //  3:00 Moscow is 12:00 GMT
-    dt.reset(); setupDt(2000,Month.jan,1,15,0,0,0,+3hr);
+    dt.reset(); setupDt(2000,Month.jan,1,15,0,0,0,(int)(+3hr/1sec));
     nse = dt.toNanos(); assert(nse == 12hr);
-    dt.reset(); dt.utcOffset = +3hr; assert(dt.fromNanos(nse) == 0)    
+    dt.reset(); dt.utcOffset = (int)(+3hr/1sec); assert(dt.fromNanos(nse) == 0)    
 
     assert(dt.year == 2000)
     assert(dt.month == Month.jan)
@@ -404,9 +404,9 @@ class DateTimeTest
 
     //  Test negative UTC offset across midnight
     //  23:00 New York is 0400 GMT plus a day    
-    dt.reset(); setupDt(2000,Month.jan,1,23,0,0,0,-5hr);
+    dt.reset(); setupDt(2000,Month.jan,1,23,0,0,0,(int)(-5hr/1sec));
     nse = dt.toNanos(); assert(nse == (1days + 4hr));
-    dt.reset(); dt.utcOffset = -5hr; assert(dt.fromNanos(nse) == 0)    
+    dt.reset(); dt.utcOffset = (int)(-5hr/1sec); assert(dt.fromNanos(nse) == 0)    
     
     assert(dt.year == 2000)
     assert(dt.month == Month.jan)
@@ -417,7 +417,7 @@ class DateTimeTest
     assert(dt.nanosecond == 0)
 
     //  convert same nse in GMT, make sure date is correct
-    dt.reset(); dt.utcOffset = 0L; assert(dt.fromNanos(nse) == 0)   
+    dt.reset(); dt.utcOffset = 0; assert(dt.fromNanos(nse) == 0)   
     assert(dt.year == 2000)
     assert(dt.month == Month.jan)
     assert(dt.day == 2)
@@ -428,9 +428,9 @@ class DateTimeTest
     
     //  Test positive UTC offset across midnight
     //  Beijing is GMT +8 @ 7am local is 2300 GMT
-    dt.reset(); setupDt(2000,Month.jan,2,7,0,0,0,+8hr);
+    dt.reset(); setupDt(2000,Month.jan,2,7,0,0,0,(int)(+8hr/1sec));
     nse = dt.toNanos(); assert(nse == 23hr);
-    dt.reset(); dt.utcOffset = +8hr; assert(dt.fromNanos(nse) == 0)        
+    dt.reset(); dt.utcOffset = (int)(+8hr/1sec); assert(dt.fromNanos(nse) == 0)        
           
     assert(dt.year == 2000)
     assert(dt.month == Month.jan)
@@ -441,7 +441,7 @@ class DateTimeTest
     assert(dt.nanosecond == 0)
 
     //  convert same nse in GMT, make sure date is correct
-    dt.reset(); dt.utcOffset = 0L; assert(dt.fromNanos(nse) == 0)    
+    dt.reset(); dt.utcOffset = 0; assert(dt.fromNanos(nse) == 0)    
     assert(dt.year == 2000)
     assert(dt.month == Month.jan)
     assert(dt.day == 1)
@@ -455,49 +455,49 @@ class DateTimeTest
 //  Day of Week tests 
 ////////////////////////////////////////////////////////////////    
     //  Jan 1 2000 is Sat
-    dt.reset(); setupDt(2000,Month.jan,1,0,0,0,0,0L)
+    dt.reset(); setupDt(2000,Month.jan,1,0,0,0,0,0)
     nse = dt.toNanos();  assert(nse != DateTime.invalid);
     assert(dt.fromNanos(nse) == 0)
     assert(dt.dayOfWeek == DayOfWeek.sat)
 
     //  Feb 29 2000 is Tuesday
-    dt.reset(); setupDt(2000,Month.feb,29,0,0,0,0,0L)
+    dt.reset(); setupDt(2000,Month.feb,29,0,0,0,0,0)
     nse = dt.toNanos();  assert(nse != DateTime.invalid);
     assert(dt.fromNanos(nse) == 0)
     assert(dt.dayOfWeek == DayOfWeek.tue)
 
     //  Mar 1 2000 is Wed
-    dt.reset(); setupDt(2000,Month.mar,1,0,0,0,0,0L)
+    dt.reset(); setupDt(2000,Month.mar,1,0,0,0,0,0)
     nse = dt.toNanos();  assert(nse != DateTime.invalid);
     assert(dt.fromNanos(nse) == 0)
     assert(dt.dayOfWeek == DayOfWeek.wed)
 
     //  Jan 1 2001 is Mon
-    dt.reset(); setupDt(2001,Month.jan,1,0,0,0,0,0L)
+    dt.reset(); setupDt(2001,Month.jan,1,0,0,0,0,0)
     nse = dt.toNanos();  assert(nse != DateTime.invalid);
     assert(dt.fromNanos(nse) == 0)
     assert(dt.dayOfWeek == DayOfWeek.mon)
 
     //  Dec 31 2001 is Mon
-    dt.reset(); setupDt(2001,Month.dec,31,0,0,0,0,0L)
+    dt.reset(); setupDt(2001,Month.dec,31,0,0,0,0,0)
     nse = dt.toNanos();  assert(nse != DateTime.invalid);
     assert(dt.fromNanos(nse) == 0)
     assert(dt.dayOfWeek == DayOfWeek.mon)
 
     //  Apr 15 2009 is Wed
-    dt.reset(); setupDt(2009,Month.apr,15,0,0,0,0,0L)
+    dt.reset(); setupDt(2009,Month.apr,15,0,0,0,0,0)
     nse = dt.toNanos();  assert(nse != DateTime.invalid);
     assert(dt.fromNanos(nse) == 0)
     assert(dt.dayOfWeek == DayOfWeek.wed)
 
     //  Jul 4 2050 is Monday
-    dt.reset(); setupDt(2050,Month.jul,4,0,0,0,0,0L)
+    dt.reset(); setupDt(2050,Month.jul,4,0,0,0,0,0)
     nse = dt.toNanos();  assert(nse != DateTime.invalid);
     assert(dt.fromNanos(nse) == 0)
     assert(dt.dayOfWeek == DayOfWeek.mon)
 
     //  Dec 25 2099 is Friday
-    dt.reset(); setupDt(2099,Month.dec,25,0,0,0,0,0L)
+    dt.reset(); setupDt(2099,Month.dec,25,0,0,0,0,0)
     nse = dt.toNanos();  assert(nse != DateTime.invalid);
     assert(dt.fromNanos(nse) == 0)
     assert(dt.dayOfWeek == DayOfWeek.fri)

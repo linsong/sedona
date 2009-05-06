@@ -21,6 +21,7 @@
   <!-- Natives -->
   <native qname="datetimeStd::DateTimeServiceStd.doNow"          id="10::0"  />
   <native qname="datetimeStd::DateTimeServiceStd.doSetClock"     id="10::1"  />
+  <native qname="datetimeStd::DateTimeServiceStd.doGetUtcOffset" id="10::2"  />
 
 	
 </sedonaKit>
