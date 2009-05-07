@@ -81,5 +81,8 @@
 
   <native qname="sys::Str.fromBytes"             id="0::56"  />        
 
+  <!-- move earlier in list?  e.g. 0 or 1? (make it Sys method instead?) -->
+  <native qname="sys::PlatformService.nativeChecksum" id="0::57" />
+
 </sedonaKit>
 

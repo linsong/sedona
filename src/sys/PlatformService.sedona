@@ -35,9 +35,20 @@ class PlatformService
   void updatePlatformId(Str id)
   {
     platformId.copyFromStr(id)
+
+    // If native checksum exists, tack it onto the end of the platformId
+    Str chk = nativeChecksum()
+    if (chk!=null) 
+    {
+      // This might be easier if we create a BufOutStream on platformId
+      Sys.copy("-".toBytes(), 0, platformId.bytes, id.length(), 1)
+      Sys.copy(chk.toBytes(), 0, platformId.bytes, id.length()+1, chk.length())
+    }
+
     changed(PlatformService.platformId)
   }
   
+  native static Str nativeChecksum()
   
 ////////////////////////////////////////////////////////////////
 // Service
