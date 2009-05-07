@@ -21,6 +21,8 @@
   <depend on="pstore 1.0" />
   <depend on="datetime 1.0" />
   <depend on="datetimeStd 1.0" />
+  <depend on="basicSchedule 1.0" />
+  
 
 </sedonaCode>
 
