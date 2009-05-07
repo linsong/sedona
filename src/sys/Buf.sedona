@@ -65,7 +65,7 @@ final class Buf
     int newSize = len
     if (len > bytesLen) newSize = bytesLen      
     this.size = newSize
-    Sys.copy(that, 0, this.bytes, 0, newSize)
+    Sys.copy(that, off, this.bytes, 0, newSize)
   }
 
 
