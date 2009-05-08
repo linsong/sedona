@@ -1,0 +1,46 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   10 Jan 07  Andy Saunders  Creation
+//   27 Apr 07  Brian Frank    Port from Java to Sedona
+//
+
+**
+** Freq object calculates a pulse input frequency
+**
+** out = 
+**
+@niagaraIcon="module://icons/x16/control/control.png"
+class Freq
+  extends Component
+{
+
+  property float pps
+  property float ppm
+  property bool in
+
+  virtual override void execute()
+  {
+    long ticks = Sys.ticks()
+    long period = ticks - lastTicks
+    bool cIn = in
+
+    if(cIn && !lastIn)  // a new pulse has started
+    {
+      lastTicks = ticks
+      if (!(period == 0L))
+      {
+        float freq = (float)1sec / (float)period;
+        pps = freq
+        ppm = freq * 60.0
+      }
+    }
+    lastIn = cIn
+  }
+
+  bool lastIn = false
+  long lastTicks = 0L
+
+}

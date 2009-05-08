@@ -1,0 +1,54 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   23 Aug 07  Andy Saunders  Creation
+//
+
+**
+** AoPoint -- Class to model a Analog output point in a Device.
+**
+class AoPoint
+  extends AiPoint 
+{
+  @config property float inMax = 100f   // max input value
+  @config property float inMin = 0f     // min input value
+  @config property float in  = 0.0      // input value to write
+
+  float lastValue
+  bool isFirstTime = true
+  public bool isInChanged = false
+  
+  virtual override void execute()
+  {
+    super.execute()
+    if(isDown())
+    {
+      isFirstTime = true
+      return
+    }
+   
+    float value = in;
+    if (value > inMax)
+      value = inMax;
+    else if (value < inMin)
+      value = inMin;
+        
+    if(isFirstTime || (value != lastValue))
+    {
+      lastValue = value
+      wrValue(value)
+      isFirstTime = false
+      isInChanged = true
+    }
+  }
+  
+  **
+  ** wrValue call back when input changes
+  **
+  virtual void wrValue(float value)
+  {                
+    getDevice()?.setAoValue(address, (int)(value * 40.96))
+  }
+}

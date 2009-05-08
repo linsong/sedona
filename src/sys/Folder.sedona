@@ -1,0 +1,16 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   19 Sep 07  Brian Frank  Create
+//
+
+**
+** Folder is a component used to group other components.
+**
+@niagaraIcon="module://icons/x16/folder.png"
+class Folder
+  extends Component
+{
+}
