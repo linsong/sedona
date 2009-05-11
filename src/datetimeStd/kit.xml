@@ -19,9 +19,9 @@
   <depend on="datetime 1.0" />
   
   <!-- Natives -->
-  <native qname="datetimeStd::DateTimeServiceStd.doNow"          id="10::0"  />
-  <native qname="datetimeStd::DateTimeServiceStd.doSetClock"     id="10::1"  />
-  <native qname="datetimeStd::DateTimeServiceStd.doGetUtcOffset" id="10::2"  />
+  <native qname="datetimeStd::DateTimeServiceStd.doNow"          id="9::0"  />
+  <native qname="datetimeStd::DateTimeServiceStd.doSetClock"     id="9::1"  />
+  <native qname="datetimeStd::DateTimeServiceStd.doGetUtcOffset" id="9::2"  />
 
 	
 </sedonaKit>

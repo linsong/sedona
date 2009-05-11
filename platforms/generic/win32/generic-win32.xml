@@ -9,7 +9,6 @@
     <!-- Native Kits -->
     <nativeKit depend="sys 1.0" />
     <nativeKit depend="inet 1.0" />
-    <nativeKit depend="datetime 1.0" />
     <nativeKit depend="datetimeStd 1.0" />
 
     <!-- Native Sources -->
