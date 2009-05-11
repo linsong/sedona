@@ -253,7 +253,7 @@ public class Type
 
   public static boolean isPrimitive(int id)
   {
-    return id <= floatId;
+    return id <= doubleId;
   }
 
   public static int predefinedId(String qname)
