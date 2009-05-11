@@ -170,6 +170,10 @@ public class OfflineApp
       throw new IllegalStateException("Duplicate name: " + kid.name);
     if (parent.kids != null && parent.kids.size() >= Component.maxChildren)
       throw new IllegalArgumentException("Too many children under component: " + parent);
+    if (kid.type.isAbstract())
+      throw new IllegalArgumentException("Cannot add component with abstract type to app: " + kid);
+    if (!kid.type.isPublic())
+      throw new IllegalArgumentException("Cannot add component with non-public type to app: " + kid);
 
     // if we've assigned an id, then add it to my lookup tables
     // immediately, otherwise we will assign the id after the whole

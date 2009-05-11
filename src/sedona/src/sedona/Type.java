@@ -71,6 +71,16 @@ public class Type
     return is(schema.type("sys::Component"));
   }
 
+  /** 
+   * Return if this type was declared 'abstract'
+   */
+  public boolean isAbstract() { return (manifest.flags & ABSTRACT) != 0; }
+  
+  /**
+   * Return true if this type was declared 'public'
+   */
+  public boolean isPublic() { return (manifest.flags & PUBLIC) != 0; }
+  
   /**
    * Return if this type matches the specified value instance.
    */
