@@ -25,16 +25,30 @@ public class CStrGen
   {
     if (args.length < 1)
     {
-      System.out.println("usage: CStrGen <infile> [outfile]");
+      System.out.println("usage: CStrGen <infile> ");
       return;
     }
 
     File inFile = new File(args[0]);
     int dot = inFile.getName().indexOf('.');
-    File outFile = new File(inFile.getParentFile(), inFile.getName().substring(0, dot) + ".c");
-    if (args.length >= 2)
-      outFile = new File(args[1]);
+    boolean scode = false;
+    
+    String suffix;
+    if (inFile.getName().endsWith(".scode"))
+    {
+      suffix = "_scode";
+      scode = true;
+    }  
+    else if (inFile.getName().endsWith(".sab"))
+      suffix = "_sab";
+    else
+    {        
+      System.out.println("infile must by .scode or .sab");
+      return;
+    }      
 
+    File outFile = new File(inFile.getParentFile(), inFile.getName().substring(0, dot) + suffix + ".c");
+    
     System.out.println("in:  " + inFile);
     System.out.println("out: " + outFile);
 
@@ -46,8 +60,17 @@ public class CStrGen
     out.print("\n");
     out.print("#include \"sedona.h\"\n");
     out.print("\n");
-    out.print("const unsigned int scodeSize = " + inFile.length() + ";\n");
-    out.print("const uint8_t scodeImage[] =\n{\n");
+
+    if (scode)
+    {
+      out.print("const unsigned int scodeSize = " + inFile.length() + ";\n");
+      out.print("const uint8_t scodeImage[] =\n{\n");
+    }      
+    else
+    {
+      out.print("const unsigned int sabSize = " + inFile.length() + ";\n");
+      out.print("const uint8_t sabImage[] =\n{\n");           
+    }   
     String line = "";
     while ((c = in.read()) >= 0)
     {
