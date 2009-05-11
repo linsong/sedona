@@ -292,6 +292,12 @@ public class Type
 //////////////////////////////////////////////////////////////////////////
 // Fields
 //////////////////////////////////////////////////////////////////////////
+  
+  public static final int ABSTRACT  = 0x01;
+  public static final int CONST     = 0x02;
+  public static final int FINAL     = 0x04;
+  public static final int INTERNAL  = 0x08;
+  public static final int PUBLIC    = 0x10;
 
   public final Schema schema;
   public final Kit kit;

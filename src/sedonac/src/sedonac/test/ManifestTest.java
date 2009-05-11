@@ -8,11 +8,7 @@
 
 package sedonac.test;
 
-import java.io.*;
 import sedona.*;
-import sedona.offline.*;
-import sedona.util.*;
-import sedona.xml.*;
 
 /**
  * ManifestTest
@@ -29,11 +25,16 @@ public class ManifestTest
       KitPart.forLocalKit("sys"),
     });     
     
+    Type atc = schema.type("sys::AbstractTestComp");
+    verifyEq(atc.qname, "sys::AbstractTestComp");
+    verifyEq(atc.manifest.flags, Type.ABSTRACT | Type.PUBLIC);
+    
     Type tc = schema.type("sys::TestComp");
     verifyEq(tc.qname, "sys::TestComp");
     verifyEq(tc.facets.size(), 2);
     verifyEq(tc.facets.getb("testonly"), true);    
-    verifyEq(tc.facets.gets("testStr"), "roger\nroger");    
+    verifyEq(tc.facets.gets("testStr"), "roger\nroger");
+    verifyEq(tc.manifest.flags, Type.PUBLIC);
     
     Slot z1 = tc.slot("z1");
     verifyEq(z1.qname,   "sys::TestComp.z1");
