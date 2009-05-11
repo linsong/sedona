@@ -17,6 +17,7 @@
   <target name="datetime" />
   <target name="datetimeStd" />
   <target name="pstore" />
+  <target name="basicSchedule" />
 
 </sedonaDir>
 
