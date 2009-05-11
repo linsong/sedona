@@ -88,8 +88,8 @@ Cell sys_Sys_longStr(SedonaVM* vm, Cell* params)
 
 // Str Sys.longHexStr(long)
 Cell sys_Sys_longHexStr(SedonaVM* vm, Cell* params)
-{         
-  int64_t i = *(int64_t*)params;  
+{
+  int64_t i = *(int64_t*)params;
   return formatIntToCell(i, 16);
 }
 
@@ -97,10 +97,10 @@ Cell sys_Sys_longHexStr(SedonaVM* vm, Cell* params)
 // We don't do scientific notation, just fixed point for printing.  SMALLEST consts specify
 // how many digits after the decimal point get printed.
 
-// Must match in precision!  (Could calculate reciprocal at runtime instead, but code 
+// Must match in precision!  (Could calculate reciprocal at runtime instead, but code
 // is more efficient if we make them both constants.)
-#define SMALLEST_PRINTABLE_DOUBLE (1.0e-6)  
-#define SMALLEST_DOUBLE_RECIP     (1.0e6)  
+#define SMALLEST_PRINTABLE_DOUBLE (1.0e-6)
+#define SMALLEST_DOUBLE_RECIP     (1.0e6)
 
 // Str Sys.doubleStr(double)
 Cell sys_Sys_doubleStr(SedonaVM* vm, Cell* params)
@@ -108,7 +108,7 @@ Cell sys_Sys_doubleStr(SedonaVM* vm, Cell* params)
   double val = *(double*)params;
   double abs;
   int n = 0;
-  int32_t i, d;
+  int32_t i, d, j;
   Cell result;
   result.aval = strbuf;      // strbuf location doesn't change, just its contents
 
@@ -118,7 +118,7 @@ Cell sys_Sys_doubleStr(SedonaVM* vm, Cell* params)
     strbuf[n++] = '0';
     strbuf[n++] = '.';
     // Use correct # of 0's for our precision
-    for (int d=SMALLEST_DOUBLE_RECIP; d>1; d/=10) strbuf[n++] = '0';
+    for (d=SMALLEST_DOUBLE_RECIP; d>1; d/=10) strbuf[n++] = '0';
     strbuf[n++] = '\0';
     return result;
   }
@@ -148,7 +148,7 @@ Cell sys_Sys_doubleStr(SedonaVM* vm, Cell* params)
     strbuf[n++] = '.';
 
     // Write leading zeroes, if any, for decimal part
-    for (int j=(int)(SMALLEST_DOUBLE_RECIP/10); j>0; j/=10)
+    for (j=(int)(SMALLEST_DOUBLE_RECIP/10); j>0; j/=10)
       if (d<j) strbuf[n++] = '0';
 
     // If d==0 then we're done; otherwise write rest of fraction
