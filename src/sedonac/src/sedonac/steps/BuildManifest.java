@@ -150,7 +150,7 @@ public class BuildManifest
     String base = null;
     if (t.base() != null && t.base().isaComponent())
       base = t.base().qname();
-    TypeManifest manifest = new TypeManifest(manifestKit, t.id(), t.name(), t.facets(), base, t.sizeof());
+    TypeManifest manifest = new TypeManifest(manifestKit, t.id(), t.name(), t.facets(), base, t.sizeof(), t.flags());
 
     if (t instanceof TypeDef)
     {

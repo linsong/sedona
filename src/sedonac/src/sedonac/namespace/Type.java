@@ -174,16 +174,19 @@ public interface Type
   public static final int floatId  = sedona.Type.floatId;
   public static final int doubleId = sedona.Type.doubleId;
   public static final int bufId    = sedona.Type.bufId;
-
+  
 //////////////////////////////////////////////////////////////////////////
 // Flags
 //////////////////////////////////////////////////////////////////////////
 
-  public static final int ABSTRACT  = 0x01;
-  public static final int CONST     = 0x02;
-  public static final int FINAL     = 0x04;
-  public static final int INTERNAL  = 0x08;
-  public static final int PUBLIC    = 0x10;
+  // these flags need to be kept in sync with sedona.Type so that the 
+  // TypeManifest flags can be correctly written.
+  
+  public static final int ABSTRACT  = sedona.Type.ABSTRACT;
+  public static final int CONST     = sedona.Type.CONST;
+  public static final int FINAL     = sedona.Type.FINAL;
+  public static final int INTERNAL  = sedona.Type.INTERNAL;
+  public static final int PUBLIC    = sedona.Type.PUBLIC;
 
   public int flags();
   public boolean isAbstract();
