@@ -80,6 +80,22 @@ public class Type
    * Return true if this type was declared 'public'
    */
   public boolean isPublic() { return (manifest.flags & PUBLIC) != 0; }
+
+  /** 
+   * Is void bool, byte, short, int, long, float, or double 
+   */
+  public boolean isPrimitive()
+  {  
+    return isPrimitive(id); 
+  }
+  
+  /** 
+   * Is void byte, short, or int
+   */
+  public boolean isInteger()
+  {  
+    return id == byteId || id == shortId || id == intId;
+  }
   
   /**
    * Return if this type matches the specified value instance.
@@ -261,6 +277,7 @@ public class Type
 // Type Id
 //////////////////////////////////////////////////////////////////////////
 
+  /** Is void bool, byte, short, int, long, float, or double */
   public static boolean isPrimitive(int id)
   {
     return id <= doubleId;
