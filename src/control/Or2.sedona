@@ -1,0 +1,29 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   10 Jan 07  Andy Saunders  Creation
+//   27 Apr 07  Brian Frank    Port from Java to Sedona
+//
+
+**
+** Or2 Two input Or logic object
+**
+** out = in1 || in2
+**
+@niagaraIcon="module://icons/x16/control/logic/or.png"
+class Or2
+  extends Component
+{
+
+  property bool out
+  property bool in1
+  property bool in2
+
+  virtual override void execute()
+  {
+    out = in1 || in2
+  }
+
+}
