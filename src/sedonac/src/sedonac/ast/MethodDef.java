@@ -25,7 +25,7 @@ public class MethodDef
 //////////////////////////////////////////////////////////////////////////
 
   public MethodDef(Location loc, TypeDef parent, int flags, String name, 
-                   Facets facets, Type ret, ParamDef[] params, Block code)
+                   FacetDef[] facets, Type ret, ParamDef[] params, Block code)
   {
     super(loc, parent, flags, name, facets);
     this.ret    = ret;
@@ -81,6 +81,9 @@ public class MethodDef
   public void walk(AstVisitor visitor, int depth)
   {
     visitor.enterMethod(this);
+
+    // facets
+    walkFacets(visitor, depth);
 
     // types
     ret = visitor.type(ret);

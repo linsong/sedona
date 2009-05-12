@@ -19,9 +19,12 @@ abstract class AbstractTestComp extends Component
 
 @testStr="roger\nroger"
 class TestComp extends AbstractTestComp 
-{ 
+{                                         
+  define int thirtyFive = 35
+  define Str helloStr   = "hello"
+  
   @config @bTrue=true @bFalse=false 
-  @i=35 @f=3.8f @s="hello"
+  @i=thirtyFive @f=3.8f @s=helloStr
   property bool  z1 = null
   property bool  z2 = true
   @config property byte  b1

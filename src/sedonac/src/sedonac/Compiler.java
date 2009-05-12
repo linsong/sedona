@@ -119,6 +119,7 @@ public class Compiler
     new Normalize(this).run();
     new ResolveExpr(this).run();
     new ConstFolding(this).run();
+    new ResolveFacets(this).run();
     new CheckErrors(this).run();
     new NormalizeExpr(this).run();
     new ResolveNatives(this).run();

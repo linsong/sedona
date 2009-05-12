@@ -10,7 +10,9 @@ package sedonac.ir;
 
 import java.io.*;
 import java.util.*;
+import sedona.Bool;
 import sedona.Facets;
+import sedona.Value;
 import sedonac.*;
 import sedonac.Compiler;
 import sedonac.ast.*;
@@ -48,7 +50,7 @@ public class IrReader
     readTokens();
 
     // class header          
-    Facets facets = facets();
+    Facets facets = readFacets();
     int flags = typeFlags();
     consume(Token.CLASS);
     String name = consumeId();
@@ -82,9 +84,30 @@ public class IrReader
     return t;
   }
 
+  private Facets readFacets()
+  {
+    if (curt != Token.AT) return new Facets();
+
+    Facets facets = new Facets();
+    while (curt == Token.AT)
+    {
+      consume();
+      String name = consumeId();
+      Value value = Bool.TRUE;
+      if (curt == Token.ASSIGN)
+      {
+        consume(Token.ASSIGN);
+        value = literal().toValue();
+      }
+      facets.set(name, value);
+    }
+    return facets;
+  }
+
+
   private IrSlot readSlot(IrType parent)
   {
-    Facets facets = facets();
+    Facets facets = readFacets();
     int flags = slotFlags();
     Type type = type();
     String name = consumeId();

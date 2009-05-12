@@ -45,10 +45,11 @@ public class Parse
     try
     {
       TypeDef[] astTypes = new Parser(compiler, file.file).parse();
-      for (int i=0; i<astTypes.length; ++i)
+      for (int i=0; i<astTypes.length; ++i)              
       {
-        TypeDef t = astTypes[i];
-        if (file.testOnly) t.facets = TypeUtil.setTestOnly(t.facets);
+        TypeDef t = astTypes[i]; 
+        if (file.testOnly)
+          t.addFacetDef("testonly", new Expr.Literal(t.loc, ns, Expr.TRUE_LITERAL, Boolean.TRUE));
         types.add(t);
       }
 

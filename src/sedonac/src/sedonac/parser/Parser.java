@@ -90,13 +90,12 @@ public class Parser
       doc = (String)consume(Token.DOC_COMMENT).value;
 
     // header
-    Facets facets = facets();
+    FacetDef[] facets = facets();
     int flags = typeFlags();
     consume(Token.CLASS);
     String name = consumeId();
-    TypeDef def = new TypeDef(loc, compiler.ast, flags, name);
+    TypeDef def = new TypeDef(loc, compiler.ast, flags, name, facets);
     def.doc = doc;
-    def.facets = facets;
     if (curt == Token.EXTENDS)
     {
       consume();
@@ -163,7 +162,7 @@ public class Parser
   {
     Location loc = this.loc;
 
-    Facets facets = facets();
+    FacetDef[] facets = facets();
     int flags = slotFlags();
 
     // constructor
@@ -278,7 +277,7 @@ public class Parser
 //////////////////////////////////////////////////////////////////////////
 
   private FieldDef fieldDef(Location loc, TypeDef parent, int flags, 
-                            String name, Facets facets, Type type, 
+                            String name, FacetDef[] facets, Type type, 
                             Expr[] ctorArgs)
   {                      
     // reference property types are implied inline
@@ -356,7 +355,7 @@ public class Parser
 //////////////////////////////////////////////////////////////////////////
 
   private MethodDef methodDef(Location loc, TypeDef parent, int flags, 
-                              String name, Facets facets, Type ret)
+                              String name, FacetDef[] facets, Type ret)
   {
     this.inVoid = ret.isVoid();
     boolean isStatic = (flags & Slot.STATIC) != 0;
@@ -1077,24 +1076,29 @@ public class Parser
 // Facets
 ////////////////////////////////////////////////////////////////
 
-  public Facets facets()
+  private FacetDef[] facets()
   {
-    if (curt != Token.AT) return new Facets();
+    if (curt != Token.AT) return FacetDef.empty;
 
-    Facets facets = new Facets();
+    ArrayList acc = new ArrayList();
     while (curt == Token.AT)
     {
-      consume();
+      consume(); 
+      Location loc = this.loc;
       String name = consumeId();
-      Value value = Bool.TRUE;
+      Expr value;
       if (curt == Token.ASSIGN)
       {
         consume(Token.ASSIGN);
-        value = literal().toValue();
+        value = expr();
+      }                
+      else
+      {             
+        value = new Expr.Literal(loc, ns, Expr.TRUE_LITERAL, Boolean.TRUE);
       }
-      facets.set(name, value);
+      acc.add(new FacetDef(loc, name, value));
     }
-    return facets;
+    return (FacetDef[])acc.toArray(new FacetDef[acc.size()]);
   }
 
 //////////////////////////////////////////////////////////////////////////

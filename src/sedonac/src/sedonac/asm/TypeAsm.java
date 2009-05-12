@@ -47,7 +47,7 @@ public class TypeAsm
   private void init(TypeDef ast)
   {
     this.ast = ast;
-    this.ir  = new IrType(parent.ir, ast.flags, ast.name, ast.facets);
+    this.ir  = new IrType(parent.ir, ast.flags, ast.name, ast.facets());
     ir.loc   = ast.loc;           
     ir.base  = TypeUtil.ir(ast.base);
   }
@@ -72,7 +72,7 @@ public class TypeAsm
 
   private IrField asmField(FieldDef ast)
   {
-    IrField f = new IrField(ir, ast.flags, ast.name, ast.facets, ast.type);
+    IrField f = new IrField(ir, ast.flags, ast.name, ast.facets(), ast.type);
     f.arrayInit = ast.init != null && ast.init.id == Expr.INIT_ARRAY;
     f.ctorLengthParam = ast.ctorLengthParam;
     if (ast.isDefine())
@@ -92,7 +92,7 @@ public class TypeAsm
 
   private IrMethod asmMethod(MethodDef ast)
   {
-    IrMethod m = new IrMethod(ir, ast.flags, ast.name, ast.facets, ast.ret, ast.paramTypes());
+    IrMethod m = new IrMethod(ir, ast.flags, ast.name, ast.facets(), ast.ret, ast.paramTypes());
     m.maxLocals = ast.maxLocals;    
     m.nativeId  = ast.nativeId;
     if (ast.code != null)

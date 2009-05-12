@@ -12,7 +12,8 @@ import sedona.Buf;
 import sedona.Env;
 import sedona.Facets;
 import sedona.util.TextUtil;
-import sedonac.ast.TypeDef;
+import sedonac.Location;
+import sedonac.ast.*;
 import sedonac.ir.IrType;
 
 /**
@@ -231,16 +232,6 @@ public class TypeUtil
     if (t.isDouble())  return ns.resolveMethod("sys::OutStream.printDouble", true);
     return null;
   }                  
-
-  /**
-   * Set the testonly facet to true.
-   */
-  public static Facets setTestOnly(Facets f)
-  {
-    if (f.isEmpty()) f = new Facets();
-    f.setb("testonly", true);
-    return f;
-  }
   
   /**
    * Return if the testonly facet is set to true.

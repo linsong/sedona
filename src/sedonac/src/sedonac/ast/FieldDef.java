@@ -25,7 +25,7 @@ public class FieldDef
 //////////////////////////////////////////////////////////////////////////
 
   public FieldDef(Location loc, TypeDef parent, int flags, String name, 
-                  Facets facets, Type type, Expr init, Expr[] ctorArgs)
+                  FacetDef[] facets, Type type, Expr init, Expr[] ctorArgs)
   {
     super(loc, parent, flags, name, facets);
     this.type = type;
@@ -73,6 +73,8 @@ public class FieldDef
   public void walk(AstVisitor visitor, int depth)
   {
     visitor.enterField(this);
+
+    walkFacets(visitor, depth);
 
     type = visitor.type(type);
 

@@ -18,7 +18,7 @@ import sedonac.ir.*;
  * TypeDef
  */
 public class TypeDef
-  extends AstNode
+  extends FacetsNode
   implements Type
 {
 
@@ -26,9 +26,9 @@ public class TypeDef
 // Constructor
 //////////////////////////////////////////////////////////////////////////
 
-  public TypeDef(Location loc, KitDef kit, int flags, String name)
+  public TypeDef(Location loc, KitDef kit, int flags, String name, FacetDef[] facets)
   {
-    super(loc);
+    super(loc, facets);
     this.kit    = kit;
     this.flags  = flags;
     this.name   = name;
@@ -43,8 +43,7 @@ public class TypeDef
   public Kit kit() { return kit; }
   public String name() { return name; }
   public String qname() { return qname; }
-  public Facets facets() { return facets; }
-
+  
   public boolean isPrimitive() { return false; }
   public boolean isRef() { return true; }
   public boolean isNullable() { return true; }
@@ -148,7 +147,7 @@ public class TypeDef
     if (m == null)
     {
       int flags = 0;
-      m = new MethodDef(loc, this, flags, name, new Facets(), ns.voidType, new ParamDef[0], new Block(loc));
+      m = new MethodDef(loc, this, flags, name, FacetDef.empty, ns.voidType, new ParamDef[0], new Block(loc));
       m.synthetic = true;
       addSlot(m);
     }
@@ -162,7 +161,7 @@ public class TypeDef
     if (m == null)
     {
       int flags = Slot.STATIC;
-      m = new MethodDef(loc, this, flags, name, new Facets(), ns.voidType, new ParamDef[0], new Block(loc));
+      m = new MethodDef(loc, this, flags, name, FacetDef.empty, ns.voidType, new ParamDef[0], new Block(loc));
       m.synthetic = true;
       addSlot(m);
     }
@@ -175,10 +174,13 @@ public class TypeDef
 
   public void walk(AstVisitor visitor, int depth)
   {
-    visitor.enterType(this);
+    visitor.enterType(this);    
 
     // types
     if (base != null) base = visitor.type(base);
+
+    // facets
+    walkFacets(visitor, depth);
 
     // slots
     if (depth >= AstVisitor.WALK_TO_SLOTS)
@@ -219,7 +221,7 @@ public class TypeDef
   public String qname;
   public Type base;
   public String doc;
-  public Facets facets;
+  public FacetDef[] facets;
   public int id = -1;                 // if reflective
   public SlotDef[] reflectiveSlots;   // declared only
   public IrType ir;                   // once assembled

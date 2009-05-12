@@ -16,7 +16,7 @@ import sedonac.namespace.*;
  * SlotDef
  */
 public abstract class SlotDef
-  extends AstNode
+  extends FacetsNode
   implements Slot
 {
 
@@ -24,15 +24,14 @@ public abstract class SlotDef
 // Constructor
 //////////////////////////////////////////////////////////////////////////
 
-  public SlotDef(Location loc, TypeDef parent, int flags, String name, Facets facets)
+  public SlotDef(Location loc, TypeDef parent, int flags, String name, FacetDef[] facets)
   {
-    super(loc);
+    super(loc, facets);
     this.parent  = parent;
     this.flags   = flags;
     this.name    = name;
     this.qname   = parent.qname + "." + name;
-    this.rtFlags = TypeUtil.rtFlags(this, facets);
-    this.facets  = facets;
+    this.rtFlags = -1;
   }                               
 
 //////////////////////////////////////////////////////////////////////////
@@ -42,7 +41,6 @@ public abstract class SlotDef
   public Type parent()  { return parent; }
   public String name()  { return name; }
   public String qname() { return qname; }
-  public Facets facets() { return facets; }
 
   public boolean isInherited(Type into) { return TypeUtil.isInherited(this, into); }
   public boolean isReflective() { return isAction() || isProperty(); }
@@ -63,9 +61,14 @@ public abstract class SlotDef
   public boolean isStatic()    { return (flags & STATIC)    != 0; }
   public boolean isVirtual()   { return (flags & VIRTUAL)   != 0; }
 
-  public int rtFlags() { return rtFlags; }
-  public boolean isRtAction() { return (rtFlags & RT_ACTION) != 0; }
-  public boolean isRtConfig() { return (rtFlags & RT_CONFIG) != 0; }
+  public int rtFlags() 
+  { 
+    if (rtFlags == -1) throw new IllegalStateException("rtFlags not resolved yet");
+    return rtFlags; 
+  }
+  public boolean isRtAction() { return (rtFlags() & RT_ACTION) != 0; }
+  public boolean isRtConfig() { return (rtFlags() & RT_CONFIG) != 0; }
+  public void setRtFlags(int rtFlags) { this.rtFlags = rtFlags; }
 
 //////////////////////////////////////////////////////////////////////////
 // AstNode
@@ -81,8 +84,7 @@ public abstract class SlotDef
   public final String name;
   public final String qname;
   public final int flags;
-  public final int rtFlags;
-  public final Facets facets;
+  private int rtFlags;
   public boolean synthetic;
   public String doc;
   public int declaredId = -1;   // if reflective

@@ -76,7 +76,7 @@ public class BuildManifest
       if (t.isaComponent())
       {
         findReflectiveSlots(t);
-        if (!t.facets.getb("testonly", false))
+        if (!t.facets().getb("testonly", false))
         {
           t.id = manifestId++;
           nontests.add(t);
@@ -194,7 +194,7 @@ public class BuildManifest
         type = m.params[0].type;
     }
 
-    return new SlotManifest(parent, ast.declaredId, ast.name, ast.facets(), type.qname(), ast.rtFlags, def);
+    return new SlotManifest(parent, ast.declaredId, ast.name, ast.facets(), type.qname(), ast.rtFlags(), def);
   }
 
   boolean isSys;

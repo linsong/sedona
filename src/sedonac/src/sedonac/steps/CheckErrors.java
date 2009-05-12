@@ -355,7 +355,9 @@ public class CheckErrors
         {                  
           Integer max = ctorArg.toIntLiteral();
           if (max != null)
-            f.facets.seti("max", max.intValue());
+          {          
+            f.setFacet("max", max.intValue());
+          }
         }
       }
     }
