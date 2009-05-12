@@ -21,6 +21,9 @@
 //////////////////////////////////////////////////////////////////////////
 
   ** File is mapped to storage correctly
+  define Str statusRange = "ok, inactive, badParent, serviceErr, badOffset, badSize, dupRange, formatErr"
+
+  ** File is mapped to storage correctly
   define int statusOk = 0 
   
   ** File component is not actively running
@@ -51,7 +54,8 @@
   **
   ** Status code for storage file access, see the
   ** statusXXX defines for the various codes.
-  **
+  **                              
+  @range=statusRange
   @readonly property byte status = statusInactive           
           
   **     
@@ -209,7 +213,7 @@
       return
     }
 
-    // validate ending offset    
+    // validate ending size    
     if (resvSize <= 0 || resvOffset+resvSize >= service.size)
     {                                     
       status = statusBadSize
