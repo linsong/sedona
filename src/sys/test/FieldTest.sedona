@@ -1,0 +1,398 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   12 Mar 07  Brian Frank  Creation
+//
+
+**
+** FieldTest
+**
+class FieldTest
+  extends Test
+{
+
+//////////////////////////////////////////////////////////////////////////
+// Static Fields
+//////////////////////////////////////////////////////////////////////////
+
+  static bool z1
+  static bool z2 = true
+  static byte b1
+  static byte b2 = 172
+  static byte b3
+  static short s1
+  static short s2 = 0xabcd
+  static int i1
+  static int i2 = s2 + 0x8765_0000
+  static long j1
+  static long j2 = 0xabcd_1234_5678L
+  static float f1
+  static float f2 = (float)b2
+  static double d1
+  static double d2 = (double)s2
+
+  static inline TestFoo a
+  static TestFoo b = a
+
+//////////////////////////////////////////////////////////////////////////
+// Defines
+//////////////////////////////////////////////////////////////////////////
+
+  define bool   dz1 = false
+  define bool   dz2 = true
+  define int    di1 = 808
+  define int    di2 = 0xabcd7654
+  define int    di3 = -3
+  define long   dj1 = 0x1234_5678_abcd_eeffL
+  define long   dj2 = -1L
+  define long   dj3 = -5sec
+  define float  df1 = 2.08
+  define float  df2 = -123_000f
+  define double dd1 = 0d
+  define double dd2 = -5608.008d        
+  define Str    ds1 = "def"
+
+//////////////////////////////////////////////////////////////////////////
+// Reset
+//////////////////////////////////////////////////////////////////////////
+
+  /* LOOPTEST
+  static void testReset()
+  {
+    z1 = false
+    z2 = true
+    b1 = 0
+    b2 = 172
+    b3 = 0
+    s1 = 0
+    s2 = 0xabcd
+    i1 = 0
+    i2 = s2 + 0x8765_0000
+    j1 = 0L
+    j2 = 0xabcd_1234_5678L
+    f1 = 0f
+    f2 = (float)b2
+    d1 = 0d
+    d2 = (double)s2
+    a.reset()
+  }        
+  */
+
+//////////////////////////////////////////////////////////////////////////
+// Defines
+//////////////////////////////////////////////////////////////////////////
+
+  static void testDefines()
+  {                    
+    /*           
+    Sys.out.print(">>> define dz1=").printBool(dz1).nl()
+    Sys.out.print(">>> define dz2=").printBool(dz2).nl()
+    Sys.out.print(">>> define di1=").printInt(di1).nl()
+    Sys.out.print(">>> define di2=0x").printHex(di2).nl()
+    Sys.out.print(">>> define di3=").printInt(di3).nl()
+    Sys.out.print(">>> define dj1=").printLongHex(dj1).nl()
+    Sys.out.print(">>> define dj2=").printLong(dj2).nl()
+    Sys.out.print(">>> define dj3=").printLong(dj3).nl()
+    Sys.out.print(">>> define df1=").printFloat(df1).nl()
+    Sys.out.print(">>> define df2=").printFloat(df2).nl()
+    Sys.out.print(">>> define dd1=").printDouble(dd1).nl()
+    Sys.out.print(">>> define dd2=").printDouble(dd2).nl()
+    Sys.out.print(">>> define sd1=").print(ds1).nl()     
+    */
+
+    assert(!dz1)
+    assert(dz2)
+    assert(di1 == 808)
+    assert(di2 == 0xabcd7654)
+    assert(di3 == -3)
+    assert(dj1 == 0x1234_5678_abcd_eeffL)
+    assert(dj2 == -1L)
+    assert(dj3 == -5_000_000_000L)
+    assert(df1 == 2.08)
+    assert(df2 == -123_000f)
+    assert(dd1 == 0d)
+    assert(dd2 == -5608.008d)     
+    assert(ds1.equals("def"))
+  }
+
+//////////////////////////////////////////////////////////////////////////
+// Static
+//////////////////////////////////////////////////////////////////////////
+
+  static void testStaticInit()
+  {
+    assert(!z1)
+    assert(z2)
+    assert(b1 == 0)
+    assert(b2 == 172)
+    assert(s1 == 0)
+    assert(s2 == 0xabcd)
+    assert(i1 == 0)
+    assert(i2 == 0x8765_abcd)
+    assert(j1 == 0L)
+    assert(j2 == 0xabcd_1234_5678L)
+    assert(f1 == 0.0)
+    assert(f2 == 172.0)
+    assert(d1 == 0.0d)
+    assert(d2 == 43981d)
+  }
+
+  static void testStaticAccess()
+  {
+    z1 = true
+    assert(z1)
+    z2 = z1
+    assert(z2)
+
+    b1 = 200
+    assert(b1 == 200)
+    b2 = b1 - 20
+    assert(b2 == 180)
+    b2 = 0xab
+
+    s1 = 65_007
+    s2 = 1003
+
+    i1 = 12_345_678
+    i2 = i1 - 45_678
+    
+    j1 = 100_200_300_400_500L
+    j2 = j1 - 200_300_400_500L
+
+    f1 = 24.006
+    f2 = 45.02              
+    
+    d1 = 600d
+    d2 = d1 * 10d
+    
+    assert(s1 - s2 == 64_004)
+    assert(i1 == 12_345_678)
+    assert(i2 == 12_300_000)
+    assert(j1 == 100_200_300_400_500L)
+    assert(j2 == 100_000_000_000_000L)
+    assert(f1 + f2 == 69.026)
+    assert(d1 == 600d)
+    assert(d2 == 6000d)
+  }          
+
+//////////////////////////////////////////////////////////////////////////
+// Instance
+//////////////////////////////////////////////////////////////////////////
+
+  static void testInstanceInit()
+  {
+    a.verifyInit()
+    assert(a == b)
+    b.verifyInit()
+  }
+
+  static void testInstanceAccess()
+  {
+    a.change()
+    a.verifyChange()
+
+    b.verifyChange()
+
+    TestFoo c = a
+    c.verifyChange()
+
+    c = b
+    c.verifyChange()
+  }                
+
+//////////////////////////////////////////////////////////////////////////
+// Assignments
+//////////////////////////////////////////////////////////////////////////
+
+  static void testAssigns()
+  {
+    // int field assign leaves
+    assert((a.i1 = 72) == 72);   assert(a.i1 == 72)
+    assert((a.a.i1 = 69) == 69); assert(a.a.i1 == 69)
+    i1 = a.i1 = a.a.i1 = 77
+    assert(i1 == 77); assert(a.i1 == 77); assert(a.a.i1 == 77)
+
+    // long field assign leaves
+    assert((j1 = 123456789L) == 123456789L); assert(j1 == 123456789L)
+    assert((a.j1 = 0x1234_5678_abcdL) == 0x1234_5678_abcdL); assert(a.j1 == 0x1234_5678_abcdL)
+    j1 = a.a.j1 = a.j1              
+    assert(j1 == 0x1234_5678_abcdL)
+    assert(a.a.j1 == 0x1234_5678_abcdL)
+
+    // int field incr
+    i1++; assert(i1 == 78)
+    assert(i1++ == 78); assert(i1 == 79)
+    assert(++i1 == 80); assert(i1 == 80)
+
+    // int field decr
+    --a.a.i1; assert(a.a.i1 == 76)
+    assert(--a.a.i1 == 75); assert(a.a.i1 == 75)
+    assert(a.a.i1-- == 75); assert(a.a.i1 == 74)
+
+    // long field incr/decr
+    j1++;  assert(j1 == 0x1234_5678_abceL)
+    assert(--a.j1 == 0x1234_5678_abccL); assert(a.j1 == 0x1234_5678_abccL)
+    assert(a.j1-- == 0x1234_5678_abccL); assert(a.j1 == 0x1234_5678_abcbL)
+    
+    // int static field assign combo
+    i1 -= 73; assert(i1 == 7)
+    assert((i1 += 3) == 10)
+    i1 /= 5; assert(i1 == 2)
+    assert((i1 *= 4) == 8)
+    /*
+    i1 >>= 3; assert(i1 == 0x01)
+    i1 <<= 1; assert(i1 == 0x02)
+    i1 |= 0x01; assert(i1 == 0x03)
+    i1 &= 0x01; assert(i1 == 0x01)
+    i1 ^= 0xa3; assert(i1 == 0xa2)
+    */
+
+    // int instance field assign combo
+    a.i1 = 80
+    a.i1 -= 73; assert(a.i1 == 7)
+    assert((a.i1 += 3) == 10)
+    a.i1 /= 5; assert(a.i1 == 2)
+    assert((a.i1 *= 4) == 8)
+    /*
+    a.i1 >>= 3; assert(a.i1 == 0x01)
+    a.i1 <<= 1; assert(a.i1 == 0x02)
+    a.i1 |= 0x01; assert(a.i1 == 0x03)
+    a.i1 &= 0x01; assert(a.i1 == 0x01)
+    a.i1 ^= 0xa3; assert(a.i1 == 0xa2)
+    */        
+    
+    // long static field assign combo     
+    j1 >>= 16; assert(j1 == 0x1234_5678L)
+    assert((j1 -= 0x5678L) == 0x1234_0000L); assert(j1 == 0x1234_0000L)
+    
+    // long instance field assign combo     
+    a.a.j1 &= 0xffff_0000L; assert(a.a.j1 == 0x5678_0000L)
+    assert((a.a.j1 >>= 16) == 0x5678L); assert(a.a.j1 == 0x5678L)
+  }          
+
+}
+
+//////////////////////////////////////////////////////////////////////////
+// TestFoo
+//////////////////////////////////////////////////////////////////////////
+
+class TestFoo
+{              
+  /* LOOPTEST
+  void reset()
+  {        
+    z1 = false
+    b1 = 0          
+    s1 = 0xfeed
+    i1 = 0
+    i2 = 0xfeed_0000
+    j1 = 0L
+    f1 = 0F
+    d1 = 123245678D
+    a.reset()
+    for (int i=0; i<2; ++i) array[i].reset()    
+  }
+  */
+  
+  void verifyInit()
+  {
+    assert(!z1)
+    assert(b1 == 0)
+    assert(s1 == 0xfeed)
+    assert(i1 == 0)
+    assert(i2 == 0xfeed_0000)
+    assert(j1 == 0L)
+    assert(f1 == 0.0)
+    assert(d1 == 123245678d)
+    a.verifyInit()
+    for (int i=0; i<2; ++i)
+      array[i].verifyInit()
+  }
+
+  void change()
+  {
+    z1 = true
+    b1 = 208
+    i1 = 0xcafe_babe
+    j1 = 0x1234_5678_9abcdL
+    f1 = 90382.004       
+    d1 = 2.0848d
+    
+    a.change()
+    for (int i=0; i<2; ++i)
+    {
+      array[i].n = i
+      array[i].change()
+    }
+  }
+
+  void verifyChange()
+  {
+    assert(z1)
+    assert(b1 == 208)
+    assert(i1 == 0xcafe_babe)
+    assert(j1 == 0x1234_5678_9abcdL)
+    assert(f1 == 90382.004f)
+    assert(d1 == 2.0848d)
+    for (int i=0; i<2; ++i)
+    {
+      assert(array[i].n == i)
+      array[i].verifyChange()
+    }
+  }
+
+  bool  z1
+  byte  b1
+  short s1 = 0xfeed
+  int   i1
+  int   i2 = s1 << 16      
+  long  j1
+  float f1
+  byte  n
+  double d1 = 123245678d
+
+  inline TestBar a
+  inline TestBar[2] array = {...}
+}
+
+//////////////////////////////////////////////////////////////////////////
+// TestBar
+//////////////////////////////////////////////////////////////////////////
+
+class TestBar
+{                 
+  /* LOOPTEST
+  void reset()
+  {
+    b1 = 199
+    i1 = 0x1234_5678
+    n  = 0
+  }
+  */
+
+  void verifyInit()
+  {
+    assert(b1 == 199)
+    assert(i1 == 0x1234_5678)
+    assert(n == 0)
+  }
+
+  void change()
+  {
+    b1 = 70
+    i1 = 71
+  }
+
+  void verifyChange()
+  {
+    assert(b1 == 70)
+    assert(i1 == 71)
+  }
+
+  byte b1 = 199
+  int  i1 = 0x1234_5678
+  long j1
+  byte n
+}
