@@ -26,7 +26,7 @@ class LP
   @config property float min   = 0.0f
   @config property float bias  = 0.0f
   @config property bool direct = true 
-  @config property int exTime  = 10    // units milliseconds
+  @unit=Units.millisecond @config property int exTime  = 10
 
   virtual override void execute()
   {

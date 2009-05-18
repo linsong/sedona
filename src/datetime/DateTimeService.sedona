@@ -15,7 +15,7 @@ class DateTimeService
 ////////////////////////////////////////////////////////////////
 
   ** Nanos since epoch
-  property long nanos
+  @unit=Units.nanosecond property long nanos
 
   ** Hour, adjusted for UTC offset
   property int hour
@@ -42,7 +42,7 @@ class DateTimeService
   ** fields from nanos.  If osUtcOffset is true this is a read-only 
   ** property read from the operating system.  If osUtcOffset is 
   ** false then this is a configuration property.
-  @config property int utcOffset       
+  @unit=Units.second @config property int utcOffset       
 
   ** If true, then the utcOffset is controlled by the 
   ** operating system.  If false then the utcOffset is 

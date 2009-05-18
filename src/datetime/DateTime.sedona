@@ -53,7 +53,7 @@ class DateTime extends Virtual
   **
   **  UTC offset in seconds.  Used in to/from Nanos calculations.  
   ** 
-  int utcOffset
+  @unit=Units.second int utcOffset
 
 
   **
