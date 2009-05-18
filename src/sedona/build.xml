@@ -23,6 +23,7 @@
   <package name="sedona.vm"        doc="true" src="true" />
   <package name="sedona.vm.sys"    doc="true" src="true" edition="j2se"/>
   <package name="sedona.vm.inet"   doc="true" src="true" edition="j2se"/>
+  <package name="sedona.vm.datetimeStd" doc="true" src="true"/>
 
 </module>
 

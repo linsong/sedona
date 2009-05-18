@@ -33,7 +33,7 @@ public class JavaClassAsm
   
   static int toClassFlags(IrType ir)
   {
-    int flags = ir.isInternal() ? 0 : Jvm.ACC_PUBLIC;
+    int flags = Jvm.ACC_PUBLIC;
     if (ir.isAbstract()) flags |= Jvm.ACC_ABSTRACT;
     return flags;
   }
@@ -576,19 +576,21 @@ public class JavaClassAsm
 
   public static int jflags(int sflags, Facets facets) 
   {
-    int jflags = 0; 
+    int jflags = Jvm.ACC_PUBLIC; 
     if ((sflags & Slot.ABSTRACT) != 0)  jflags |= Jvm.ACC_ABSTRACT;
     if ((sflags & Slot.STATIC) != 0)    jflags |= Jvm.ACC_STATIC;
+    /*
     if (facets.getb("javaPublic", false))
     {
       jflags |= Jvm.ACC_PUBLIC;
     }
     else
     {
-      if ((sflags & Slot.PUBLIC) != 0)    jflags |= Jvm.ACC_PUBLIC;
+      if ((sflags & Slot.PUBLIC) != 0)    jflags |= ;
       if ((sflags & Slot.PROTECTED) != 0) jflags |= Jvm.ACC_PROTECTED;
       if ((sflags & Slot.PRIVATE) != 0)   jflags |= Jvm.ACC_PRIVATE;
-    }
+    } 
+    */
     return jflags;
   }               
   

@@ -31,6 +31,7 @@ packages = [
   "sedona.vm",
   "sedona.vm.sys",
   "sedona.vm.inet",
+  "sedona.vm.datetimeStd",
 ]
 
 # Compile

@@ -28,8 +28,8 @@ public class File_n
     {
       File f = toFile(name);        
       String mode = m.toString();
-      if (mode.equals("rb")) mode = "r";
-      if (mode.equals("wb")) mode = "rw";
+      if (mode.equals("w")) mode = "rw";
+      if (mode.equals("m")) mode = "rw";
       return new RandomAccessFile(f, mode);
     }
     catch (IOException e)
