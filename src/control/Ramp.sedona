@@ -20,7 +20,10 @@ class Ramp
   @config property float max = 100.0
 
   virtual override void execute()
-  {
+  {                         
+    long now = Sys.ticks()
+    if (now - lastUpdate < 250ms) return
+    
     if (up)
       out = out + 1.0
     else
@@ -28,8 +31,9 @@ class Ramp
 
     if (out < min) { out = min; up = true }
     if (out > max) { out = max; up = false }
+    lastUpdate = now
   }
 
   private bool up = true
-
+  private long lastUpdate
 }
