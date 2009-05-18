@@ -897,8 +897,7 @@ public class SoxClient
 
   /**
    * Rename a file on the remote device.
-   */               
-   
+   */                  
   public synchronized void renameFile(String from, String to)
     throws Exception
   {
@@ -913,6 +912,47 @@ public class SoxClient
     // parse response
     res.checkResponse('B');
   }
+
+//////////////////////////////////////////////////////////////////////////
+// PStore Convenience
+//////////////////////////////////////////////////////////////////////////
+  
+  /**
+   * Return a PstoreFile into a memory buffer.
+   */
+  public Buf readPstoreFile(SoxComponent pstore)
+    throws Exception
+  {    
+    // read filename from parent service              
+    SoxComponent parent = load(pstore.parent);
+    String filename = "";
+    try
+    {
+      filename = parent.getStr("filename");
+    } 
+    catch (Exception e)
+    {
+      throw new Exception("PstoreFile parent not PstoreService: " + parent.type);
+    }
+
+    // check status
+    if (pstore.getInt("status") != 0)
+      throw new Exception("PstoreFile.status not ok");
+    
+    // get reservation
+    int offset = pstore.getInt("resvOffset");
+    int size = pstore.getInt("resvSize");
+    
+    // read file slice
+    Buf buf = new Buf(size);
+    Properties headers = new Properties();
+    headers.put("fileSize", Integer.toString(size));
+    headers.put("offset", Integer.toString(offset));
+    getFile(filename, SoxFile.make(buf), headers, null);
+    if (buf.size != size)
+      throw new IOException("Didn't read all of pstore: " + size + " != " + buf.size);
+    return buf;
+  }      
 
 //////////////////////////////////////////////////////////////////////////
 // Apply
