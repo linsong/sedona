@@ -8,8 +8,8 @@
 //
 
 **
-** File is used to manage I/O to a "file".  On simple
-** embedded devices a file is typically just an area of FLASH.
+** File is used to manage I/O to a "file".  A Sedona VM may support
+** multiple file backing storage devices via FileStore subclasses.
 **
 final class File
 {                   
@@ -24,7 +24,8 @@ final class File
   File()
   {
     out.file = this
-    in.file = this
+    in.file = this    
+    store = FileStore.sys
   }
 
 //////////////////////////////////////////////////////////////////////////
@@ -46,8 +47,8 @@ final class File
   ** writing).  This method may used without opening the file.
   **
   int size()
-  {
-    return doSize(name)
+  {                
+    return toStore(name).size(this)
   }
 
   **
@@ -64,28 +65,18 @@ final class File
   **
   bool open(Str mode)
   {
-    this.fp = doOpen(name, mode);
-    if (fp == null) return false
-    this.mode = mode
-    return true
+    store = toStore(name)
+    return store.open(this, mode)
   }
 
   **
   ** Close this file.  Return true on success or false on failure.
-  ** If the file isn't open, this method immediately returns true.
   **
   bool close()
-  {
-    bool ok = true
-    if (fp != null)
-    {
-      in.close()
-      out.close()
-      ok = doClose(fp, name, mode)
-      this.fp = null
-      this.mode = null
-    }
-    return ok
+  {           
+    in.close()
+    out.close()
+    return store.close(this)
   }
   
   **
@@ -94,8 +85,8 @@ final class File
   **
   int tell()
   {
-    out.flush()  // flush any buffered output before querying file pos   
-    return doTell(fp)
+    out.flush()
+    return store.tell(this)
   }  
 
   **
@@ -107,39 +98,37 @@ final class File
   **
   bool seek(int pos)
   {    
-    out.flush()  // flush any buffered output before changing file pos   
-    return doSeek(fp, pos)
+    out.flush()
+    return store.seek(this, pos)
   }             
   
   **
   ** Rename a file. Return true on success, false on failure.
   **
   native static bool rename(Str from, Str to)
-
-//////////////////////////////////////////////////////////////////////////
-// Natives
-//////////////////////////////////////////////////////////////////////////
-
-  internal native static int doSize(Str name)
-  internal native static Obj doOpen(Str name, Str mode)
-  internal native static int doRead(Obj fp)
-  internal native static int doReadBytes(Obj fp, byte[] b, int off, int len)
-  internal native static bool doWrite(Obj fp, int b)
-  internal native static bool doWriteBytes(Obj fp, byte[] b, int off, int len)
-  internal native static bool doSeek(Obj fp, int pos)
-  internal native static int  doTell(Obj fp)
-  internal native static void doFlush(Obj fp)
-  internal native static bool doClose(Obj fp, Str name, Str mode)
+  
+  **
+  ** Map the current file name to a FileStore reference.
+  **
+  static internal FileStore toStore(Str name)
+  {
+    PlatformService plat = PlatformService.lookup()
+    if (plat == null)             
+      return FileStore.sys
+    else
+      return plat.fileStore(name)
+  }
 
 //////////////////////////////////////////////////////////////////////////
 // Fields
 //////////////////////////////////////////////////////////////////////////
 
-  Obj fp                    // native handle for open file
-  Str name                  // name of the file
+  Str name                  // name of the file           
+  FileStore store           // backing store implementation
   inline FileOutStream out  // stream to write file (buffered)
   inline FileInStream in    // stream to read file
-  internal Str mode         // mode string if open
+  Obj fp                    // FileStore only - native handle for open file
+  int storeUserData         // FileStore only - opaque user data for FileStore
 }
 
 ****************************************************************
@@ -170,24 +159,24 @@ internal class FileOutStream extends OutStream
   override bool writeBytes(byte[] b, int off, int len) 
   {
     // Write any accumulated data in buf first
-    if (fbuf.size>0) writeBufToFile()
+    if (fbuf.size > 0) writeBufToFile()
 
     // Now write contents of b
-    return File.doWriteBytes(file.fp, b, off, len) 
+    return file.store.writeBytes(file, b, off, len) 
   }
 
   override void flush() 
   { 
-    if (fbuf.size>0) writeBufToFile()
-    File.doFlush(file.fp) 
+    if (fbuf.size > 0) writeBufToFile()
+    file.store.flush(file) 
   }
 
-  override void close() { if (fbuf.size>0) writeBufToFile() }
+  override void close() { if (fbuf.size > 0) writeBufToFile() }
 
   internal bool writeBufToFile()
   { 
     // Write contents of buf to file
-    if (!File.doWriteBytes(file.fp, fbuf.bytes, 0, fbuf.size)) 
+    if (!file.store.writeBytes(file, fbuf.bytes, 0, fbuf.size)) 
       return false
 
     // Clear contents of buf
@@ -207,10 +196,10 @@ internal class FileOutStream extends OutStream
 
 internal class FileInStream extends InStream
 {
-  override int read() { return File.doRead(file.fp) }
+  override int read() { return file.store.read(file) }
   override int readBytes(byte[] b, int off, int len) 
   { 
-    return File.doReadBytes(file.fp, b, off, len) 
+    return file.store.readBytes(file, b, off, len) 
   }
 
   override void close() { /* file.close() */ }

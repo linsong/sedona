@@ -65,16 +65,16 @@
   <native qname="sys::StdOutStream.doWriteBytes" id="0::42"  />
   <native qname="sys::StdOutStream.doFlush"      id="0::43"  />
 
-  <native qname="sys::File.doSize"               id="0::44"  />
-  <native qname="sys::File.doOpen"               id="0::45"  />
-  <native qname="sys::File.doRead"               id="0::46"  />
-  <native qname="sys::File.doReadBytes"          id="0::47"  />
-  <native qname="sys::File.doWrite"              id="0::48"  />
-  <native qname="sys::File.doWriteBytes"         id="0::49"  />
-  <native qname="sys::File.doTell"               id="0::50"  />
-  <native qname="sys::File.doSeek"               id="0::51"  />
-  <native qname="sys::File.doFlush"              id="0::52"  />
-  <native qname="sys::File.doClose"              id="0::53"  />
+  <native qname="sys::FileStore.doSize"          id="0::44"  />
+  <native qname="sys::FileStore.doOpen"          id="0::45"  />
+  <native qname="sys::FileStore.doRead"          id="0::46"  />
+  <native qname="sys::FileStore.doReadBytes"     id="0::47"  />
+  <native qname="sys::FileStore.doWrite"         id="0::48"  />
+  <native qname="sys::FileStore.doWriteBytes"    id="0::49"  />
+  <native qname="sys::FileStore.doTell"          id="0::50"  />
+  <native qname="sys::FileStore.doSeek"          id="0::51"  />
+  <native qname="sys::FileStore.doFlush"         id="0::52"  />
+  <native qname="sys::FileStore.doClose"         id="0::53"  />
   <native qname="sys::File.rename"               id="0::54"  />
 
   <native qname="sys::Test.doMain"               id="0::55"  />        

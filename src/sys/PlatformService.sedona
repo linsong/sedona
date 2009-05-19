@@ -17,6 +17,16 @@ class PlatformService
 { 
 
   **
+  ** Lookup the platform service for this VM.  Return
+  ** null if the application hasn't boot yet or is missing
+  ** a platform service.
+  **
+  static PlatformService lookup()
+  {                                         
+    return (PlatformService)Sys.app.lookupService(PlatformService.type)   
+  }
+
+  **
   ** Initialize the platform with the command line arguments. 
   ** Return 0 on success.  Return  non-zero on failure, which will
   ** terminate the process.
@@ -72,8 +82,18 @@ class PlatformService
 ////////////////////////////////////////////////////////////////
 
   **  
-  ** Update the memAvailable property to reflect the current amount of 
-  ** available memory.
+  ** Map a filename to its FileStore implementation.  This
+  ** method must return a non-null reference.  Default is 
+  ** to return 'FileStore.sys'.
+  **
+  virtual FileStore fileStore(Str name) 
+  {
+    return FileStore.sys
+  }
+
+  **  
+  ** Update the memAvailable property to reflect the current 
+  ** amount of available memory.
   **
   virtual void refreshMemory() 
   { 
