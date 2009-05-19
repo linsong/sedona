@@ -6,6 +6,11 @@
 //   18 Feb 09  Dan Giorgis   creation
 //
 
+**
+** DateTimeService is used to manage the system clock.
+** It also stores the current time which is automatically
+** updated each second.
+**
 class DateTimeService 
   extends Service
 {
@@ -18,25 +23,25 @@ class DateTimeService
   @unit=Units.nanosecond property long nanos
 
   ** Hour, adjusted for UTC offset
-  property int hour
+  property byte hour
 
   ** Minute 
-  property int minute
+  property byte minute
 
   ** Second 
-  property int second
+  property byte second
 
   ** Year 
   property int year
 
   ** Month of year (see also datetime::Month)
-  property int month
+  property byte month
 
   ** Day of month
-  property int day
+  property byte day
   
   ** Day of week (see also datetime::DayOfWeek)
-  property int dayOfWeek
+  property byte dayOfWeek
 
   ** Current UTC offset in seconds used to calculate the time
   ** fields from nanos.  If osUtcOffset is true this is a read-only 
