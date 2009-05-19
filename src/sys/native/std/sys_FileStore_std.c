@@ -9,7 +9,7 @@
 #include "sedona.h"
 
 
-// int File.doSize(Str name)
+// int FileStore.doSize(Str name)
 Cell sys_FileStore_doSize(SedonaVM* vm, Cell* params)
 {
   const char* name = params[0].aval;
@@ -31,7 +31,7 @@ Cell sys_FileStore_doSize(SedonaVM* vm, Cell* params)
   return result;
 }
 
-// Obj File.doOpen(Str name, Str mode)
+// Obj FileStore.doOpen(Str name, Str mode)
 Cell sys_FileStore_doOpen(SedonaVM* vm, Cell* params)
 {
   const char* name = params[0].aval;
@@ -67,7 +67,7 @@ Cell sys_FileStore_doOpen(SedonaVM* vm, Cell* params)
   return result;
 }
 
-// int File.doRead(Obj)
+// int FileStore.doRead(Obj)
 Cell sys_FileStore_doRead(SedonaVM* vm, Cell* params)
 {
   FILE* fp  = (FILE*)params[0].aval;
@@ -80,7 +80,7 @@ Cell sys_FileStore_doRead(SedonaVM* vm, Cell* params)
   return result;
 }
 
-// int File.doReadBytes(Obj, byte[], int, int)
+// int FileStore.doReadBytes(Obj, byte[], int, int)
 Cell sys_FileStore_doReadBytes(SedonaVM* vm, Cell* params)
 {
   FILE* fp  = (FILE*)params[0].aval;
@@ -98,7 +98,7 @@ Cell sys_FileStore_doReadBytes(SedonaVM* vm, Cell* params)
   return result;
 }
 
-// bool File.doWrite(Obj, int)
+// bool FileStore.doWrite(Obj, int)
 Cell sys_FileStore_doWrite(SedonaVM* vm, Cell* params)
 {
   FILE* fp  = (FILE*)params[0].aval;
@@ -113,7 +113,7 @@ Cell sys_FileStore_doWrite(SedonaVM* vm, Cell* params)
   return r == b ? trueCell : falseCell;
 }
 
-// bool File.doWriteBytes(Obj, byte[], int, int)
+// bool FileStore.doWriteBytes(Obj, byte[], int, int)
 Cell sys_FileStore_doWriteBytes(SedonaVM* vm, Cell* params)
 {
   FILE* fp  = (FILE*)params[0].aval;
@@ -132,7 +132,7 @@ Cell sys_FileStore_doWriteBytes(SedonaVM* vm, Cell* params)
   return r == len ? trueCell : falseCell;
 }
 
-// int File.doTell(Obj)
+// int FileStore.doTell(Obj)
 Cell sys_FileStore_doTell(SedonaVM* vm, Cell* params)
 {
   FILE* fp = (FILE*)params[0].aval;
@@ -146,7 +146,7 @@ Cell sys_FileStore_doTell(SedonaVM* vm, Cell* params)
   return r;
 }
 
-// bool File.doSeek(Obj, int)
+// bool FileStore.doSeek(Obj, int)
 Cell sys_FileStore_doSeek(SedonaVM* vm, Cell* params)
 {
   FILE* fp = (FILE*)params[0].aval;
@@ -161,7 +161,7 @@ Cell sys_FileStore_doSeek(SedonaVM* vm, Cell* params)
   return r == 0 ? trueCell : falseCell;
 }
 
-// void File.doFlush(Obj)
+// void FileStore.doFlush(Obj)
 Cell sys_FileStore_doFlush(SedonaVM* vm, Cell* params)
 {
   FILE* fp = (FILE*)params[0].aval;
@@ -174,7 +174,7 @@ Cell sys_FileStore_doFlush(SedonaVM* vm, Cell* params)
   return nullCell;
 }
 
-// bool File.doClose(Obj)
+// bool FileStore.doClose(Obj)
 Cell sys_FileStore_doClose(SedonaVM* vm, Cell* params)
 {
   FILE* fp = (FILE*)params[0].aval;
@@ -190,4 +190,18 @@ Cell sys_FileStore_doClose(SedonaVM* vm, Cell* params)
 
   return trueCell;
 }
+
+
+// static bool FileStore.rename(Str from, Str to)
+Cell sys_FileStore_rename(SedonaVM* vm, Cell* params)
+{                                          
+  const char* from = params[0].aval;
+  const char* to   = params[1].aval;
+  int r;
+  
+  r = rename(from, to);
+  
+  return r == 0 ? trueCell : falseCell;
+}
+
 

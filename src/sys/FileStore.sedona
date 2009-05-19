@@ -104,7 +104,13 @@ class FileStore extends Virtual
   {
     return doWriteBytes(f.fp, b, off, len)
   }
+
+  **
+  ** Rename a file. Return true on success, false on failure.
+  **
+  native static bool rename(Str from, Str to)
   
+
   internal native static int doSize(Str name)
   internal native static Obj doOpen(Str name, Str mode)
   internal native static int doRead(Obj fp)

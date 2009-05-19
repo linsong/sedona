@@ -103,11 +103,6 @@ final class File
   }             
   
   **
-  ** Rename a file. Return true on success, false on failure.
-  **
-  native static bool rename(Str from, Str to)
-  
-  **
   ** Map the current file name to a FileStore reference.
   **
   static internal FileStore toStore(Str name)

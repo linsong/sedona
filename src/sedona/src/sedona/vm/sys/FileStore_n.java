@@ -151,5 +151,13 @@ public class FileStore_n
     return new File(name.toString());
   }
   
+
+  public static boolean rename(StrRef from, StrRef to)
+  {      
+    File fromFile = new File(from.toString());
+    File toFile = new File(to.toString());
+    return fromFile.renameTo(toFile);
+  }
+  
 }
 

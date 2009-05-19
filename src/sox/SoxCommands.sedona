@@ -1294,7 +1294,7 @@ class SoxCommands
     Str from = in.readStrInPlace(tempStr1)
     Str to   = in.readStrInPlace(tempStr2)
 
-    if (!File.rename(from, to)) { res.error(""); return }
+    if (!FileStore.rename(from, to)) { res.error(""); return }
     
     res.cmd = 'B'
   }
