@@ -69,6 +69,7 @@ public class Platform
     refSize   = xml.geti("refSize", refSize);
     blockSize = xml.geti("blockSize", blockSize);
     endian    = xml.get("endian", endian);
+    armDouble = xml.getb("armDouble", armDouble);
     debug     = xml.getb("debug", debug);
     test      = xml.getb("test", test);
     
@@ -125,6 +126,7 @@ public class Platform
 
   public final String id;        // platform identifier
   public String endian;          // "big" or "little"
+  public boolean armDouble;      // 64-bit double layout of ARM using byte little endian, word big endian
   public int refSize;            // reference/pointer size of platform
   public int blockSize;          // block size to use for scode
   public boolean debug;          // include debug meta-data

@@ -116,6 +116,8 @@ For example, consider the generic Windows platform XML file:
 (4 for 32-bit processor).</li>
 <li><b>debug</b>: (optional) boolean to include debug meta-data in image.  Defaults to false</li>
 <li><b>test</b>: (optional) boolean to include test code in image.  Defaults to false</li>
+<li><b>armDouble</b>: set to true if using an ARM microprocessor where 64-bit
+doubles are stored using byte level little endian, word level big endian.</li>
 </ul>
 
 <p><b>&lt;nativeKit></b> designates a kit with native methods that the platform will support:</p>

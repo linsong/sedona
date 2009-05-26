@@ -59,6 +59,7 @@ public class InitImageCompile
     image.unhibernate = xml.get("unhibernate", "sys::Sys.unhibernate");
     image.debug       = xml.getb("debug", false);
     image.test        = xml.getb("test", false);
+    image.armDouble   = xml.getb("armDouble", false);
     compiler.image    = image;
   }
 

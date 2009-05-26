@@ -231,8 +231,19 @@ public class ConstPool
       IrDouble x = (IrDouble)doubles.get(keys[i]);
       x.blockIndex = blockIndex();
       double val = x.val.doubleValue();
-      // System.out.println("-- Double [" + x.blockIndex + "] " + val);
-      code.f8(val);
+      // System.out.println("-- Double [" + x.blockIndex + "] " + parent.image.armDouble + "  " + val);
+      if (parent.image.armDouble)
+      {      
+        // ARM chips layout 64-bit doubles with byte level 
+        // little endian and 32-bit word level big endian
+        long bits = java.lang.Double.doubleToLongBits(val);
+        code.i4((int)((bits >> 32) & 0xffffffffL));
+        code.i4((int)(bits & 0xffffffffL));
+      }
+      else
+      {
+        code.f8(val);
+      }
       blockAlign();
     }
   }

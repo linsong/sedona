@@ -233,6 +233,8 @@ e.g. if the input file is "foo.xml" sedonac will create a file called
 <li><b>main</b>: qualified method name of main method (typically always "sys::Sys.main").</li>
 <li><b>debug</b>: (optional) boolean to include debug meta-data in image.  Defaults to false</li>
 <li><b>test</b>: (optional) boolean to include test code in image.  Defaults to false</li>
+<li><b>armDouble</b>: (optional) set to true if using an ARM microprocessor where 64-bit
+doubles are stored using byte level little endian, word level big endian.</li>
 </ul>
 
 <p><b>&lt;depend></b> specifies the kits to compile into the image:</p>
