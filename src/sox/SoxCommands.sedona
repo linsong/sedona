@@ -1101,8 +1101,6 @@ class SoxCommands
       else if (key.equals("offset") && ((offset = val.parseInt()) < 0)) { res.error("bad offset"); return }
     }
     
-    if (offset < 0) { res.error("neg offset"); return }
-    
     // handle get or put:
     //   - define fileSize (for get)
  
