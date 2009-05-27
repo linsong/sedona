@@ -200,8 +200,10 @@ public class CheckErrors
     
     if (f.type.isBuf() && f.isInline())
     {
-      int max = f.ctorArgs[0].toIntLiteral().intValue();
+      // Note: checkCall() will report this error.
+      if (f.ctorArgs == null || f.ctorArgs.length == 0) return;
       
+      int max = f.ctorArgs[0].toIntLiteral().intValue();
       // Note: STR_LITERAL check makes sure there is room for the null terminator
       if ((f.init.id == Expr.BUF_LITERAL && f.init.toLiteral().asBuf().size > max) ||
           (f.init.id == Expr.STR_LITERAL && f.init.toLiteral().asString().length() >= max))

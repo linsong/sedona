@@ -195,6 +195,8 @@ public class Normalize
       return;    
     
     Location loc = f.init.loc;
+    
+    if (f.ctorArgs == null || f.ctorArgs.length == 0) return;
     Integer len = f.ctorArgs[0].toIntLiteral();
     if (len == null) return;
     Method copyFromStr = (Method)f.type.slot("copyFromStr");
