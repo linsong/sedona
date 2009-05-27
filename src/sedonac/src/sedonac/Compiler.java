@@ -144,6 +144,7 @@ public class Compiler
     new ResolveIR(this).run();
     new Inherit(this).run();
     new AssignSlotIds(this).run();
+    new OrderStaticInits(this).run();
     new FieldLayout(this).run();
     new VTableLayout(this).run();
     new InlineConsts(this).run();
