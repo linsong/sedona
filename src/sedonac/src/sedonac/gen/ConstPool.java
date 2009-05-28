@@ -457,9 +457,24 @@ public class ConstPool
 
         case Type.doubleId:            
           code.align(8);
-          a.blockIndex = blockIndex();          
-          for (int j=0; j<array.length; ++j)
-            code.f8(((Double)array[j]).doubleValue());
+          a.blockIndex = blockIndex();                
+          if (parent.image.armDouble)
+          {
+            for (int j=0; j<array.length; ++j)
+            {
+              double val = ((Double)array[j]).doubleValue();      
+              // ARM chips layout 64-bit doubles with byte level 
+              // little endian and 32-bit word level big endian
+              long bits = java.lang.Double.doubleToLongBits(val);
+              code.i4((int)((bits >> 32) & 0xffffffffL));
+              code.i4((int)(bits & 0xffffffffL));
+            }
+          }
+          else
+          {
+            for (int j=0; j<array.length; ++j)
+              code.f8(((Double)array[j]).doubleValue());
+          }
           break;
 
         default:      
