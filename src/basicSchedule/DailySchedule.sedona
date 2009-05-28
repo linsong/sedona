@@ -4,6 +4,7 @@
 //
 // History:
 //   30 Apr 09  Dan Giorgis   creation
+//   28 May 09  Matthew Giannini store everything in minutes instead of seconds
 //
 
   **
@@ -17,31 +18,31 @@
 abstract class DailySchedule extends Component
 {    
   **
-  **  Start time for first active period, expressed in seconds after midnight
+  **  Start time for first active period, expressed in minutes after midnight
   ** 
-  @config property int start1
+  @config property short start1
 
   **
-  **  Duration for first active period, expressed in seconds after midnight
+  **  Duration for first active period, expressed in minutes after midnight
   ** 
-  @config @min=0 @max=86400 property int dur1  
+  @config @min=0 @max=minsInDay property short dur1  
 
   **
-  **  Start time for second active period, expressed in seconds after midnight
+  **  Start time for second active period, expressed in minutes after midnight
   ** 
-  @config property int start2
+  @config property short start2
 
   **
-  **  Duration for the second active period, expressed in seconds after midnight
+  **  Duration for the second active period, expressed in minutes after midnight
   ** 
-  @config @min=0 @max=86400 property int dur2
+  @config @min=0 @max=minsInDay property short dur2
   
 ////////////////////////////////////////////////////////////////
 // Component
 ////////////////////////////////////////////////////////////////
 
   virtual override void start()
-  {    
+  {
     dtSrvc = (DateTimeService)Sys.app.lookupService(DateTimeService.type)
   }
 
@@ -57,13 +58,12 @@ abstract class DailySchedule extends Component
     //  Determine current time of day        
     int h = dtSrvc.hour
     int m = dtSrvc.minute
-    int s = dtSrvc.second
+
+    //  convert to mins past midnight
+    int timeOfDay = (h * 60) + m
     
-    //  convert to secs past midnight        
-    int timeOfDay = (h * 60 * 60) + (m * 60) + s
-    
-    int end1 = (start1 + dur1) % secsInDay
-    int end2 = (start2 + dur2) % secsInDay
+    int end1 = (start1 + dur1) % minsInDay
+    int end2 = (start2 + dur2) % minsInDay
                    
     bool s1active = isActive(timeOfDay, start1, end1)
     bool s2active = isActive(timeOfDay, start2, end2)
@@ -127,7 +127,7 @@ abstract class DailySchedule extends Component
 
   DateTimeService dtSrvc
   
-  define int secsInDay = 24 * 60 * 60  
+  define int minsInDay = 24 * 60
   
   define int outputDefault = 0
   define int output1       = 1
