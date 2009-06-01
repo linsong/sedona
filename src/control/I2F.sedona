@@ -1,0 +1,25 @@
+//
+// Copyright (c) 2009 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   05 May 09  Brian Frank    Creation
+//
+
+**
+** I2F integer-to-float converter
+**
+@niagaraIcon="module://icons/x16/control/util/switch.png"
+class I2F
+  extends Component
+{
+
+  property int in
+  property float out
+
+  virtual override void execute()
+  {
+    out = (float)in
+  }
+
+}

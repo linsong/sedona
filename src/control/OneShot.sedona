@@ -1,0 +1,65 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   10 Jan 07  Andy Saunders  Creation
+//   27 Apr 07  Brian Frank    Port from Java to Sedona
+//
+
+**
+** OneShot:  Boolean one-shot pulse generator
+**
+** out = true for pulseWidth sec, beginning at rising edge of in
+** 
+** pulse retriggers on each rising edge of in, if canRetrig = true
+**
+@niagaraIcon="module://icons/x16/control/control.png"
+class OneShot
+  extends Component
+{
+  @readonly property bool out
+  property bool in
+  @config property float pulseWidth   // in sec
+  @config property bool  canRetrig 
+
+  **
+  ** Clears the output immediately, cancelling any pulse in progress
+  **
+  action void clear()
+  {
+    pulseEnd = 0L
+    out = false
+  }
+
+  **
+  ** Callback when component is first started in an app.
+  **
+  virtual override void start()
+  {
+    lastIn = in    // must initialize lastIn before first call to execute()
+  }
+
+
+  **
+  ** Execute is called once every scan.
+  **
+  virtual override void execute()
+  {
+    now = Sys.ticks()
+
+    if (in && !lastIn)                // rising edge detected
+    {
+      if (!out || canRetrig)           // start output pulse, or restart if canRetrig==true
+        pulseEnd = now + (long)pulseWidth * 1sec
+    }
+
+    out = pulseEnd > now
+
+    lastIn = in
+  }
+
+  private long now = 0L
+  private long pulseEnd = 0L
+  private bool lastIn
+}

@@ -1,0 +1,138 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   10 Jan 07  Andy Saunders  Creation
+//   27 Apr 07  Brian Frank    Port from Java to Sedona
+//
+
+**
+** Pid Loop object
+**
+@niagaraIcon="module://icons/x16/control/numericPoint.png"
+class LP
+  extends Component
+{
+  property float out
+
+  @config property bool enable = true
+  @config property float sp    = 0.0f
+  @config property float cv    = 0.0f
+  @config @precision=4 property float kp = 1.0f
+  @config @precision=4 property float ki = 0.0f  // units repeats / minute
+  @config @precision=4 property float kd = 0.0f
+  @config property float max   = 10.0f
+  @config property float min   = 0.0f
+  @config property float bias  = 0.0f
+  @config property bool direct = true 
+  @unit=Units.millisecond @config property int exTime  = 10
+
+  virtual override void execute()
+  {
+    long now = Sys.ticks()
+    if (!enable) return
+        
+    // return if not time to execute
+    long executeTime = (1ms *  (long)exTime)
+    long deltaTime = now - lastExecTime
+    //Sys.out.print("deltaTime = ").printInt((int)deltaTime)
+    if ( deltaTime < executeTime)
+      return;
+
+    //Sys.out.print("-1-")
+    lastExecTime = now
+    float kProportional = kp 
+    float kIntegral     = ki
+    float kDerivative   = kd 
+    float maxOutput     = max
+    float minOutput     = min
+    float spVal         = sp
+    float cvVal         = cv
+    float biasVal       = bias
+    bool isDirect       = direct
+    float kPkIconst     = kProportional * kIntegral / 60.0f
+
+    if (kProportional == 0.0f)
+      return;
+
+    //Sys.out.print("-2-")
+    // TODO check for valid setpoint and cv
+
+    // calculate execution time as a float in seconds
+    float deltaSecs = (float)deltaTime / (float)1sec
+
+    //  Calculate the current error
+    float error = spVal - cvVal
+
+    //  Accumulate the error for integral control
+    if (kIntegral != 0.0)
+    {
+      float iError = deltaSecs * error
+      errorSum = errorSum + iError
+
+      //Constrain the error sum to prevent integral windup
+      if (isDirect)
+      {
+         if (-errorSum > maxOutput/kPkIconst)
+          errorSum = -(maxOutput/kPkIconst)
+        else if (-errorSum < minOutput/kPkIconst)
+          errorSum = -(minOutput/kPkIconst)
+      }
+      else
+      {
+        if (errorSum > maxOutput/kPkIconst)
+          errorSum = (maxOutput/kPkIconst)
+        else if (errorSum < minOutput/kPkIconst)
+          errorSum = (minOutput/kPkIconst)
+      }
+    }
+//    if (Float.isNaN(errorSum) || Float.isInfinite(errorSum))
+//      errorSum = 0.0f;
+
+
+    //  Calculate the proportional gain
+    float proportionalGain = error * kProportional
+
+    //  Calculate the integral gain
+    //  All gain values are calculated in seconds.  Convert integral
+    //  term (resets per minute) to resets per second
+    float integralGain = kProportional * kIntegral * errorSum / 60.0
+
+
+    //  Calculate the derivative gain
+    //double derivativeGain = kProportional * kDerivative * (error - lastError) * (deltaSecs);
+    float derivativeGain = kProportional * kDerivative * (error - lastError) / deltaSecs
+
+    //  Store the last error for derivative gain
+    lastError = error
+
+    //  Calculate the overall gain
+    float pv = proportionalGain + integralGain + derivativeGain
+
+    // if pv NaN don't do anything else
+//    if (Float.isNaN(pv))
+//      return;
+
+    //  Apply action
+    if ( isDirect )
+      pv = - pv;
+
+    //  Add bias if not PI
+    if (kIntegral == 0.0f)
+      pv = pv + biasVal
+
+    // Constrain the overall gain
+    if (pv > maxOutput)
+      pv = maxOutput
+    else if (pv < minOutput)
+      pv = minOutput
+
+    out = pv
+  }
+
+  private long lastExecTime = 0L
+  private float errorSum    = 0.0
+  private float lastError   = 0.0
+
+}
