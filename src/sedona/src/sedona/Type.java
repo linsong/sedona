@@ -21,7 +21,7 @@ import sedona.xml.*;
  * deals with modeling types at compile time.
  */
 public class Type
- implements Constants
+ implements Comparable, Constants
 {
 
 //////////////////////////////////////////////////////////////////////////
@@ -43,6 +43,14 @@ public class Type
 //////////////////////////////////////////////////////////////////////////
 // Access
 //////////////////////////////////////////////////////////////////////////
+
+  /**
+   * Compare based on string qname.
+   */
+  public int compareTo(Object that)
+  {
+    return toString().compareTo(that.toString());
+  }
 
   /**
    * Return qualified name for toString.

@@ -187,6 +187,23 @@ public class Schema
   }
 
   /**
+   * Find all the concrete (non-abstract) instances of the given type.
+   */
+  public Type[] allConcreteTypes(Type t)    
+  {      
+    ArrayList acc = new ArrayList();
+    for (int i=0; i<kits.length; ++i)
+    {
+      Type[] kt = kits[i].types;
+      for (int j=0; j<kt.length; ++j)
+        if (!kt[j].isAbstract() && kt[j].is(t)) acc.add(kt[j]);
+    }
+    Type[] types = (Type[])acc.toArray(new Type[acc.size()]);
+    Arrays.sort(types);
+    return types;
+  }
+
+  /**
    * Check that this Schema and another are exactly the same.
    */
   public boolean equivalent(Schema that)
