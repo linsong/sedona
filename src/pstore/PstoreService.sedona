@@ -65,6 +65,19 @@ class PstoreService
   override void stop()
   { 
     file.close()
+  }                       
+  
+  **
+  ** Validate all my child PstoreFiles
+  **
+  action void validateAll()
+  {               
+    Component c = Sys.app.lookup(children)
+    while (c != null)
+    {
+      if (c.type.is(PstoreFile.type)) ((PstoreFile)c).validate()
+      c = Sys.app.lookup(c.nextSibling)
+    }
   }
       
 ////////////////////////////////////////////////////////////////
