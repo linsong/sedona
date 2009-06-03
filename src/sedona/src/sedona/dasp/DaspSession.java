@@ -256,22 +256,16 @@ public class DaspSession
       isClosed = true;      
       closeCause = cause;
       
+      // Notify listener that session is closing
+      try { if (listener != null) listener.daspSessionClosed(this); }
+      catch (Exception e) { e.printStackTrace(); }
+
       // remove from socket table
       socket.free(this);   
       
       // kill send and receive queues
       sendWindow.kill();
       receiveQueue.kill();    
-    }
-
-    // Notify listener that session has closed (should this come first?)
-    try
-    {                     
-      if (listener != null) listener.daspSessionClosed(this);
-    }
-    catch (Exception e)
-    {
-      e.printStackTrace();
     }
   }                
 
