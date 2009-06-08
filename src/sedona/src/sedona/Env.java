@@ -254,7 +254,8 @@ public class Env
     catch (Exception e)
     {
       System.out.println("WARNING: Cannot load version.txt from jar");
-      System.out.println("  " + e);
+      e.printStackTrace();
+      //System.out.println("  " + e);
       ver = "Unknown";
     }
     version = ver;   
