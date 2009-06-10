@@ -23,6 +23,7 @@ import sedonac.namespace.*;
  * There is no ordering of static initializers within a kit, except that
  * <code>sys::Sys_sInit()</code> is guaranteed to be the first static
  * initializer that is executed.
+ * <p>
  */
 public class OrderStaticInits extends CompilerStep
 {
@@ -37,6 +38,8 @@ public class OrderStaticInits extends CompilerStep
     // TODO: intra-kit sInit ordering.
     log.verbose("  OrderStaticInits");
     Arrays.sort(compiler.flat.staticInits, new StaticInitComparator(graphDependencies()));
+    quitIfErrors();
+    
     if (log.verbose)
     {
       for (int i=0; i< compiler.flat.staticInits.length; ++i)
@@ -52,11 +55,11 @@ public class OrderStaticInits extends CompilerStep
     
     HashMap graph = new HashMap(compiler.kits.length);
     for (int i=0; i<compiler.kits.length; ++i)
-      graph.put(compiler.kits[i].name(), graphDependencies(kitsByName, graph, compiler.kits[i]));
+      graph.put(compiler.kits[i].name(), graphDependencies(kitsByName, graph, compiler.kits[i], compiler.kits[i].name()));
     return graph;
   }
   
-  private HashSet graphDependencies(HashMap byName, HashMap graph, IrKit kit)
+  private HashSet graphDependencies(HashMap byName, HashMap graph, IrKit kit, String path)
   {
     HashSet kitDepends = new HashSet();
     for (int i=0; i<kit.manifest.depends.length; ++i)
@@ -64,7 +67,15 @@ public class OrderStaticInits extends CompilerStep
       Depend d = kit.manifest.depends[i];
       HashSet set = (HashSet)graph.get(d.name());
       if (set == null)
-        graph.put(d.name(), set = graphDependencies(byName, graph, (IrKit)byName.get(d.name())));
+      {
+        IrKit dependency = (IrKit)byName.get(d.name());
+        if (dependency == null)
+        {
+          err("Dependency on '" + d.name() + "' required through '" + path + "'", compiler.input);
+          continue;
+        }
+        graph.put(d.name(), set = graphDependencies(byName, graph, (IrKit)byName.get(d.name()), path+" -> "+d.name()));
+      }
       kitDepends.add(d.name());
       kitDepends.addAll(set);
     }
