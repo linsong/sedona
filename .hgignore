@@ -13,6 +13,7 @@ syntax: glob
 *.sab
 *libJar*
 *.swp
+src/sedona/src/version.txt
 
 # Ignore Eclipse metafiles
 *.classpath
@@ -26,4 +27,4 @@ syntax: regexp
 ^temp/
 ^temp-provision/
 ^test/ 
-^doc/.*/      
+^doc/.*/

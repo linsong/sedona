@@ -44,6 +44,7 @@ def compile(srcDir, depends, packages, jarFile, func=None):
   # if we have a function call it
   if (func != None):
     func(temp) 
+    func(srcDir)
   
   # jar up using jar.exe
   cmd = env.jar + " cf " + jarFile + " -C " + temp + " ."
