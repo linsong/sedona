@@ -16,33 +16,32 @@
 class F2B
   extends Component
 {
-
-  property float in
-  property bool out1
-  property bool out2
-  property bool out3
-  property bool out4
-  property bool out5
-  property bool out6
-  property bool out7
-  property bool out8
-  property bool out9
-  property bool out10
-  property bool out11
-  property bool out12
-  property bool out13
-  property bool out14
-  property bool out15
-  property bool out16
-  property bool ovrf
+  @config @summary property float in
+  @readonly property bool out1
+  @readonly property bool out2
+  @readonly property bool out3
+  @readonly property bool out4
+  @readonly property bool out5
+  @readonly property bool out6
+  @readonly property bool out7
+  @readonly property bool out8
+  @readonly property bool out9
+  @readonly property bool out10
+  @readonly property bool out11
+  @readonly property bool out12
+  @readonly property bool out13
+  @readonly property bool out14
+  @readonly property bool out15
+  @readonly property bool out16
+  @readonly property bool ovrf
 
   virtual override void execute()
   {
     int value = (int)in
-    ovrf = value > 0xffff
     int mask = 1
+    ovrf = value > 0xffff
 
-    //loop through out1 - out16 setting values
+    // Loop out1 to out16 setting values
     for(int i = F2B.out1.id; i <= F2B.out16.id; i++)
     {
       setBool(type.slots[i], (value & mask) != 0)

@@ -15,9 +15,8 @@
 class Add4
   extends Add2
 {
-
-  property float in3
-  property float in4
+  @config @summary property float in3
+  @config @summary property float in4
 
   virtual override void execute()
   {

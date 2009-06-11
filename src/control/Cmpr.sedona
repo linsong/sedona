@@ -18,12 +18,11 @@
 class Cmpr
   extends Component
 {
-
-  property bool xgy 
-  property bool xey 
-  property bool xly 
-  property float x
-  property float y  
+  @readonly property bool  xgy 
+  @readonly property bool  xey 
+  @readonly property bool  xly 
+  @config @summary property float x
+  @config @summary property float y  
 
   virtual override void execute()
   {

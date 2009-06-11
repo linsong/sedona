@@ -5,6 +5,7 @@
 // History:
 //   10 Jan 07  Andy Saunders  Creation
 //   27 Apr 07  Brian Frank    Port from Java to Sedona
+//   22 Apr 09  Elizabeth McKenney Simplified logic
 //
 
 **
@@ -17,59 +18,59 @@ class DlyOn
   extends Component
 {
 
-  property bool out = true
+  @readonly property bool out
   property bool in
-  property float delayTime  // specified hold time in sec
-  property int hold         // remaining hold time in ms
+  @config @summary property float delayTime  // specified hold time in sec
+  @readonly property int hold                // remaining hold time in ms
 
-  virtual override void execute()
+  **
+  ** Callback when component is first started in an app.
+  **
+  virtual override void start()
   {
-    bool cur = in
-    bool curOut = out
-    long now = Sys.ticks()
-    if(state == 0)  // hold is not active
-    {
-      if(cur)
-      {
-        // start delay
-        long delayTimeInt = (long)(delayTime * 1000.0f)
-        holdTime = now + (1ms * delayTimeInt)
-        //Sys.log("startingOnDelay  = ").print(holdTime).nl();
-        state = 1
-      }
-      else if(curOut)
-      {
-        //Sys.log("clearing out state 0").nl();
-        out = false
-      }
-
-    }
-    else if(state == 1)  // hold is currently active
-    {
-      if(now > holdTime)
-      {
-        //Sys.log("State 1 delay Expired").nl();
-        out = true
-        state = 2
-        holdTime = 0ms
-      }
-    }
-    else if(state == 2)  // hold just expired
-    {
-      if(!cur)
-      {
-        //Sys.log("State 2 !in so clear out").nl();
-        out = false
-        state = 0
-      }
-    }
-    if(holdTime == 0L)
-      hold = 0
-    else
-     hold = (int)(holdTime - now)
-
+    // Must initialize lastIn before first call to execute()
+    lastIn = in    
   }
 
-  private int state     = 0
-  private long holdTime = 0L
+
+  **
+  ** Execute is called once every scan.
+  **
+  virtual override void execute()
+  {
+    long now = Sys.ticks()
+
+    // On positive edge transition, start delay
+    if (in && !lastIn)
+    {
+      delayEnd = now + (long)delayTime * 1sec
+    }
+        
+    // If input is false, cancel any delay and set output false
+    if (!in)
+    {
+      delayEnd = 0L
+      out = false
+    }
+    // If input is true, output is false if delay not expired;
+    // o/w output is true and delay is reset
+    else
+    {
+      out = delayEnd < now
+
+      // If out is true, delay has expired
+      if (out) delayEnd = 0L
+    }
+
+    // Update hold property to reflect delay time remaining
+    if (delayEnd == 0L)
+      hold = 0
+    else
+      hold = (int)(delayEnd - now)
+
+    lastIn = in
+  }
+
+  private long delayEnd = 0L
+  private bool lastIn
 }

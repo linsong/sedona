@@ -16,8 +16,7 @@
 class Neg
   extends Component
 {
-
-  property float out
+  @readonly property float out
   property float in
 
   virtual override void execute()

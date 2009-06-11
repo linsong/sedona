@@ -5,39 +5,89 @@
 // History:
 //   10 Jan 07  Andy Saunders  Creation
 //   27 Apr 07  Brian Frank    Port from Java to Sedona
+//   22 Apr 09  Elizabeth McKenney   Updated
 //
 
 **
 ** Reset rescale in value to out value object
 **
+**
+** This function performs a "reset" on the input value.
+**
+** "Reset" is a HVAC term for scaling a number between two limits.  
+**
+** When inMin < inA < inMax, the output value scales linearly 
+** between outMin and outMax.  
+**
+** If inA < inMin, the value is capped at outMin.  
+** 
+** If inA > inMax, the value is capped at outMax.
+** 
+** To calculate out, the following equation is used:
+** <pre>
+**         (outMax-outMin)
+**   out = --------------- * (in - inMin) + outMin
+**          (inMax-inMin)  
+** </pre>
+
 @niagaraIcon="module://icons/x16/control/math/reset.png"
 class Reset
   extends Component
 {
 
-  property float out
-  property float in
-  @config property float iMax = 4095.0
-  @config property float iMin = 0.0
-  @config property float oMax = 100.0
-  @config property float oMin = 0.0
+  @readonly property float out
+  @readonly property float in
+  @config @summary property float inMin = 0.0
+  @config @summary property float inMax = 4095.0
+  @config @summary property float outMin = 0.0
+  @config @summary property float outMax = 100.0
 
-  virtual override void execute()
+  **
+  ** Callback when component is first started in an app.
+  **
+  virtual override void start()
   {
-    float x = in
-    float inHi = iMax
-    float inLow = iMin
-    float outHi = oMax
-    float outLow = oMin
-    float y = 0.0f
-
-    if (x <= inLow)
-      y = outLow
-    else if (x >= inHi)
-      y = outHi
-    else
-      y =  ((outHi-outLow)/(inHi-inLow) * (x-inLow) + outLow)
-    out = y
+    updateRatio()
   }
 
+
+  **
+  ** Execute is called once every scan.
+  **
+  virtual override void execute()
+  {
+    if (in <= inMin)
+      out = outMin
+    else if (in >= inMax)
+      out = outMax
+    else
+      out = outInRatio * (in-inMin) + outMin
+  }
+
+
+  **
+  ** Behavior to execute when a property is changed externally
+  ** 
+  override void changed(Slot slot)
+  {
+    super.changed(slot)
+
+    if ((slot == Reset.inMin)  || (slot == Reset.inMax) ||
+        (slot == Reset.outMin) || (slot == Reset.outMax))
+    {
+      updateRatio()
+    }
+  }
+
+
+  private void updateRatio()
+  {
+    if (inMax==inMin)
+      outInRatio = 0.0
+    else
+      outInRatio = (outMax - outMin) / (inMax - inMin)
+  }
+
+
+  private float outInRatio
 }

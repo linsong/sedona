@@ -16,10 +16,9 @@
 class Add2
   extends Component
 {
-
-  property float out
-  property float in1
-  property float in2
+  @readonly property float out
+  @config @summary property float in1
+  @config @summary property float in2
 
   virtual override void execute()
   {

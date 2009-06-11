@@ -14,8 +14,7 @@
 class ConstBool
   extends Component
 {
-
-  @config @summary property bool out
+  @config @summary @readonly property bool out
   
   action void setTrue()
   {           

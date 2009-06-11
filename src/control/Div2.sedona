@@ -19,18 +19,18 @@
 public class Div2
   extends Component
 {
-
-  property float out
-  property float in1
-  property float in2
-  property bool div0
+  @readonly property float out
+  @config @summary property float in1
+  @config @summary property float in2
+  @readonly property bool div0
 
   virtual override void execute()
   {
-    if (div0 = (in2 == 0.0f))
+    div0 = (in2 == 0.0f)
+
+    if (div0)
       out = 0.0
     else
       out = in1 / in2
   }
-
 }

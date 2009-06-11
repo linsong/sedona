@@ -5,6 +5,7 @@
 // History:
 //   18 Jan 07  Andy Saunders  Creation
 //   27 Apr 07  Brian Frank    Port from Java to Sedona
+//   22 Apr 09  Elizabeth McKenney   Updated
 //
 
 **
@@ -18,20 +19,37 @@ class SRLatch
   extends Component
 {
 
-  property bool out
+  @readonly property bool out
   property bool s
   property bool r
 
+  **
+  ** Callback when component is first started in an app.
+  **
+  virtual override void start()
+  {
+    lastSet   = s
+    lastReset = r
+  }
+
+
+  **
+  ** Execute is called once every scan.
+  **
+  ** On rising edge of s, out becomes true
+  ** On rising edge of r, out becomes false
+  ** If both inputs have rising edges, out becomes false
+  **
   virtual override void execute()
   {
-    bool set = s
-    bool reset = r
-    if (set && !lastSet)
+    if (s && !lastSet)
       out = true
-    if (reset && !lastReset)
+
+    if (r && !lastReset)
       out = false
-    lastSet = set
-    lastReset = reset
+
+    lastSet   = s
+    lastReset = r
   }
 
   bool lastSet

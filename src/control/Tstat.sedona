@@ -9,7 +9,7 @@
 **
 ** Tstat Provides On/Off or Floating Thermostat control
 **
-**   raise & lower outputs operate independent of isHeating mode.
+**   raise & lower outputs operate independently of isHeating mode.
 **     lower will be set to true if cv > (sp + diff/2) and will
 **           remain set until cv < sp.
 **     raise will be set to true if cv < (sp - diff/2) and will
@@ -25,45 +25,43 @@
 class Tstat
   extends Component
 {
-
-  @config property float diff    = 0.0f
-  @config property bool isHeating = false
-  property float sp
-  property float cv
-  property bool out
-  property bool raise
-  property bool lower
+  @config @summary property float diff = 0.0f
+  @config @summary property float sp
+  @config @summary property float cv
+  @config @summary property bool  isHeating = false
+  @readonly property bool out
+  @readonly property bool raise
+  @readonly property bool lower
 
   virtual override void execute()
   {
-  	float delta   = diff/2.0f
-  	float hiValue = sp + delta
-  	float loValue = sp - delta
+    float delta   = diff/2.0f
+    float hiValue = sp + delta
+    float loValue = sp - delta
     
-    if(cv > hiValue) 
+    if (cv > hiValue) 
     {
-    	lower = true
-    	raise = false
+      lower = true
+      raise = false
     }
-    else if( cv < loValue )
+    else if ( cv < loValue )
     {
-    	lower = false
-    	raise = true
+      lower = false
+      raise = true
     }
-    else if( lower && cv < sp )
+    else if ( lower && cv < sp )
     {
-    	lower = false
+      lower = false
     }
-    else if( raise && cv > sp )
+    else if ( raise && cv > sp )
     {
-    	raise = false
+      raise = false
     }
-    if(isHeating)
+
+    if (isHeating)
       out = raise
     else 
       out = lower
-  	
-  	//Sys.out.print("     tstat::").printFloat(sp).print(", ").printFloat(diff).print(", ").printFloat(cv).print(", ").printBool(out).print(", ").printBool(raise).print(", ").printBool(lower).nl()
   }
 
 }

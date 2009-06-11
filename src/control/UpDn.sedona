@@ -5,59 +5,75 @@
 // History:
 //   11 Jan 07  Andy Saunders  Creation
 //   27 Apr 07  Brian Frank    Port from Java to Sedona
+//   22 Apr 09  Elizabeth McKenney   Updated
 //
 
 **
-** UpDn Up down counter object
+** UpDn Up/down counter object
 **
 @niagaraIcon="module://icons/x16/control/control.png"
 class UpDn
   extends Component
 {
-
-  ** current count
-  property float out
+  ** Current count 
+  @readonly property float out
   
-  ** overflow indicator
-  property bool ovr
+  ** Overflow indicator
+  @readonly property bool ovr
   
-  ** plus edge pulse count input
+  ** Increment/decrement counter on positive edge 
   property bool in
   
-  ** reset input
+  ** Reset count
   property bool rst
   
-  ** count down input else count up.
-  property bool cDwn
+  ** Count down if true; o/w count up
+  @config @summary property bool cDwn
   
-  ** overflow limit
+  ** Overflow limit
   @config property float limit
   
-  ** stop counting when limit reached or not.
+  ** Stop counting when limit reached if true
   @config property bool holdAtLimit
   
+
+  **
+  ** Callback when component is first started in an app.
+  **
+  virtual override void start()
+  {
+    lastIn = in
+  }
+
+
+  **
+  ** Execute is called once every scan.
+  **
   virtual override void execute()
   {
-    bool currentIn = in
-    float currentOut = out
-    float currentLimit = limit
-    bool isHoldAtLimit = holdAtLimit
-    if( currentIn && !lastIn ) // positive edge
+    if ( in && !lastIn )      // detect positive edge
     {
-      if(cDwn)
-        currentOut--
+      // Adjust count by one
+      if (cDwn)
+        out--
       else
-        currentOut++
-      if(currentOut < 0.0f)
-        currentOut = 0.0f
-      if(isHoldAtLimit && currentOut > currentLimit)
-         currentOut = currentLimit
-      out = currentOut
-      if( currentOut >= currentLimit )
-         ovr = true
+        out++
+
+      // Don't allow count to go negative
+      if (out < 0.0f) out = 0.0f
+
+      // If enabled, hold count at given max value
+      if (holdAtLimit && (out > limit))
+         out = limit
+
+      // Flag overflow
+      ovr = ( out >= limit )
     }
-    lastIn = currentIn
-    if(rst)
+
+    lastIn = in
+
+    // Clear count & overflow if reset input is true
+    if (rst)
     {
       ovr = false
       out = 0.0
@@ -65,7 +81,5 @@ class UpDn
 
   }
 
-  private bool lastIn = false
-
-
+  private bool lastIn
 }

@@ -5,27 +5,40 @@
 // History:
 //   10 Jan 07  Andy Saunders  Creation
 //   27 Apr 07  Brian Frank    Port from Java to Sedona
+//   22 Apr 09  Elizabeth McKenney   Updated
 //
 
 **
 ** B2P Boolean to pulse object
 **
-** out = +in for one scan cycle
+** out = in for one scan cycle, on rising edge of in
 **
 @niagaraIcon="module://icons/x16/control/control.png"
 class B2P
   extends Component
 {
-
-  property bool out
+  @readonly property bool out
   property bool in
 
-  virtual override void execute()
+  **
+  ** Callback when component is first started in an app.
+  **
+  virtual override void start()
   {
-    bool cur = in
-    out = (cur && !lastValue)
-    lastValue = cur
+    lastIn = in    // Initialize lastIn before first call to execute()
   }
 
-  private bool lastValue
+
+  **
+  ** Execute is called once every scan.
+  **
+  virtual override void execute()
+  {
+    // Output is true immediately on rising edge of input;
+    // set false again on next scan cycle
+    out = (in && !lastIn)
+    lastIn = in
+  }
+
+  private bool lastIn
 }

@@ -10,59 +10,52 @@
 **
 ** B2F 16 bit binary to float encoder object
 **
-** out = encoded with in16 the MSB and in1 as the LSB.
-** icnt = sum of the inputs that are active.
+** out   = encoded value of inputs, with in16 the MSB and in1 as the LSB.
+** count = sum of the inputs that are active.
 **
 @niagaraIcon="module://icons/x16/control/util/switch.png"
 public class B2F
   extends Component
 {
-
-  property float out
-  property float count
-  property bool in1
-  property bool in2
-  property bool in3
-  property bool in4
-  property bool in5
-  property bool in6
-  property bool in7
-  property bool in8
-  property bool in9
-  property bool in10
-  property bool in11
-  property bool in12
-  property bool in13
-  property bool in14
-  property bool in15
-  property bool in16
+  @readonly property float out
+  @readonly property float count
+  @config @summary property bool in1
+  @config @summary property bool in2
+  @config @summary property bool in3
+  @config @summary property bool in4
+  @config @summary property bool in5
+  @config @summary property bool in6
+  @config @summary property bool in7
+  @config @summary property bool in8
+  @config @summary property bool in9
+  @config @summary property bool in10
+  @config @summary property bool in11
+  @config @summary property bool in12
+  @config @summary property bool in13
+  @config @summary property bool in14
+  @config @summary property bool in15
+  @config @summary property bool in16
 
   virtual override void execute()
   {
-    value = 0
-    icount = 0
-    mask = 1
+    int value = 0
+    int icount = 0
+    int mask = 1
 
     // reflective loop from in1 to in16
     for(int i = B2F.in1.id; i <= B2F.in16.id; i++)
-      addValue(getBool(type.slots[i]))
+    {
+      if (getBool(type.slots[i]))
+      {
+        value = value | mask
+        icount++
+      }
 
-    out = (float)value
+      mask = mask << 1
+    }
+
+    out   = (float)value
     count = (float)icount
   }
-
-  private void addValue(bool isOn)
-  {
-    if (isOn)
-    {
-      value = value | mask
-      icount++
-    }
-    mask = mask << 1
-  }
-
-  private int value
-  private int icount
-  private int mask
 
 }

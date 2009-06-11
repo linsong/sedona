@@ -16,10 +16,9 @@
 class And2
   extends Component
 {
-
-  property bool out
-  property bool in1
-  property bool in2
+  @readonly property bool out
+  @config @summary property bool in1
+  @config @summary property bool in2
 
   virtual override void execute()
   {

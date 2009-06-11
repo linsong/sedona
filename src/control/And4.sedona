@@ -14,9 +14,8 @@
 class And4
   extends And2
 {
-
-  property bool in3
-  property bool in4
+  @config @summary property bool in3
+  @config @summary property bool in4
 
   virtual override void execute()
   {

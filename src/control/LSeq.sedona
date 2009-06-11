@@ -5,62 +5,95 @@
 // History:
 //   18 Jan 07  Andy Saunders  Creation
 //   27 Apr 07  Brian Frank    Port from Java to Sedona
+//   22 Apr 09  Elizabeth McKenney   Updated
 //
 
 **
 ** LSeq will provide a linear sequence of 2 to 16 loads based on a 0 - 100 input.
+**
+** Analogous to a bar graph of the input value, where the delta represented by each 
+** output is (inMax - inMin) / numOuts.  So given an input value V, outputs 1 through 
+** (V - inMin)/delta will be set true, and any remaining outputs will be false.
 **
 @niagaraIcon="module://icons/x16/control/control.png"
 class LSeq
   extends Component
 
 {
+  property float in                               // cv input
+
+  @config @summary property float inMin = 0.0     // expected input minimum
+  @config @summary property float inMax = 100.0f  // expected input maximum
+  @config @summary property int numOuts = 16      // number of outputs to control over range
+
+  @readonly property byte dOn  = 0                // number of outputs currently turned on
+  @readonly property bool ovfl = false            // true when in > inMax
+
+  @readonly property bool out1
+  @readonly property bool out2
+  @readonly property bool out3
+  @readonly property bool out4
+  @readonly property bool out5
+  @readonly property bool out6
+  @readonly property bool out7
+  @readonly property bool out8
+  @readonly property bool out9
+  @readonly property bool out10
+  @readonly property bool out11
+  @readonly property bool out12
+  @readonly property bool out13
+  @readonly property bool out14
+  @readonly property bool out15
+  @readonly property bool out16
 
 
-  property float in                      // cv input
-  @config property float inMin  = 0.0    // input minimum
-  @config property float inMax = 100.0f  // iniput maximum
-  @config property int numOuts = 16      // number of outputs to control over  range
-  property bool out1
-  property bool out2
-  property bool out3
-  property bool out4
-  property bool out5
-  property bool out6
-  property bool out7
-  property bool out8
-  property bool out9
-  property bool out10
-  property bool out11
-  property bool out12
-  property bool out13
-  property bool out14
-  property bool out15
-  property bool out16
-  property byte dOn                      // desired number of outputs on.
+  **
+  ** Callback when component is first started in an app.
+  **
+  virtual override void start()
+  {
+    updateDelta()
+  }
 
+  **
+  ** Execute is called once every scan.
+  **
   virtual override void execute()
   {
-    int numOutputs = numOuts
+    int numStagesOn = (int)((in-inMin)/spDelta)
 
-    float range = inMax - inMin
-    float spDelta = range / (float)numOutputs
-    float cv = in
-    float min = inMin
-    int numStagesOn = (int)((cv-min)/spDelta)
-
-    //Sys.log("cv          = ").print(cv).nl();
-    //Sys.log("spDelta     = ").print(spDelta).nl();
-    //Sys.log("numStagesOn = ").print(numStagesOn).nl();
-
-    dOn = numStagesOn
-    // loop through out1 - out16 setting desired state
-    for(int i = 0; i < 16; i++ )
+    // Loop through out1 - out16 setting desired state for each
+    //  (Note assumption that output slot ids are consecutive)
+    for (int i = 0; i < 16; i++)
     {
       setBool(type.slots[LSeq.out1.id+i], ((i+1) <= numStagesOn))
     }
+
+    dOn  = numStagesOn
+    ovfl = in > inMax
   }
 
-  int numStagesOn = 0
+
+  **
+  ** Behavior to execute when a property is changed externally
+  ** 
+  override void changed(Slot slot)
+  {
+    super.changed(slot)
+
+    if ((slot == LSeq.inMin)  || (slot == LSeq.inMax))
+    {
+      updateDelta()
+    }
+  }
+
+
+  private void updateDelta()
+  {
+    spDelta = (inMax - inMin) / (float)numOuts
+  }
+
+
+  private float spDelta
 
 }

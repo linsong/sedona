@@ -8,18 +8,17 @@
 //
 
 **
-** BSW Boolian Switch object
+** BSW: Boolean Switch object
 **
-** out = if(s1) out = in1 else out = in2
+** out = if (s1) out = in1 else out = in2
 **
 @niagaraIcon="module://icons/x16/control/util/switch.png"
 class BSW
   extends Component
 {
-
-  property bool out
-  property bool in1
-  property bool in2
+  @readonly property bool out
+  @config @summary property bool in1
+  @config @summary property bool in2
   property bool s1
 
   virtual override void execute()

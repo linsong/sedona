@@ -5,6 +5,7 @@
 // History:
 //   10 Jan 07  Andy Saunders  Creation
 //   27 Apr 07  Brian Frank    Port from Java to Sedona
+//   22 Apr 09  Elizabeth McKenney   Updated
 //
 
 **
@@ -16,31 +17,46 @@
 class Freq
   extends Component
 {
-
-  property float pps
-  property float ppm
+  @readonly property float pps
+  @readonly property float ppm
   property bool in
 
-  virtual override void execute()
+  **
+  ** Callback when component is first started in an app.
+  **
+  virtual override void start()
   {
-    long ticks = Sys.ticks()
-    long period = ticks - lastTicks
-    bool cIn = in
-
-    if(cIn && !lastIn)  // a new pulse has started
-    {
-      lastTicks = ticks
-      if (!(period == 0L))
-      {
-        float freq = (float)1sec / (float)period;
-        pps = freq
-        ppm = freq * 60.0
-      }
-    }
-    lastIn = cIn
+    lastIn = in 
   }
 
-  bool lastIn = false
-  long lastTicks = 0L
+
+  **
+  ** Execute is called once every scan.
+  **
+  virtual override void execute()
+  {
+    long now = Sys.ticks()
+
+    if (in && !lastIn)  // rising edge detected
+    {
+      float period = (float)(now - lastEdge)
+
+      if (period != 0.0f)
+      {
+        pps = float1sec / period
+        ppm = pps * 60.0
+      }
+
+      lastEdge = now
+    }
+
+    lastIn = in
+  }
+
+  private bool lastIn
+  private long lastEdge = 0L
+
+  // const float version of 1sec long
+  private define float float1sec = (float)1sec
 
 }

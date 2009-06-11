@@ -8,16 +8,15 @@
 //
 
 **
-** Sub4 Four Input Substract object
+** Sub4 Four Input Subtract object
 **
 ** out = in1 - in2 - in3 - in4
 **
 class Sub4
   extends Sub2
 {
-
-  property float in3
-  property float in4
+  @config @summary property float in3
+  @config @summary property float in4
 
   virtual override void execute()
   {

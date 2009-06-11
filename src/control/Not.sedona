@@ -16,8 +16,7 @@
 class Not
   extends Component
 {
-
-  property bool out
+  @readonly property bool out
   property bool in
 
   virtual override void execute()
