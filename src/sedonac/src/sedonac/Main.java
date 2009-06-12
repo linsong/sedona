@@ -167,6 +167,13 @@ public class Main
         else
           compiler.kitVersion = new Version(args[++i]);          
       }
+      else if (arg.equals("-D"))
+      {
+        if (i+1 >= args.length) 
+          println("WARNING: Invalid -D syntax");
+        else
+          compiler.addEnvVar(args[++i]);          
+      }
       else if (arg.startsWith("-"))
       {
         println("WARNING: Unknown option " + arg);

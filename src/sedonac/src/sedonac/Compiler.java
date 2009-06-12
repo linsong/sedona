@@ -318,6 +318,33 @@ public class Compiler
     return c;
   }
                        
+
+////////////////////////////////////////////////////////////////
+// Convenience
+////////////////////////////////////////////////////////////////
+  
+  /**
+   * Add key/value pair to Compiler.envs
+   */
+  public int addEnvVar(String pair)
+  {              
+    if (envs==null)
+      envs = new HashMap();
+
+    String[] tokens = TextUtil.split(pair, '=');
+    if (tokens.length!=2)
+    {
+      System.out.println("Invalid key/value pair: \"" + pair + "\"");
+      return -1;
+    }
+
+    // DIAG
+    System.out.println("Storing key/value pair: (" + tokens[0] + "," + tokens[1] + ")");
+
+    envs.put(tokens[0], tokens[1]);
+    return 0;
+  }
+
 ////////////////////////////////////////////////////////////////
 // Fields
 ////////////////////////////////////////////////////////////////
@@ -334,6 +361,9 @@ public class Compiler
   public Namespace ns;             // ctor
   public XElem xml;                // compile(String)
   ArrayList errors;                // err()
+
+  public HashMap envs;             // env vars from cmd line
+  public char envDelimiter = '%';  // delimiter for env vars
 
   // compile kit pipeline
   public KitDef ast;               // InitKitCompile
