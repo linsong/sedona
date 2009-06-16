@@ -633,7 +633,8 @@ public class SoxClient
 
     // check type
     if (type.schema != this.schema)
-      throw new IllegalArgumentException("Type's schema doesn't match client: " + type);
+      throw new IllegalArgumentException("Type's schema doesn't match client: " + 
+                                      type.schema.toString() + " != " + this.schema.toString());
 
     // check config props
     Slot[] props = type.configProps();
