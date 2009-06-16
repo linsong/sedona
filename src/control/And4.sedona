@@ -1,0 +1,25 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   10 Jan 07  Andy Saunders  Creation
+//   27 Apr 07  Brian Frank    Port from Java to Sedona
+//
+
+**
+** And4 4 input AND logic object
+** out = in1 && in2 && in3 && in4
+**
+class And4
+  extends And2
+{
+  @config @summary property bool in3
+  @config @summary property bool in4
+
+  virtual override void execute()
+  {
+    out = in1 && in2 && in3 && in4
+  }
+
+}
