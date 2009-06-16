@@ -45,6 +45,7 @@ svmExe       = os.path.join(bin, "svm.exe")
 jsvmExe      = os.path.join(bin, "jsvm.exe")
 sedonaJar    = os.path.join(lib, "sedona.jar")
 sedonacJar   = os.path.join(lib, "sedonac.jar")
+sedonacertJar= os.path.join(lib, "sedonacert.jar")
 jikes        = os.path.join(adm, "jikes.exe")
 
 # Build Environment

@@ -25,7 +25,7 @@ public class KitVersion
   
   public String toString()
   {
-    return TextUtil.padRight(name, 12) + " " + 
+    return TextUtil.padRight(name, 16) + " " + 
           TextUtil.padRight(version.toString(), 8) + " 0x" + 
           Integer.toHexString(checksum);
   }

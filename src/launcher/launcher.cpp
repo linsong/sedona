@@ -28,7 +28,7 @@ typedef jint (JNICALL *CreateJavaVMFunc)(JavaVM **pvm, void **penv, void *vm_arg
 // Globals
 //////////////////////////////////////////////////////////////////////////
 
-const char* LAUNCHER_VERSION = "3-Mar-07";
+const char* LAUNCHER_VERSION = "16-Jun-09";
 
 bool debug;                        // is debug turned on
 char sedonaHome[MAX_PATH];         // dir path of sedona installation
@@ -223,7 +223,7 @@ int initOptions()
 
   // predefined classpath
   static char optClassPath[MAX_PATH];
-  sprintf(optClassPath, "-Djava.class.path=%s\\lib\\sedona.jar;%s\\lib\\sedonac.jar", sedonaHome, sedonaHome);
+  sprintf(optClassPath, "-Djava.class.path=%s\\lib\\sedona.jar;%s\\lib\\sedonac.jar;%s\\lib\\sedonacert.jar", sedonaHome, sedonaHome, sedonaHome);
   options[nOptions++].optionString = optClassPath;
 
   // predefined sedona.home

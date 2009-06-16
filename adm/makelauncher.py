@@ -16,6 +16,7 @@ import compilewin
 exeFileA = os.path.join(env.bin, "sedonac.exe")
 exeFileB = os.path.join(env.bin, "soxclient.exe")
 exeFileC = os.path.join(env.bin, "jsvm.exe")
+exeFileD = os.path.join(env.bin, "sedonacert.exe")
 
 srcFiles = [
   os.path.join(env.src, "launcher", "launcher.cpp"),
@@ -34,6 +35,7 @@ libs = [
 defsA = [ ('LAUNCHER_MAIN', '\\"sedonac/Main\\"') ]           
 defsB = [ ('LAUNCHER_MAIN', '\\"sedona/sox/Main\\"') ]           
 defsC = [ ('LAUNCHER_MAIN', '\\"sedona/vm/Main\\"') ]           
+defsD = [ ('LAUNCHER_MAIN', '\\"sedonacert/Main\\"') ]           
 
 
 # Make
@@ -42,6 +44,7 @@ def compile():
     compilewin.compile(exeFileA, srcFiles, includes, libs, defsA)
     #compilewin.compile(exeFileB, srcFiles, includes, libs, defsB)
     compilewin.compile(exeFileC, srcFiles, includes, libs, defsC)
+    compilewin.compile(exeFileD, srcFiles, includes, libs, defsD)
   except env.BuildError:
     print "**"
     print "** FAILED [" + exeFile + "]"

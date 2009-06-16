@@ -16,6 +16,7 @@ import env
 import fileutil
 import makesedona
 import makesedonac
+import makesedonacert
 import makewinvm
 import compilekit
 
@@ -29,6 +30,9 @@ if __name__ == '__main__':
   
   # make sedonac.jar  
   makesedonac.compile()
+
+  # make sedonacert.jar  
+  makesedonacert.compile()
   
   # make all kits
   compilekit.compile(env.src)
