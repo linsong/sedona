@@ -1,0 +1,27 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   10 Jan 07  Andy Saunders  Creation
+//   27 Apr 07  Brian Frank    Port from Java to Sedona
+//
+
+**
+** Mul2 Two Input Multiplication object
+**
+** out = in1 * in2
+**
+@niagaraIcon="module://icons/x16/control/math/multiply.png"
+class Mul2
+  extends Component
+{
+  @readonly property float out
+  @config @summary property float in1
+  @config @summary property float in2
+
+  virtual override void execute()
+  {
+    out = in1 * in2
+  }
+}
