@@ -921,28 +921,28 @@ public class SoxClient
   /**
    * Return a PstoreFile into a memory buffer.
    */
-  public Buf readPstoreFile(SoxComponent pstore)
+  public Buf readPstoreFile(SoxComponent pstoreFile)
     throws Exception
   {    
-    // read filename from parent service              
-    SoxComponent parent = load(pstore.parent);
+    // read filename from parent service.
+    SoxComponent pstoreService = load(pstoreFile.parent);
     String filename = "";
     try
     {
-      filename = parent.getStr("filename");
+      filename = readProp(pstoreService, pstoreService.slot("filename")).toString();
     } 
     catch (Exception e)
     {
-      throw new Exception("PstoreFile parent not PstoreService: " + parent.type);
+      throw new Exception("PstoreFile parent not PstoreService: " + pstoreService.type);
     }
-
+    
     // check status
-    if (pstore.getInt("status") != 0)
+    if (pstoreFile.getInt("status") != 0)
       throw new Exception("PstoreFile.status not ok");
     
     // get reservation
-    int offset = pstore.getInt("resvOffset");
-    int size = pstore.getInt("resvSize");
+    int offset = pstoreFile.getInt("resvOffset");
+    int size = pstoreFile.getInt("resvSize");
     
     // read file slice
     Buf buf = new Buf(size);
