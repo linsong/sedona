@@ -17,8 +17,8 @@ class Mul2
   extends Component
 {
   @readonly property float out
-  @config @summary property float in1
-  @config @summary property float in2
+  property float in1
+  property float in2
 
   virtual override void execute()
   {

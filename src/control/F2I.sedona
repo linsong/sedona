@@ -13,7 +13,7 @@
 class F2I
   extends Component
 {
-  @config @summary property float in
+  property float in
   @readonly property int out
 
   virtual override void execute()

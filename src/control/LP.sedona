@@ -15,18 +15,21 @@
 class LP
   extends Component
 {
-  @readonly property float out
-
   @config property bool enable = true
   @config @summary property float sp    = 0.0f
-  @config @summary property float cv    = 0.0f
+
+  property float cv    = 0.0f
+  @readonly property float out
+
   @config @precision=4 property float kp = 1.0f
   @config @precision=4 property float ki = 0.0f  // units repeats / minute
   @config @precision=4 property float kd = 0.0f
+
   @config property float max   = 10.0f
   @config property float min   = 0.0f
   @config property float bias  = 0.0f
   @config property bool direct = true 
+
   @config @unit=Units.millisecond property int exTime  = 10
 
   **

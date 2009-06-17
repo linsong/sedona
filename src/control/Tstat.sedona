@@ -26,9 +26,9 @@ class Tstat
   extends Component
 {
   @config @summary property float diff = 0.0f
-  @config @summary property float sp
-  @config @summary property float cv
   @config @summary property bool  isHeating = false
+  @config @summary property float sp
+  property float cv
   @readonly property bool out
   @readonly property bool raise
   @readonly property bool lower

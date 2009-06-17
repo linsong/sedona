@@ -14,7 +14,7 @@
 class ConstInt
   extends Component
 {
-  @config @summary @readonly property int out
+  @config @summary property int out
   
   action void set(int x)
   {           

@@ -19,22 +19,22 @@ public class B2F
 {
   @readonly property float out
   @readonly property float count
-  @config @summary property bool in1
-  @config @summary property bool in2
-  @config @summary property bool in3
-  @config @summary property bool in4
-  @config @summary property bool in5
-  @config @summary property bool in6
-  @config @summary property bool in7
-  @config @summary property bool in8
-  @config @summary property bool in9
-  @config @summary property bool in10
-  @config @summary property bool in11
-  @config @summary property bool in12
-  @config @summary property bool in13
-  @config @summary property bool in14
-  @config @summary property bool in15
-  @config @summary property bool in16
+  property bool in1
+  property bool in2
+  property bool in3
+  property bool in4
+  property bool in5
+  property bool in6
+  property bool in7
+  property bool in8
+  property bool in9
+  property bool in10
+  property bool in11
+  property bool in12
+  property bool in13
+  property bool in14
+  property bool in15
+  property bool in16
 
   virtual override void execute()
   {
