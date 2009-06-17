@@ -36,11 +36,12 @@ class Reset
 {
 
   @readonly property float out
-  @readonly property float in
-  @config @summary property float inMin = 0.0
-  @config @summary property float inMax = 4095.0
-  @config @summary property float outMin = 0.0
-  @config @summary property float outMax = 100.0
+  property float in
+
+  @config property float inMin = 0.0
+  @config property float inMax = 4095.0
+  @config property float outMin = 0.0
+  @config property float outMax = 100.0
 
   **
   ** Callback when component is first started in an app.

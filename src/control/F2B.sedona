@@ -16,7 +16,7 @@
 class F2B
   extends Component
 {
-  @config @summary property float in
+  property float in
   @readonly property bool out1
   @readonly property bool out2
   @readonly property bool out3

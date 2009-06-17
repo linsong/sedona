@@ -17,9 +17,9 @@ class Ramp
   extends Component
 {
   @readonly property float out
-  @config @summary property float min   = 0.0
-  @config @summary property float max   = 100.0
-  @config @summary property float delta = 1.0
+  @config property float min   = 0.0
+  @config property float max   = 100.0
+  @config property float delta = 1.0
 
   virtual override void execute()
   {

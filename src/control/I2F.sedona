@@ -13,7 +13,7 @@
 class I2F
   extends Component
 {
-  @config @summary property int in
+  property int in
   @readonly property float out
 
   virtual override void execute()

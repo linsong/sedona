@@ -14,8 +14,8 @@
 class Or4
   extends Or2
 {
-  @config @summary property bool in3
-  @config @summary property bool in4
+  property bool in3
+  property bool in4
 
   virtual override void execute()
   {
