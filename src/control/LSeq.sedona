@@ -22,9 +22,9 @@ class LSeq
 {
   property float in                               // cv input
 
-  @config @summary property float inMin = 0.0     // expected input minimum
-  @config @summary property float inMax = 100.0f  // expected input maximum
-  @config @summary property int numOuts = 16      // number of outputs to control over range
+  @config property float inMin = 0.0     // expected input minimum
+  @config property float inMax = 100.0f  // expected input maximum
+  @config property int numOuts = 16      // number of outputs to control over range
 
   @readonly property byte dOn  = 0                // number of outputs currently turned on
   @readonly property bool ovfl = false            // true when in > inMax

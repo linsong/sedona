@@ -17,9 +17,9 @@ class ASW
   extends Component
 {
   @readonly property float out
-  @config @summary property float in1
-  @config @summary property float in2
-  @config @summary property bool  s1
+  property float in1
+  property float in2
+  property bool  s1
 
   virtual override void execute()
   {

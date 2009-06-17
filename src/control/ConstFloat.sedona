@@ -14,7 +14,7 @@
 class ConstFloat
   extends Component
 {
-  @config @summary @readonly property float out
+  @config @summary property float out
   
   action void set(float x)
   {           
