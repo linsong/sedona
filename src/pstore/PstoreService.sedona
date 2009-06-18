@@ -25,14 +25,15 @@ class PstoreService
   **
   ** File name used as the backing store.
   **
-  @config @asStr property Buf(32) filename = "data.pstore"
+  @asStr
+  @config property Buf(32) filename = "data.pstore"
   
   **
   ** Configured size of file made available for storage.
   ** If the backing file store has a fixed size, then this
   ** configuration value is ignored.
   **
-  @config int fileSize = 32768
+  @config property int fileSize = 32768
     
   **     
   ** Size in bytes of storage available.  A zero or negative value
@@ -42,7 +43,8 @@ class PstoreService
   ** loaded() callback so that is available for error checking
   ** in the PStoreFile.start callback.
   **
-  @readonly property int size = 0
+  @readonly 
+  property int size = 0
 
 ////////////////////////////////////////////////////////////////
 // Methods

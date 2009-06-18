@@ -282,9 +282,16 @@ public class CheckErrors
 
   private void checkFieldProp(FieldDef f)
   {
-    if (!f.isProperty()) return;
+    if (!f.isProperty())
+    {
+      if (f.facets().getb("config"))
+        err("Field '" + f.name + "' is marked @config, but is not a property", f.loc);
+      else if (f.facets().getb("asStr"))
+        err("Field '" + f.name + "' is marked @asStr, but is not a property", f.loc);
+      return;
+    }
+    
     String qname = f.qname;
-
     if (!f.type.isBool()   &&
         !f.type.isByte()   &&
         !f.type.isShort()  &&
