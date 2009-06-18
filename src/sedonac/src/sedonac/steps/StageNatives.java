@@ -9,14 +9,11 @@
 package sedonac.steps;
 
 import java.io.*;
-import java.util.*;
-import java.util.zip.*;
 import sedona.Env;
 import sedona.util.*;
 import sedona.xml.*;
 import sedonac.*;
 import sedonac.Compiler;
-import sedonac.ir.*;
 
 /**
  * StageNatives
@@ -43,7 +40,6 @@ public class StageNatives
     try
     {
       log.info("  StageVM [" + stageDir + "]");
-      makeStageDir();
       copySourceDirs();
     }
     catch (XException e)
@@ -59,34 +55,6 @@ public class StageNatives
       throw err("Cannot stage VM", new Location(stageDir), e);
     }
   }
-
-//////////////////////////////////////////////////////////////////////////
-// Make Dir
-//////////////////////////////////////////////////////////////////////////
-
-  public void makeStageDir()
-  {
-    // nuke it first to get a clean slate
-    try
-    {
-      FileUtil.delete(stageDir, log);
-    }
-    catch (IOException e)
-    {
-      err("Cannot delete stage dir", new Location(stageDir));
-    }
-
-    // create it nice and fresh
-    try
-    {
-      FileUtil.mkdir(stageDir, log);
-    }
-    catch (IOException e)
-    {
-      err("Cannot make stage dir", new Location(stageDir));
-    }
-  }
-
 
 //////////////////////////////////////////////////////////////////////////
 // Copy Source Dirs
@@ -108,7 +76,10 @@ public class StageNatives
       throw err("Paths must start with / and be relative to sedona home: " + path, loc);
     File dir = new File(Env.home, path.substring(1));
     if (!dir.exists() || !dir.isDirectory())
-      throw err("Source path not found '" + dir + "'", loc);
+    {
+      log.warn("Source path not found '" + dir + "'");
+      return;
+    }
 
     File[] files = dir.listFiles();
     log.debug("    Copy '" + dir + "' [" + files.length + " files]");

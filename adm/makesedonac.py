@@ -24,6 +24,7 @@ packages = [
   "sedonac.jasm",
   "sedonac.namespace",
   "sedonac.parser",
+  "sedonac.platform",
   "sedonac.scode",
   "sedonac.steps",
   "sedonac.test",

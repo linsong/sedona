@@ -168,7 +168,7 @@ public class FileUtil
     if (dir.exists() && dir.isDirectory())
       return;
 
-    log.debug("    MakeDir [" + dir + "]");
+    if (log != null) log.debug("    MakeDir [" + dir + "]");
     if (!dir.mkdirs())
       throw new IOException("Cannot make directory: " + dir);
   }

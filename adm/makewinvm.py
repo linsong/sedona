@@ -14,9 +14,9 @@ import fileutil
 import compilewin
 import compilekit
 
-platFile = os.path.join(env.platforms, "generic", "win32", "generic-win32.xml")
+platFile = os.path.join(env.platforms, "src", "generic", "win32", "generic-win32.xml")
 
-exeFile = os.path.join(env.platforms, "generic", "win32", "svm.exe")
+exeFile = os.path.join(env.bin, "svm.exe")
 
 stageDir = os.path.join(env.temp, "win32")
 
@@ -34,7 +34,6 @@ def compile():
   try:
     compilekit.compile(platFile + " -outDir " + stageDir)
     compilewin.compile(exeFile, srcFiles, includes, libs, defs)
-    fileutil.cpfile(exeFile, os.path.join(env.bin, "svm.exe"))
 
   except env.BuildError:
     print "**"

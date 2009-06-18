@@ -110,6 +110,11 @@ public class Upload
       ext = ".zip";
       fileType = "build";
     }
+    else if (file.getName().endsWith(".par"))
+    {
+      ext = ".zip"; // for Content-Type (platform archive is a zip file)
+      fileType = "platform";
+    }
     else if (file.getName().endsWith(".xml"))
     {
       ext = ".xml";

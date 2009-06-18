@@ -59,17 +59,13 @@ public class InitKitCompile
     // if vendor is Tridium we don't enforce kit/vendor name 
     // rule since Tridium is the vendor of the core kits
     if (vendor.equals("Tridium")) return;
-
-    // vendor name is an alphanumeric text string and must be less than 32
-    if (vendor.length() == 0) throw err("Invalid vendor name '" + vendor + "' (size is zero)", loc);
-    if (vendor.length() > 32) throw err("Invalid vendor name '" + vendor + "' (size > 32 chars)", loc);
-    for (int i=0; i<vendor.length(); ++i)
+    try
     {
-      int c = vendor.charAt(i);
-      if ('A' <= c && c <= 'Z') continue;                                          
-      if ('a' <= c && c <= 'z') continue;                                          
-      if ('0' <= c && c <= '9') continue;                                          
-      throw err("Invalid vendor name '" + vendor + "' (must be allphanumeric)", loc);
+      VendorUtil.checkVendorName(vendor);
+    }
+    catch (Exception e)
+    {
+      throw err(e.getMessage(), loc);
     }
 
     // we require that the kit name starts with the vendor name

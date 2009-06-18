@@ -22,7 +22,8 @@ src/sedona/src/version.txt
 syntax: regexp
 
 ^manifests/
-^platforms/tridium/
+^platforms/src/tridium/
+^platforms/db
 ^backup/
 ^temp/
 ^temp-provision/

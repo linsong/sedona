@@ -62,12 +62,10 @@ def compile():
     platFile = glob.glob(os.path.join(platDir, "*.xml"))[0]
     stageDir = os.path.join(env.temp, re.sub("\.xml$", "", os.path.split(platFile)[1]))
     srcFiles = [ os.path.join(stageDir, "*.c") ]
-    exeFile = os.path.join(platDir, "svm")
 
     fileutil.rmdir(stageDir)
     compilekit.compile(platFile + " -outDir " + stageDir)
-    getattr(compileunix, compiler)(exeFile, srcFiles, includes, libs, defs)
-    fileutil.cpfile(exeFile, env.svmExe)
+    getattr(compileunix, compiler)(env.svmExe, srcFiles, includes, libs, defs)
     os.chmod(env.svmExe, 0755)
 
   except env.BuildError:

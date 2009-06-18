@@ -11,13 +11,13 @@ package sedonac;
 import java.io.*;
 import java.util.*;
 import sedona.manifest.*;
-import sedona.platform.*;
 import sedona.util.*;
 import sedona.xml.*;
 import sedonac.ast.*;
 import sedonac.ir.*;
 import sedonac.jasm.*;
 import sedonac.namespace.*;
+import sedonac.platform.*;
 import sedonac.steps.*;
 import sedonac.scode.*;
 import sedonac.translate.*;
@@ -92,7 +92,7 @@ public class Compiler
     if (rootElem.equals("sedonaCode"))      { compileImage(); return; }
     if (rootElem.equals("sedonaDir"))       { compileDir(); return; }
     if (rootElem.equals("sedonaTranslate")) { translate(); return; }
-    if (rootElem.equals("sedonaPlatform"))  { stageNatives(); return; }
+    if (rootElem.equals("sedonaPlatform"))  { stagePlatform(); return; }
     if (rootElem.equals("sedonaApp"))       { appXmlToBinary(); return; }
     if (rootElem.equals("toc"))             { compileDocs(); return; }
 
@@ -165,12 +165,13 @@ public class Compiler
    * Run the pipeline to stage the VM and native source 
    * code for a specific platform port.
    */
-  public void stageNatives()
+  public void stagePlatform()
   {
-    new InitStageNatives(this).run();
+    new InitStagePlatform(this).run();
     new ReadKits(this).run();
     new StageNatives(this).run();
     new GenNativeTable(this).run();
+    new StagePlatform(this).run();
   }
 
   /**
@@ -351,7 +352,7 @@ public class Compiler
   public int dataSize;             // LayoutFields
 
   // stage natives
-  public Platform platform;        // InitStageNatives
+  public PlatformDef platform;     // InitStageNatives
   
   // translate to C pipeline
   public Translation translation;  // InitTranslate

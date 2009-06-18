@@ -10,6 +10,7 @@
 
   History:
     12 Jan 09  Brian Frank  Creation
+    16 June 09  Matthew Giannini Update for new platform design
 
 -->
 
@@ -39,51 +40,68 @@
 <h1 id="overview">Overview</h1>
 <!--/////////////////////////////////////////////////////////-->
 
-<p>
-One of Sedona's strengths is the portability of Sedona kits and apps across different
-hardware platforms.  
-This is accomplished by building a custom version of the Sedona VM for each supported platform,
-tailored to the specific underlying architecture.
-The process for customizing the SVM is streamlined by encapsulating the
-platform-specific information into a platform manifest file.
-<code>sedonac</code> uses the platform manifest file as described in 
-<a href='porting.html#staging'>Staging</a> to organize the Sedona native files before 
-compilation by the native toolchain.
-</p>                   
-
-<!--/////////////////////////////////////////////////////////-->
-<h1 id="manifest">Platform Manifest</h1>
-<!--/////////////////////////////////////////////////////////-->
-
-<p>
-In Sedona, the platform manifest is an XML file that defines specific properties needed for 
-building the Sedona VM, such as endianness and pointer size.
-In addition, it provides source code paths for the
-Sedona <a href='nativeMethods.html'>native methods</a> required by the 
-kits that will be supported by the Sedona VM.
-(Kits without native methods do not need to be mentioned in the platform XML, 
-as they are fully defined within the scode image.)
+<p>One of Sedona's strengths is the portability of Sedona kits and
+apps across different hardware platforms. This is accomplished by
+building a custom version of the Sedona VM for each supported platform,
+tailored to the specific underlying architecture. The process for
+customizing the SVM is streamlined by encapsulating the
+platform-specific information into a platform definition file. 
 </p>
 
 <p>
-For example, consider the generic Windows platform XML file:
+sedonac uses the platform definition as an input and produces
+the following output:
+</p>
+
+<ol>
+  <li>All the <a href='nativeMethods.html'>native method</a> source
+  code is staged so that a native toolchain can be used to build the SVM.</li>
+  <li>A <a href="#manifest">platform manifest</a> is produced and staged for later
+  packaging into a <a href="#par">PAR file</a>.</li>
+</ol>
+
+<p>
+See the <a href='porting.html#staging'>Staging</a> section for more details about how
+sedonac uses the platform definition to stage native source code
+and to stage the platform manifest.
+</p>
+
+<!--/////////////////////////////////////////////////////////-->
+<h1 id="definition">Platform Definition</h1>
+<!--/////////////////////////////////////////////////////////-->
+
+<p>
+In Sedona, the platform definition file is an XML file that serves three major
+purposes:
+</p>
+
+<ol>
+  <li>Specify the unique platform id for platforms using this Sedona VM.</li>
+  <li>Declare properties needed for building the Sedona VM. Such
+  properties include endianess, block size, and pointer size. If you
+  want your SVM to support a kit that contains native methods, you
+  declare those dependencies as well, and specify the locations of the
+  source code for the <a href='nativeMethods.html'>native methods</a>.</li>
+  <li>Declare arbitrary metadata about the platform.  Sedona tools can
+  use this metadata to enhance the experience of working with a specific
+  platform.</li>
+</ol>
+
+<p>
+The following is an example platform definition file for a win32 platform.
 </p>
 
 <pre>
-&lt;sedonaPlatform id="generic-win32">
-
-  &lt;compile 
-    endian="little" 
-    blockSize="4" 
-    refSize="4"
-    debug="false"
-    test="false"
-  >
+&lt;sedonaPlatform vendor="Acme" id="acme-basicPlatform-win32-${sedona.env.version}">
+  
+  &lt;compile endian="little" blockSize="4" refSize="4" debug="true" test="true">
   
     &lt;!-- Native Kits -->
-    &lt;nativeKit depend="sys  1.0" />
+    &lt;nativeKit depend="sys 1.0" />
     &lt;nativeKit depend="inet 1.0" />
-
+    &lt;nativeKit depend="datetimeStd 1.0" />
+    &lt;nativeKit depend="acmeBasicPlatform 1.0" />
+    
     &lt;!-- Native Sources -->
     &lt;nativeSource path="/src/vm" />
     &lt;nativeSource path="/src/sys/native" />
@@ -92,31 +110,67 @@ For example, consider the generic Windows platform XML file:
     &lt;nativeSource path="/src/inet/native" />
     &lt;nativeSource path="/src/inet/native/std" />
     &lt;nativeSource path="/src/inet/native/sha1" />
-      
+    &lt;nativeSource path="/src/datetimeStd/native/std" />
+    &lt;nativeSource path="/../acme/src/platforms/basicPlatform/native/win32" />
   &lt;/compile>
-       
+
+  &lt;manifestInclude path="metadata.xml" />
+  &lt;manifestInclude>
+    &lt;contact email="jdoe@acme.com" url="http://www.acme.com/sedona/help.html" />
+  &lt;/manifestInclude>
+  
 &lt;/sedonaPlatform>
 </pre>
 
-
-<p><b>&lt;sedonaPlatform></b> top level element for staging platform:</p>
+<p><b>&lt;sedonaPlatform></b> top level element for the platform definition:</p>
 <ul>
-  <li><b>id</b>: a string that identifies the platform uniquely. 
-  This string must match the one returned by the platform's implementation of
-  <code>PlatformService.platformId()</code>.
+  <li><b>vendor</b>: (required) The vendor owning this platform.</li>
+
+  <li>
+  <p><b>id</b>: (optional)The id that <i>uniquely</i> identifies this platform. This
+  id must be prefixed with the string "<code><i>vendor</i>-</code>". In the
+  example above the vendor is "Acme" and the id is prefixed with "acme-".</p>
+  
+  <p>sedonac will generate a C header file <code>sedonaPlatform.h</code>
+  in the stage directory containing a macro <code>PLATFORM_ID</code> with the
+  value of the resolved id. The resolved platform id <i>must</i> be returned by
+  the corresponding platform's implementation of <code>sys::PlatformService.platformId()</code>.
+  The generated header file is intended to help facilitate this.</p>
+
+  <p>The platform id can generally have any format, but the <code>'-'</code>
+  character in the platform id has special meaning. See the section on the
+  <a href="#db">Platform Database</a> for more details.</p>
+
+  <p>If the id is omitted, no <code>sedonaPlatform.h</code> will be generated, and
+  the <a href="#manifest">platform manifest</a> generated by sedonac will
+  not contain an id. The platform manifest is not valid when an id is missing. That is,
+  a PAR file containing a platform manifest with no id will be rejected by sedonadev.org
+  when an upload is attempted. It becomes the responsiblity of the build toolchain
+  to insert the appropriate id attribute into the platform manifest before generating
+  a PAR file. For this reason, it is better to try and specify an id variable
+  pattern in your platform definition.</p>
+
+  <p>This attribute supports <a href="sedonac.html#variables">variable
+  substitution</a>. sedonac will define the following variables for use
+  when compiling a platform definition:</p>
+  <ul>
+    <li><code>${stage.nativeChecksum}</code>: Sedonac will calculate a
+    native checksum for all native methods that are supported by this platform
+    SVM. This variable represents that checksum value.</li>
+  </ul>
   </li>
 </ul>
 
 <p><b>&lt;compile></b> provides platform-specific parameters:</p>
 <ul>
-<li><b>endian</b>: either "little" or "big" based on target processor.</li>
-<li><b>blockSize</b>: size of a scode block in bytes 
+<li><b>endian</b>: (required) either "little" or "big" based on target processor.</li>
+<li><b>blockSize</b>: (required) size of a scode block in bytes 
 (see "<a href="../src/vm/sedona.h">sedona.h</a>")</li>
-<li><b>refSize</b>: size of a memory pointer in bytes for target processor 
+<li><b>refSize</b>: (required) size of a memory pointer in bytes for target processor 
 (4 for 32-bit processor).</li>
 <li><b>debug</b>: (optional) boolean to include debug meta-data in image.  Defaults to false</li>
 <li><b>test</b>: (optional) boolean to include test code in image.  Defaults to false</li>
-<li><b>armDouble</b>: set to true if using an ARM microprocessor where 64-bit
+<li><b>armDouble</b>: (optional) set to true if using an ARM microprocessor where 64-bit
 doubles are stored using byte level little endian, word level big endian.</li>
 </ul>
 
@@ -129,16 +183,184 @@ name and version constraint.</li>
 <p><b>&lt;nativeSource></b> designates a source path to native code:</p>
 <ul>
   <li><b>path</b>: (required) path to a folder with native code that must be 
-  built into the Sedona VM image</li>
+  built into the Sedona VM image. The path must start with "/" and be relative
+  to <i>sedona_home</i>.</li>
 </ul>
 
-<p>
-Note that a kit with native methods can only run on a Sedona VM that includes the 
-native code for those methods.
-At the present time, the only way to find out whether a given Sedona VM has 
-the native methods for a particular kit is to examine the platform manifest file.  
-</p>
+<p><b>&lt;manifestInclude></b> (optional) is used to include arbitrary XML
+metadata in the generated platform manifest file. All XML elements that are
+children of the manifest include will be copied into the platform manifest.</p>
 
+<p><font color="red">Note:</font> All XML namespace uris that begin with 
+<code>http://sedonadev.org/ns</code> are reserved by Sedona. Vendor specific
+XML elements should not use any such namespace uri.</p> 
+
+<ul>
+  <li><b>path</b>: (optional) specifies the path to an external XML file.
+  The root element of that file (and its children) will be copied into the
+  platform manifest. If the path starts with "/" then the path is relative to <i>sedona_home</i>.
+  Otherwise, the path is relative to the directory containing the platform
+  definition.</li>
+</ul>
+
+<!--/////////////////////////////////////////////////////////-->
+<h1 id="manifest">Platform Manifest</h1>
+<!--/////////////////////////////////////////////////////////-->
+
+<p>In addition to staging the native source code, sedonac will stage a
+platform manifest XML file. This file will eventually be packaged into a PAR
+file for upload to sedonadev.org or installation into the local platform
+database. The following is an abridged version of the platformManifest.xml that
+might be generated for the platform definition above.</p>
+
+<pre>
+&lt;?xml version='1.0'?>
+&lt;platformManifest
+    platformId="acme-basicPlatform-win32-1.0.38"
+    vendor="Acme"
+    endian="little"
+    blockSize="4"
+    refSize="4"
+    armDouble="false"
+    debug="true"
+    test="true"
+>
+
+&lt;!-- Natives -->
+&lt;natives>
+  &lt;nativeKit depend="sys 1.0" />
+  &lt;nativeKit depend="inet 1.0" />
+  &lt;nativeKit depend="datetimeStd 1.0" />
+  &lt;nativeKit depend="acmeBasicPlatform 1.0" />
+
+  &lt;nativeMethod qname="sys::Sys.platformType" id="0::0" />
+  &lt;nativeMethod qname="sys::Sys.copy" id="0::1" />
+  &lt;!-- ... -->
+  &lt;nativeMethod qname="acmeBasicPlatform::BasicPlatform.doPlatformId" id="1::0" />
+  &lt;nativeMethod qname="inet::TcpSocket.connect" id="2::0" />
+  &lt;nativeMethod qname="inet::TcpSocket.finishConnect" id="2::1" />
+  &lt;!-- ... -->
+&lt;/natives>
+
+&lt;!-- Manifest Includes -->
+&lt;manifestIncludes>
+  &lt;metadata foo="bar" />
+  &lt;contact email="jdoe@acme.com" url="http://www.acme.com/sedona/help.html" />
+&lt;/manifestIncludes>
+
+&lt;/platformManifest>
+</pre>
+
+<p><b>&lt;platformManifest></b> top level element for the platform manifest.
+It contains all attributes from the platform definition root element and
+&lt;compile> element. The id is the resolved platform id.</p>
+
+<p><b>&lt;natives></b> contains the native kit definitions from the platform
+definition and the list of native methods that the platform SVM will be able
+to support. Note: the <code>qname</code> attribute of the &lt;nativeMethod>
+is for reference - tools should typically compare scode compatibility with a
+given platform SVM by comparing the native method <code>id</code>.</p>
+
+<p><b>&lt;manifestIncludes></b> this element contains all the manifest include
+XML from the platform definition.</p>
+
+<!--/////////////////////////////////////////////////////////-->
+<h1 id="par">Platform ARchive (PAR files)</h1>
+<!--/////////////////////////////////////////////////////////-->
+
+<p>A Platform ARchive, or PAR file, provides a way of organizing various files and
+data about a platform into a single entity. A PAR file is a zip file with a
+<code>.par</code> extension.  The PAR may contain arbitrary contents, but certain
+paths and filenames within the PAR are well-defined or reserved:</p>
+
+<pre>
+&lt;myplatform>.par/
+                /platformManifest.xml
+                /svm/&lt;svm binary>
+                /lib/*
+</pre>
+
+<ul>
+  <li>The PAR file may have any name, but it must have a <code>.par</code> 
+  extension.</li>
+  
+  <li><b>platformManifest.xml</b>: (required) Must be in the root of the
+  PAR file and have that name. A PAR file is not valid, and will be rejected by
+  sedonadev.org, if it does not have a manifest. Further, the manifest <i>must</i>
+  have a the <code>id</code> attribute set to the platform id.</li>
+
+  <li><b>svm/&lt;svm binary></b>: (optional) If you desire to package the
+  svm binary for the platform, it should be the only file in the <code>/svm</code>
+  directory.  It can have any name.</li>
+  
+  <li><b>/lib*</b> (optional - reserved) This directory is currently not used
+  in any way by Sedona tools or Sedona itself, but it is reserved for future use.</li>
+  
+  <li>The PAR file may contain any other files and directories at the platform
+  vendor's discretion.</li>
+</ul>
+
+<p>The PAR file should be created as part of the vendor's build toolchain. Sedonac
+will facilitate this by staging the platform manifest in <code><i>stageDir</i>/.par</code>,
+but ultimately each vendor must create the full contents of the PAR.  It is only
+necessary to create a PAR file if you want information about a platform to be
+publically available to Sedona tools.  If a vendor is registered with sedonadev.org,
+the PAR file can be uploaded to sedonadev.org so that tools can retrieve them
+based on the platform id returned by a specific platform.</p>
+
+<!--/////////////////////////////////////////////////////////-->
+<h2 id="db">Platform Database</h2>
+<!--/////////////////////////////////////////////////////////-->
+
+<p>When PAR files are stored locally, they are stored in the platform database.
+The platform database resides on the local filesystem at</p>
+
+<pre><code><i>sedona_home</i>/platforms/db/</code></pre>
+
+<p>When a PAR file is stored in the platform database, it is unzipped and
+stored in a directory called <code>.par</code>. The location of this directory
+is based on the platform id specified in the platform manifest. The platform
+database interprets every <code>'-'</code> character in the platform id as a
+directory separator. Hence, the unzipped PAR file contents for a platform with
+id <code>acme-basicPlatform-win32-1.0.38</code> can be found in the platform
+database at</p>
+
+<pre>
+<code><i>sedona_home</i>/platforms/db/
+  +- acme/
+  |   +- basicPlatform/
+  |   |   +- win32/
+  |   |   |   +- .par/
+  |   |   |   |   +- platformManifest.xml
+  |   |   |   +- 1.0.37/
+  |   |   |   +- 1.0.38/<font color="blue">
+  |   |   |   |   +- .par/
+  |   |   |   |   |   +- platformManifest.xml
+  |   |   |   |   |   +- svm/
+  |   |   |   |   |   |   +- &lt;svm binary></font>
+  +- tridium/
+  |    +- &lt;etc>
+</code>
+</pre>
+
+<p>When looking up a platform manifest or SVM for a given platform id, the
+platform database will use a "best match" algorithm. It begins by looking for a
+platform with the exact same id. If one cannot be found, it "backs up" one
+directory level in the platform database and searches for a platform manifest
+there. If one still cannot be found, it backs up again until it hits the root
+directory of the platform database, or finds a platform manifest.</p>
+
+<p>For example, suppose the platform database looks like the example above. If a
+Sedona tool requests the platform manifest for a platform
+with id <code>acme-basicPlatform-win32-1.0.39</code>, the</p>
+
+<pre><code><i>sedona_home</i>/platforms/db/acme/basicPlatform/win32/.par/platformManifest.xml</code></pre>
+
+<p>manifest is the best match.</p>
+
+<p>Note to developers: The Sedona API contains a PlatformDb object in 
+<code>sedona.jar</code> for working with the local platform database. See
+<code>sedona.PlatformDb</code>.</p>
 
 <!-- TOC-FOOTER-START -->
 <!-- Auto-generated by sedonac -->

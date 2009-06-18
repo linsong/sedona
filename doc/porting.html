@@ -49,7 +49,7 @@ OS platforms using the following steps:
 <li>Select the kits with native methods that you plan to support</li>
 <li>Write custom implementations for native methods where needed</li>
 <li>Write bootstrap code to start the Sedona VM</li>
-<li>Stage the VM code and natives using an XML build script</li>
+<li>Stage the VM code and platform manifest using an XML build script</li>
 <li>Compile the C code using your platform's C compiler</li>
 <li>Run the test suite to verify a successful port</li>
 </ol>
@@ -246,55 +246,22 @@ to <code>assert</code> that passed and failed, respectively.
 <h1 id="staging">Staging</h1>
 <!--/////////////////////////////////////////////////////////-->
 
+<p>Once the native code has been implemented, the next step is to <i>stage</i>
+the VM and native code. This copies the relevant native source files into a
+single directory in order to compile them using the appropriate native
+toolchain.</p>
 
-<p>
-Once the native code has been implemented, the next step is to <i>stage</i> the VM
-and native code.  This copies the relevant native source files into a single directory in
-order to compile them using the appropriate native toolchain.
+<p>Staging is accomplished by running sedonac with a <a
+  href="platforms.html#definition>platform definition</a> file and specifying
+the output directory for the staged files. The platform definition lists all the
+directories containing C source files required to build the Sedona VM for a
+target platform. (The platform toolchain may add additional non-Sedona files
+when it builds the final executable). See the <a href="platforms.html">Platform</a>
+section for more details and an example platform definition file.
 </p>
 
 <p>
-Staging is performed by a <a href='platforms.html#manifest'>platform XML</a> file
-that is processed by <code>sedonac</code>. 
-The platform XML file lists all of the directories that contain C files 
-required to build the Sedona VM for the target platform.
-(The platform toolchain may add additional non-Sedona files when it builds the final executable.)
-</p>
-<p>
-For example, consider the generic Windows platform XML file:
-</p>
-
-<pre>
-&lt;sedonaPlatform id="generic-win32">
-
-  &lt;compile 
-    endian="little" 
-    blockSize="4" 
-    refSize="4"
-    debug="false"
-    test="false"
-  >
-  
-    &lt;!-- Native Kits -->
-    &lt;nativeKit depend="sys  1.0" />
-    &lt;nativeKit depend="inet 1.0" />
-
-    &lt;!-- Native Sources -->
-    &lt;nativeSource path="/src/vm" />
-    &lt;nativeSource path="/src/sys/native" />
-    &lt;nativeSource path="/src/sys/native/std" />
-    &lt;nativeSource path="/src/sys/native/win32" />
-    &lt;nativeSource path="/src/inet/native" />
-    &lt;nativeSource path="/src/inet/native/std" />
-    &lt;nativeSource path="/src/inet/native/sha1" />
-      
-  &lt;/compile>
-       
-&lt;/sedonaPlatform>
-</pre>
-
-<p>
-The platform XML file supplies some basic information about the platform, 
+The platform definition file supplies some basic information about the platform, 
 then lists the kits with native code that will be supported by the VM.
 Kits without native methods do not need to be mentioned in the platform XML.
 Finally it identifies the path to each directory containing native code that
@@ -304,14 +271,10 @@ Sedona native methods implementations, but also the source for the Sedona VM its
 code may need to be included here.)
 </p>
 
-
 <p>
-Staging is performed by calling <code>sedonac</code> with the platform XML file,
-specifying the target directory via the <code>-outDir</code> option.  For
-example the command line to stage generic-win32 might look like this:
-</p>
-<pre>       
-  sedonac platforms/generic/win32/generic-win32.xml -outDir tempStageDir
+Staging is performed by calling <code>sedonac</code> with the platform definition file,
+specifying the target directory via the <code>-outDir</code> option.  For example,</p>
+<pre>sedonac platforms/src/acme/basicPlatform-win32.xml -outDir tempStageDir
 </pre>
 
 <p>
@@ -319,10 +282,27 @@ This results in the following:
 </p>
 
 <ul>
-  <li> All existing files are removed from the folder <code>tempStageDir</code> </li>
-  <li> All source files are copied from the listed paths into <code>tempStageDir</code> </li>
-  <li> The file "nativetable.c" is generated, which defines the native function 
-  <a href="nativeMethods.html#tables">lookup table</a> </li>
+  <li>All existing files are removed from the folder <code>tempStageDir</code>
+  </li>
+  
+  <li>All source files are copied from the listed paths into <code>tempStageDir</code>
+  </li>
+  
+  <li>The file "nativetable.c" is generated, which defines the native
+  function <a href="nativeMethods.html#tables">lookup table</a>
+  </li>
+  
+  <li>If the platform id is known at staging time, a "sedonaPlatform.h"
+  file is created, which contains the <code>PLATFORM_ID</code> macro.
+  </li>
+
+  <li>The <a href="platforms.html#manifest">platform manifest</a> is staged
+  in <code>tempStageDir/.par/platformManifest.xml</code>. The toolchain later
+  add the SVM binary to into the <code>.par/svm/</code> directory and then
+  generate a <a href="platforms.html#par">PAR file</a>. The PAR file could be
+  uploaded to <a href="http://sedonadev.org">sedonadev.org</a> or copied to the
+  local <a href="platforms.html#db">platform database</a>.
+  </li>
 </ul>
 
 <!--/////////////////////////////////////////////////////////-->
@@ -333,6 +313,12 @@ This results in the following:
 Note that <code>sedonac</code> does not build the C code, it simply assembles the files
 together into a single directory.  The C code must then be built with the appropriate
 toolchain for the target platform.
+</p>
+
+<p>Neither does <code>sedonac</code> generate an actual PAR file for you.  It
+will help by staging a basic <code>.par/</code> directory containing the
+platform manifest. However, the toolchain build process will need to include
+steps/scripts to generate the PAR file for local and/or public use.
 </p>
 
 <p>

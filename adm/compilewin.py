@@ -36,6 +36,10 @@ def compile(exeFile, srcFiles, includes, libs, defs):
     winSdk = os.path.join(vcInstallDir, "vc7", "PlatformSDK")
   if not os.path.exists(winSdk):
     raise Exception("FATAL: Cannot find PlatformSDK: " + winSdk)     
+  
+  # make sure exe output directory exists
+  if not os.path.exists(os.path.dirname(exeFile)):
+    os.makedirs(os.path.dirname(exeFile))
                                                                   
   # standard includes                                                                   
   cmd = "cl"
@@ -61,12 +65,13 @@ def compile(exeFile, srcFiles, includes, libs, defs):
 
   # compile away
   status = os.system(cmd)
-  if status:
-    raise env.BuildError("FATAL: compilewin " + exeFile)     
-
+  
   # cleanup      
   os.system("del *.obj")
-  os.system("del *.tlh")      
+  os.system("del *.tlh")   
   
+  if status:
+    raise env.BuildError("FATAL: compilewin " + exeFile)     
+   
   print "  Success [" + exeFile + "]"
     
