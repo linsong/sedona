@@ -17,6 +17,9 @@ class LSeqTest
 
   static void test()
   {
+    // not in an app, so call this explicitly
+    seq.start()
+
     // test 16 outputs
     for(int i = 0; i <=100; i++)
     {
@@ -24,6 +27,7 @@ class LSeqTest
       seq.execute()
       validateOutputs()
     }
+
     for(int i = 100; i >= 0; i--)
     {
       seq.in = (float)i
@@ -39,6 +43,7 @@ class LSeqTest
       seq.execute()
       validateOutputs()
     }
+    
     for(int i = 100; i >= 0; i--)
     {
       seq.in = (float)i
@@ -52,7 +57,8 @@ class LSeqTest
     float cIn = seq.in
     float stepSize = (seq.inMax - seq.inMin) / (float)seq.numOuts
     int desiredOn = (int)( (cIn - seq.inMin  ) / stepSize )
-    //Sys.out.print("   desiredOn = ").printInt(desiredOn).nl()
+    //Sys.out.print("   seq.in = ${seq.in} stepSize = ${stepSize}  desiredOn = ${desiredOn}\n")
+
     assert(seq.out1 == (desiredOn >= 1))
     assert(seq.out2 == (desiredOn >= 2))
     assert(seq.out3 == (desiredOn >= 3))
@@ -87,6 +93,7 @@ class LSeqTest
     b2f.in15 = seq.out15
     b2f.in16 = seq.out16
     b2f.execute()
+
     float b2fValue = 0.0
     int mask = 1
     for(int i = 0; i < desiredOn; i++)
@@ -96,7 +103,8 @@ class LSeqTest
     }
     assert(b2f.count == (float)desiredOn)
     assert(b2f.out == b2fValue)
-    //Sys.out.print(" c= ").printInt(desiredOn).print(" d= ").printFloat(b2fValue).print(" a= ").printFloat(b2f.out).nl()
+
+    //Sys.out.print(" c= ${desiredOn} d= ${b2fValue} a= ${b2f.out}\n")
   }
 
 

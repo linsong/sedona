@@ -87,6 +87,9 @@ class MathTest
     div2.execute()
     assert(div2.out == -0.5f)
 
+
+    avg10.start()     // not in an app, so call this explicitly
+
     avg10.maxTime=40
     avg(1.0)
     assert(avg10.out == 1.0)
@@ -171,6 +174,8 @@ class MathTest
 
    static void validateReset(float value)
    {
+     reset.start()     // not in an app, so call this explicitly
+
      float inMax = reset.inMax
      float inMin = reset.inMin
      float outMax = reset.outMax

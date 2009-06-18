@@ -17,8 +17,13 @@ class TickTockTest
 
   static void test()
   {
+    // not in an app, so call this explicitly
+    tickTock.start()
+    freq.start()
+
     validate(7)
   }
+
   static void validate(int pps)
   {
     //tickTock.execute()
