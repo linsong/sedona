@@ -55,12 +55,13 @@ public final class PlatformDb
    * is already present in the platform database, it is deleted before being
    * re-installed.
    * 
-   * @return true if the installation is successful, false otherwise.
+   * @throws DbException Thrown if the installation fails for any reason.
    */
-  public boolean install(ParFile par)
+  public void install(ParFile par)
   {
     PlatformManifest manifest = par.getPlatformManifest();
-    if (manifest == null) return false;
+    if (manifest == null) 
+      throw new DbException("'" + par.getName() + "' doesn't contain a platform manifest");
     
     try
     {
@@ -107,13 +108,31 @@ public final class PlatformDb
     }
     catch (Exception e)
     {
-      e.printStackTrace();
-      return false;
+      throw new DbException(e);
     }
-    
-    return true;
   }
- 
+
+//////////////////////////////////////////////////////////////////////////
+// Extraction
+//////////////////////////////////////////////////////////////////////////
+  
+  /**
+   * Extract all PAR file contents for the given platform id to the given
+   * destination directory.  The destination directory will be created, if
+   * necessary.
+   * 
+   * @throws DbException Thrown if the extraction fails for any reason.
+   */
+  public void extract(final String platformId, File destDir)
+  {
+    File dbPar = toParLocation(platformId);
+    if (!dbPar.exists())
+      throw new DbException("'" + platformId + "' is not in the database");
+    
+    try { FileUtil.copyDir(dbPar, destDir, null); }
+    catch (Exception e) { throw new DbException(e); }
+  }
+
 //////////////////////////////////////////////////////////////////////////
 // List
 //////////////////////////////////////////////////////////////////////////
@@ -156,8 +175,10 @@ public final class PlatformDb
 //////////////////////////////////////////////////////////////////////////
   
   /**
-   * Lookup the platform manifest for the specified 
-   * platformId, or return null if not found.   
+   * Find the platform manifest that best matches the given platform id.
+   * 
+   * @return the PlatformManifest for the best match, or null if not platforms
+   * matched.
    */
   public PlatformManifest load(final String platformId)
     throws XException
@@ -175,28 +196,76 @@ public final class PlatformDb
     return PlatformManifest.decodeXml(xml);
   }
   
+  /**
+   * @return the PlatformManifest for the platform that exactly matches
+   * the given platform id, or null if no match was found.
+   */
+  public PlatformManifest loadExact(final String platformId)
+    throws XException
+  {
+    PlatformManifest manifest = load(platformId);
+    return ((manifest != null) && platformId.equals(manifest.id)) ? manifest : null;
+  }
+  
 //////////////////////////////////////////////////////////////////////////
 // SVM
 //////////////////////////////////////////////////////////////////////////
+  
+  /**
+   * Represents an SVM stored in the database.
+   * @see PlatformDb#getVm(String)
+   */
+  public static final class DbVm
+  {
+    DbVm(String platformId, File svm)
+    {
+      this.platformId = platformId;
+      this.svm = svm;
+    }
+    
+    /** @return the platform id corresponding to this SVM */
+    public String id() { return platformId; }
+    
+    /** @return the name of the SVM file */
+    public String name() { return svm.getName(); }
+    
+    /**
+     * Copy the SVM from the database to the given destination directory.
+     * The destination directory will be created if it doesn't exist.
+     * 
+     * @param destDir the directory to copy the SVM to.
+     * @return the File that was created in the {@code destDir} for the SVM.
+     * @throws IOException Thrown if the copy fails.
+     */
+    public File copyTo(File destDir) throws IOException
+    {
+      File outSVM = new File(destDir, name());
+      FileUtil.copyFile(svm, outSVM);
+      return outSVM;
+    }
+    
+    private final String platformId;
+    private final File svm;
+  }
   
   /**
    * Convenience for {@code getVm(platform.id)}
    * 
    * @see #getVm(String)
    */
-  public File getVm(PlatformManifest platform)
+  public DbVm getVm(PlatformManifest platform)
   {
     return getVm(platform.id);
   }
   
   /**
-   * Checks the database and returns the best matching vm for the given
-   * platform id.
+   * Checks the database and returns the best matching vm for the given platform
+   * id.
    * 
-   * @return the Sedona VM for the given platform id, or null if one could
-   * not be found.
+   * @return a DbVm object represneting the SVM that best matched the given
+   *         platform id, or {@code null} if one could not be found.
    */
-  public File getVm(final String platformId)
+  public DbVm getVm(final String platformId)
   {
     PlatformMatch platform = matchBest(platformId);
     if (platform  == null) return null;
@@ -205,9 +274,9 @@ public final class PlatformDb
     File[] files = vmDir.listFiles();
     
     // There should only be one vm in the platform's svm directory
-    return (files.length > 0) ? files[0] : null;
+    return (files.length > 0) ? new DbVm(platform.matchId, files[0]) : null;
   }
-  
+    
 ////////////////////////////////////////////////////////////////
 // Utility
 ////////////////////////////////////////////////////////////////
@@ -299,32 +368,20 @@ public final class PlatformDb
       if (options.getb("list"))
         showList(options);
       else if (options.getb("install"))
-        doInstall(options);
+        db().install(new ParFile(options.gets("par")));
+      else if (options.getb("extract"))
+        db().extract(options.gets("id"), new File(options.gets("out", options.gets("id"))));
       else
         err("No actions to take");
     }
-    catch (Exception e)
-    {
-      e.printStackTrace();
-      err(e.getMessage());
-    }
+    catch (Exception e) { e.printStackTrace(); err(e.getMessage()); }
   }
   
   private static void showList(Facets options)
   {
     String[] platforms = db().list();
-    System.out.println("Platform Database: " + platforms.length + " platforms");
     for (int i=0; i<platforms.length; ++i)
-      System.out.println(" " + platforms[i]);
-    System.out.println();
-  }
-  
-  private static void doInstall(Facets options) throws Exception
-  {
-    if (db().install(new ParFile(options.gets("par"))))
-      System.out.println("Success!");
-    else
-      err("Could not install '" + options.gets("par") + "'");
+      System.out.println(platforms[i]);
   }
   
   private static Facets parseOpts(String[] args)
@@ -347,6 +404,19 @@ public final class PlatformDb
         options.setb("install", true);
         options.sets("par", args[++i]);
       }
+      else if (arg.equals("-x") || arg.equals("--extract"))
+      {
+        if (i+1 >= args.length || args[i+1].charAt(0) == '-')
+          err("Missing argument for -x option");
+        options.setb("extract", true);
+        options.sets("id", args[++i]);
+      }
+      else if (arg.equals("-o") || arg.equals("--out"))
+      {
+        if (i+1 >= args.length || args[i+1].charAt(0) == '-')
+          err("Missing argument for -o option");
+        options.sets("out", args[++i]);
+      }
       else
         err("Unrecognized option '" + arg + "'");
     }
@@ -365,8 +435,11 @@ public final class PlatformDb
     System.out.println("usage:");
     System.out.println("  PlatformDb [OPTIONS]");
     System.out.println("options:");
-    System.out.println("  -i platform.par     Install the given PAR file into the platform database");
     System.out.println("  -l, --list          List all platforms in the database");
+    System.out.println("  -i platform.par     Install the given PAR file into the platform database");
+    System.out.println("  -x, --extract <ID>  Extract all files for the platform with the given ID");
+    System.out.println("                      to ./<ID>/. Use -o to change the output location.");
+    System.out.println("  -o, --out LOC       Change the default output location to LOC");
     System.out.println("  -h, --help          Print this usage");
     System.out.println();
     System.exit(exitCode);
@@ -378,7 +451,6 @@ public final class PlatformDb
 
   public static final File dbDir = new File(new File(Env.home, "platforms"), "db");
 
-  private static final String sep = File.separator;
   private static final String manifestFile = "platformManifest.xml";
   private static final String parDir = ".par";
 

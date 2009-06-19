@@ -2,7 +2,7 @@
   -  Sedona Platform Manifest
   -->
 
-<sedonaPlatform vendor="Tridium" id="tridium-generic-win32-{version}" >
+<sedonaPlatform vendor="Tridium" >
 
   <compile endian="little" blockSize="4" refSize="4">
   

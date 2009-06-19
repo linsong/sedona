@@ -96,6 +96,8 @@ public class StagePlatform extends CompilerStep
   
   private void resolvePlatformId()
   {
+    if (manifest.id == null) return;
+    
     Properties vars = new Properties();
     vars.put("stage.nativeChecksum", calcNativeCksum());
     try

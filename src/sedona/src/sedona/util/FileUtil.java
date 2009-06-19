@@ -180,7 +180,7 @@ public class FileUtil
   public static void copy(File oldFile, File newFile, Log log)
     throws IOException
   {
-    log.debug("    Copy [" + oldFile + " -> " + newFile + "]");
+    if (log != null) log.debug("    Copy [" + oldFile + " -> " + newFile + "]");
     if (newFile.exists())
       throw new IOException("Cannot copy to existing file: " + newFile);
     if (oldFile.isDirectory())
@@ -195,7 +195,7 @@ public class FileUtil
   public static void copyDir(File oldFile, File newFile, Log log)
     throws IOException
   {
-    if (!newFile.mkdirs())
+    if (!newFile.exists() && !newFile.mkdirs())
       throw new IOException("Cannot make dir: " + newFile);
 
     File[] kids = oldFile.listFiles();

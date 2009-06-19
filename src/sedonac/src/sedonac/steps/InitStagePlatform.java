@@ -90,13 +90,14 @@ public class InitStagePlatform
     }
     
     // create stage directories
-    // <stageDir>/
-    //           /.par
+    // <stageDir>/.par/
+    //              +- /svm
+    //
     File dir = null;
     try
     {
       // makes all directories in the path
-      dir = new File(compiler.outDir, ".par");
+      dir = new File(new File(compiler.outDir, ".par"), "svm");
       FileUtil.mkdir(dir, log);
     }
     catch (IOException e)
