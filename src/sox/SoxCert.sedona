@@ -14,13 +14,18 @@ class SoxCert
   extends Component
 {                         
 
-  property bool z   = true
-  property byte b   = 0xab
+  @config property bool z = true
+  @config property byte b = 0xab
   property short s  = 0xcdef
   property int i    = 0xcafe_babe
   property long l   = 0xcafe_babe_dead_beefL
   property float f  = 2.04f
   property double d = 256d
-  property Buf(4) buf
+  property Buf(4) buf     
+  
+  action void av() { this.z = !this.z }
+  action void ai(int i) { this.i += i }
+  action void ad(double d) { this.d += d }
+  action void abuf(Buf b) { buf.copyFromBuf(b) }
   
 }

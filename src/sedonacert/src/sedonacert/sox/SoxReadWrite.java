@@ -29,7 +29,7 @@ public class SoxReadWrite extends Test
     throws Exception
   {        
     SoxClient c = runner.sox;           
-    SoxComponent x = c.load(((Sox)bundle).soxCertId);
+    SoxComponent x = ((Sox)bundle).soxCertComp();
     
     // write each SoxCert property
     c.write(x, x.slot("z"), Bool.make(false));

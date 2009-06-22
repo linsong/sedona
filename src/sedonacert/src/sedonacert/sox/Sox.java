@@ -8,6 +8,8 @@
 
 package sedonacert.sox;
 
+import sedona.sox.*;
+import sedonac.test.TestException;
 import sedonacert.*;
 
 /**
@@ -23,7 +25,7 @@ public class Sox extends Bundle
       new SoxLogin(),
       new SoxAdd(),
       new SoxReadWrite(),
-      // SoxInvoke()
+      new SoxInvoke(),
       // SoxUpdate()
       // SoxSubscribe()
       // SoxRename()
@@ -33,7 +35,14 @@ public class Sox extends Bundle
       // SoxQuery()
       // SoxFileTransfer()
     });
-  } 
+  }       
   
-  int soxCertId;
+  SoxComponent soxCertComp()         
+    throws Exception
+  {
+    if (soxCertId <= 0) throw new TestException("Cannot if SoxAdd fails");
+    return runner.sox.load(soxCertId);
+  }
+  
+  int soxCertId = -1;
 }

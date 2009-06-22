@@ -10,6 +10,7 @@ package sedonacert.sox;
 
 import sedonacert.*;
 import sedona.*;
+import sedona.Byte;
 import sedona.sox.*;
 import sedona.dasp.*;
 
@@ -36,7 +37,8 @@ public class SoxAdd extends Test
     int[] oldKids = (int[])app.childrenIds().clone();
     
     // create SoxCert component
-    SoxComponent x = c.add(app, soxCertType, "soxcert", new Value[] {Int.make(0xf)});
+    SoxComponent x = c.add(app, soxCertType, "soxcert", new Value[] 
+      {Int.make(0xf), Bool.make(false), Byte.make(0xcc)});
     ((Sox)bundle).soxCertId = x.id();
 
     // verify new children in app
@@ -49,8 +51,8 @@ public class SoxAdd extends Test
     c.update(x, SoxComponent.TREE|SoxComponent.CONFIG|SoxComponent.RUNTIME|SoxComponent.LINKS);
     verifyEq(x.parentId(), 0);
     verifyEq(x.childrenIds().length, 0);
-    verifyEq(x.getBool("z"),  true);
-    verifyEq(x.getInt("b"),  0xab);
+    verifyEq(x.getBool("z"),  false);
+    verifyEq(x.getInt("b"),  0xcc);
     verifyEq(x.getInt("s"),  0xcdef);
     verifyEq(x.getInt("i"), 0xcafebabe);
     verifyEq(x.getLong("l"),  0xcafebabedeadbeefL);
