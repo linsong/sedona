@@ -1,0 +1,16 @@
+//
+// Copyright (c) 2008 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   19 Sep 08  Brian Frank  Creation
+//
+
+**
+** UserService stores the list of users as child components.
+**
+@niagaraIcon="module://icons/x16/user.png"
+class UserService
+  extends Service
+{
+}
