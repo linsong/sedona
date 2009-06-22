@@ -45,7 +45,7 @@ public class SoxAdd extends Test
     verifyEq(oldKids.length, newKids.length-1);
     verifyEq(newKids[newKids.length-1], x.id());  
     
-    // read 
+    // update and verify initial values 
     c.update(x, SoxComponent.TREE|SoxComponent.CONFIG|SoxComponent.RUNTIME|SoxComponent.LINKS);
     verifyEq(x.parentId(), 0);
     verifyEq(x.childrenIds().length, 0);

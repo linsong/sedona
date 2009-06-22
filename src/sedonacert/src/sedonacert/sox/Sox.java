@@ -22,8 +22,7 @@ public class Sox extends Bundle
     { 
       new SoxLogin(),
       new SoxAdd(),
-      // SoxRead()              
-      // SoxWrite()
+      new SoxReadWrite(),
       // SoxInvoke()
       // SoxUpdate()
       // SoxSubscribe()
