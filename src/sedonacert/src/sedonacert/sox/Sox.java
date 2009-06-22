@@ -27,7 +27,7 @@ public class Sox extends Bundle
       new SoxReadWrite(),
       new SoxInvoke(),
       new SoxLinks(),
-      // new SoxUpdate(),
+      new SoxUpdate(),
       // SoxSubscribe()
       // SoxRename()
       // SoxReorder()
