@@ -32,7 +32,7 @@ public class SoxLogin extends Test
       c.connect();
       fail("Login with bad password");
     }
-    catch (DaspException e) {}
+    catch (DaspException e) { verify(true); }
 
     // try bad username
     c = new SoxClient(runner.sox.socket, runner.sox.addr, runner.sox.port, "__bad__", "");
@@ -41,7 +41,7 @@ public class SoxLogin extends Test
       c.connect();
       fail("Login with bad user");
     }
-    catch (DaspException e) {}
+    catch (DaspException e) { verify(true); }
             
   }
 }

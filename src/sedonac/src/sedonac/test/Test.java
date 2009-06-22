@@ -16,7 +16,7 @@ import sedona.util.*;
 /**
  * Test
  */
-public class Test
+public class Test extends Verifies
 {
 
 //////////////////////////////////////////////////////////////////////////
@@ -111,132 +111,12 @@ public class Test
 // Verify
 //////////////////////////////////////////////////////////////////////////
 
-  public void verify(boolean cond)
-  {                              
-    verify(cond, "failed");
-  }
-
   public void verify(boolean cond, String msg)
   {
     if (cond)
       verified++;
     else
       throw new TestException(msg);
-  }
-
-  public void fail()
-  {
-    throw new TestException("failed");
-  }
-
-  public void verifyEq(Object a, Object b)
-  {
-    if (a == b)
-      verified++;
-    else if (a != null && b != null && a.equals(b))
-      verified++;
-    else
-      throw new TestException(a + " != " + b);
-  }
-
-  public void verifyEq(int a, int b)
-  {
-    if (a == b)
-      verified++;
-    else
-      throw new TestException(a + " != " + b);
-  }
-
-  public void verifyEq(long a, long b)
-  {
-    if (a == b)
-      verified++;
-    else
-      throw new TestException(a + " != " + b);
-  }
-
-  public void verifyEq(float a, float b)
-  {               
-    if (sedona.Float.equals(a, b))
-      verified++;
-    else
-      throw new TestException(a + " != " + b);
-  }                   
-  
-  public void verifyEq(double a, double b)
-  {               
-    if (sedona.Double.equals(a, b))
-      verified++;
-    else
-      throw new TestException(a + " != " + b);
-  }
-
-  public void verifyEq(boolean a, boolean b)
-  {
-    if (a == b)
-      verified++;
-    else
-      throw new TestException(a + " != " + b);
-  }                    
-  
-  public void verifyEq(byte[] a, byte[] b)
-  {                                    
-    if (a == null)
-    {
-      if (b == null) 
-        verified++;
-      else
-        throw new TestException("null != " + new Buf(b));      
-    }                                                  
-    else if (b == null)
-    {
-      throw new TestException(new Buf(a) + " != null");      
-    }         
-    else
-    {    
-      boolean eq = true;
-      if (a.length != b.length) eq = false;
-      else
-      {
-        for (int i=0; i<a.length; ++i)
-          if (a[i] != b[i]) { eq = false; break; }
-      }                       
-      
-      if (eq)
-        verified++;
-      else
-        throw new TestException(new Buf(a) + " != " + new Buf(b));
-    }
-  }
-
-  public void verifyEq(int[] a, int[] b)
-  {                                    
-    if (a == null)
-    {
-      if (b == null) 
-        verified++;
-      else
-        throw new TestException("null != " + ArrayUtil.toString(b));      
-    }                                                  
-    else if (b == null)
-    {
-      throw new TestException(ArrayUtil.toString(a) + " != null");      
-    }         
-    else
-    {    
-      boolean eq = true;
-      if (a.length != b.length) eq = false;
-      else
-      {
-        for (int i=0; i<a.length; ++i)
-          if (a[i] != b[i]) { eq = false; break; }
-      }                       
-      
-      if (eq)
-        verified++;
-      else
-        throw new TestException(ArrayUtil.toString(a) + " != " + ArrayUtil.toString(b));
-    }
   }
 
 //////////////////////////////////////////////////////////////////////////

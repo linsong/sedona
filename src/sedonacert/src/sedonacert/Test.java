@@ -6,12 +6,14 @@
 //   16 Jun 09  Brian Frank  Creation
 //
 
-package sedonacert;
+package sedonacert;                        
+
+import sedonac.test.*;
 
 /**
  * Test is base class for a certification test.
  */
-public abstract class Test
+public abstract class Test extends Verifies
 {          
 
   /**
@@ -54,7 +56,12 @@ public abstract class Test
   /**
    * If test failed, then this is the offending exception.
    */
-  public Throwable failure;
+  public Throwable failure;      
+  
+  /**
+   * Number of success verifies.
+   */
+  public int verifies;
   
   /**
    * Run the test, throw an exception on failure or if no
@@ -66,9 +73,10 @@ public abstract class Test
   /**
    * Throw test exception
    */  
-  public void fail(String msg)
-  {          
-    throw new TestException(msg);
+  public void verify(boolean cond, String msg)
+  {           
+    if (!cond) throw new TestException(msg);
+    verifies++;
   }
         
   

@@ -89,7 +89,7 @@ public class Runner
         {          
           log.info(t.qname + " ...");     
           t.run();
-          log.info(t.qname + ": pass");     
+          log.info(t.qname + ": pass [" + t.verifies + " verifies]");     
           t.status = Test.PASS;
         }
         catch (Throwable e)
@@ -173,7 +173,7 @@ public class Runner
         switch (t.status)
         {
           case Test.NOTRUN: ++totalNotRun; status = "not-run"; break;
-          case Test.PASS:   ++totalPass;   status = "pass"; break;
+          case Test.PASS:   ++totalPass;   status = "pass [" + t.verifies + " verifies]"; break;
           case Test.FAIL:   ++totalFail;   status = "fail"; break;
           default: throw new IllegalStateException();
         }

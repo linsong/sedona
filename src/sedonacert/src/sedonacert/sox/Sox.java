@@ -21,7 +21,20 @@ public class Sox extends Bundle
     super(runner, "sox", new Test[]
     { 
       new SoxLogin(),
+      new SoxAdd(),
+      // SoxRead()              
+      // SoxWrite()
+      // SoxInvoke()
+      // SoxUpdate()
+      // SoxSubscribe()
+      // SoxRename()
+      // SoxReorder()
+      // SoxDelete()
+      // SoxLinks()
+      // SoxQuery()
+      // SoxFileTransfer()
     });
   } 
   
+  int soxCertId;
 }

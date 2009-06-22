@@ -1,0 +1,26 @@
+//
+// Copyright (c) 2009 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   22 Jun 09  Brian Frank  Creation
+//
+
+**
+** SoxCert is used as the Sedona side component of the 
+** Sox certification testing.
+**
+class SoxCert
+  extends Component
+{                         
+
+  property bool z   = true
+  property byte b   = 0xab
+  property short s  = 0xcdef
+  property int i    = 0xcafe_babe
+  property long l   = 0xcafe_babe_dead_beefL
+  property float f  = 2.04f
+  property double d = 256d
+  property Buf(4) buf
+  
+}
