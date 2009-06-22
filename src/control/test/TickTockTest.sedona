@@ -26,14 +26,17 @@ class TickTockTest
 
   static void validate(int pps)
   {
-    //tickTock.execute()
     bool curOut = tickTock.out
     bool lastOut = curOut
     int count = 0;
     freq.in = curOut
-    long startTime = Sys.ticks()
     tickTock.ticksPerSec = pps
-    //while(t1.compare(1100ms) == -1)
+    
+    // Skip rest of current cycle, since we just changed ticksPerSec
+    //waitForNextRisingEdge(tickTock)
+    waitForNextFallingEdge(tickTock)
+
+    long startTime = Sys.ticks()
     while(count < pps || curOut)
     {
       tickTock.execute()
@@ -49,11 +52,11 @@ class TickTockTest
       lastOut = curOut
       freq.in = curOut
       freq.execute()
-      //t1.now()
-      //t1.sub(t1, now)
     }
+
     long deltaTime = Sys.ticks() - startTime
     freq.execute()
+
     Sys.out.print("    ticks/sec = ").printInt(pps).nl()
     Sys.out.print("    count = ").printInt(count).nl()
     Sys.out.print("    time = ").printInt((int)deltaTime).nl()
@@ -67,7 +70,34 @@ class TickTockTest
 
   }
 
+  // Loop until TickTock.out changes from false to true
+  static void waitForNextRisingEdge(TickTock tt)
+  {
+    long timeout = Sys.ticks() + 2sec
 
+    // Wait for out to go false first (if not already)
+    while (tt.out && (Sys.ticks()<timeout))
+      tt.execute()
+
+    // Now wait for out to go true
+    while (!tt.out && (Sys.ticks()<timeout))
+      tt.execute()
+  } 
+
+
+  // Loop until TickTock.out changes from true to false
+  static void waitForNextFallingEdge(TickTock tt)
+  {
+    long timeout = Sys.ticks() + 2sec
+
+    // Wait for out to go true first (if not already)
+    while (!tt.out && (Sys.ticks()<timeout))
+      tt.execute()
+
+    // Now wait for out to go false
+    while (tt.out && (Sys.ticks()<timeout))
+      tt.execute()
+  } 
 
 
 }
