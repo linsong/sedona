@@ -55,13 +55,13 @@ public final class PlatformDb
    * is already present in the platform database, it is deleted before being
    * re-installed.
    * 
-   * @throws DbException Thrown if the installation fails for any reason.
+   * @throws PlatformDbException Thrown if the installation fails for any reason.
    */
   public void install(ParFile par)
   {
     PlatformManifest manifest = par.getPlatformManifest();
     if (manifest == null) 
-      throw new DbException("'" + par.getName() + "' doesn't contain a platform manifest");
+      throw new PlatformDbException("'" + par.getName() + "' doesn't contain a platform manifest");
     
     try
     {
@@ -108,7 +108,7 @@ public final class PlatformDb
     }
     catch (Exception e)
     {
-      throw new DbException(e);
+      throw new PlatformDbException(e);
     }
   }
 
@@ -121,16 +121,16 @@ public final class PlatformDb
    * destination directory.  The destination directory will be created, if
    * necessary.
    * 
-   * @throws DbException Thrown if the extraction fails for any reason.
+   * @throws PlatformDbException Thrown if the extraction fails for any reason.
    */
   public void extract(final String platformId, File destDir)
   {
     File dbPar = toParLocation(platformId);
     if (!dbPar.exists())
-      throw new DbException("'" + platformId + "' is not in the database");
+      throw new PlatformDbException("'" + platformId + "' is not in the database");
     
     try { FileUtil.copyDir(dbPar, destDir, null); }
-    catch (Exception e) { throw new DbException(e); }
+    catch (Exception e) { throw new PlatformDbException(e); }
   }
 
 //////////////////////////////////////////////////////////////////////////
