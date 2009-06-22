@@ -26,12 +26,13 @@ public class Sox extends Bundle
       new SoxAdd(),
       new SoxReadWrite(),
       new SoxInvoke(),
-      // SoxUpdate()
+      new SoxLinks(),
+      // new SoxUpdate(),
       // SoxSubscribe()
       // SoxRename()
       // SoxReorder()
+      // new SoxDelete(),
       // SoxDelete()
-      // SoxLinks()
       // SoxQuery()
       // SoxFileTransfer()
     });

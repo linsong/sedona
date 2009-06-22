@@ -34,7 +34,7 @@ public class SoxAdd extends Test
     // load app
     SoxComponent app = c.loadApp();
     verifyEq(app.id(), 0); 
-    int[] oldKids = (int[])app.childrenIds().clone();
+    int[] oldKids = app.childrenIds();
     
     // create SoxCert component
     SoxComponent x = c.add(app, soxCertType, "soxcert", new Value[] 
