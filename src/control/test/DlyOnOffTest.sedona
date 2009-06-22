@@ -31,9 +31,6 @@ class DlyOnOffTest
     dlyOn.in = true
     dlyOff.in = false
     long startTicks = Sys.ticks()
-
-    Sys.out.print("DlyOnOffTest: startTicks is ${startTicks}\n")
-
     while( (Sys.ticks() - startTicks) < 1000ms)
     {
       dlyOn.execute()
@@ -41,25 +38,15 @@ class DlyOnOffTest
       assert(dlyOn.out == false)
       assert(dlyOff.out == true)
     }
-
-    Sys.out.print("DlyOnOffTest: first while ended after ${Sys.ticks()-startTicks}ns\n")
-
     startTicks = Sys.ticks()
     while((Sys.ticks() - startTicks) < 20ms)
     {
     }
-
-    Sys.out.print("DlyOnOffTest: second while ended after ${Sys.ticks()-startTicks}ns\n")
-
     dlyOn.execute()
     dlyOff.execute()
     assert(dlyOn.out == true)
     assert(dlyOff.out == false)
-
-
   }
-
-
 
 
 }
