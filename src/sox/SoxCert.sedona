@@ -27,5 +27,6 @@ class SoxCert
   action void ai(int i) { this.i += i }
   action void ad(double d) { this.d += d }
   action void abuf(Buf b) { buf.copyFromBuf(b) }
+  action void name2buf() { buf.copyFromStr(name) }
   
 }

@@ -55,6 +55,14 @@ public abstract class Verifies
       throw new TestException(a + " != " + b);
   }
 
+  public void verifyNotEq(int a, int b)
+  {
+    if (a != b)
+      verify(true);
+    else
+      throw new TestException(a + " == " + b);
+  }
+
   public void verifyEq(long a, long b)
   {
     if (a == b)

@@ -28,11 +28,10 @@ public class Sox extends Bundle
       new SoxInvoke(),
       new SoxLinks(),
       new SoxUpdate(),
-      // SoxSubscribe()
-      // SoxRename()
-      // SoxReorder()
-      // new SoxDelete(),
-      // SoxDelete()
+      new SoxSubscribe(),
+      new SoxRename(),
+      new SoxReorder(),
+      new SoxDelete(),
       // SoxQuery()
       // SoxFileTransfer()
     });

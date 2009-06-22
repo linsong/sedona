@@ -34,7 +34,7 @@ public class SoxUpdate extends Test
     Schema schema = c.readSchema();               
     Type soxCertType = schema.type("sox::SoxCert");
     
-    // start with fresh component update
+    // start with fresh component
     SoxComponent u = c.add(x, soxCertType, "update", new Value[] {Int.make(0xf), Bool.make(false), Byte.make(0)});    
     c.write(u, x.slot("b"), Byte.make(0));
     c.write(u, x.slot("i"), Int.make(0));
@@ -82,7 +82,10 @@ public class SoxUpdate extends Test
     verifyEq(u.getInt("b"), 79);
     verifyEq(u.getInt("i"), 1876);
     verifyEq(u.links().length, 1);
-    verifyEq(u.links()[0], link);
+    verifyEq(u.links()[0], link);     
+    
+    // cleanup
+    c.delete(u);
   }
   
 }
