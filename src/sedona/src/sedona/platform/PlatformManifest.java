@@ -63,10 +63,10 @@ public class PlatformManifest
       m.nativeKits[i] = Depend.parse(xkits[i].get("depend"));
     
     // Native Methods
-    XElem[] xnative = xml.elem("natives", true).elems("native");
-    m.nativeMethods = new NativeManifest[xnative.length];
-    for (int i=0; i<xnative.length; ++i)
-      m.nativeMethods[i] = NativeManifest.decodeXml(m, xnative[i]);
+    XElem[] xnativeMethods = xml.elem("natives", true).elems("nativeMethod");
+    m.nativeMethods = new NativeManifest[xnativeMethods.length];
+    for (int i=0; i<xnativeMethods.length; ++i)
+      m.nativeMethods[i] = NativeManifest.decodeXml(m, xnativeMethods[i]);
     
     // Manifest Includes
     m.manifestIncludes = xml.elem("manifestIncludes");
