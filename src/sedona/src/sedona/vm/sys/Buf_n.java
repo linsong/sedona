@@ -17,7 +17,7 @@ public class Buf_n
   extends ReflectUtil
 {                             
   
-  public static StrRef toStr(Object self)      
+  public static StrRef toStr(Object self, Context cx)      
     throws Exception
   {        
     // TODO: roll this into bytecode                         

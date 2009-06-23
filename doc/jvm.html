@@ -163,6 +163,7 @@ implemented in a Java source file using the following naming convention:
 <li>For sedona kit <code>myKit</code>, Java package name is <code>sedona.vm.myKit</code></li>
 <li>For sedona class <code>MyClass</code>, Java class name is <code>MyClass_n</code></li>
 <li>Java method name same as Sedona method name</li>
+<li>Java method always takes an extra <code>Context</code> parameter</li>
 </ul>
 
 <p>
@@ -183,8 +184,8 @@ class Foo
 package sedona.vm.acme.Foo;
 public class Foo_n
 {
-  public static int bar(float a) { ... }
-  public static void  baz(Object self, long a) { ... }
+  public static int bar(float a, Context cx) { ... }
+  public static void  baz(Object self, long a, Context cx) { ... }
 }        
 </pre>
 

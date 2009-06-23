@@ -26,12 +26,13 @@ public class Reflector
   extends ReflectUtil
 {                       
 
-  Reflector(ClassLoader loader, Schema schema)
+  Reflector(ClassLoader loader, Schema schema, Context cx)
     throws Exception
   { 
     // set final fields    
     this.loader = loader;
-    this.schema = schema;   
+    this.schema = schema;                                
+    this.context = cx;
     
     // lookup common classes
     this.kitCls  = loader.loadClass("sedona.vm.sys.Kit");
@@ -41,9 +42,18 @@ public class Reflector
     this.logCls  = loader.loadClass("sedona.vm.sys.Log");
     this.bufCls  = loader.loadClass("sedona.vm.sys.Buf");
     
+    // initialize Sys.context field
+    initContext();
+    
     // initialize the KitConst classes for each kit  
     initKitConsts();        
   } 
+
+  void initContext()
+    throws Exception
+  {               
+    set(sysCls, "context", context);  
+  }           
   
   void initKitConsts()
     throws Exception
@@ -325,7 +335,8 @@ public class Reflector
 ////////////////////////////////////////////////////////////////
 
   public final ClassLoader loader;
-  public final Schema schema;
+  public final Schema schema;  
+  public final Context context;
   public final Class kitCls;
   public final Class typeCls;
   public final Class slotCls;   

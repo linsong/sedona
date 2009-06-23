@@ -16,19 +16,19 @@ import sedona.vm.*;
 public class StdOutStream_n
 {                                   
 
-  public static byte doWrite(int b) 
+  public static byte doWrite(int b, Context cx) 
   {                             
     System.out.write(b);
     return 1;
   }
   
-  public static byte doWriteBytes(byte[] b, int off, int len)
+  public static byte doWriteBytes(byte[] b, int off, int len, Context cx)
   {                             
     System.out.write(b, off, len);
     return 1;
   }
   
-  public static void doFlush()
+  public static void doFlush(Context cx)
   {
     System.out.flush();
   }

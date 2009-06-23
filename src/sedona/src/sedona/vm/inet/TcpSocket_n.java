@@ -31,7 +31,7 @@ public class TcpSocket_n
 ////////////////////////////////////////////////////////////////
 
 
-  public static byte connect(Object self, Object addr, int port) 
+  public static byte connect(Object self, Object addr, int port, Context cx) 
   {
     try
     {                                       
@@ -49,7 +49,7 @@ public class TcpSocket_n
     }
   }
 
-  public static byte finishConnect(Object self)
+  public static byte finishConnect(Object self, Context cx)
   {
     try
     {                
@@ -61,13 +61,13 @@ public class TcpSocket_n
     catch (Exception e)
     {
       System.out.println("TcpSocket_n.finishConnect: " + e); 
-      close(self);
+      close(self, cx);
       // e.printStackTrace();    
       return 1;
     }
   }
 
-  public static int write(Object self, byte[] b , int off, int len)
+  public static int write(Object self, byte[] b , int off, int len, Context cx)
   {
     try
     {                      
@@ -80,12 +80,12 @@ public class TcpSocket_n
     {
       System.out.println("TcpSocket_n.write: " + e); 
       e.printStackTrace();    
-      close(self);
+      close(self, cx);
       return 0;
     }
   }
 
-  public static int read(Object self, byte[] b , int off, int len)
+  public static int read(Object self, byte[] b , int off, int len, Context cx)
   {
     try
     {                
@@ -93,19 +93,19 @@ public class TcpSocket_n
       if (chan == null) return -1;
       ByteBuffer buf = ByteBuffer.wrap(b, off, len);
       int n = chan.read(buf);
-      if (n < 0) close(self);
+      if (n < 0) close(self, cx);
       return n;
     }
     catch (Exception e)
     {  
       System.out.println("TcpSocket_n.read: " + e); 
       e.printStackTrace();    
-      close(self);
+      close(self, cx);
       return 0;
     }
   }
 
-  public static void close(Object self)
+  public static void close(Object self, Context cx)
   {
     try
     {                       

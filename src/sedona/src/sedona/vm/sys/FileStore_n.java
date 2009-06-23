@@ -17,16 +17,16 @@ import sedona.vm.*;
 public class FileStore_n
 {
 
-  public static int doSize(StrRef name)             
+  public static int doSize(StrRef name, Context cx)             
   {            
-    return (int)toFile(name).length();
+    return (int)toFile(name, cx).length();
   }
   
-  public static Object doOpen(StrRef name, StrRef m)
+  public static Object doOpen(StrRef name, StrRef m, Context cx)
   {                    
     try
     {
-      File f = toFile(name);        
+      File f = toFile(name, cx);        
       String mode = m.toString();
       if (mode.equals("w")) mode = "rw";
       if (mode.equals("m")) mode = "rw";
@@ -39,7 +39,7 @@ public class FileStore_n
     }
   }
   
-  public static int doRead(Object fp)
+  public static int doRead(Object fp, Context cx)
   {          
     try
     {
@@ -52,7 +52,7 @@ public class FileStore_n
     }
   }
   
-  public static int doReadBytes(Object fp, byte[] b, int off, int len)  
+  public static int doReadBytes(Object fp, byte[] b, int off, int len, Context cx)  
   { 
     try
     {                                   
@@ -65,7 +65,7 @@ public class FileStore_n
     }
   }
   
-  public static byte doWrite(Object fp, int b)
+  public static byte doWrite(Object fp, int b, Context cx)
   {
     try
     {
@@ -79,7 +79,7 @@ public class FileStore_n
     }
   }
   
-  public static byte doWriteBytes(Object fp, byte[] b, int off, int len)
+  public static byte doWriteBytes(Object fp, byte[] b, int off, int len, Context cx)
   {
     try
     {
@@ -93,7 +93,7 @@ public class FileStore_n
     }
   }
   
-  public static byte doSeek(Object fp, int pos)
+  public static byte doSeek(Object fp, int pos, Context cx)
   {           
     try
     {
@@ -107,7 +107,7 @@ public class FileStore_n
     }
   }
   
-  public static int doTell(Object fp)
+  public static int doTell(Object fp, Context cx)
   {
     try
     {
@@ -120,7 +120,7 @@ public class FileStore_n
     }
   }
   
-  public static void doFlush(Object fp)
+  public static void doFlush(Object fp, Context cx)
   {                     
     try
     {
@@ -132,7 +132,7 @@ public class FileStore_n
     }
   }
   
-  public static byte doClose(Object fp)
+  public static byte doClose(Object fp, Context cx)
   {
     try
     {
@@ -146,13 +146,13 @@ public class FileStore_n
     }
   }
  
-  static File toFile(StrRef name)
+  static File toFile(StrRef name, Context cx)
   {
     return new File(name.toString());
   }
   
 
-  public static boolean rename(StrRef from, StrRef to)
+  public static boolean rename(StrRef from, StrRef to, Context cx)
   {      
     File fromFile = new File(from.toString());
     File toFile = new File(to.toString());

@@ -7,6 +7,7 @@
 //
 package sedonac.jasm;
 
+import java.io.*;
 import java.util.HashMap;
 import sedona.Facets;
 import sedonac.ir.*;
@@ -80,6 +81,7 @@ public class JavaClassAsm
     if (ir.qname.equals("sys::Type")) assembleTypeSpecials();
     if (ir.qname.equals("sys::Slot")) assembleSlotSpecials();
     if (ir.qname.equals("sys::Component")) assembleCompSpecials();
+    if (ir.qname.equals("sys::Sys")) assembleSysSpecials();
     
     // if @javaPeer facet specified, generate a public
     // field for Java natives to store an Object
@@ -96,7 +98,21 @@ public class JavaClassAsm
     cls.kitName   = ir.kit().name();
     cls.name      = ir.name();
     cls.qname     = ir.qname();
-    cls.classfile = compile();
+    cls.classfile = compile();   
+
+    // dump classfile             
+    /*
+    try
+    {                                
+    File f = new File(cls.name + ".class");
+    System.out.println("DUMP: " + f);
+    OutputStream out = new FileOutputStream(f);
+    out.write(cls.classfile.trim());
+    out.close();
+    }
+    catch (Exception e) { e.printStackTrace(); }        
+    */
+    
     return cls;
   }   
   
@@ -143,8 +159,11 @@ public class JavaClassAsm
     
     assembleInitFields(code, true);
     
-    if (sInit != null)
+    if (sInit != null)          
+    {
+      code.add(GETSTATIC, contextRef());
       code.add(INVOKESTATIC, methodRef(sInit));
+    }
     
     code.add(RETURN);
     
@@ -443,6 +462,23 @@ public class JavaClassAsm
     // Object[] slots
     addField(new FieldInfo(this, "slots", "[Lsedona/Value;", Jvm.ACC_PRIVATE));
   }        
+
+////////////////////////////////////////////////////////////////
+// Sys Specials
+////////////////////////////////////////////////////////////////
+
+  void assembleSysSpecials()
+  {               
+    // Context context
+    addField(new FieldInfo(this, "context", "Lsedona/vm/Context;", Jvm.ACC_PUBLIC|Jvm.ACC_STATIC));
+  }
+
+  public int contextRef()
+  {
+    if (contextRef == 0)
+      contextRef = cp.field("sedona/vm/sys/Sys", "context", "Lsedona/vm/Context;");
+    return contextRef;
+  }
   
 ////////////////////////////////////////////////////////////////
 // Method
@@ -536,6 +572,11 @@ public class JavaClassAsm
     // parameters
     for (int i=0; i<params.length; ++i)
       s.append(jsig(params[i], isNative));
+   
+    // if native add Context parameter
+    if (isNative)
+      s.append("Lsedona/vm/Context;");
+      
     s.append(')');
     
     // return type
@@ -614,7 +655,8 @@ public class JavaClassAsm
   JavaKitAsm parent;
   IrType ir;
   IrMethod sInit;
-  int assertRef;
+  int assertRef;      
+  int contextRef;
   
 }
 

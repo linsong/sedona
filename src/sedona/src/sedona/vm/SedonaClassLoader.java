@@ -26,22 +26,28 @@ public class SedonaClassLoader
 // Construction
 ////////////////////////////////////////////////////////////////
 
-  public SedonaClassLoader(ClassLoader parent, Schema schema)
+  public SedonaClassLoader(ClassLoader parent, Schema schema, Context cx)
     throws Exception
   {
     this.schema = schema;
     this.kits = resolveKits();
-    this.reflector = new Reflector(this, schema);     
+    this.reflector = new Reflector(this, schema, cx);     
   }                  
+
+  public SedonaClassLoader(Schema schema, Context cx)
+    throws Exception
+  {
+    this.schema = schema;
+    this.kits = resolveKits();
+    this.reflector = new Reflector(this, schema, cx);
+  }
 
   public SedonaClassLoader(Schema schema)
     throws Exception
-  {
-    this.schema = schema;
-    this.kits = resolveKits();
-    this.reflector = new Reflector(this, schema);
-  }
-  
+  {                                       
+    this(schema, new Context());
+  }                          
+    
 ////////////////////////////////////////////////////////////////
 // Resolve Kits
 ////////////////////////////////////////////////////////////////

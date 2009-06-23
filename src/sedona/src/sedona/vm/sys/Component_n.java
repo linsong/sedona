@@ -22,43 +22,43 @@ public class Component_n
 // Invokes
 ////////////////////////////////////////////////////////////////
   
-  public static void invokeVoid(Object self, Object slot)    
+  public static void invokeVoid(Object self, Object slot, Context cx)    
     throws Exception
   {              
     ((ISlot)slot).accessor().invokeVoid(self);       
   }
 
-  public static void invokeBool(Object self, Object slot, byte arg)
+  public static void invokeBool(Object self, Object slot, byte arg, Context cx)
     throws Exception
   {
     ((ISlot)slot).accessor().invokeBool(self, arg);       
   }
 
-  public static void invokeInt(Object self, Object slot, int arg)
+  public static void invokeInt(Object self, Object slot, int arg, Context cx)
     throws Exception
   {
     ((ISlot)slot).accessor().invokeInt(self, arg);       
   }
 
-  public static void invokeLong(Object self, Object slot, long arg)
+  public static void invokeLong(Object self, Object slot, long arg, Context cx)
     throws Exception
   {
     ((ISlot)slot).accessor().invokeLong(self, arg);       
   }
 
-  public static void invokeFloat(Object self, Object slot, float arg)
+  public static void invokeFloat(Object self, Object slot, float arg, Context cx)
     throws Exception
   {
     ((ISlot)slot).accessor().invokeFloat(self, arg);       
   }
 
-  public static void invokeDouble(Object self, Object slot, double arg)
+  public static void invokeDouble(Object self, Object slot, double arg, Context cx)
     throws Exception
   {
     ((ISlot)slot).accessor().invokeDouble(self, arg);       
   }
 
-  public static void invokeBuf(Object self, Object slot, Object arg)
+  public static void invokeBuf(Object self, Object slot, Object arg, Context cx)
     throws Exception
   {
     ((ISlot)slot).accessor().invokeBuf(self, arg);       
@@ -69,37 +69,37 @@ public class Component_n
 // Getters
 ////////////////////////////////////////////////////////////////
 
-  public static byte getBool(Object self, Object slot)
+  public static byte getBool(Object self, Object slot, Context cx)
     throws Exception
   {                            
     return ((ISlot)slot).accessor().getBool(self);       
   }
 
-  public static int getInt(Object self, Object slot)
+  public static int getInt(Object self, Object slot, Context cx)
     throws Exception
   {
     return ((ISlot)slot).accessor().getInt(self);       
   }                                              
   
-  public static long getLong(Object self, Object slot)
+  public static long getLong(Object self, Object slot, Context cx)
     throws Exception
   {          
     return ((ISlot)slot).accessor().getLong(self);       
   }
 
-  public static float getFloat(Object self, Object slot)
+  public static float getFloat(Object self, Object slot, Context cx)
     throws Exception
   {                            
     return ((ISlot)slot).accessor().getFloat(self);       
   }
 
-  public static double getDouble(Object self, Object slot)
+  public static double getDouble(Object self, Object slot, Context cx)
     throws Exception
   {            
     return ((ISlot)slot).accessor().getDouble(self);       
   }
 
-  public static Object getBuf(Object self, Object slot)
+  public static Object getBuf(Object self, Object slot, Context cx)
     throws Exception
   {
     return ((ISlot)slot).accessor().getBuf(self);       
@@ -109,7 +109,7 @@ public class Component_n
 // Setters
 ////////////////////////////////////////////////////////////////
 
-  public static byte doSetBool(Object self, Object slot, byte val)
+  public static byte doSetBool(Object self, Object slot, byte val, Context cx)
     throws Exception
   {    
     SlotAccessor acc = ((ISlot)slot).accessor();
@@ -118,7 +118,7 @@ public class Component_n
     return 1; 
   }
   
-  public static byte doSetInt(Object self, Object slot, int val)
+  public static byte doSetInt(Object self, Object slot, int val, Context cx)
     throws Exception
   {
     SlotAccessor acc = ((ISlot)slot).accessor();
@@ -127,7 +127,7 @@ public class Component_n
     return 1; 
   }
   
-  public static byte doSetLong(Object self, Object slot, long val)
+  public static byte doSetLong(Object self, Object slot, long val, Context cx)
     throws Exception
   {
     SlotAccessor acc = ((ISlot)slot).accessor();
@@ -136,7 +136,7 @@ public class Component_n
     return 1; 
   }
   
-  public static byte doSetFloat(Object self, Object slot, float val)
+  public static byte doSetFloat(Object self, Object slot, float val, Context cx)
     throws Exception
   {                                              
     SlotAccessor acc = ((ISlot)slot).accessor();
@@ -145,7 +145,7 @@ public class Component_n
     return 1; 
   }
   
-  public static byte doSetDouble(Object self, Object slot, double val)
+  public static byte doSetDouble(Object self, Object slot, double val, Context cx)
     throws Exception
   {          
     SlotAccessor acc = ((ISlot)slot).accessor();

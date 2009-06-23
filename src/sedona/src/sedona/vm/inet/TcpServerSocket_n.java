@@ -30,7 +30,7 @@ public class TcpServerSocket_n
 // Natives
 ////////////////////////////////////////////////////////////////
 
-  public static byte bind(Object self, int port)
+  public static byte bind(Object self, int port, Context cx)
   {
     try
     {                
@@ -49,7 +49,7 @@ public class TcpServerSocket_n
     }
   }
 
-  public static byte accept(Object self, Object socket)
+  public static byte accept(Object self, Object socket, Context cx)
   {
     try
     {                 
@@ -69,7 +69,7 @@ public class TcpServerSocket_n
     }
   }
 
-  public static void close(Object self)
+  public static void close(Object self, Context cx)
   {
     try
     {                 

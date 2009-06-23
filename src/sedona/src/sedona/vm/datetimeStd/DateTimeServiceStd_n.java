@@ -17,17 +17,17 @@ import sedona.vm.*;
 public class DateTimeServiceStd_n
 {  
       
-  public static long doNow()
+  public static long doNow(Context cx)
   {
     return (System.currentTimeMillis() - epochMillis) * 1000000L;
   }
   
-  public static void doSetClock(long nanos)
+  public static void doSetClock(long nanos, Context cx)
   {
     System.out.println("WARNING: DateTimeService.doSetClock not implemented");
   }
 
-  public static int doGetUtcOffset()
+  public static int doGetUtcOffset(Context cx)
   {                        
     return TimeZone.getDefault().getOffset(System.currentTimeMillis())/1000;
   }

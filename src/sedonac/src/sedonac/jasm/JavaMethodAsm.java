@@ -574,6 +574,7 @@ public class JavaMethodAsm
     Method m = (Method)op.resolvedArg;      
     if (m == null) 
       throw new IllegalStateException("ERROR: must create IrOp with resolved method: " + op);    
+    boolean isNative = JavaClassAsm.isJavaNative(m);
 
     // methods handled specially
     String qname = m.qname();
@@ -581,7 +582,7 @@ public class JavaMethodAsm
     
     // figure out java opcode
     int javaCall;                    
-    if (JavaClassAsm.isJavaNative(m))
+    if (isNative)
     {
       javaCall = INVOKESTATIC;
     }
@@ -600,7 +601,11 @@ public class JavaMethodAsm
       if (op.opcode == SCode.Call && parent.ir.is(m.parent()) && 
           (m.isVirtual() || m.isInstanceInit()))
         javaCall = INVOKESPECIAL;
-    }
+    }                      
+    
+    // if native method we need to push Context onto the stack
+    if (isNative) 
+      code.add(GETSTATIC, parent.contextRef());
         
     // normal static/virtual call  
     int mref = parent.methodRef(m);

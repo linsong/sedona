@@ -30,17 +30,17 @@ public class UdpSocket_n
 // Natives
 ////////////////////////////////////////////////////////////////
           
-  public static int maxPacketSize() 
+  public static int maxPacketSize(Context cx) 
   { 
     return 512; 
   }
 
-  public static int idealPacketSize() 
+  public static int idealPacketSize(Context cx) 
   { 
     return 512; 
   }
 
-  public static byte open(Object self) 
+  public static byte open(Object self, Context cx) 
   {
     try
     {                                       
@@ -58,7 +58,7 @@ public class UdpSocket_n
     }
   }
 
-  public static byte bind(Object self, int port)
+  public static byte bind(Object self, int port, Context cx)
   {
     try
     {                
@@ -74,7 +74,7 @@ public class UdpSocket_n
     }
   }
 
-  public static byte send(Object self, Object datagram)
+  public static byte send(Object self, Object datagram, Context cx)
   {
     try
     {                
@@ -107,7 +107,7 @@ public class UdpSocket_n
     }
   }
 
-  public static byte receive(Object self, Object datagram)
+  public static byte receive(Object self, Object datagram, Context cx)
   {
     try
     {
@@ -153,7 +153,7 @@ public class UdpSocket_n
     }
   }
 
-  public static void close(Object self)
+  public static void close(Object self, Context cx)
   {
     try
     {                       

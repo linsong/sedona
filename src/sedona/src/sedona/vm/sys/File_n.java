@@ -17,7 +17,7 @@ import sedona.vm.*;
 public class File_n
 {                                            
 
-  public static boolean rename(StrRef from, StrRef to)
+  public static boolean rename(StrRef from, StrRef to, Context cx)
   {      
     File fromFile = new File(from.toString());
     File toFile = new File(to.toString());

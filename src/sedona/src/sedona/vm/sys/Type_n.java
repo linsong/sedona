@@ -17,7 +17,7 @@ import sedona.vm.*;
 public class Type_n
 {
 
-  public static Object malloc(Object self)
+  public static Object malloc(Object self, Context cx)
     throws Exception
   {
     // map the IType to a Java class

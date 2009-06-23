@@ -22,6 +22,7 @@ import sedona.util.*;
 import sedonac.*;
 import sedonac.parser.*;
 import sedonac.namespace.*;
+import sedonac.jasm.*;
 
 /**
  * Expr
@@ -768,6 +769,10 @@ public abstract class Expr
       Type ret = method.returnType();
       if (!ret.isVoid())
         stack = Math.max(stack, ret.isWide() ? 2 : 1);
+      
+      // Java pushes extra Context parameter
+      if (JavaClassAsm.isJavaNative(method)) 
+        stack++;
 
       return stack; 
     }

@@ -30,7 +30,7 @@ public class Crypto_n
     }                     
   }
            
-  public static void sha1(byte[] in, int inOff, int len, byte[] output, int outOff)
+  public static void sha1(byte[] in, int inOff, int len, byte[] output, int outOff, Context cx)
     throws Exception
   {                                         
     digester.reset();

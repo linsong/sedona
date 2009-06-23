@@ -25,7 +25,7 @@ public class Sys_n
    * Copy num bytes from the source byte array to the destination byte
    * array.  The arrays may be overlapping (like memmove, not memcpy).
    */
-  public static void copy(byte[] src, int srcOff, byte[] dest, int destOff, int len)
+  public static void copy(byte[] src, int srcOff, byte[] dest, int destOff, int len, Context cx)
   {     
     System.arraycopy(src, srcOff, dest, destOff, len);
   }
@@ -34,7 +34,7 @@ public class Sys_n
    * Compare two byte arrays for equality. If equal return 0, if
    * a is less than b return -1, if a greater than b return 1.
    */
-  public static int compareBytes(byte[] a, int aOff, byte[] b, int bOff, int len)
+  public static int compareBytes(byte[] a, int aOff, byte[] b, int bOff, int len, Context cx)
   {             
     for (int i=0; i<len; ++i)
     {                         
@@ -48,7 +48,7 @@ public class Sys_n
   /**
    * Set all the bytes in the specified array to val.
    */
-  public static void setBytes(int val, byte[] bytes, int off, int len)
+  public static void setBytes(int val, byte[] bytes, int off, int len, Context cx)
   {   
     for (int i=0; i<len; ++i) bytes[off+i] = (byte)val;      
   }
@@ -57,7 +57,7 @@ public class Sys_n
    * Perform a bitwise "and" using the specified mask on each
    * byte in the bytes array.
    */
-  public static void andBytes(int mask, byte[] bytes, int off, int len)
+  public static void andBytes(int mask, byte[] bytes, int off, int len, Context cx)
   {
     for (int i=0; i<len; ++i) bytes[off+i] &= mask;      
   }
@@ -66,7 +66,7 @@ public class Sys_n
    * Perform a bitwise "or" using the specified mask on each
    * byte in the bytes array.
    */
-  public static void orBytes(int mask, byte[] bytes, int off, int len)   
+  public static void orBytes(int mask, byte[] bytes, int off, int len, Context cx)   
   {
     for (int i=0; i<len; ++i) bytes[off+i] |= mask;      
   }
@@ -79,7 +79,7 @@ public class Sys_n
    * Format an integer as a decimal string.
    * The string is stored in a static shared buffer.
    */
-  public static StrRef intStr(int v)
+  public static StrRef intStr(int v, Context cx)
   {                   
     // this is for debug, so don't worry about GC for now
     return str(Integer.toString(v));
@@ -89,7 +89,7 @@ public class Sys_n
    * Format an integer as a hexadecimal string.
    * The string is stored in a static shared buffer.
    */
-  public static StrRef hexStr(int v)
+  public static StrRef hexStr(int v, Context cx)
   {
     // this is for debug, so don't worry about GC for now
     return str(Integer.toHexString(v));
@@ -99,7 +99,7 @@ public class Sys_n
    * Format the 64-bit integer into a string.
    * The string is stored in a static shared buffer.
    */
-  public static StrRef longStr(long v)
+  public static StrRef longStr(long v, Context cx)
   {
     // this is for debug, so don't worry about GC for now
     return str(Long.toString(v));
@@ -109,7 +109,7 @@ public class Sys_n
    * Format the 64-bit integer into a hexidecimal string.
    * The string is stored in a static shared buffer.
    */
-  public static StrRef longHexStr(long v)
+  public static StrRef longHexStr(long v, Context cx)
   {
     // this is for debug, so don't worry about GC for now
     return str(Long.toHexString(v));
@@ -119,7 +119,7 @@ public class Sys_n
    * Format a float into a string.
    * The string is stored in a static shared buffer.
    */
-  public static StrRef floatStr(float v)
+  public static StrRef floatStr(float v, Context cx)
   {
     // this is for debug, so don't worry about GC for now
     return str(decimalFormat.format(v));
@@ -129,8 +129,8 @@ public class Sys_n
    * Format a double into a string.
    * The string is stored in a static shared buffer.
    */
-  public static StrRef doubleStr(double v)
-  {
+  public static StrRef doubleStr(double v, Context cx)
+  {                                 
     // this is for debug, so don't worry about GC for now
     return str(decimalFormat.format(v));
   }                          
@@ -148,7 +148,7 @@ public class Sys_n
    * value according to the IEEE 754 floating-point "single format"
    * bit layout.
    */
-  public static int floatToBits(float v)
+  public static int floatToBits(float v, Context cx)
   {
     return Float.floatToIntBits(v);
   }
@@ -158,7 +158,7 @@ public class Sys_n
    * value according to the IEEE 754 floating-point "double format"
    * bit layout.
    */
-  public static long doubleToBits(double v)
+  public static long doubleToBits(double v, Context cx)
   {
     return Double.doubleToLongBits(v);
   }
@@ -167,7 +167,7 @@ public class Sys_n
    * Return a 32-bit floating point value according to the
    * IEEE 754 floating-point "single format" bit layout.
    */
-  public static float bitsToFloat(int bits)
+  public static float bitsToFloat(int bits, Context cx)
   {
     return Float.intBitsToFloat(bits);
   }
@@ -176,7 +176,7 @@ public class Sys_n
    * Return a 64-bit floating point value according to the
    * IEEE 754 floating-point "double format" bit layout.
    */
-  public static double bitsToDouble(long bits)  
+  public static double bitsToDouble(long bits, Context cx)  
   {
     return Double.longBitsToDouble(bits);
   }
@@ -185,14 +185,14 @@ public class Sys_n
 // Time
 ////////////////////////////////////////////////////////////////
 
-  public static long ticks()
+  public static long ticks(Context cx)
   {
     return System.nanoTime();
   }
 
-  public static void sleep(long ns)
+  public static void sleep(long ns, Context cx)
     throws InterruptedException
-  {                          
+  {                        
     if (ns <= 0) return;
     long ms = ns / 1000000L;
     int rem = (int)(ns % 1000000L);
@@ -204,17 +204,17 @@ public class Sys_n
 // Utils
 ////////////////////////////////////////////////////////////////
 
-  public static StrRef platformType()    
+  public static StrRef platformType(Context cx)    
   {
     return str("sys::Platform");
   }
 
-  public static void free(Object obj)    
+  public static void free(Object obj, Context cx)    
   {
     // ignored for Java since we have GC
   }
 
-  public static int rand()    
+  public static int rand(Context cx)    
   {
     return random.nextInt();
   }  
