@@ -17,6 +17,7 @@ srcDir  = os.path.join(env.src, "sedonacert", "src")
 jarFile = env.sedonacertJar
 packages = [ 
   "sedonacert",
+  "sedonacert.prov",
   "sedonacert.sox",
 ]
 

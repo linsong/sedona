@@ -21,9 +21,9 @@ public class Sox extends Bundle
   public Sox(Runner runner) 
   { 
     super(runner, "sox", new Test[]
-    { 
+    {                     
       new SoxLogin(),
-      new SoxAdd(),
+      new SoxAdd(),   
       new SoxReadWrite(),
       new SoxInvoke(),
       new SoxLinks(),
@@ -31,9 +31,8 @@ public class Sox extends Bundle
       new SoxSubscribe(),
       new SoxRename(),
       new SoxReorder(),
-      new SoxDelete(),
-      // SoxQuery()
-      // SoxFileTransfer()
+      new SoxDelete(), 
+      new SoxQuery(),
     });
   }       
   

@@ -8,6 +8,7 @@
 
 package sedonacert;
 
+import java.io.*;
 import java.net.*;
 import sedona.*;
 import sedona.dasp.*;
@@ -50,6 +51,7 @@ public class Runner
   public Bundle[] bundles = new Bundle[]
   { 
     new sedonacert.sox.Sox(this),
+    new sedonacert.prov.Prov(this),
   };
   
   /**
@@ -66,6 +68,11 @@ public class Runner
    * Version of kits installed on device.
    */
   public VersionInfo version;
+
+  /**
+   * Test scratch directory.
+   */
+  public File testDir;
   
 //////////////////////////////////////////////////////////////////////////  
 // Execution
@@ -76,7 +83,8 @@ public class Runner
    */                 
   public int run()
     throws Exception
-  {                 
+  { 
+    if (!init()) return 1;                  
     if (!connect()) return 1;
     for (int i=0; i<bundles.length; ++i)
     {                            
@@ -103,7 +111,19 @@ public class Runner
     disconnect();       
     report();
     return 0;
-  }     
+  }      
+  
+  /**
+   * Initialize the test environment.
+   */
+  public boolean init()          
+    throws Exception
+  {                 
+    testDir = new File("sedona-cert");
+    FileUtil.delete(testDir, log);        
+    FileUtil.mkdir(testDir, log);
+    return true;
+  }
   
   /**
    * Connect with sox and gather test meta-data.

@@ -18,6 +18,7 @@
   <!-- Java Packages -->
   <package name="sedonacert"        doc="true" src="true" />
   <package name="sedonacert.sox"    doc="true" src="true" />
+  <package name="sedonacert.prov"   doc="true" src="true" />
   
 </module>
 
