@@ -225,7 +225,7 @@ public class Sys_n
    * Provide a byte array to which looks like scode to access 
    * scode flags (which is the only reason this should be used)
    */
-  public static byte[] scodeAddr() { return scodeAddr; }
+  public static byte[] scodeAddr(Context cx) { return scodeAddr; }
   static byte[] scodeAddr = new byte[32];
   static
   {
