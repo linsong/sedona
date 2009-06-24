@@ -112,7 +112,7 @@ class SoxService
   {     
     if (socket.isClosed() && !socket.open())
     {                                
-      if (logError) log.error("cannot open socket")
+      if (logError) log.warning("cannot open socket")
       return false
     }
 
