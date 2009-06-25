@@ -56,8 +56,8 @@ public class VendorUtil
     if (platformId == null) return;
     
     final String requiredPrefix = vendor.toLowerCase() + "-";
-    if (!platformId.toLowerCase().startsWith(requiredPrefix))
-      throw new Exception("Platform id must be prefixed with '" + requiredPrefix + "'");
+    if (!platformId.startsWith(requiredPrefix))
+      throw new Exception("Platform id must be prefixed with '" + requiredPrefix + "' (case-sensitive)");
   }
 
 }

@@ -15,6 +15,7 @@ import java.util.zip.*;
 
 import sedona.*;
 import sedona.util.*;
+import sedona.util.sedonadev.Download;
 import sedona.xml.*;
 
 /**
@@ -60,56 +61,128 @@ public final class PlatformDb
   public void install(ParFile par)
   {
     PlatformManifest manifest = par.getPlatformManifest();
-    if (manifest == null) 
-      throw new PlatformDbException("'" + par.getName() + "' doesn't contain a platform manifest");
-    
     try
     {
-      File installDir = toParLocation(manifest.id);
-      FileUtil.delete(installDir, null);
-      FileUtil.mkdir(installDir, null);
-      
+      PlatformManifest.validate(manifest);
+      File installDir = initInstall(manifest);
       Enumeration entries = par.entries();
       while (entries.hasMoreElements())
       {
         ZipEntry entry = (ZipEntry)entries.nextElement();
-        String name = entry.getName();
-        
-        // everything is relative
-        if (name.startsWith("/")) name = name.substring(1);
-        
-        // make directories
-        if (name.endsWith("/") || entry.isDirectory())
-        {
-          FileUtil.mkdir(new File(installDir, name), null);
-          continue;
-        }
-        
-        // we cannot assume parent entries come before children entries,
-        // so always make the directory for a file
-        final int idx = name.lastIndexOf('/');
-        if (idx > 0)
-        {
-          // need to make directories
-          String dirs = name.substring(0, idx);
-          File dir = new File(installDir, dirs);
-          FileUtil.mkdir(dir, null);
-        }
-        
-        // extract file
-        File file = new File(installDir, name);
-        FileOutputStream out = new FileOutputStream(file);
-        InputStream in = par.getInputStream(entry);
-        for (int c = in.read(); c != -1; c = in.read())
-          out.write(c);
-        in.close();
-        out.close();
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        FileUtil.pipe(par.getInputStream(entry), bytes);
+        writeEntry(installDir, entry, bytes);
       }
     }
-    catch (Exception e)
+    catch (Exception e) { throw new PlatformDbException(e); }
+  }
+  
+  /**
+   * Install a PAR file from a zip input stream. No files get installed unless
+   * the input stream contains a valid platform manifest.  If the PAR already
+   * exists in the database, then it is deleted and re-installed.
+   * <p>
+   * The {@code zin} will always be closed when this method completes.
+   * 
+   * @param zin a ZipInputStream corresponding to a PAR file.
+   * @throws PlatformDbException Thrown if the installation fails for any reason.
+   */
+  public void install(ZipInputStream zin)
+  {
+    LinkedHashMap todo = new LinkedHashMap();
+    try
     {
-      throw new PlatformDbException(e);
+      // Cache the entire zip file in memory - whoa baby!
+      PlatformManifest manifest = null;
+      ZipEntry entry = null;
+      try
+      {
+        while ((entry = zin.getNextEntry()) != null)
+        {
+          final String name = entry.getName();
+          if (name.startsWith("/"+manifestName) || name.startsWith(manifestName))
+          {
+            manifest = PlatformManifest.decodeXml(
+              XParser.make(name, zin).parse(false));
+            continue;
+          }
+          
+          ByteArrayOutputStream content = new ByteArrayOutputStream();
+          FileUtil.pipe(zin, content);
+          todo.put(entry, content);
+          zin.closeEntry();
+        }
+      }
+      finally
+      {
+        zin.close();
+      }
+      
+      PlatformManifest.validate(manifest);
+      File installDir = initInstall(manifest);
+      
+      // write manifest
+      XWriter out = new XWriter(new File(installDir, manifestName));
+      manifest.encodeXml(out);
+      out.close();
+      
+      // write others
+      Iterator iter = todo.keySet().iterator();
+      while (iter.hasNext())
+      {
+        entry = (ZipEntry)iter.next();
+        writeEntry(installDir, entry, (ByteArrayOutputStream)todo.get(entry));
+      }
     }
+    catch (PlatformDbException e) { throw e; }
+    catch (Exception e) { throw new PlatformDbException(e); }
+    finally { todo = null; }
+  }
+  
+  /**
+   * Cleans and makes the target directory for the PAR file and returns the 
+   * installation directory.
+   */
+  private File initInstall(PlatformManifest manifest) 
+    throws IOException
+  {
+    File installDir = toParLocation(manifest.id);
+    FileUtil.delete(installDir, null);
+    FileUtil.mkdir(installDir, null);
+    return installDir;
+  }
+  
+  /**
+   * Write the zip entry to disk rooted as {@code baseDir}
+   */
+  private void writeEntry(File baseDir, ZipEntry entry, ByteArrayOutputStream bytes)
+    throws IOException
+  {
+    String name = entry.getName();
+    
+    // everything is relative
+    if (name.startsWith("/")) name = name.substring(1);
+    
+    // make directories (could be empty and we will preserve these)
+    if (name.endsWith("/") || entry.isDirectory())
+    {
+      FileUtil.mkdir(new File(baseDir, name), null);
+      return;
+    }
+    
+    // we cannot assume parent entries come before children entries,
+    // so always make the directory for a file.
+    final int idx = name.lastIndexOf('/');
+    if (idx > 0)
+    {
+      String dirs = name.substring(0, idx);
+      FileUtil.mkdir(new File(baseDir, dirs), null);
+    }
+    
+    // write file
+    FileOutputStream out = new FileOutputStream(new File(baseDir, name));
+    bytes.writeTo(out);
+    out.close();
   }
 
 //////////////////////////////////////////////////////////////////////////
@@ -177,7 +250,7 @@ public final class PlatformDb
   /**
    * Find the platform manifest that best matches the given platform id.
    * 
-   * @return the PlatformManifest for the best match, or null if not platforms
+   * @return the PlatformManifest for the best match, or null if no platforms
    * matched.
    */
   public PlatformManifest load(final String platformId)
@@ -262,7 +335,7 @@ public final class PlatformDb
    * Checks the database and returns the best matching vm for the given platform
    * id.
    * 
-   * @return a DbVm object represneting the SVM that best matched the given
+   * @return a DbVm object representing the SVM that best matched the given
    *         platform id, or {@code null} if one could not be found.
    */
   public DbVm getVm(final String platformId)
@@ -290,7 +363,7 @@ public final class PlatformDb
     File dir = dbDir;
     for (int i=0; i<toks.length; ++i)
       dir = new File(dir, toks[i]);
-    return new File(dir, parDir);
+    return new File(dir, parDirName);
   }
   
   private class PlatformMatch
@@ -307,7 +380,11 @@ public final class PlatformDb
   
   /**
    * Try to find the xml manifest by walking up the directory tree looking for
-   * the best match. The search is rooted at {@code sedona_home}/platforms/db}
+   * the best match. The search is rooted at {@code sedona_home/platforms/db}
+   * <p>
+   * If an exact match is not found, attempt to download and install a PAR file
+   * with the given {@code platformId} from one of the sedonadev.org websites.
+   * If we find an exact match from a website, return the exact match.
    * <p>
    * For example, if platformId is {@code tridium-jace-win32-1.0.37} the
    * following directories will be searched in order for a platformManifest.xml
@@ -337,10 +414,21 @@ public final class PlatformDb
     {
       fileId = TextUtil.join(toks, 0, i, "-");
       // Build up path to potential manifest file
-      file = new File(toParLocation(fileId), manifestFile);
+      file = new File(toParLocation(fileId), manifestName);
       if (file.exists()) break;
     }
-        
+    
+    // TODO: if not exact match, try to download...
+    if (!platformId.equals(fileId))
+    {
+      try 
+      {  
+        install(Download.fetchPar(platformId));
+        file = new File(toParLocation(platformId), manifestName);
+        fileId = platformId;
+      }
+      catch (Exception e) { }
+    }
     return file.exists() ? new PlatformMatch(file, fileId) : null;
   }
   
@@ -451,7 +539,7 @@ public final class PlatformDb
 
   public static final File dbDir = new File(new File(Env.home, "platforms"), "db");
 
-  private static final String manifestFile = "platformManifest.xml";
-  private static final String parDir = ".par";
+  private static final String manifestName = "platformManifest.xml";
+  private static final String parDirName = ".par";
 
 }

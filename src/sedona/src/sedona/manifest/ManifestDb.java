@@ -14,6 +14,7 @@ import java.util.zip.*;
 import sedona.*;
 import sedona.kit.*;
 import sedona.util.*;
+import sedona.util.sedonadev.Download;
 import sedona.xml.*;
 
 /**
@@ -53,11 +54,17 @@ public class ManifestDb
 
   /**
    * Lookup the manifest for the specified kit part using the algorthm:
-   *   - If already loaded return cached manifest
-   *   - If found, load from "{home}\manifests\kit\{kitName}-{checksum}.xml"
-   *   - If "{home}\kits\{kitName}-xxx.kit" has matching checksum,
-   *     then copy to manifest database and load that
-   *   - Return null
+   * <ol>
+   * <li>If already loaded, return cached manifest
+   * <li>If found, load from <code>{home}\manifests\kit\{kitName}-{checksum}.xml</code>
+   * <li>If <code>\kits\{kitName}-xxx.kit</code> has matching checksum, then copy
+   *     to manifest database and load that.
+   * <li>If not locally available, attempt to download from a sedonadev.org website
+   *     and save it to the local manifest database.
+   * <li>Return {@code null}
+   * </ol>
+   * @see sedona.util.sedonadev.Download
+   * @see sedona.util.sedonadev.Download#fetchManifest(KitPart)
    */
   public static KitManifest load(KitPart part)
     throws Exception
@@ -78,6 +85,14 @@ public class ManifestDb
       // check manifest in local kit file
       km = loadFromLocalKit(info);
       if (km != null) return km;
+      
+      // check sedonadev.org websites
+      km = Download.fetchManifest(part);
+      if (km != null) 
+      {
+        save(km);
+        return km;
+      }
 
       // no dice
       return null;

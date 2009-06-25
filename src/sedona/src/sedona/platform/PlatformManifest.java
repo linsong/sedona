@@ -8,6 +8,7 @@
 package sedona.platform;
 
 import sedona.Depend;
+import sedona.util.*;
 import sedona.xml.*;
 
 /**
@@ -48,8 +49,8 @@ public class PlatformManifest
     
     PlatformManifest m = new PlatformManifest();
     m.id     = xml.get("platformId", null);
-    m.vendor = xml.get("vendor", null);
-    m.endian = xml.get("endian", null);
+    m.vendor = xml.get("vendor");
+    m.endian = xml.get("endian");
     m.blockSize = xml.geti("blockSize");
     m.refSize   = xml.geti("refSize");
     m.armDouble = xml.getb("armDouble");
@@ -111,6 +112,37 @@ public class PlatformManifest
     out.nl();
     
     out.w("</platformManifest>\n");
+  }
+  
+//////////////////////////////////////////////////////////////////////////
+// Utility
+//////////////////////////////////////////////////////////////////////////
+  
+  /**
+   * Validates the given platform manifest to see if it would be valid
+   * in a PAR file. The following checks are done and an Exception is 
+   * thrown if any one of them fails.
+   * <ol>
+   * <li>manifest cannot be {@code null}
+   * <li>{@code manifest.id} cannot be {@code null}
+   * <li>{@code manifest.vendor} cannot be {@code null}
+   * <li>{@link sedona.util.VendorUtil#checkVendorName(String)} validates
+   * <li>{@link sedona.util.VendorUtil#checkPlatformPrefix(String, String)} validates
+   * <li>The manifest id must be less than 128 characters long
+   * </ol>
+   * 
+   * @throws Exception Thrown if the manifest fails validation for any
+   * of the reasons listed above.
+   */
+  public static void validate(PlatformManifest manifest) throws Exception
+  {
+    if (manifest == null) throw new Exception("null manifest");
+    if (manifest.id == null) throw new Exception("manifest doesn't specify a platform id");
+    if (manifest.vendor == null) throw new Exception("manifest doesn't specify a vendor");
+    VendorUtil.checkVendorName(manifest.vendor);
+    VendorUtil.checkPlatformPrefix(manifest.vendor, manifest.id);
+    if (!(manifest.id.length() < 128))
+      throw new Exception("platform id '" + manifest.id + "' must be less than 128 characters long: " + manifest.id.length());
   }
   
 //////////////////////////////////////////////////////////////////////////

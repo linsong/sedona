@@ -12,20 +12,20 @@
 >
 
   <!-- Java Packages -->
-  <package name="sedona"           doc="true" src="true" />
-  <package name="sedona.manifest"  doc="true" src="true" />
-  <package name="sedona.kit"       doc="true" src="true" />
-  <package name="sedona.platform"  doc="true" src="true" />
-  <package name="sedona.offline"   doc="true" src="true" />
-  <package name="sedona.dasp"      doc="true" src="true" />
-  <package name="sedona.sox"       doc="true" src="true" />
-  <package name="sedona.upload"    doc="true" src="true" />
-  <package name="sedona.util"      doc="true" src="true" />
-  <package name="sedona.web"       doc="true" src="true" />
-  <package name="sedona.xml"       doc="true" src="true" />
-  <package name="sedona.vm"        doc="true" src="true" />
-  <package name="sedona.vm.sys"    doc="true" src="true" edition="j2se"/>
-  <package name="sedona.vm.inet"   doc="true" src="true" edition="j2se"/>
+  <package name="sedona"                doc="true" src="true" />
+  <package name="sedona.manifest"       doc="true" src="true" />
+  <package name="sedona.kit"            doc="true" src="true" />
+  <package name="sedona.platform"       doc="true" src="true" />
+  <package name="sedona.offline"        doc="true" src="true" />
+  <package name="sedona.dasp"           doc="true" src="true" />
+  <package name="sedona.sox"            doc="true" src="true" />
+  <package name="sedona.util"           doc="true" src="true" />
+  <package name="sedona.util.sedonadev" doc="true" src="true" />
+  <package name="sedona.web"            doc="true" src="true" />
+  <package name="sedona.xml"            doc="true" src="true" />
+  <package name="sedona.vm"             doc="true" src="true" />
+  <package name="sedona.vm.sys"         doc="true" src="true" edition="j2se"/>
+  <package name="sedona.vm.inet"        doc="true" src="true" edition="j2se"/>
   <package name="sedona.vm.datetimeStd" doc="true" src="true"/>
 
   <!-- Resources -->

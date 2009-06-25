@@ -1,11 +1,12 @@
 //
-// Copyright (c) 2008 Tridium, Inc.
+// Copyright (c) 2007 Tridium, Inc.
+// Licensed under the Academic Free License version 3.0
 //
 // History:
-//   23 Oct 08  Andy Frank  Creation
+//   16 Aug 07  Brian Frank  Creation
 //
 
-package sedona.upload;
+package sedona.util.sedonadev;
 
 import java.io.*;
 import java.net.*;
@@ -16,7 +17,7 @@ import sedona.xml.XParser;
 /**
  * Utility to upload files to sedonadev.org.
  */
-public class Upload
+public final class Upload
 {
 
   public static void main(String[] args)
