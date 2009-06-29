@@ -79,7 +79,7 @@ class WebRes
   **
   WebRes html()
   {
-    writeStatus(200)
+    writeStatus(HttpCode.ok)
     writeContentType("text/html")
     finishHeaders()
     return w("<html><body>\n")

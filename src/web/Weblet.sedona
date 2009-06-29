@@ -37,7 +37,7 @@ abstract class Weblet
     else if (method.equals("POST"))   post(req, res)
     else if (method.equals("PUT"))    put(req, res)
     else if (method.equals("DELETE")) doDelete(req, res)
-    else res.writeStatus(405)
+    else res.writeStatus(HttpCode.methodNotAllowed)
   }
 
   **
@@ -45,7 +45,7 @@ abstract class Weblet
   **
   virtual void get(WebReq req, WebRes res)
   {
-    res.writeStatus(200)
+    res.writeStatus(HttpCode.ok)
     res.writeContentType("text/plain")
     res.finishHeaders()
     req.dump(res)
@@ -56,7 +56,7 @@ abstract class Weblet
   **
   virtual void head(WebReq req, WebRes res)
   {
-    res.writeStatus(405)
+    res.writeStatus(HttpCode.methodNotAllowed)
   }
 
   **
@@ -64,7 +64,7 @@ abstract class Weblet
   **
   virtual void post(WebReq req, WebRes res)
   {
-    res.writeStatus(405)
+    res.writeStatus(HttpCode.methodNotAllowed)
   }
 
   **
@@ -72,7 +72,7 @@ abstract class Weblet
   **
   virtual void put(WebReq req, WebRes res)
   {
-    res.writeStatus(405)
+    res.writeStatus(HttpCode.methodNotAllowed)
   }
 
   **
@@ -80,7 +80,7 @@ abstract class Weblet
   **
   virtual void doDelete(WebReq req, WebRes res)
   {
-    res.writeStatus(405)
+    res.writeStatus(HttpCode.methodNotAllowed)
   }
 
 //////////////////////////////////////////////////////////////////////////
