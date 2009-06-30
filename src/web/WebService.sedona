@@ -89,13 +89,13 @@ class WebService
     if (path.size > 0)
     {
       Str prefix = path.names[0]
-      for (Weblet w = weblets; w != null; w = w.nextWeblet)
+      for (Weblet w = WebService.weblets; w != null; w = w.nextWeblet)
         if (prefix.equals(w.prefix()))
           return w
     }
 
     // use spy as fallback
-    return spyWeblet;
+    return SpyWeblet.spy
   }
 
 ////////////////////////////////////////////////////////////////
@@ -108,7 +108,8 @@ class WebService
 
   internal inline Handler[handlersLen] handlers  = {...}
   internal inline TcpServerSocket serverSocket
-  internal inline SpyWeblet spyWeblet
-  internal Weblet weblets = spyWeblet
+  
+  ** Linked list of weblets
+  static Weblet weblets
 
 }

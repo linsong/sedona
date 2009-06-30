@@ -8,11 +8,26 @@
 //
 
 **
-** Weblet is the base class for Components which handle
+** Weblet is the base class for Objects which handle
 ** HTTP requests for a specified URI prefix.
 **
+** Weblets should use the following idiom for registering themselves
+** with the WebService
+**
+**   class MyWeblet extends Weblet
+**   {
+**     static void _sInit() 
+**     {
+**       instance.nextWeblet = WebService.weblets
+**       WebService.weblets  = instance
+**     }
+** 
+**     static private inline MyWeblet instance
+**     ...
+**   }
+**
 abstract class Weblet
-  extends Component
+  extends Virtual
 {
 
 ////////////////////////////////////////////////////////////////
@@ -24,6 +39,11 @@ abstract class Weblet
   ** name (no slash) used for routing URIs to this Weblet.
   **
   abstract Str prefix()
+  
+  **
+  ** Get a brief description of the weblet.
+  ** 
+  virtual Str description() { return "" }
 
   **
   ** Service the specified request.  Default implementation
@@ -87,5 +107,6 @@ abstract class Weblet
 // Fields
 //////////////////////////////////////////////////////////////////////////
 
-  internal Weblet nextWeblet
+  ** Used for WebService's linked list of weblets
+  Weblet nextWeblet
 }

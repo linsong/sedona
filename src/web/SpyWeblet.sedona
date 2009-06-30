@@ -16,10 +16,23 @@ class SpyWeblet
 {
 
 ////////////////////////////////////////////////////////////////
+// Weblet Registration
+////////////////////////////////////////////////////////////////
+
+  static void _sInit()
+  {
+    spy.nextWeblet = WebService.weblets
+    WebService.weblets = spy
+  }
+  static internal inline SpyWeblet spy
+
+////////////////////////////////////////////////////////////////
 // Weblet
 ////////////////////////////////////////////////////////////////
 
   override Str prefix() { return "spy" }
+  
+  override Str description() { return "Sedona runtime diagnostics" }
 
   override void get(WebReq req, WebRes res)
   {
@@ -87,11 +100,10 @@ class SpyWeblet
 
     res.w("Weblets:\n")
     res.w("<ul>\n")
-    for (Weblet w = req.service.weblets; w != null; w = w.nextWeblet)
+    for (Weblet w = WebService.weblets; w != null; w = w.nextWeblet)
     {
       res.w(" <li><a href='/").w(w.prefix()).w("'>").w(w.prefix())
-         .w(" = ").w(w.type.kit.name).w("::").w(w.type.name)
-         .w("</a></li>\n")
+         .w("</a> - ").w(w.description()).w("</li>\n")
     }
     res.w("</ul>\n")
   }
