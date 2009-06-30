@@ -378,6 +378,7 @@ public class OfflineApp
 
   public void encodeAppXml(XWriter out)
   {
+    out.w("<?xml version='1.0'?>\n");
     out.w("<sedonaApp>\n");
     schema.encodeXml(out);
     out.w("<app>\n");
