@@ -13,7 +13,7 @@
 **
 @niagaraIcon="module://icons/x16/file.png"
  class PstoreFile
-  extends Service
+  extends Component
 {                                       
 
 //////////////////////////////////////////////////////////////////////////
