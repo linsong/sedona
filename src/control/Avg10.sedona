@@ -30,8 +30,8 @@ class Avg10
   **
   virtual override void start()
   {
-    // Initialize all samples with current input value
-    for (int i = 0; i < 10; i++) samples[i] = in
+    // Initialize all samples to 0 (so first 10 samples average properly)
+    for (int i = 0; i < 10; i++) samples[i] = 0.0f
 
     total = in
     index = 0
@@ -59,8 +59,7 @@ class Avg10
     if ((cv != lastValue) || forceSample)
     {
       // Add current sample to total and remove oldest sample
-      total += cv
-      if (!firstTen) total -= samples[index]
+      total = total - samples[index] + cv
       samples[index] = cv
 
       // Move to next oldest sample
