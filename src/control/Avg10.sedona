@@ -58,8 +58,9 @@ class Avg10
 
     if ((cv != lastValue) || forceSample)
     {
-      // Remove oldest sample from total and add current sample
-      total = total - samples[index] + cv
+      // Add current sample to total and remove oldest sample
+      total += cv
+      if (!firstTen) total -= samples[index]
       samples[index] = cv
 
       // Move to next oldest sample
