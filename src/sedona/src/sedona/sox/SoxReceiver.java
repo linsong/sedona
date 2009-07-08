@@ -85,13 +85,11 @@ class SoxReceiver
     try
     {
       // parse event into Component
-      cmd          = msg.u1();
-      int replyNum = msg.u1();
-      int compId   = msg.u2();
-      int what     = msg.u1();
+      cmd = msg.u1();
+      msg.u1();         // replyNum
 
       // apply the event
-      client.apply(msg, compId, what);
+      client.applyToCache(msg);
     }
     catch(Exception e)
     {

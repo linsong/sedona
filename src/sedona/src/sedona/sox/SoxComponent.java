@@ -8,10 +8,10 @@
 
 package sedona.sox;
 
-import java.io.*;
-import java.util.*;
+import java.io.PrintWriter;
+
 import sedona.*;
-import sedona.util.*;
+import sedona.util.ArrayUtil;
 
 /**
  * SoxComponent represents a remote Sedona component

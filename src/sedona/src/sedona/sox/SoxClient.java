@@ -16,11 +16,11 @@ import sedona.dasp.*;
 import sedona.util.*;
 
 /**
- * SoxClient implements the client side functionality 
- ** of Sox for a Java VM.
+ * SoxClient implements the client side functionality
+ * of Sox for a Java VM.
  */
 public class SoxClient
-{             
+{
 
 ////////////////////////////////////////////////////////////////
 // Constructor
@@ -30,15 +30,16 @@ public class SoxClient
    * Constructor
    */
   public SoxClient(DaspSocket socket, InetAddress addr, int port, String username, String password)
-  {                                   
+  {
     this.socket   = socket;
     this.addr     = addr;
     this.port     = port;
     this.username = username;
-    this.password = password;          
+    this.password = password;
+    this.util  = new SoxUtil(this);
     initOptions();
   }
-  
+
 ////////////////////////////////////////////////////////////////
 // Lifecycle
 ////////////////////////////////////////////////////////////////
@@ -48,8 +49,8 @@ public class SoxClient
    */
   public synchronized void connect()
     throws Exception
-  {                   
-    connect(null);             
+  {
+    connect(null);
   }
 
   /**
@@ -58,7 +59,7 @@ public class SoxClient
    */
   public synchronized void connect(Hashtable options)
     throws Exception
-  {    
+  {
     // if already opened, raise exception
     if (!isClosed())
       throw new SoxException("Already open!");
@@ -70,13 +71,13 @@ public class SoxClient
       public void daspSessionClosed(DaspSession s) { closeCause = s.closeCause();  close(); }
     };
     closeCause = "???";
-    
+
     // init exchange
     exchange = new SoxExchange(this);
 
     // launch receiver thread
     receiver = new SoxReceiver(this);
-    receiver.start();    
+    receiver.start();
   }
 
   /**
@@ -92,7 +93,7 @@ public class SoxClient
    * Return the local session id or -1 if closed.
    */
   public int localId()
-  {                    
+  {
     DaspSession s = this.session;
     return s == null ? -1 : s.id;
   }
@@ -110,8 +111,8 @@ public class SoxClient
    * Is this session currently closed.
    */
   public boolean isClosed()
-  {                           
-    DaspSession s = this.session;    
+  {
+    DaspSession s = this.session;
     if (s == null) return true;
     if (s.isClosed()) { closeCause = s.closeCause(); return true; }
     return false;
@@ -123,22 +124,22 @@ public class SoxClient
   public void close()
   {
     this.closing = true;
-    
+
     // shut down receiver
     try
-    {                           
+    {
       SoxReceiver r = this.receiver;
       if (r != null) r.kill();
       this.receiver = null;
     }
     catch (Exception e)
-    {                  
+    {
       e.printStackTrace();
     }
 
     // close the dasp session
     try
-    {                  
+    {
       DaspSession  s = this.session;
       if (s != null) s.close();
       this.session = null;
@@ -148,15 +149,14 @@ public class SoxClient
       e.printStackTrace();
     }
 
-    // null out cached stated
+    // null out cached state
     this.exchange = null;
     this.session  = null;
     this.receiver = null;
-    this.schema   = null;
-    this.version  = null;
     this.cache    = new SoxComponent[1024];
-    this.allTreeEvents = false;  
-      
+    this.allTreeEvents = false;
+    this.util  = null;
+
     // notify listener if registered
     try
     {
@@ -180,8 +180,8 @@ public class SoxClient
     throws Exception
   {
     // check cache
-    if (schema != null)
-      return schema;
+    if (util.schema != null)
+      return util.schema;
 
     // build request
     Msg req = Msg.prepareRequest('v');
@@ -200,24 +200,25 @@ public class SoxClient
     // against the local manifest database, then you can't proceed;
     // TODO: eventually we should lazy load the kit/type/slot
     // definitions over the network
-    return schema = Schema.load(parts);
+    util.schema = Schema.load(parts);
+    return util.schema;
   }
 
   /**
-   * Read the full set of version meta-data.  If we've 
-   * already read it for this session then return the 
+   * Read the full set of version meta-data.  If we've
+   * already read it for this session then return the
    * cached version.
    */
   public synchronized VersionInfo readVersion()
     throws Exception
-  {         
+  {
     // check cache
-    if (version != null)
-      return version;   
-    
+    if (util.version != null)
+      return util.version;
+
     // read schema
     Schema schema = readSchema();
-      
+
     // build request
     Msg req = Msg.prepareRequest('y');
 
@@ -229,18 +230,18 @@ public class SoxClient
     String platformId = res.str();
     int scodeFlags = res.u1();
     KitVersion[] kits = new KitVersion[schema.kits.length];
-    for (int i=0; i<kits.length; ++i)                                        
+    for (int i=0; i<kits.length; ++i)
     {
-      Kit part = schema.kits[i];                          
+      Kit part = schema.kits[i];
       Version ver = new Version(res.str());
       kits[i] = new KitVersion(part.name, part.checksum, ver);
-    }                      
-    version = new VersionInfo(platformId, scodeFlags, kits);
+    }
+    util.version = new VersionInfo(platformId, scodeFlags, kits);
     int propNum = res.u1();
     for (int i=0; i<propNum; ++i)
-      version.props.put(res.str(), res.str());
+      util.version.props.put(res.str(), res.str());
 
-    return version;
+    return util.version;
   }
 
 ////////////////////////////////////////////////////////////////
@@ -273,9 +274,9 @@ public class SoxClient
 
     // parse response
     res.checkResponse('R');
-    int resCompId = res.u2();
-    int resPropId = res.u1();
-    int resTypeId = res.u1(); 
+    res.u2();     // resCompId
+    res.u1();     // resPropId
+    int resTypeId = res.u1();
 
     // return value
     Value v = slot.isAsStr() ? Str.make("") : Value.defaultForType(resTypeId);
@@ -317,7 +318,7 @@ public class SoxClient
   public synchronized SoxComponent[] load(int[] ids)
     throws Exception
   {
-    Schema schema = readSchema();
+    readSchema();
     int n = ids.length;
     SoxComponent[] result = new SoxComponent[n];
 
@@ -343,7 +344,7 @@ public class SoxClient
     {
       Msg res = responses[i];
       res.checkResponse('C');
-      apply(res);
+      applyToCache(res);
     }
 
     // everything should be in app cache now
@@ -401,7 +402,7 @@ public class SoxClient
     {
       Msg res = responses[i];
       res.checkResponse('C');
-      apply(res);
+      applyToCache(res);
     }
   }
 
@@ -413,14 +414,14 @@ public class SoxClient
    * Subscribe to all tree events for entire remote Sedona VM.
    */
   public synchronized void subscribeToAllTreeEvents()
-    throws Exception                                
-  {    
+    throws Exception
+  {
     request(Msg.makeSubscribeReq(0, 'a'));
-    
-    allTreeEvents = true;    
+
+    allTreeEvents = true;
     for (int i=0; i<cache.length; ++i)
       if (cache[i] != null) cache[i].subscription |= SoxComponent.TREE;
-    
+
   }
 
   /**
@@ -467,7 +468,7 @@ public class SoxClient
     {
       Msg res = responses[i];
       res.checkResponse('S');
-      apply(res);
+      applyToCache(res);
     }
 
     // update subscription mask on each component
@@ -483,16 +484,16 @@ public class SoxClient
    * Unsubscribe from all tree events for entire remote Sedona VM.
    */
   public synchronized void unsubscribeToAllTreeEvents()
-    throws Exception                                
+    throws Exception
   {
     // silently ignore unsubscribes if closed
-    if (isClosed()) return;                     
+    if (isClosed()) return;
 
     request(Msg.makeUnsubscribeReq(0, 0xff));
-        
-    allTreeEvents = false;    
+
+    allTreeEvents = false;
     for (int i=0; i<cache.length; ++i)
-      if (cache[i] != null) cache[i].subscription &= ~SoxComponent.TREE;      
+      if (cache[i] != null) cache[i].subscription &= ~SoxComponent.TREE;
   }
 
   /**
@@ -566,7 +567,7 @@ public class SoxClient
     req.u2(compId);
     req.u1(slot.id);
     if (arg != null)
-      arg.encodeBinary(req); 
+      arg.encodeBinary(req);
 
     // send request
     Msg res = request(req);
@@ -594,13 +595,13 @@ public class SoxClient
    */
   public synchronized void write(int compId, Slot slot, Value val)
     throws Exception
-  {                      
+  {
     if (!Component.testMode) slot.assertValue(val);
 
     // build request
     Msg req = Msg.prepareRequest('w');
     req.u2(compId);
-    req.u1(slot.id);    
+    req.u1(slot.id);
     val.encodeBinary(req);
 
     // send request
@@ -620,10 +621,10 @@ public class SoxClient
    */
   public synchronized SoxComponent add(SoxComponent parent, Type type, String name, Value[] configValues)
     throws Exception
-  { 
+  {
     // check name
-    Component.assertName(name);    
-    
+    Component.assertName(name);
+
     // check parent
     checkMine(parent);
     if (parent == null || parent.client != this)
@@ -632,9 +633,9 @@ public class SoxClient
       throw new IllegalArgumentException("Too many children under component");
 
     // check type
-    if (type.schema != this.schema)
-      throw new IllegalArgumentException("Type's schema doesn't match client: " + 
-                                      type.schema.toString() + " != " + this.schema.toString());
+    if (type.schema != util.schema)
+      throw new IllegalArgumentException("Type's schema doesn't match client: " +
+                                      type.schema.toString() + " != " + util.schema.toString());
 
     // check config props
     Slot[] props = type.configProps();
@@ -687,8 +688,8 @@ public class SoxClient
     throws Exception
   {
     // check name
-    Component.assertName(newName);    
-    
+    Component.assertName(newName);
+
     checkMine(comp);
 
     // build request
@@ -711,14 +712,14 @@ public class SoxClient
    */
   public synchronized void reorder(SoxComponent comp, int[] childrenIds)
     throws Exception
-  { 
+  {
     // get safe copy
     int[] ids = (int[])childrenIds.clone();
-    
-    // sanity check length                           
+
+    // sanity check length
     if (comp.children.length != ids.length)
       throw new IllegalArgumentException("childrenIds.length wrong");
-    
+
     // make sure same ids are used
     HashMap match = new HashMap(ids.length*3);
     for (int i=0; i<comp.children.length; ++i)
@@ -728,7 +729,7 @@ public class SoxClient
         throw new IllegalArgumentException("childrenIds don't match current");
     if (match.size() != 0)
       throw new IllegalArgumentException("childrenIds don't match current");
-    
+
     // build request
     Msg req = Msg.prepareRequest('o');
     req.u2(comp.id);
@@ -838,9 +839,9 @@ public class SoxClient
       int id = res.u2();
       if (id == 0xffff) break;
       temp[n++] = id;
-    }             
-    
-    // trim int array   
+    }
+
+    // trim int array
     int[] result = new int[n];
     System.arraycopy(temp, 0, result, 0, n);
     return result;
@@ -856,11 +857,11 @@ public class SoxClient
    * Standard headers:
    *   - chunkSize: client's preference for chunk size in bytes
    */
-  public synchronized Properties getFile(String uri, SoxFile file, 
-                                         Properties headers, 
+  public synchronized Properties getFile(String uri, SoxFile file,
+                                         Properties headers,
                                          TransferListener listener)
     throws Exception
-  {                    
+  {
     fileTransfer = new FileTransfer(this, uri, file, headers, listener);
     try
     {
@@ -869,7 +870,7 @@ public class SoxClient
     finally
     {
       fileTransfer = null;
-    }  
+    }
   }
 
   /**
@@ -879,8 +880,8 @@ public class SoxClient
    *   - chunkSize: client's preference for chunk size in bytes
    *   - staged: true to put as staged file (defaults to false)
    */
-  public synchronized Properties putFile(String uri, SoxFile file, 
-                                         Properties headers, 
+  public synchronized Properties putFile(String uri, SoxFile file,
+                                         Properties headers,
                                          TransferListener listener)
     throws Exception
   {
@@ -898,7 +899,7 @@ public class SoxClient
 
   /**
    * Rename a file on the remote device.
-   */                  
+   */
   public synchronized void renameFile(String from, String to)
     throws Exception
   {
@@ -917,33 +918,33 @@ public class SoxClient
 //////////////////////////////////////////////////////////////////////////
 // PStore Convenience
 //////////////////////////////////////////////////////////////////////////
-  
+
   /**
    * Return a PstoreFile into a memory buffer.
    */
   public Buf readPstoreFile(SoxComponent pstoreFile)
     throws Exception
-  {    
-    // read filename from parent service.
+  {
+    // read filename from parent service
     SoxComponent pstoreService = load(pstoreFile.parent);
     String filename = "";
     try
     {
       filename = readProp(pstoreService, pstoreService.slot("filename")).toString();
-    } 
+    }
     catch (Exception e)
     {
       throw new Exception("PstoreFile parent not PstoreService: " + pstoreService.type);
     }
-    
+
     // check status
     if (pstoreFile.getInt("status") != 0)
       throw new Exception("PstoreFile.status not ok");
-    
+
     // get reservation
     int offset = pstoreFile.getInt("resvOffset");
     int size = pstoreFile.getInt("resvSize");
-    
+
     // read file slice
     Buf buf = new Buf(size);
     Properties headers = new Properties();
@@ -953,145 +954,21 @@ public class SoxClient
     if (buf.size != size)
       throw new IOException("Didn't read all of pstore: " + size + " != " + buf.size);
     return buf;
-  }      
+  }
 
 //////////////////////////////////////////////////////////////////////////
 // Apply
 //////////////////////////////////////////////////////////////////////////
 
-  /**
-   * Convenience for apply(msg, compId, what).
-   */
-  void apply(Msg msg)
+  void applyToCache(Msg msg)
     throws Exception
   {
-    apply(msg, msg.u2(), msg.u1());
-  }
-
-  /**
-   * Given a component read or event message then apply the
-   * changes to our SoxComponent cache.
-   */
-  void apply(Msg msg, int compId, int what)
-    throws Exception
-  {
-    // try to lookup component
-    SoxComponent c = cache(compId);
-    if (c == null)
-    {
-      // if we have a 't' message, then we can create the component,
-      // otherwise we ignore events for components we don't have cached
-      if (what == 't') applyTreeNew(msg, compId);
-      return;
-    }
-
-    // handle apply for existing component
-    switch (what)
-    {
-      case 't': applyTreeCached(msg, c); break;
-      case 'c': applyProps(msg, c, 'c', false); break;
-      case 'r': applyProps(msg, c, 'r', false); break;
-      case 'C': applyProps(msg, c, 'c', true); break;
-      case 'R': applyProps(msg, c, 'r', true); break;
-      case 'l': applyLinks(msg, c); break;
-      default:  System.out.println("WARNING: apply of unknown category: " + (char)what + " 0x" + Integer.toHexString(what));
-    }
-  }
-
-  /**
-   * Apply a tree message for a new component.
-   */
-  private void applyTreeNew(Msg msg, int compId)
-    throws Exception
-  {
-    Kit kit = schema.kit(msg.u1());
-    Type type = kit.type(msg.u1());
-    SoxComponent c = new SoxComponent(this, compId, type);
-    applyTree(msg, c);
-    cacheAdd(c);
-  }
-
-  /**
-   * Apply a tree message for an existing cached component.
-   */
-  private void applyTreeCached(Msg msg, SoxComponent c)
-    throws Exception
-  {
-    Kit kit = schema.kit(msg.u1());
-    Type type = kit.type(msg.u1());
-    if (c.type != type)
-    {
-      // TODO
-      System.out.println("ERROR: Component has changed type!");
-      Thread.dumpStack();
-    }
-    applyTree(msg, c);
-  }
-
-  /**
-   * Common code for applyTreeNew() and applyTreeCached().
-   */
-  private void applyTree(Msg msg, SoxComponent c)
-    throws Exception
-  {
-    c.name = msg.str();
-    c.parent = msg.u2();
-    c.permissions = msg.u1();
-    int[] children = new int[msg.u1()];
-    for (int i=0; i<children.length; ++i)
-      children[i] = msg.u2();
-    c.setChildren(children);
-    c.fireChanged(SoxComponent.TREE);
-  }
-
-  /**
-   * Apply a config/runtime props message for an existing component.
-   */
-  private void applyProps(Msg msg, SoxComponent c, int what, boolean operatorOnly)
-    throws Exception
-  {              
-    Slot[] slots = c.type.slots;
-    for (int i=0; i<slots.length; ++i)
-    {
-      Slot slot = slots[i];
-      if (!slot.isProp()) continue;
-      if (operatorOnly && !slot.isOperator()) continue;
-      if (what == 'c' ? slot.isRuntime() : slot.isConfig()) continue;
-      Value val = c.get(slot).decodeBinary(msg);
-      c.set(slot, val);
-    }
-
-    c.fireChanged(what == 'c' ? SoxComponent.CONFIG : SoxComponent.RUNTIME);
-  }
-
-  /**
-   * Apply a links message for an existing component.
-   */
-  private void applyLinks(Msg msg, SoxComponent c)
-    throws Exception
-  {
-    ArrayList acc = null;
-    while (true)
-    {
-      int fromCompId = msg.u2();
-      if (fromCompId == 0xffff | fromCompId < 0) break;
-
-      Link link = new Link();
-      link.fromCompId = fromCompId;
-      link.fromSlotId = msg.u1();
-      link.toCompId   = msg.u2();
-      link.toSlotId   = msg.u1();
-
-      if (acc == null) acc = new ArrayList();
-      acc.add(link);
-    }
-
-    if (acc == null)
-      c.links = Link.none;
-    else
-      c.links = (Link[])acc.toArray(new Link[acc.size()]);
-
-    c.fireChanged(SoxComponent.LINKS);
+    int compId = msg.u2();
+    int what = msg.u1();
+    SoxComponent cached = cache(compId);
+    SoxComponent sc = util.apply(msg, compId, what, cached);
+    if (cached == null)
+      cacheAdd(sc);
   }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1183,18 +1060,18 @@ public class SoxClient
 
   void send(Msg buf)
     throws Exception
-  {            
+  {
     checkOpen();
-    
+
     if (traceMsg)
       System.out.println("--> [send] " + (char)buf.command() + " replyNum=" + buf.replyNum());
-      
+
     session.send(buf.bytes, 0, buf.size);
   }
 
   Msg receive(long timeout)
     throws Exception
-  {    
+  {
     DaspMessage rec = session.receive(timeout);
     if (rec == null) return null;
 
@@ -1202,13 +1079,13 @@ public class SoxClient
     if (traceMsg)
       System.out.println("<-- [recv] " + (char)msg.command() + " replyNum=" + msg.replyNum());
     return msg;
-  }                               
-  
+  }
+
   void checkOpen()
   {
     if (isClosed()) throw new SoxException("SoxClient closed: " + closeCause);
   }
-  
+
 ////////////////////////////////////////////////////////////////
 // Listeners
 ////////////////////////////////////////////////////////////////
@@ -1227,47 +1104,47 @@ public class SoxClient
 // Tuning Options
 ////////////////////////////////////////////////////////////////
 
-  public boolean traceMsg = false;   // dump sends/received 
-  
+  public boolean traceMsg = false;   // dump sends/received
+
   public void initOptions()
   {
     try
-    {                                       
+    {
       traceMsg = Env.getProperty("sox.traceMsg",        traceMsg);
     }
     catch (Throwable e)
-    {            
+    {
       e.printStackTrace();
     }
-  }                     
-  
+  }
+
   public void printOptions() { printOptions(new PrintWriter(System.out)); }
   public void printOptions(PrintWriter out)
   {
     out.println("  traceMsg        = " + traceMsg);
     out.flush();
   }
-  
+
 ////////////////////////////////////////////////////////////////
 // Fields
 ////////////////////////////////////////////////////////////////
-  
+
   public final DaspSocket socket;
   public final InetAddress addr;
   public final int port;
   public final String username;
-  public Listener listener;         
-  final String password;            
-  DaspSession session;  
+  public Listener listener;
+  final String password;
+  DaspSession session;
   String closeCause = "never opened";
   boolean allTreeEvents;
-  Schema schema;
-  VersionInfo version;
   SoxComponent[] cache = new SoxComponent[1024];
   SoxExchange exchange;
   SoxReceiver receiver;
   Object sendLock = new Object();
   FileTransfer fileTransfer;
   volatile boolean closing;
+
+  private SoxUtil util;
 
 }

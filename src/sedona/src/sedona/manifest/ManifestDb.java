@@ -53,7 +53,7 @@ public class ManifestDb
   }
 
   /**
-   * Lookup the manifest for the specified kit part using the algorthm:
+   * Lookup the manifest for the specified kit part using the algorithm:
    * <ol>
    * <li>If already loaded, return cached manifest
    * <li>If found, load from <code>{home}\manifests\kit\{kitName}-{checksum}.xml</code>
