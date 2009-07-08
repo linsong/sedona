@@ -9,36 +9,36 @@
 package sedona.web;
 
 import java.io.*;
-import java.util.*;      
+import java.util.*;
 import sedona.util.*;
 
 /**
- * WebMsg is the common base class for WebReq and WebRes. 
+ * WebMsg is the common base class for WebReq and WebRes.
  * It handles HTTP headers and provides IO utility methods.
  */
 public class WebMsg
-{               
+{
 
 ////////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////////
- 
+
   /**
    * List the set of header names.
    */
   public String[] list()
-  {                    
+  {
     return (String[])headers.keySet().toArray(new String[headers.size()]);
-  }               
+  }
 
   /**
    * Get a header by case-insensitive name or return null if not mapped.
    */
   public String get(String name)
-  {                        
+  {
     return (String)headers.get(name);
   }
-  
+
   /**
    * Get a header by case-insensitive name or return "def" if not mapped.
    */
@@ -52,8 +52,8 @@ public class WebMsg
    * Set a header by its case-insensitive name.  Return this.
    */
   public WebMsg set(String name, String val)
-  {             
-    headers.put(name, val);                                 
+  {
+    headers.put(name, val);
     return this;
   }
 
@@ -66,9 +66,9 @@ public class WebMsg
    */
   public void readHeadersText(InputStream in)
     throws IOException
-  {           
+  {
     while (true)
-    {      
+    {
       String line = readLine(in).trim();
       if (line.length() == 0) break;
       int colon = line.indexOf(':');
@@ -83,14 +83,47 @@ public class WebMsg
    */
   public void writeHeadersText(OutputStream out)
     throws IOException
-  {      
+  {
     Iterator it = headers.entrySet().iterator();
     while (it.hasNext())
     {
       Map.Entry e = (Map.Entry)it.next();
       writeLine(out, e.getKey() + ": " + e.getValue());
-    } 
+    }
     writeLine(out, "");
+  }
+
+////////////////////////////////////////////////////////////////
+// Binary I/O
+////////////////////////////////////////////////////////////////
+
+  /**
+   * Read a request in UDP binary format.
+   */
+  public void readHeadersBinary(InputStream in)
+    throws IOException
+  {
+    int hcode = in.read();
+    while (hcode > 0)
+    {
+      set(WebUtil.decompressHeaderName(hcode), WebUtil.readHeader(hcode, in));
+      hcode = in.read();
+    }
+  }
+
+  /**
+   * Write a request in UDP binary format.
+   */
+  public void writeHeadersBinary(OutputStream out)
+    throws IOException
+  {
+    Iterator it = headers.entrySet().iterator();
+    while (it.hasNext())
+    {
+      Map.Entry e = (Map.Entry)it.next();
+      WebUtil.writeHeader(e.getKey(), e.getValue(), out);
+    }
+    out.write(0);
   }
 
 ////////////////////////////////////////////////////////////////
@@ -99,7 +132,7 @@ public class WebMsg
 
   /**
    * Read an HTTP line terminated by CR LF
-   */             
+   */
   public static String readLine(InputStream in)
     throws IOException
   {
@@ -112,17 +145,17 @@ public class WebMsg
       if (last == '\r' && c == '\n') break;
       s.append((char)c);
       last = c;
-    }                                      
+    }
     s.setLength(s.length()-1);
     return s.toString();
   }
 
   /**
    * Write an HTTP line terminated by CR LF
-   */             
+   */
   public static void writeLine(OutputStream out, String line)
     throws IOException
-  {       
+  {
     for (int i=0; i<line.length(); ++i) out.write(line.charAt(i));
     out.write('\r');
     out.write('\n');
@@ -133,5 +166,5 @@ public class WebMsg
 ////////////////////////////////////////////////////////////////
 
   private TreeMap headers = new TreeMap(TextUtil.caseInsensitiveComparator);
-  
+
 }
