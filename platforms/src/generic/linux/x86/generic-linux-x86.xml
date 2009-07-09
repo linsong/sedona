@@ -4,7 +4,7 @@
   -  Licensed under the Academic Free License version 3.0
   -->
 
-<sedonaPlatform id="generic-linux-x86">
+<sedonaPlatform vendor="Tridium">
 
   <compile endian="little" blockSize="4" refSize="4" debug="true" test="true">
 
