@@ -12,7 +12,7 @@ import java.io.*;
 import java.lang.reflect.*;
 import java.util.*;
 import sedona.*;
-import sedona.kit.*;
+import sedona.manifest.*;
 import sedona.offline.*;
 
 /**
@@ -91,6 +91,8 @@ public class Main
       // initialize the class loader
       SedonaClassLoader loader = new SedonaClassLoader(schema);
       
+      bootstrap(schema, loader);
+      
       Class cls = loader.loadClass(mainClass);
       Method main = findMethod(cls, "main");
       Object result = main.invoke(null, toSedonaArgs(args));
@@ -105,7 +107,39 @@ public class Main
     {               
       throw e.getCause();
     }
-  }                   
+  }  
+  
+  /**
+   * Invokes {@code sedona.vm.<kit>.JsvmBootstrap.bootstrap()} on every
+   * kit in the schema in kit dependency order.
+   */
+  static void bootstrap(Schema schema, ClassLoader loader) throws Exception
+  {
+    HashMap map = new HashMap();
+    HashSet todo = new HashSet();
+    for (int i=0; i<schema.kits.length; ++i)
+    {
+      Kit k = schema.kits[i];
+      map.put(k.name, ManifestDb.load(new KitPart(k.name, k.checksum)));
+      todo.add(k.name);
+    }
+    for (int i=0; i<schema.kits.length; ++i)
+      doBootstrap(schema.kits[i].name, todo, map, loader);
+  }
+  
+  static void doBootstrap(String kit, HashSet todo, HashMap map, ClassLoader loader) throws Exception
+  {
+    if (!todo.contains(kit)) return;
+    
+    Depend[] depends = ((KitManifest)map.get(kit)).depends;
+    for (int i=0; i<depends.length; ++i)
+      if (todo.contains(depends[i].name()))
+        doBootstrap(depends[i].name(), todo, map, loader);
+    
+    findMethod(loader.loadClass("sedona.vm."+kit+".JsvmBootstrap"), "bootstrap")
+      .invoke(null, (Object[])null);
+    todo.remove(kit);
+  }
   
   static Object[] toSedonaArgs(String[] args)
   {                                       

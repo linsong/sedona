@@ -34,6 +34,7 @@ public class JavaKitAsm
     this.ir = compiler.ir;
     this.isSys = ir.name.equals("sys");
     this.jnameKitConst = "sedona/vm/" + ir.name + "/KitConst";
+    this.jnameBootstrap = "sedona/vm/" + ir.name + "/JsvmBootstrap";
   }
 
 ////////////////////////////////////////////////////////////////
@@ -44,6 +45,7 @@ public class JavaKitAsm
   {                        
     assembleTypeClasses();
     assembleKitClass();
+    assembleBootstrapClass();
     return (JavaClass[])classes.toArray(new JavaClass[classes.size()]);
   }
     
@@ -110,8 +112,91 @@ public class JavaKitAsm
     cls.qname     = ir.name + "::KitConst";
     cls.classfile = asm.compile();
     classes.add(cls);
-  }                 
+  }
+  
+////////////////////////////////////////////////////////////////
+// Bootstrap
+////////////////////////////////////////////////////////////////
 
+  /**
+   * Creates bootstrap class for the kit to invoke the static initializers of
+   * every type that contains one. The JSVM must call {@code bootstrap()} for
+   * every kit before launching {@code Sys.main}.
+   * <p>
+   * Note: calling the {@code _sInit()} method should <b>not</b> be done in the
+   * class initializer {@code <clinit>} of a Type that contains one because the
+   * Java VM is not required to invoke the class initializer until the class is
+   * loaded - which may be some time into jsvm execution (or never). However,
+   * the Sedona VM guarantees that all {@code _sInit()} will be invoked prior
+   * to executing main, so we must maintain that behavior in a JSVM implementation.
+   * 
+   * <pre>
+   * public class sedona.vm.&lt;kit&gt;.JsvmBootstrap
+   * {
+   *   public static void bootstrap()
+   *   {
+   *     &lt;type_1&gt;._sInit()
+   *     ...
+   *     &lt;type_n&gt;._sInit()
+   *   }
+   * }
+   * </pre>
+   * @see sedonac.gen.ImageGen
+   */
+  void assembleBootstrapClass()
+  {
+    Assembler asm = new Assembler(jnameBootstrap, "java/lang/Object", Jvm.ACC_PUBLIC, null);
+    
+    // public static void bootstrap()
+    Code code = new Code(asm);
+    code.maxLocals = 4;
+    code.maxStack = 0;
+    IrFlat flat = new IrFlat(compiler.ns, new IrKit[] { compiler.ir });
+    flat.preResolve();
+    IrMethod[] sInits = flat.staticInits;
+    final int contextRef = asm.cp.field("sedona/vm/sys/Sys", "context", "Lsedona/vm/Context;");
+    for (int i=0; i<sInits.length; ++i)
+    {
+      IrMethod m = sInits[i];
+      String parent = JavaClassAsm.jname(m.parent(), false);
+      String sig = JavaClassAsm.jsig(m);
+      int cls = asm.cp.cls(parent);
+      int nt  = asm.cp.nt(m.name(), sig);
+      if (sig.indexOf("Lsedona/vm/Context;") != -1)
+      {
+        code.add(GETSTATIC, contextRef);
+        code.maxStack++;
+      }
+      code.add(INVOKESTATIC, asm.cp.method(cls, nt));
+    }
+    code.add(RETURN);
+    asm.addMethod(new MethodInfo(asm, "bootstrap", "()V", Jvm.ACC_PUBLIC|Jvm.ACC_STATIC, code));
+    
+    // <clinit> constructor
+    Code clinit = new Code(asm);             
+    clinit.add(RETURN);       
+    clinit.maxLocals = 4;
+    clinit.maxStack  = 4;    
+    asm.addMethod(new MethodInfo(asm, "<clinit>", "()V", Jvm.ACC_PUBLIC|Jvm.ACC_STATIC, clinit));
+    
+    // <init> constructor
+    Code init = new Code(asm);     
+    init.add(ALOAD_0);
+    init.add(INVOKESPECIAL, asm.cp.method("java/lang/Object", "<init>", "()V"));
+    init.add(RETURN);       
+    init.maxLocals = 1;
+    init.maxStack  = 2;    
+    asm.addMethod(new MethodInfo(asm, "<init>", "()V", Jvm.ACC_PUBLIC, init));
+    
+    // compile class
+    JavaClass cls = new JavaClass();
+    cls.kitName   = ir.name;
+    cls.name      = "JsvmBootstrap";
+    cls.qname     = ir.name + "::JsvmBootstrap";
+    cls.classfile = asm.compile();
+
+    classes.add(cls);
+  }
   
 ////////////////////////////////////////////////////////////////
 // Kit/Type/Slot Reflection Constants
@@ -475,7 +560,8 @@ public class JavaKitAsm
 
   KitDef ast = compiler.ast;
   IrKit ir = compiler.ir;
-  String jnameKitConst;
+  final String jnameKitConst;
+  final String jnameBootstrap;
   boolean isSys;
   ArrayList classes = new ArrayList();
   HashMap strings = new HashMap();   // String const -> field name

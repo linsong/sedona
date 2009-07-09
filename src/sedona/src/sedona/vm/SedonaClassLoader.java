@@ -9,7 +9,6 @@
 package sedona.vm;
 
 import java.io.*;
-import java.lang.reflect.*;
 import java.util.zip.*;
 import java.util.*;
 import sedona.*;
@@ -29,19 +28,26 @@ public class SedonaClassLoader
   public SedonaClassLoader(ClassLoader parent, Schema schema, Context cx)
     throws Exception
   {
+    super(parent);
     this.schema = schema;
     this.kits = resolveKits();
     this.reflector = new Reflector(this, schema, cx);     
   }                  
 
+  /**
+   * Use the schema's class loader as the parent class loader.
+   * <p>
+   * {@code this(schema.getClass().getClassLoader(), schema, cx)}
+   */
   public SedonaClassLoader(Schema schema, Context cx)
     throws Exception
   {
-    this.schema = schema;
-    this.kits = resolveKits();
-    this.reflector = new Reflector(this, schema, cx);
+    this(schema.getClass().getClassLoader(), schema, cx);
   }
 
+  /**
+   * {@code this(schema, new Contest()) }
+   */
   public SedonaClassLoader(Schema schema)
     throws Exception
   {                                       
@@ -89,7 +95,7 @@ public class SedonaClassLoader
   
   public Class findClass(String name) 
     throws ClassNotFoundException
-  {                                 
+  {  
     // we expect all sedona classes to 
     // be under the "sedona.vm" package
     if (name.startsWith("sedona.vm."))
@@ -105,16 +111,14 @@ public class SedonaClassLoader
           return defineClass(name, cf, 0, cf.length);
       }
     }    
-    
     // otherwise, my parent class loader should have found it            
     throw new ClassNotFoundException(name);
-  }                     
+  }
 
   private byte[] findSedonaClass(String kitName, String typeName)
   {
     ZipFile kit = (ZipFile)kits.get(kitName);
     if (kit == null) return null;            
-
 
     String path = "sedona/vm/" + kitName + "/" + typeName + ".class";
     ZipEntry entry = kit.getEntry(path);
@@ -128,15 +132,13 @@ public class SedonaClassLoader
       in.close();       
 
       // if (true) dump(typeName, cf);
-      
       return cf;
     }
     catch (IOException e)
     {
       System.out.println("ERROR: Cannot read classfile from zip: " + path);
       return null;
-    }
-    
+    }    
   }                   
   
   private void dump(String name, byte[] cf)

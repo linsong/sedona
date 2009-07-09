@@ -9,15 +9,10 @@
 package sedona.vm;
 
 import java.lang.Byte;
-import java.lang.Float;
-import java.lang.Double;
-import java.io.*;
 import java.lang.reflect.*;
 import java.util.*;
 import sedona.*;
 import sedona.Type;
-import sedona.kit.*;
-import sedona.util.*;
 
 /**
  * Reflector is responsible for managing Sedona side reflection.

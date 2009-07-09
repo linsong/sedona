@@ -7,8 +7,6 @@
 //
 package sedonac.jasm;
 
-import java.io.*;
-import java.util.HashMap;
 import sedona.Facets;
 import sedonac.ir.*;
 import sedonac.namespace.*;
@@ -74,7 +72,7 @@ public class JavaClassAsm
     
     // assemble constructor and class initializer
     assembleConstructor();
-    assembleClassInit();                                            
+    assembleClassInit();
     
     // special 
     if (ir.qname.equals("sys::Kit")) assembleKitSpecials();
@@ -159,11 +157,7 @@ public class JavaClassAsm
     
     assembleInitFields(code, true);
     
-    if (sInit != null)          
-    {
-      code.add(GETSTATIC, contextRef());
-      code.add(INVOKESTATIC, methodRef(sInit));
-    }
+    // NOTE: do not call _sInit() here. See note on JavaKitAsm::assembleBootstrap()
     
     code.add(RETURN);
     
