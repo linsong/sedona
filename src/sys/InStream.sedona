@@ -1,0 +1,140 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   31 Jul 06  Brian Frank  Creation
+//   03 Apr 07  Brian Frank  Port from Java to Sedona
+//
+
+**
+** InStream is used to input text or binary data.
+**
+abstract class InStream
+  extends Virtual
+{
+
+////////////////////////////////////////////////////////////////
+// Write
+////////////////////////////////////////////////////////////////
+
+  **
+  ** Read an unsigned single byte. Return -1 if end
+  ** of stream is reached.
+  **
+  abstract int read()
+
+  **
+  ** Read a block of bytes.  Return number of bytes
+  ** read into b, or -1 if end of stream.
+  **
+  abstract int readBytes(byte[] b, int off, int len)
+
+  **
+  ** Close the stream.  Default implementation does nothing.
+  **
+  virtual void close()
+  {
+  }
+
+////////////////////////////////////////////////////////////////
+// Binary
+////////////////////////////////////////////////////////////////
+
+  **
+  ** Read a boolean value of zero or non-zero.
+  **
+  bool readBool()
+  {               
+    int x = read()
+    if (x == 2) return null
+    return x != 0
+  }
+
+  **
+  ** Read a single character (right now we only read ASCII).
+  **
+  int readChar()
+  {
+    return read()
+  }
+
+  **
+  ** Read a null terminated string into a buffer.
+  ** Return true on success, false on error or end
+  ** of stream.
+  **
+  bool readStr(Str s, int max)
+  {
+    int i = 0
+    while (i < max)
+    {
+      int ch = readChar()
+      if (ch < 0) return false
+      s.set(i++, ch)
+      if (ch == 0) return true
+    }                   
+    s.set(i-1, 0)
+    return false
+  }
+
+  **
+  ** Read an unsigned two byte integer in network
+  ** byte order.  Return -1 if end of stream.
+  **
+  int readU2()
+  {
+    int a = read()
+    int b = read()
+    if (a < 0 || b < 0) return -1
+    return ((a << 8) | b)
+  }
+
+  **
+  ** Read an signed four byte (32-bit) integer in network
+  ** byte order.  Return -1 if end of stream.
+  **
+  int readS4()
+  {
+    int a = read()
+    int b = read()
+    int c = read()
+    int d = read()
+    if (a < 0 || b < 0 || c < 0 || d < 0) return -1
+    return ((a << 24) | (b << 16) | (c << 8) | d)
+  }
+
+  **
+  ** Read an signed eight byte (64-bit) integer in network
+  ** byte order.  Return -1 if end of stream.
+  **
+  long readS8()
+  {   
+    return ((long)readS4() << 32) | ((long)readS4() & 0xFFFF_FFFFL);
+  }
+
+  **
+  ** Read a four byte (32-bit) floating point value in network byte order
+  **
+  float readF4()
+  {
+    return Sys.bitsToFloat(readS4())
+  }
+
+  **
+  ** Read a eight byte (64-bit) floating point value in network byte order
+  **
+  double readF8()
+  {                           
+    return Sys.bitsToDouble(readS8())
+  }
+
+  **
+  ** Skip n number of bytes.
+  **
+  void skip(int n)
+  {
+    while (n-- > 0) read()
+  }
+
+}

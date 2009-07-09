@@ -1,0 +1,50 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   23 Aug 07  Andy Saunders  Creation
+//
+
+**
+** AoPoint -- Class to model a Digital output point in a Device.
+**
+class DoPoint
+  extends Point 
+{
+  property bool  in  = false
+  property bool  out  = false
+
+  public bool lastValue
+  bool isFirstTime = true;
+  public bool isInChanged = false
+   
+
+  virtual override void execute()
+  {
+    super.execute()
+    if(isDown())
+    {
+      isFirstTime = true
+      return
+    }
+  
+    if(isFirstTime || (in != lastValue))
+    {
+      lastValue = in
+      //if(out != in)
+      wrValue(in)
+      isFirstTime = false
+      isInChanged = true
+    }
+  }  
+
+  **
+  ** wrValue call back when input changes
+  **
+  virtual void wrValue(bool value)
+  {
+    getDevice()?.setDoValue(address, value)
+  }
+  
+}
