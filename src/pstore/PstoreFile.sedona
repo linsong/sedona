@@ -62,6 +62,7 @@
   ** Offset of this file's storage reservation relative to the
   ** storage device modeled by the parent PstoreService.
   **
+  @defaultOnClone
   @config property int resvOffset
 
   **     
