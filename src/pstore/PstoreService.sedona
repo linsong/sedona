@@ -25,6 +25,7 @@ class PstoreService
   **
   ** File name used as the backing store.
   **
+  @defaultOnClone
   @asStr
   @config property Buf(32) filename = "data.pstore"
   
@@ -33,6 +34,7 @@ class PstoreService
   ** If the backing file store has a fixed size, then this
   ** configuration value is ignored.
   **
+  @defaultOnClone
   @config property int fileSize = 32768
     
   **     
