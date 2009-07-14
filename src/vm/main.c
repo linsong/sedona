@@ -88,7 +88,7 @@ int main(int argc, char *argv[])
   }
 
   // setup arguments
-  vm.args = argv + (2+optCount);
+  vm.args = (const char**)(argv + (2+optCount));
   vm.argsLen = argc - (2 + optCount);
 
   // setup callbacks

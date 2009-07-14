@@ -13,7 +13,12 @@
 #include "inet_util.h"
 
 // we never select more than one socket at
-// a time, so conserve memory
+// a time, so conserve memory.
+// NOTE: gcc gives a lot of warnings about redefining FD_SETSIZE
+// if we do not first undefine it. FD_SETSIZE is originally defined
+// in sys/select.h. Presumably this is ok since we were previously
+// stomping it anyway.
+#undef FD_SETSIZE
 #define FD_SETSIZE 1
 
 ////////////////////////////////////////////////////////////////

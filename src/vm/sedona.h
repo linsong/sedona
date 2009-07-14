@@ -150,6 +150,7 @@ typedef short             int_least16_t;
 #elif defined( __UNIX__ )
 
 // includes
+#include <stdlib.h>
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
