@@ -393,7 +393,10 @@ public class OfflineComponent
     if (id == 0)
       d.comp = app;
     else
+    {
       d.comp = new OfflineComponent(type);
+      d.comp.app = app;
+    }
     d.comp.id = id;
 
     // meta-data
