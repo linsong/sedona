@@ -14,7 +14,7 @@ class Point
 {
   property bool fault = false
   property int status = 0
-  @config property int address = 0
+  @defaultOnClone @config property int address = 0
 
  public bool isDown()
  {

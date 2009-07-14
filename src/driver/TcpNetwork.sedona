@@ -12,6 +12,7 @@
 class TcpNetwork
   extends DeviceNetwork 
 {
+  @defaultOnClone
   @config property int  port    = 0
   
 
