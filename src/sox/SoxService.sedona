@@ -20,7 +20,7 @@ class SoxService
 // Properties
 ////////////////////////////////////////////////////////////////
 
-  ** UDP port for listening - default on clone
+  ** UDP port for listening
   @defaultOnClone
   @config property short port = 1876
 
