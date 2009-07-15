@@ -9,7 +9,7 @@
 //
 
 **
-** SoxService implements the Dasp/Sox protocol for network 
+** SoxService implements the Dasp/Sox protocol for network
 ** provisioning, programming, and data access to a Sedona device.
 **
 class SoxService
@@ -21,8 +21,9 @@ class SoxService
 ////////////////////////////////////////////////////////////////
 
   ** UDP port for listening
-  @config property short port = 1876   
-  
+  @defaultOnClone
+  @config property short port = 1876
+
   ** Max of number of messages in receiving window.
   @config property byte receiveMax = 8
 
@@ -31,7 +32,7 @@ class SoxService
 ////////////////////////////////////////////////////////////////
 
   **
-  ** Lookup the session by id, update the receive ticks 
+  ** Lookup the session by id, update the receive ticks
   ** and return it.  If the session id is invalid or has been
   ** closed then return null.
   **
@@ -41,10 +42,10 @@ class SoxService
     if (0 <= index && index < Watch.max)
     {
       SoxSession s = sessions[index]
-      if (s.id() == sessionId) 
+      if (s.id() == sessionId)
       {
         if (s.closed) return null
-        s.lastReceiveTicks = Sys.ticks()          
+        s.lastReceiveTicks = Sys.ticks()
         return s
       }
     }
@@ -61,7 +62,7 @@ class SoxService
     if (s == null) return null
 
     // set the watch into the open state
-    s.reset()    
+    s.reset()
     datagram.getSocketAddr(s.addr)
 
     // log open
@@ -99,7 +100,7 @@ class SoxService
     Sys.app.initWatches(sessions)
     datagram.buf = packet.bytes
     openPort(true)
-    
+
     userService = (UserService)Sys.app.lookupService(UserService.type)
     if (userService == null) SoxService.log.error("Missing UserService")
   }
@@ -109,9 +110,9 @@ class SoxService
   ** Return true on success.
   **
   private bool openPort(bool logError)
-  {     
+  {
     if (socket.isClosed() && !socket.open())
-    {                                
+    {
       if (logError) log.warning("cannot open socket")
       return false
     }
@@ -145,14 +146,14 @@ class SoxService
   **  - check events
   **
   virtual override bool work()
-  {                  
+  {
     // check if we still need to open the port
-    if (!isPortOpen && !openPort(false)) 
-      return false          
-    
+    if (!isPortOpen && !openPort(false))
+      return false
+
     // check if there is a pending message
     int size = receive()
-    
+
     // process the message just received
     if (size > 0)
     {
@@ -166,15 +167,15 @@ class SoxService
     houseKeeping()
 
     // check any file transfers in progress
-    if (checkFileTransfers()) return true         
+    if (checkFileTransfers()) return true
 
-    // at this point if we processed a received 
-    // message we are done this work slice 
+    // at this point if we processed a received
+    // message we are done this work slice
     if (size > 0) return true
-     
+
     // check for pending events to fire
     return checkForEvents()
-  }                
+  }
 
 ////////////////////////////////////////////////////////////////
 // Dispatch
@@ -184,81 +185,81 @@ class SoxService
   ** Dispatch a received dasp/sox message.
   **
   void dispatch()
-  { 
-    // parse standard header   
+  {
+    // parse standard header
     BufInStream in = this.in
     int sessionId = in.readU2()
     int seqNum    = in.readU2()
     int msgType   = in.read()
     int numFields = msgType & 0xf
-    msgType       = (msgType >> 4) & 0xf  
+    msgType       = (msgType >> 4) & 0xf
 
-    // if hello try to allocate new session, right 
-    // now we just ignore the hello when busy instead 
+    // if hello try to allocate new session, right
+    // now we just ignore the hello when busy instead
     // of sending back proper busy error
     SoxSession session = null
     if (msgType == Dasp.HELLO)
-      session = openSession()  
+      session = openSession()
     else
       session = session(sessionId)
-    
-    // ignore messages for an invalid session id  
-    if (session == null) return    
 
-    // keep track of last time message is received 
+    // ignore messages for an invalid session id
+    if (session == null) return
+
+    // keep track of last time message is received
     session.lastReceiveTicks = Sys.ticks()
-    
-    // process control messages (these don't ever 
+
+    // process control messages (these don't ever
     // check receive or send window)
     switch (msgType)
     {
-      case Dasp.HELLO:        
-        session.challenge(this, numFields); 
-        session.receiveWindow.init(seqNum); 
+      case Dasp.HELLO:
+        session.challenge(this, numFields);
+        session.receiveWindow.init(seqNum);
         return
-      case Dasp.AUTHENTICATE: 
-        session.welcome(this, numFields); 
+      case Dasp.AUTHENTICATE:
+        session.welcome(this, numFields);
         return
-      case Dasp.CLOSE:        
-        closeSession(session); 
+      case Dasp.CLOSE:
+        closeSession(session);
         return
     }
 
     // let send window check for acks, if the sending window
-    // if full, then we can't accept this message b/c we won't 
+    // if full, then we can't accept this message b/c we won't
     // be able to send a response
     if (!session.sendWindow.checkAckHeaders(this, numFields)) return
-        
+
     // if datagram message type
     if (msgType == Dasp.DATAGRAM)
-    {                
-      // if not within the receiving window then toss it, 
+    {
+      // if not within the receiving window then toss it,
       // otherwise do sox level processing
       if (session.receiveWindow.receive(seqNum))
         SoxCommands.process(this, session)
     }
-  }     
+  }
 
 ////////////////////////////////////////////////////////////////
 // File Transfers
 ////////////////////////////////////////////////////////////////
 
   **
-  ** If any sessions have a file transfer in progress, 
+  ** If any sessions have a file transfer in progress,
   ** then give them a chance to do their work.
   **
   private bool checkFileTransfers()
-  {                          
+  {
     bool worked = false
     foreach (SoxSession s : sessions, Watch.max)
     {
-      if (s.closed) continue  
+      if (s.closed) continue
       switch (s.transfer.mode)
       {
         case FileTransfer.get: worked |= s.transfer.checkGet(this, s); break
         case FileTransfer.put: worked |= s.transfer.checkPut(this, s); break
       }
-    }     
+    }
     return worked
   }
 
@@ -321,16 +322,16 @@ class SoxService
 
   **
   ** If we have room in the session's sending window, then
-  ** fire the event, reset the event bit on the component, 
+  ** fire the event, reset the event bit on the component,
   ** and return true.
   **
   private bool enqueueEvent(SoxSession session, Component c, int subMask)
-  {                         
+  {
     // allocate event packet
-    SendPacket res = session.sendWindow.nextPacket()    
-    if (res == null) return false    
+    SendPacket res = session.sendWindow.nextPacket()
+    if (res == null) return false
 
-    // build response       
+    // build response
     res.cmd      = 'e'
     res.replyNum = 0xff
     res.refData  = c
@@ -352,7 +353,7 @@ class SoxService
 
   **
   ** Periodically we walk through all our open sessions
-  ** and check for send retries, keep alives, and timeouts. 
+  ** and check for send retries, keep alives, and timeouts.
   ** Return true if we did work.
   **
   private bool houseKeeping()
@@ -374,7 +375,7 @@ class SoxService
     lastHouseKeeping = Sys.ticks()
     return worked
   }
-    
+
 ////////////////////////////////////////////////////////////////
 // IO
 ////////////////////////////////////////////////////////////////
@@ -392,14 +393,14 @@ class SoxService
   }
 
   **
-  ** Send the packet over the network to the specified session. 
+  ** Send the packet over the network to the specified session.
   ** Return true on success, false on failure.
   **
   bool send(SoxSession s)
   {
     s.lastSendTicks = Sys.ticks()
     datagram.setSocketAddr(s.addr)
-    datagram.len = packet.size  
+    datagram.len = packet.size
     return socket.send(datagram)
   }
 
@@ -407,8 +408,8 @@ class SoxService
 // Fields
 ////////////////////////////////////////////////////////////////
 
-  define Log log                               
-  
+  define Log log
+
   inline SoxSession[Watch.max] sessions = {...}
   inline UdpSocket socket           // socket used for send/receive
   inline UdpDatagram datagram       // datagram reused for both send/receive
@@ -419,7 +420,7 @@ class SoxService
   long lastHouseKeeping             // time we last performed house keeping
   short lastCompId                  // last comp we fired events on in checkForEvents()
   UserService userService           // user service
-} 
+}
 
 
 
