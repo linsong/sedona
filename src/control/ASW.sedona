@@ -10,7 +10,7 @@
 **
 ** ASW Analog Switch object
 **
-** out = s1 ? in1 : in2
+** out = s1 ? in2 : in1
 **
 @niagaraIcon="module://icons/x16/control/util/switch.png"
 class ASW
@@ -23,7 +23,7 @@ class ASW
 
   virtual override void execute()
   {
-    out = s1 ? in1 : in2
+    out = s1 ? in2 : in1
   }
 
 }
