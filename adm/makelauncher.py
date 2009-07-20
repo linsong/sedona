@@ -34,7 +34,7 @@ libs = [
 
 defsA = [ ('LAUNCHER_MAIN', '\\"sedonac/Main\\"') ]           
 defsB = [ ('LAUNCHER_MAIN', '\\"sedona/sox/Main\\"') ]           
-defsC = [ ('LAUNCHER_MAIN', '\\"sedona/vm/Main\\"') ]           
+defsC = [ ('LAUNCHER_MAIN', '\\"sedona/vm/Jsvm\\"') ]           
 defsD = [ ('LAUNCHER_MAIN', '\\"sedonacert/Main\\"') ]           
 
 

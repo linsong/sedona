@@ -29,6 +29,7 @@ public class SedonaClassLoader
     throws Exception
   {
     super(parent);
+    if (cx == null) cx = new Context();
     this.schema = schema;
     this.kits = resolveKits();
     this.reflector = new Reflector(this, schema, cx);     
@@ -98,21 +99,55 @@ public class SedonaClassLoader
   {  
     // we expect all sedona classes to 
     // be under the "sedona.vm" package
+    final String kitName = parseKitName(name);
+    final String typeName = parseTypeName(name);
+    if (kitName != null && typeName != null)
+    {
+      byte[] cf = findSedonaClass(kitName, typeName);
+      if (cf != null)
+        return defineClass(name, cf, 0, cf.length);
+    }
+    throw new ClassNotFoundException(name);
+  }
+  
+  /**
+   * Get the kit name from the fully qualified class.
+   * 
+   * @param name the package qualified type name of the class.  Should be of
+   * form {@code sedona.vm.<kitName>.<typeName>}
+   * 
+   * @return the type name of the type, or {@code null} if the name is
+   * not a sedona type name.
+   */
+  protected String parseKitName(final String name)
+  {
     if (name.startsWith("sedona.vm."))
     {
       String qname = name.substring("sedona.vm.".length());
       int dot = qname.indexOf('.');
-      if (dot >= 0)
-      {                   
-        String kitName  = qname.substring(0, dot);
-        String typeName = qname.substring(dot+1);
-        byte[] cf = findSedonaClass(kitName, typeName);
-        if (cf != null)
-          return defineClass(name, cf, 0, cf.length);
-      }
-    }    
-    // otherwise, my parent class loader should have found it            
-    throw new ClassNotFoundException(name);
+      return (dot >= 0) ? qname.substring(0, dot) : null;
+    }
+    return null;
+  }
+  
+  /**
+   * Get the type name from the fully qualified class.
+   * 
+   * @param name the package qualified type name of the class.  Should be of
+   * form {@code sedona.vm.<kitName>.<typeName>}
+   * 
+   * @return the type name of the type, or {@code null} if the name is
+   * not a sedona type name.
+   */
+  protected String parseTypeName(final String name)
+  {
+    if (name.startsWith("sedona.vm."))
+    {
+      String qname = name.substring("sedona.vm.".length());
+      int dot = qname.indexOf('.');
+      return (dot >= 0) ? qname.substring(dot+1) : null;
+    }
+    return null;
   }
 
   private byte[] findSedonaClass(String kitName, String typeName)

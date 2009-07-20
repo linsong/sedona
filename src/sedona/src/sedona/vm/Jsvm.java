@@ -14,11 +14,12 @@ import java.util.*;
 import sedona.*;
 import sedona.manifest.*;
 import sedona.offline.*;
+import sedona.util.*;
 
 /**
- * Main for the Java based Sedona VM and runtime.
+ * Java based Sedona VM and runtime.
  */
-public class Main
+public class Jsvm
 {  
 
   public static void main(String[] args)
@@ -36,16 +37,14 @@ public class Main
       
       // otherwise first arg must be sab or sax file 
       // which we use to derive the schema from
-      File f = new File(arg);
-      if (!f.exists()) { println("File not found: " + f); return; }
-      Schema schema = OfflineApp.decodeApp(f).schema;
-      
-      // run the Sedona VM using the JVM!
-      run(schema, "sedona.vm.sys.Sys", args);
+      String[] sysMainArgs = new String[args.length-1];
+      System.arraycopy(args, 1, sysMainArgs, 0, sysMainArgs.length);
+      System.exit(new Jsvm(new File(arg), sysMainArgs).runJsvm());
     }
     catch (Throwable e)
     {
       e.printStackTrace();
+      System.exit(-1);
     }
   }                       
   
@@ -78,36 +77,138 @@ public class Main
   }
   
 ////////////////////////////////////////////////////////////////
-// Run
+// jsvm
 ////////////////////////////////////////////////////////////////
-
-  public static void run(Schema schema, String mainClass, String[] args)
-    throws Throwable
-  {                        
+  
+  /**
+   * Convenience for {@code this(app, new String[0])}
+   * @see #Jsvm(File, String[])
+   */
+  public Jsvm(File app) throws Exception
+  {
+    this(app, new String[0]);
+  }
+  
+  /**
+   * Creates a JSVM that runs the given application. If the {@code app} parameter
+   * is a {@code .sax} file, it is first converted to a {@code .sab} file in the
+   * same directory as the sax file.  The JSVM always uses the sab file to run
+   * the application.
+   * 
+   * @param app the File containing the application to run. Can be a {@code .sax}
+   * or {@code .sab} file.
+   * @param appArgs the arguments to pass to the main method being run
+   * by the JSVM.  The first argument is always the absolute path to the
+   * sab file.
+   * 
+   * @throws Exception Thrown if any problem occurs while loading the schema from
+   * the given app.
+   */
+  public Jsvm(File app, String[] appArgs) throws Exception
+  {
+    this.sab  = loadSchema(app);
+    this.args = appArgs;
+    this.mainClass = "sedona.vm.sys.Sys";
+  }
+  
+  private File loadSchema(final File app) throws Exception
+  {
+    File sab = app;
+    if (app.getName().endsWith(".sax"))
+    {
+      sab = new File(app.getParentFile(), FileUtil.getBase(app.getName()) + ".sab");
+      System.out.println("Converting " + app.getName() + " -> " + sab);
+      OfflineApp.decodeApp(app).encodeAppBinary(sab);
+    }
+    this.schema = OfflineApp.decodeApp(sab).schema;
+    return sab;
+  }
+  
+  /**
+   * Get the Schema being used by this JSVM.
+   * 
+   * @return the Schema being used by the JSVM.
+   * @see sedona.Schema
+   */
+  public final Schema getSchema() { return schema; }
+  
+  /**
+   * Create a new instance of the SedonaClassLoader to use for this jsvm.
+   * The default implementation returns
+   * <p>
+   * {@code new SedonaClassLoader(getSchema(), cx)}
+   * 
+   * @param cx the Context to create the class loader with
+   * @return a new SedonaClassLoader instance
+   * @throws Exception Thrown if the SedonaClassLoader fails to initialize
+   */
+  protected SedonaClassLoader newClassLoader(Context cx) throws Exception
+  {
+    return new SedonaClassLoader(getSchema(), cx);
+  }
+  
+  /**
+   * By default, the jsvm attempts to run the main method in class
+   * {@code sedona.vm.sys.Sys}.  Use this method to change the class containing
+   * the main method.  The class must have a method corresponding to the Sedona
+   * signature
+   * <p>
+   * {@code static int main(Str[] args, int argsLen)}
+   */
+  public final void setMainClass(final String mainClass)
+  {
+    this.mainClass = mainClass;
+  }
+  
+  /**
+   * Convenience for {@code return runJsvm(new Context());}
+   */
+  public final int runJsvm() throws Throwable
+  {
+    return runJsvm(new Context());
+  }
+  
+  /**
+   * Runs the JSVM with the given context.
+   *
+   * @return the return code of the main class run by the jsvm.
+   * 
+   * @see #newClassLoader(Context)
+   * @see #setMainClass(String)
+   */
+  public final int runJsvm(final Context cx) throws Throwable
+  {
     try
     {
-      System.out.println("Java Sedona VM");
-      
-      // initialize the class loader
-      SedonaClassLoader loader = new SedonaClassLoader(schema);
-      
+      SedonaClassLoader loader = newClassLoader(cx);
       bootstrap(schema, loader);
-      
-      Class cls = loader.loadClass(mainClass);
-      Method main = findMethod(cls, "main");
-      Object result = main.invoke(null, toSedonaArgs(args));
-      
-      System.out.println();
-      System.out.println("Return Code: " + result);
-      System.out.println("Test Results");
-      System.out.println("  Success: " + VmUtil.assertSuccess);
-      System.out.println("  Failure: " + VmUtil.assertFailure);
+      Method sysMain = findMethod(loader.loadClass(mainClass), "main");
+      return ((Integer)sysMain.invoke(null, sedonaArgs())).intValue();
     }
     catch (InvocationTargetException e)
-    {               
+    {
       throw e.getCause();
     }
-  }  
+  }
+
+  protected Object[] sedonaArgs()
+  {
+    StrRef[] strs = new StrRef[args.length + 1]; // room for sab and other args
+    strs[0] = VmUtil.strConst(sab.getAbsolutePath());
+    for (int i=0; i<args.length; ++i) 
+      strs[i+1] = VmUtil.strConst(args[i]);
+    return new Object[] { strs, new Integer(strs.length) };
+  }
+  
+  final protected File sab;
+  protected String[] args;
+  protected String mainClass;
+  
+  private Schema schema;
+  
+////////////////////////////////////////////////////////////////
+// Utility
+////////////////////////////////////////////////////////////////
   
   /**
    * Invokes {@code sedona.vm.<kit>.JsvmBootstrap.bootstrap()} on every
@@ -157,7 +258,6 @@ public class Main
       if (methods[i].getName().equals(name))
         return methods[i];
     throw new IllegalStateException("Cannot find method in " + cls.getName() + "." + name);
-    
   }
 
 ////////////////////////////////////////////////////////////////
@@ -180,6 +280,7 @@ public class Main
     // run tests    
     Schema schema = Schema.load(kits);
     SedonaClassLoader loader = new SedonaClassLoader(schema);   
+    bootstrap(schema, loader);
     runTests(loader, true);          
     
   }

@@ -79,7 +79,7 @@ public class Reflector
     finishCompTypes();
       
     long t2 = System.currentTimeMillis();  
-    System.out.println("initKitConsts (" + (t2-t1) + "ms)");
+//    System.out.println("initKitConsts (" + (t2-t1) + "ms)");
   }  
   
   void initKitConst(Kit kit)               
