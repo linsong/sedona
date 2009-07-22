@@ -11,6 +11,7 @@
     <!-- Native Kits -->
     <nativeKit depend="sys 1.0"    />
     <nativeKit depend="inet 1.0"   />
+    <nativeKit depend="datetimeStd 1.0" />
     <!--<nativeKit depend="nrio 1.0"   />-->
     <!--<nativeKit depend="jace 1.0"   />-->
     <!--nativeKit depend="serial 1.0" /-->
@@ -23,6 +24,7 @@
     <nativeSource path="/src/inet/native" />
     <nativeSource path="/src/inet/native/std" />
     <nativeSource path="/src/inet/native/sha1" />
+    <nativeSource path="/src/datetimeStd/native/std" />
     <!--nativeSource path="/src/fw/serial/native/unix" /-->
 
   </compile>    
