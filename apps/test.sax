@@ -34,6 +34,7 @@
     <!-- /service/web -->
     <comp name="web" id="6" type="web::WebService">
       <prop name="meta" val="16842753"/>
+      <prop name="port" val="8080"/>
     </comp>
     <!-- /service/pstore -->
     <comp name="pstore" type="pstore::PstoreService">
