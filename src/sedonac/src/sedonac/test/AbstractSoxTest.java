@@ -117,7 +117,7 @@ public abstract class AbstractSoxTest
     throws Exception
   { 
     // copy svm.exe to tempDir (so we mimic a live installation)
-    File exe = new File(Env.home, "bin"+File.separator+"svm.exe");
+    File exe = new File(Env.home, "bin"+File.separator+getSvmName());
     FileUtil.copyFile(exe, new File(testDir(), exe.getName()));                       
     
     String cmd = exe.getName() + " kits.scode app.sab";

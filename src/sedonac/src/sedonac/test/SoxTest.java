@@ -1178,12 +1178,15 @@ public class SoxTest
       KitPart.forLocalKit("inet"),
       KitPart.forLocalKit("web"),
     });
-
+    // start web service on non-root port
+    OfflineComponent web = new OfflineComponent(schema.type("web::WebService"), "web");
+    web.setInt("port", 8080);
+    
     this.app = new OfflineApp(schema);
     this.service = app.add(app, new OfflineComponent(schema.type("sys::Component"), "service"));
     this.plat    = app.add(service, new OfflineComponent(schema.type("sys::PlatformService"), "plat"));
     this.sox     = app.add(service, new OfflineComponent(schema.type("sox::SoxService"), "sox"));
-    this.web     = app.add(service, new OfflineComponent(schema.type("web::WebService"), "web"));
+    this.web     = app.add(service, web);
     this.soxTest = app.add(sox, new OfflineComponent(this.soxTestType = schema.type("sox::SoxTest"), "soxtest"));
     this.users   = app.add(service, new OfflineComponent(schema.type("sys::UserService"), "users"));
     this.admin   = app.add(users, new OfflineComponent(schema.type("sys::User"), "admin"));

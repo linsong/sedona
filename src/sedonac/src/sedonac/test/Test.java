@@ -130,6 +130,35 @@ public class Test extends Verifies
     verify(dir.exists());
     return dir;
   }
+  
+  /**
+   * @return the name of svm executable for the current OS.
+   */
+  public String getSvmName() 
+  {
+    if (isWindows()) return "svm.exe";
+    else if (isLinux()) return "svm";
+    else throw new IllegalStateException("Unsupported OS: " + System.getProperty("os.name"));
+  }
+  
+  /**
+   * Are we running on a Windows OS?
+   */
+  public boolean isWindows()
+  {
+    return System.getProperty("os.name").toLowerCase().indexOf("win") > -1;
+  }
+  
+  /**
+   * Are we running on a Linux OS?
+   */
+  public boolean isLinux()
+  {
+    return System.getProperty("os.name").toLowerCase().indexOf("linux") > -1;
+  }
+  {
+    
+  }
 
 //////////////////////////////////////////////////////////////////////////
 // Fields

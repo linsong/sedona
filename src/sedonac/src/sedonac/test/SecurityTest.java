@@ -47,7 +47,7 @@ public class SecurityTest
     verifyUser(u3, true);
     verifyTree(g2, true); 
     verifyLink(g0, g23, true);
-    verifyProv("svm.exe", true);
+    verifyProv(getSvmName(), true);
     verifyProv("kits.scode", false);
     verifyProv("app.sab", false);
     client.close();     
@@ -464,7 +464,7 @@ public class SecurityTest
     try { client.getFile(filename, SoxFile.make(outFile), null, null); } catch (Exception e) { ex = e; }
 
     if (can)
-    {    
+    { 
       verify(outFile.length() > 0);
       verify(ex == null);     
     }
