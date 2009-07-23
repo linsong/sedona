@@ -81,7 +81,8 @@ final class File
   
   **
   ** Return the current byte offset position of the file.  
-  ** Use seek to change the current position.
+  ** Use seek to change the current position. Returns -1
+  ** on an error.
   **
   int tell()
   {

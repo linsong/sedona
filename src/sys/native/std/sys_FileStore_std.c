@@ -7,19 +7,32 @@
 //
 
 #include "sedona.h"
-
+#ifdef _WIN32
+#include <windows.h>
+#endif
 
 // int FileStore.doSize(Str name)
 Cell sys_FileStore_doSize(SedonaVM* vm, Cell* params)
 {
+  // The FileStore API indicates that this native call should not
+  // cause the file to be opened. We'll do our best.
   const char* name = params[0].aval;
-  FILE* fp;
   Cell result;
+#ifdef _WIN32
+  BOOL fOk;
+  WIN32_FILE_ATTRIBUTE_DATA fileInfo;
 
-  // sanity check arguments
   if (name == NULL) return negOneCell;
-
-  // open file, if we can't open it return -1
+  fOk = GetFileAttributesEx(name, GetFileExInfoStandard, (void*)&fileInfo);
+  if (!fOk) return negOneCell;
+  result.ival = fileInfo.nFileSizeLow;
+#elif defined(_POSIX_SOURCE)
+  struct stat statInfo;
+  if (name == NULL || stat(name, &statInfo)) return negOneCell;
+  result.ival = statInfo.st_size;
+#else
+  // Our best was not good enough. Open the file...
+  FILE* fp;
   fp = fopen(name, "rb");
   if (fp == NULL) return negOneCell;
 
@@ -27,6 +40,7 @@ Cell sys_FileStore_doSize(SedonaVM* vm, Cell* params)
   fseek(fp, 0, SEEK_END);
   result.ival = ftell(fp);
   fclose(fp);
+#endif
 
   return result;
 }
@@ -73,11 +87,11 @@ Cell sys_FileStore_doRead(SedonaVM* vm, Cell* params)
   FILE* fp  = (FILE*)params[0].aval;
   Cell result;
 
-  // sanity check arguments
-  if (fp == NULL ) return negOneCell;
-
-  result.ival = fgetc(fp);
-  return result;
+  // sanity check arguments. FileStore requires -1 return value on error/eof.
+  if ((fp == NULL) || ((result.ival = fgetc(fp)) == EOF))
+	  return negOneCell;
+  else
+    return result;
 }
 
 // int FileStore.doReadBytes(Obj, byte[], int, int)
@@ -89,8 +103,8 @@ Cell sys_FileStore_doReadBytes(SedonaVM* vm, Cell* params)
   int32_t  len = params[3].ival;
   Cell result;
 
-  // sanity check arguments
-  if (fp == NULL ) return negOneCell;
+  // sanity check arguments. FileStream requires -1 on eof/error.
+  if ((fp == NULL) || feof(fp) || ferror(fp)) return negOneCell;
   
   buf = buf + off;
 
@@ -139,7 +153,7 @@ Cell sys_FileStore_doTell(SedonaVM* vm, Cell* params)
   Cell r;
 
   // sanity check arguments
-  if (fp == NULL ) return negOneCell;
+  if (fp == NULL) return negOneCell;
 
   r.ival = ftell(fp);
   
@@ -154,7 +168,7 @@ Cell sys_FileStore_doSeek(SedonaVM* vm, Cell* params)
   int32_t  r;
 
   // sanity check arguments
-  if (fp == NULL ) return negOneCell;
+  if (fp == NULL) return negOneCell;
 
   r = fseek(fp, pos, SEEK_SET);
 
@@ -167,7 +181,7 @@ Cell sys_FileStore_doFlush(SedonaVM* vm, Cell* params)
   FILE* fp = (FILE*)params[0].aval;
 
   // sanity check arguments
-  if (fp == NULL ) return negOneCell;
+  if (fp == NULL) return negOneCell;
 
   fflush(fp);
 
@@ -180,7 +194,7 @@ Cell sys_FileStore_doClose(SedonaVM* vm, Cell* params)
   FILE* fp = (FILE*)params[0].aval;
 
   // sanity check arguments
-  if (fp == NULL ) return negOneCell;
+  if (fp == NULL) return negOneCell;
 
   if (fclose(fp) != 0)
   {
