@@ -12,7 +12,7 @@ import java.io.*;
 import sedona.vm.*;
 
 /**
- * sys::FileStore native methods
+ * sys::FileStore native methods.
  */              
 public class FileStore_n
 {
@@ -22,8 +22,14 @@ public class FileStore_n
     return (int)toFile(name, cx).length();
   }
   
+  /**
+   * Open the file with the given name, using the mode 'm'.
+   * If the cx is sandboxed, do not open the file.
+   */
   public static Object doOpen(StrRef name, StrRef m, Context cx)
-  {                    
+  {
+    if (cx.isSandboxed()) return null;
+    
     try
     {
       File f = toFile(name, cx);        
@@ -34,39 +40,39 @@ public class FileStore_n
     }
     catch (IOException e)
     {
-      System.out.println("File_n.doOpen: " + e); 
+      System.out.println("FileStore_n.doOpen: " + e); 
       return null;
     }
   }
   
   public static int doRead(Object fp, Context cx)
-  {          
+  {         
     try
     {
       return ((RandomAccessFile)fp).read();
     }
     catch (IOException e)
     {
-      System.out.println("File_n.doRead: " + e); 
+      System.out.println("FileStore_n.doRead: " + e); 
       return -1;
     }
   }
   
   public static int doReadBytes(Object fp, byte[] b, int off, int len, Context cx)  
-  { 
+  {    
     try
     {                                   
       return ((RandomAccessFile)fp).read(b, off, len);
     }
     catch (IOException e)
     {
-      System.out.println("File_n.doReadBytes: " + e); 
+      System.out.println("FileStore_n.doReadBytes: " + e); 
       return 0;
     }
   }
   
   public static byte doWrite(Object fp, int b, Context cx)
-  {
+  {    
     try
     {
       ((RandomAccessFile)fp).write(b);
@@ -74,13 +80,13 @@ public class FileStore_n
     }
     catch (IOException e)
     {
-      System.out.println("File_n.doWrite: " + e); 
+      System.out.println("FileStore_n.doWrite: " + e); 
       return 0;
     }
   }
   
   public static byte doWriteBytes(Object fp, byte[] b, int off, int len, Context cx)
-  {
+  { 
     try
     {
       ((RandomAccessFile)fp).write(b, off, len);
@@ -88,13 +94,13 @@ public class FileStore_n
     }
     catch (IOException e)
     {
-      System.out.println("File_n.doWriteBytes: " + e); 
+      System.out.println("FileStore_n.doWriteBytes: " + e); 
       return 0;
     }
   }
   
   public static byte doSeek(Object fp, int pos, Context cx)
-  {           
+  {            
     try
     {
       ((RandomAccessFile)fp).seek(pos);
@@ -102,7 +108,7 @@ public class FileStore_n
     }
     catch (IOException e)
     {
-      System.out.println("File_n.doSeek: " + e); 
+      System.out.println("FileStore_n.doSeek: " + e); 
       return 0;
     }
   }
@@ -115,7 +121,7 @@ public class FileStore_n
     }
     catch (IOException e)
     {
-      System.out.println("File_n.doTell: " + e); 
+      System.out.println("FileStore_n.doTell: " + e); 
       return 0;
     }
   }
@@ -128,7 +134,7 @@ public class FileStore_n
     }
     catch (IOException e)
     {
-      System.out.println("File_n.doFlush: " + e);
+      System.out.println("FileStore_n.doFlush: " + e);
     }
   }
   
@@ -141,7 +147,7 @@ public class FileStore_n
     }
     catch (IOException e)
     {
-      System.out.println("File_n.doClose: " + e);
+      System.out.println("FileStore_n.doClose: " + e);
       return 0;
     }
   }
@@ -151,12 +157,13 @@ public class FileStore_n
     return new File(name.toString());
   }
   
-
-  public static boolean rename(StrRef from, StrRef to, Context cx)
+  public static byte rename(StrRef from, StrRef to, Context cx)
   {      
+    if (cx.isSandboxed()) return 0;
+    
     File fromFile = new File(from.toString());
     File toFile = new File(to.toString());
-    return fromFile.renameTo(toFile);
+    return (byte)(fromFile.renameTo(toFile) ? 1 : 0);
   }
   
 }
