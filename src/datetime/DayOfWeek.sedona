@@ -1,0 +1,31 @@
+//
+// Copyright (c) 2009 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   20 Feb 09  Dan Giorgis   creation
+//
+
+**
+**  Standard defines for days of the week
+** 
+final class DayOfWeek
+{   
+  define int sun = 0
+  define int mon = 1
+  define int tue = 2
+  define int wed = 3
+  define int thu = 4
+  define int fri = 5
+  define int sat = 6 
+  
+}
+
+
+  
+ 
+  
+    
+
+
+
