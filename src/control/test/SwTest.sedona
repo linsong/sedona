@@ -19,33 +19,33 @@ class SwTest
   {
     asw.in1 = 1.0
     asw.in2 = 2.0
-    asw.s1 = false
+    asw.s1 = true
     asw.execute()
     assert(asw.out == 2.0)
-    asw.s1 = true
+    asw.s1 = false
     asw.execute()
     assert(asw.out == 1.0)
     asw.in1 = 50.0
     asw.execute()
     assert(asw.out == 50.0)
     asw.in2 = 100.0
-    asw.s1 = false
+    asw.s1 = true
     asw.execute()
     assert(asw.out == 100.0)
 
     bsw.in1 = false
     bsw.in2 = true
-    bsw.s1 = false
+    bsw.s1 = true
     bsw.execute()
     assert(bsw.out == true)
-    bsw.s1 = true
+    bsw.s1 = false
     bsw.execute()
     assert(bsw.out == false)
     bsw.in1 = true
     bsw.execute()
     assert(bsw.out == true)
     bsw.in2 = false
-    bsw.s1 = false
+    bsw.s1 = true
     bsw.execute()
     assert(bsw.out == false)
   }
