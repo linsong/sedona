@@ -27,7 +27,7 @@ abstract class Weblet
   **
   ** Register the weblet with the WebService.
   **
-  protected void register()
+  void register()
   {
     nextWeblet = WebService.weblets
     WebService.weblets = this
@@ -36,7 +36,7 @@ abstract class Weblet
   **
   ** Remove this weblet from the WebService.
   **
-  protected void unregister()
+  void unregister()
   {
     Weblet w = WebService.weblets
     if (w == this) WebService.weblets = w.nextWeblet
