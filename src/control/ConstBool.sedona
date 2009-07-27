@@ -1,0 +1,29 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   31 Aug 07  Andy Saunders    Creation
+//
+
+**
+** ConstBool: boolean constant  
+**    out should never be a link destination.
+**                      
+@niagaraIcon="module://icons/x16/control/booleanPoint.png"
+class ConstBool
+  extends Component
+{
+  @config @summary property bool out
+  
+  action void setTrue()
+  {           
+    out = true
+  }
+  
+  action void setFalse()
+  {           
+    out = false
+  }
+  
+}

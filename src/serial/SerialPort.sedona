@@ -1,0 +1,222 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   02 Jul 07  Elizabeth McKenney   creation
+//
+
+**
+** SerialPort models a serial I/O port without software buffering.
+**
+final class SerialPort               // must be final since it has cstr
+{
+
+//////////////////////////////////////////////////////////////////////////
+// Fields
+//////////////////////////////////////////////////////////////////////////
+
+  ** Hardware address of port (meaning may vary w/platform).
+  public int portNum    = 0      
+
+
+  ** Value of parity field when parity is disabled
+  define int PARITY_DISABLED = 0
+  ** Value of parity field for no parity
+  define int PARITY_NONE     = 0
+  ** Value of parity field for odd parity
+  define int PARITY_ODD      = 1
+  ** Value of parity field for even parity
+  define int PARITY_EVEN     = 2
+  ** Value of parity field for mark parity
+  define int PARITY_MARK     = 3
+  ** Value of parity field for space parity
+  define int PARITY_SPACE    = 4
+
+  ** Value of rtsLevel field if RTS should initially be low (active high)
+  define int RTS_LOW         = 0
+  ** Value of rtsLevel field if RTS should initially be high (active low)
+  define int RTS_HIGH        = 1
+
+
+  // Serial params - default baud rate, parity, etc.
+  // Set of permissible values is platform-dependent
+  
+  ** Integer value of baud rate; set of permissible values is platform-dependent.
+  ** Defaults to 38400.
+  public int  baudRate  = 38400  
+
+  ** Integer number of data bits.  Defaults to 8.
+  public int  dataBits  = 8      
+
+  ** Integer number of stop bits.  Defaults to 1.
+  public int  stopBits  = 1      
+
+  ** Parity:  DISABLED/NONE/ODD/EVEN/MARK/SPACE (use consts provided).  Defaults to NONE.
+  public int  parity    = PARITY_NONE 
+
+  ** Initial RTS level:  HIGH or LOW.  Defaults to LOW.
+  ** This value is also assumed to be the RTS inactive level. (e.g. RTS_LOW implies RTS active high)
+  public int  rtsLevel  = RTS_LOW 
+
+
+  // In/out streams (inner classes of SerialPort)
+  
+  ** Stream interface for reading from port.
+  inline SerialInStream  in
+  ** Stream interface for writing to port.
+  inline SerialOutStream out
+
+
+//////////////////////////////////////////////////////////////////////////
+// Native methods
+//////////////////////////////////////////////////////////////////////////
+
+  **
+  ** Set the serial parameters for the port.  If any params are bad, do 
+  ** nothing and return -1, otherwise return 0.
+  **
+  internal native int  doInit(int port, int baud, int datab, int stopb, int par, int rts)
+
+  **
+  ** Shut down the serial port.  Return 0 if successful.
+  **
+  internal native int  doClose(int port)
+
+  **
+  ** Read one byte from port.  Return byte value, or -1 if no byte was
+  ** available.  (non-blocking)
+  **
+  internal native int  doRead(int port)
+
+  **
+  ** Write one byte to port.  Return -1 if any error, or 0 if successful.
+  **
+  internal native int  doWrite(int port, int c)
+
+  **
+  ** Read up to n bytes from port into array y.  Return number of bytes 
+  ** read, or -1 if an error occurred.  (non-blocking)
+  **
+  internal native int  doReadBytes(int port, byte[] y, int off, int len)
+
+  **
+  ** Write up to n bytes to port from array y.  Return number of bytes 
+  ** written, or -1 if an error occurred.  
+  **
+  internal native int  doWriteBytes(int port, byte[] y, int off, int len)
+
+
+//////////////////////////////////////////////////////////////////////////
+// Constructor
+//////////////////////////////////////////////////////////////////////////
+
+  **
+  ** SerialPort constructor sets up in/outstream refs.
+  ** Note that existence of cstr forces class to be final.
+  **
+  SerialPort()
+  {
+    // Connect in/out streams to this object
+    this.out.port = this
+    this.in.port  = this
+  }
+
+
+//////////////////////////////////////////////////////////////////////////
+// Methods
+//////////////////////////////////////////////////////////////////////////
+
+
+  **
+  ** Sets all params at once - no error checking at this time
+  ** 
+  int setParams(int port, int baud, int dataB, int stopB, int par, int rts)
+  {
+    this.portNum   = port
+    this.baudRate  = baud
+    this.dataBits  = dataB
+    this.stopBits  = stopB
+    this.parity    = par
+    this.rtsLevel  = rts
+
+    return 0
+  }
+
+
+  **
+  ** Opens/initializes serial port using current values of config params.
+  ** 
+  int open()
+  {
+    return doInit(portNum, baudRate, dataBits, stopBits, parity, rtsLevel)
+  }
+
+
+  **
+  ** Closes the port.  Subsequent attempts to read or write from the port
+  ** will return errors. 
+  **
+  int close()
+  {
+    return doClose(portNum)
+  }
+
+}
+
+
+****************************************************************
+** SerialOutStream
+****************************************************************
+
+internal class SerialOutStream extends OutStream
+{
+  **
+  ** Writes one byte to port.  Returns true if successful.
+  **
+  override bool write(int b) 
+  { 
+    return port.doWrite(port.portNum, b) == 0 
+  }
+
+  **
+  ** Writes len bytes to port from array b.  
+  ** Returns true if all bytes were written successfully.
+  **
+  override bool writeBytes(byte[] b, int off, int len) 
+  { 
+    return port.doWriteBytes(port.portNum, b, off, len) == len 
+  }
+ 
+  SerialPort port
+}
+
+****************************************************************
+** SerialInStream
+****************************************************************
+
+internal class SerialInStream extends InStream
+{
+  **
+  ** Reads one byte from port.
+  ** Returns byte read, or -1 on error.
+  **
+  override int read() 
+  { 
+    return port.doRead(port.portNum) 
+  }
+
+  **
+  ** Reads len bytes from port into array b.  
+  ** Returns number of bytes read successfully, or
+  ** -1 on error.
+  **
+  override int readBytes(byte[] b, int off, int len) 
+  { 
+    return port.doReadBytes(port.portNum, b, off, len) 
+  }
+
+  SerialPort port
+}
+
+
