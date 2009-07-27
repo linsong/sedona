@@ -23,7 +23,7 @@ class BSW
 
   virtual override void execute()
   {
-    out = s1 ? in1 : in2
+    out = s1 ? in2 : in1
   }
 
 }
