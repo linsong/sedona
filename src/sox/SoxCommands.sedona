@@ -1325,9 +1325,17 @@ class SoxCommands
   **  }
   **
   static void eventRes(SoxService service, SoxSession session, SendPacket p)
-  {                                              
-    Component c = (Component)p.refData
+  {
+    Component c = Sys.app.lookup(p.u2Data1)
     int what = p.u2Data2
+    
+    // if component has since been removed
+    if (c == null)
+    {       
+      p.error("removed")
+      errorRes(service, session, p)
+      return
+    }
 
     // create event request and send on its way
     OutStream out = prepareRes(service, session, p)

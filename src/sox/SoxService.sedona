@@ -334,7 +334,7 @@ class SoxService
     // build response
     res.cmd      = 'e'
     res.replyNum = 0xff
-    res.refData  = c
+    res.u2Data1  = c.id
     res.u2Data2  = Watch.fromSubBit(subMask)  // map sub mask bit to ascii code and event bit
 
     // fire the event
