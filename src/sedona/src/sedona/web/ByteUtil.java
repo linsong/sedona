@@ -1,3 +1,8 @@
+//
+// Copyright (c) 2009 Tridium, Inc.
+// Licensed under the Academic Free License version 3.0
+//
+
 package sedona.web;
 
 import java.io.PrintWriter;
