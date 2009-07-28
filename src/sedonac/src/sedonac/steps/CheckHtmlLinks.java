@@ -10,9 +10,6 @@ package sedonac.steps;
 
 import java.io.*;
 import java.util.*;
-import sedona.*;
-import sedona.kit.*;
-import sedona.util.*;
 import sedona.xml.*;
 import sedonac.Compiler;
 import sedonac.*;

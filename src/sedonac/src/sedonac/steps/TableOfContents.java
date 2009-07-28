@@ -10,7 +10,6 @@ package sedonac.steps;
 
 import java.io.*;
 import java.util.*;
-import sedona.*;
 import sedona.kit.*;
 import sedona.manifest.*;
 import sedona.util.*;
@@ -268,7 +267,6 @@ public class TableOfContents
     out.w("<head>\n");
     out.w("  <title>Sedona Index</title>\n");
     out.w("  <meta http-equiv='Content-type' content='text/html;charset=UTF-8' />\n");
-    out.w("  <script src='sedonadoc.js'></script>\n");
     out.w("  <link rel='stylesheet' type='text/css' href='style.css'/>\n");
     out.w("</head>\n");
     out.w("<body>\n"); 
@@ -298,7 +296,6 @@ public class TableOfContents
     }
 
     //nav(out, null, null);
-    
     writeCopyright(out);
     out.w("</body>\n");
     out.w("</html>\n");
@@ -337,7 +334,6 @@ public class TableOfContents
     out.w("<head>\n");
     out.w("  <title>Sedona API Index</title>\n");
     out.w("  <meta http-equiv='Content-type' content='text/html;charset=UTF-8' />\n");
-    out.w("  <script src='sedonadoc.js'></script>\n");
     out.w("  <link rel='stylesheet' type='text/css' href='style.css'/>\n");
     out.w("</head>\n");
     out.w("<body>\n");
@@ -377,7 +373,6 @@ public class TableOfContents
   {
     copyResources(".css");
     copyResources(".png");
-    copyResources(".js");
   }
 
   private void copyResources(String ext)
@@ -408,7 +403,6 @@ public class TableOfContents
     out.w("<head>\n");
     out.w("  <title>" + chapter.name + "</title>\n");
     out.w("  <meta http-equiv='Content-type' content='text/html;charset=UTF-8' />\n");
-    out.w("  <script src='sedonadoc.js'></script>\n");
     out.w("  <link rel='stylesheet' type='text/css' href='style.css'/>\n");
     out.w("</head>\n");
     out.w("<body>\n");
@@ -434,9 +428,7 @@ public class TableOfContents
   
   private void writeCopyright(XWriter out)
   {
-    out.w("<div class='copyright'>")
-    .w("<script type='text/javascript'>copyright()</script>")
-    .w("</div>\n");
+    out.w("<div class='copyright'>Copyright &#169; 2009, Tridium, Inc.</div>\n");
   }
 
 ////////////////////////////////////////////////////////////////
