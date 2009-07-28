@@ -186,8 +186,16 @@ public class CheckHtmlLinks
       File f = new File(dir, filename);
       if (!f.exists())
       {
-        err("Unknown href target '" + href + "'", new Location(elem));
-        return;                                                         
+        // Check if target exists when resolved against output directory
+        f = new File(compiler.outDir, filename);
+        if (!f.exists())
+        {
+          if (filename.startsWith("../"))
+            log.warn("WARNING: " + new Location(elem) + ": Cannot resolve relative href target '" + href + "'");
+          else
+            err("Unknown href target '" + href + "'", new Location(elem));
+        }
+        return;                                                     
       }      
       
       try

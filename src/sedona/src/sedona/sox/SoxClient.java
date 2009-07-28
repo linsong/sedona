@@ -309,13 +309,24 @@ public class SoxClient
   }
 
   /**
+   * Convenience for <code>load(int[], true)</code>.
+   */
+  public synchronized SoxComponent[] load(int[] ids)
+    throws Exception
+  {
+    return load(ids, true);
+  }
+   
+  /**
    * Load the component meta-data definitions of the specified ids.
    * If we've already loaded a given id return the cached SoxComponent,
    * otherwise perform a network call to read it.  Note the
    * SoxComponent only represents identity and tree structure,
-   * none of it's property values or links are fetched.
+   * none of it's property values or links are fetched.  If checked
+   * is true and any ids fails then throw SoxException.  If checked
+   * is false then return null for that id in the resulting array.
    */
-  public synchronized SoxComponent[] load(int[] ids)
+  public synchronized SoxComponent[] load(int[] ids, boolean checked)
     throws Exception
   {
     readSchema();
@@ -342,7 +353,8 @@ public class SoxClient
     // parse responses and apply
     for (int i=0; i<responses.length; ++i)
     {
-      Msg res = responses[i];
+      Msg res = responses[i]; 
+      if (!checked && res.isError()) continue;
       res.checkResponse('C');
       applyToCache(res);
     }
@@ -352,7 +364,7 @@ public class SoxClient
     {
       int id = ids[i];
       result[i] = cache(id);
-      if (result[i] == null) throw new IllegalStateException(""+id);
+      if (checked && result[i] == null) throw new IllegalStateException(""+id);
     }
     return result;
   }

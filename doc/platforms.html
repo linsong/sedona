@@ -19,6 +19,7 @@
 <head>
   <title>Platforms</title>
   <meta http-equiv='Content-type' content='text/html;charset=UTF-8' />
+  <script src='sedonadoc.js'></script>
   <link rel='stylesheet' type='text/css' href='style.css'/>
 </head>
 <body>
@@ -270,14 +271,16 @@ XML from the platform definition.</p>
 
 <p>A Platform ARchive, or PAR file, provides a way of organizing various files and
 data about a platform into a single entity. A PAR file is a zip file with a
-<code>.par</code> extension.  The PAR may contain arbitrary contents, but certain
-paths and filenames within the PAR are well-defined or reserved:</p>
+<code>.par</code> extension.  All paths and filenames are reserved by Sedona, except
+vendors may stash any content they want in /vendor.  The following filenames
+and paths are currently defined by Sedona:
+</p>
 
 <pre>
 &lt;myplatform>.par/
                 /platformManifest.xml
                 /svm/&lt;svm binary>
-                /lib/*
+                /vendor/*
 </pre>
 
 <ul>
@@ -287,17 +290,14 @@ paths and filenames within the PAR are well-defined or reserved:</p>
   <li><b>platformManifest.xml</b>: (required) Must be in the root of the
   PAR file and have that name. A PAR file is not valid, and will be rejected by
   sedonadev.org, if it does not have a manifest. Further, the manifest <i>must</i>
-  have a the <code>id</code> attribute set to the platform id.</li>
+  have the <code>id</code> attribute set to the platform id.</li>
 
   <li><b>svm/&lt;svm binary></b>: (optional) If you desire to package the
   svm binary for the platform, it should be the only file in the <code>/svm</code>
   directory.  It can have any name.</li>
   
-  <li><b>/lib*</b> (optional - reserved) This directory is currently not used
-  in any way by Sedona tools or Sedona itself, but it is reserved for future use.</li>
-  
-  <li>The PAR file may contain any other files and directories at the platform
-  vendor's discretion.</li>
+  <li><b>vendor/*</b>: (optional) The vendor may put any arbitrary contents
+  in this location.</li>
 </ul>
 
 <p>The PAR file should be created as part of the vendor's build toolchain. Sedonac
@@ -373,7 +373,7 @@ with id <code>acme-basicPlatform-win32-1.0.39</code>, the</p>
  | <a href='schema.html'>Prev</a>
  | <a href='networking.html'>Next</a>
 </div>
-<div class='copyright'>Copyright &#169; 2007-2009 Tridium, Inc.</div>
+<div class='copyright'><script type='text/javascript'>copyright()</script></div>
 </body>
 <!-- TOC-FOOTER-END -->
 

@@ -111,6 +111,7 @@ public class WriteDoc
     out.w("<head>\n");
     out.w("  <title>").w(title).w("</title>\n");
     out.w("  <meta http-equiv='Content-type' content='text/html;charset=UTF-8' />\n");
+    out.w("  <script src='../sedonadoc.js'></script>\n");
     out.w("  <link rel='stylesheet' type='text/css' href='../style.css'/>\n");
     out.w("</head>\n");
     out.w("<body>\n"); 
@@ -127,6 +128,7 @@ public class WriteDoc
       out.w("  <li><a href='").w(home).w("'>Home</a></li>\n");
       out.w("  <li><a class='active' href='index.html'>Documentation</a></li>\n");
       out.w("  <li><a href='../../community.html'>Community</a></li>\n");
+      out.w("  <li><a href='../../certification.html'>Certification</a></li>\n");
       out.w("  <li><a href='/download/'>Download</a></li>\n");
       out.w("  <li><a href='http://groups.google.com/group/sedonadev'>Forum</a></li>\n");
       out.w("</ul>\n");    
@@ -138,7 +140,7 @@ public class WriteDoc
   private void footer(XWriter out)
   {
     nav(out);
-    out.w("<div class='copyright'>Copyright &#169; 2007-2009 Tridium, Inc.</div>\n");
+    out.w("<div class='copyright'><script type='text/javascript'>copyright()</script></div>\n");
     out.w("</body>\n");
     out.w("</html>\n");
   }                         

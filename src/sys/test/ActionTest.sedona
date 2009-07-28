@@ -1,3 +1,8 @@
+//
+// Copyright (c) 2009 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+
 class ActionTest extends Test
 {
   static inline FooAction fooAction

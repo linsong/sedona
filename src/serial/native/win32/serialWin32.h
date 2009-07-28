@@ -1,11 +1,7 @@
-///////////////////////////////////////////////////////////
-// File: Tabsclient.h
 //
-// Revision History:
-//   8 Nov 2007  Robert Adams
+// Copyright (c) 2009 Tridium, Inc.
+// Licensed under the Academic Free License version 3.0
 //
-// Copyright 2007 Tridium, Inc.
-///////////////////////////////////////////////////////////
 
 #ifndef SERIAL_WIN32_H
 #define SERIAL_WIN32_H

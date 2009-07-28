@@ -9,6 +9,7 @@
 package sedona.sox;
 
 import java.io.PrintWriter;
+import java.util.ArrayList;
 
 import sedona.*;
 import sedona.util.ArrayUtil;
@@ -111,7 +112,30 @@ public class SoxComponent
   {
     try
     {
-      return client.load(children);
+      // load chlidren
+      int[] ids = this.children;
+      SoxComponent[] comps = client.load(ids, false);
+      
+      // check if we had any errors reading the children 
+      boolean errors = false;
+      for (int i=0; i<comps.length; ++i)
+        if (comps[i] == null) { errors = true; break; }
+      if (!errors) return comps;
+
+      // if we had errors it means that the children array 
+      // on client side doesn't match the reality of the 
+      // server, so ignore the children ids in error  
+      ArrayList acc = new ArrayList();
+      for (int i=0; i<comps.length; ++i) 
+        if (comps[i] != null) acc.add(comps[i]);
+      comps = (SoxComponent[])acc.toArray(new SoxComponent[acc.size()]);
+      
+      // save away actual list of ids we are using now
+      ids = new int[comps.length];
+      for (int i=0; i<comps.length; ++i) ids[i] = comps[i].id;
+      this.children = ids;
+
+      return comps;
     }
     catch (Exception e)
     {
@@ -175,7 +199,7 @@ public class SoxComponent
   }
 
   synchronized void removeChild(int child)
-  {                                                 
+  {
     children = ArrayUtil.removeOne(children, child);
   }
 

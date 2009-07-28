@@ -71,6 +71,8 @@ public class Msg
 // Sox Headers
 ////////////////////////////////////////////////////////////////
 
+  boolean isError() { return bytes[0] == '!'; }
+
   int command() { return bytes[0]; }
 
   public int replyNum() { return bytes[1]; }

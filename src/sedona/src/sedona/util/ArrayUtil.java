@@ -44,7 +44,8 @@ public class ArrayUtil
 
   /**
    * Remove the specified element and return an array
-   * that is one element shorter.
+   * that is one element shorter.  If the elem isn't
+   * found in the array then return array unchanged.
    */
   public static int[] removeOne(int[] array, int elem)
   {
@@ -60,8 +61,7 @@ public class ArrayUtil
         return temp;
       }
     }
-
-    System.out.println("WARNING: ArrayUtil.removeOne '" + elem + "' not found");
+    
     return array;
   }
 
