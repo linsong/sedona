@@ -1,0 +1,71 @@
+//
+// Copyright (c) 2009 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   15 Jul 09  Clif Turman    Creation
+//   24 Jul 09  Added inverted behavior
+//
+
+**
+** Applies hysteresis to an input value to set a boolean out.
+**
+** NOTE: If "Rising Edge" > "Falling Edge", then out behaves "normally", ie
+**   out switchs to "true" when in rises above "Rising Edge", and switches back
+**   to "false" when in falls below "Falling Edge"
+**                   Falling    Rising
+**                    Edge       Edge
+**                      |----------|-------
+**                      |          |
+**              --------|----------|
+**
+** NOTE: If "Rising Edge" < "Falling Edge", then out behaves "inverted", ie
+**   out switchs to "false" when in rises above "Falling Edge", and switches back
+**   to "true" when in falls below "Rising Edge"
+**                   Rising     Falling
+**                    Edge        Edge
+**              --------|----------|
+**                      |          |
+**                      |----------|-------
+**
+** NOTE: If "Rising Edge" == "Falling Edge", this object become a simple
+**  comparator, where if in > Rising Edge, then out = true
+**
+
+
+
+
+@niagaraIcon="module://icons/x16/control/util/hysteresis.png"
+class Hysteresis
+  extends Component
+{
+  property float in
+
+  @readonly property bool out = false
+
+  @defaultOnClone
+  @config property float risingEdge = 50.0
+
+  @defaultOnClone
+  @config property float fallingEdge = 50.0
+
+  virtual override void execute()
+  {
+  	if(risingEdge < fallingEdge)
+  	{
+  		//this is the "inverted case"
+      if(in <= risingEdge)
+        out=true
+  	  else if (in >= fallingEdge)
+  	    out=false
+  	}
+  	else
+    {
+    	//this is the "normal" case
+      if(in >= risingEdge)
+        out=true
+      else if (in <= fallingEdge)
+        out=false
+    }  	
+  }
+}

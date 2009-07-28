@@ -1,0 +1,24 @@
+<!--  
+     Niagara Build File 
+     Note: open source developers use adm python scripts
+-->
+  
+<module 
+ name = "sedonacert"
+ bajaVersion = "0"
+ preferredSymbol = "scert"
+ description = "Sedona Certification Test Suite"
+ vendor = "Tridium"
+>
+
+  <!-- Dependencies -->
+  <dependency name="sedona" />
+  <dependency name="sedonac" />
+
+  <!-- Java Packages -->
+  <package name="sedonacert"        doc="true" src="true" />
+  <package name="sedonacert.sox"    doc="true" src="true" />
+  <package name="sedonacert.prov"   doc="true" src="true" />
+  
+</module>
+
