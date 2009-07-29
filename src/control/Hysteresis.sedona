@@ -51,21 +51,21 @@ class Hysteresis
 
   virtual override void execute()
   {
-  	if(risingEdge < fallingEdge)
-  	{
-  		//this is the "inverted case"
+    if(risingEdge < fallingEdge)
+    {
+      //this is the "inverted case"
       if(in <= risingEdge)
         out=true
-  	  else if (in >= fallingEdge)
-  	    out=false
-  	}
-  	else
+      else if (in >= fallingEdge)
+        out=false
+    }
+    else
     {
-    	//this is the "normal" case
+      //this is the "normal" case
       if(in >= risingEdge)
         out=true
       else if (in <= fallingEdge)
         out=false
-    }  	
+    }	
   }
 }

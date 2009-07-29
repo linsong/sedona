@@ -24,6 +24,10 @@ class ReheatSeq
   extends Component
 
 {
+  @readonly property bool out1
+  @readonly property bool out2
+  @readonly property bool out3
+  @readonly property bool out4
   property float in                               // cv input
   @config property bool enable           // all outputs are false if enable == false
   @readonly property byte dOn  = 0                // number of outputs currently turned on
@@ -32,10 +36,6 @@ class ReheatSeq
   @config property float threshold2
   @config property float threshold3
   @config property float threshold4
-  @readonly property bool out1
-  @readonly property bool out2
-  @readonly property bool out3
-  @readonly property bool out4
 
 
   **
@@ -46,33 +46,33 @@ class ReheatSeq
     int numStagesOn = 0
     if(!enable)
     {
-    	out1=false
-    	out2=false
-    	out3=false
-    	out4=false
-    	dOn=0
-    	return
+      out1=false
+      out2=false
+      out3=false
+      out4=false
+      dOn=0
+      return
     }
 
     // Loop through out1 - out16 setting desired state for each
     //  (Note assumption that output slot ids are consecutive)
     for(int i = 0; i < 4; i++)
     {
-    	if(getBool(type.slots[ReheatSeq.out1.id+i]))
-    	{
-    		if((in + hysteresis) >= getFloat(type.slots[ReheatSeq.threshold1.id+i]))
+      if(getBool(type.slots[ReheatSeq.out1.id+i]))
+      {
+        if((in + hysteresis) >= getFloat(type.slots[ReheatSeq.threshold1.id+i]))
           numStagesOn++
-    		else
+        else
           setBool(type.slots[ReheatSeq.out1.id+i],false)
-    	}
-    	else
-    	{
-    		if(in >= getFloat(type.slots[ReheatSeq.threshold1.id+i]))
-    		{
-    			setBool(type.slots[ReheatSeq.out1.id+i],true)
-    			numStagesOn++
-    		}
-    	}
+      }
+      else
+      {
+        if(in >= getFloat(type.slots[ReheatSeq.threshold1.id+i]))
+        {
+          setBool(type.slots[ReheatSeq.out1.id+i],true)
+          numStagesOn++
+        }
+      }
     }
 
     dOn  = numStagesOn

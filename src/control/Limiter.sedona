@@ -16,18 +16,18 @@
 class Limiter
   extends Component
 {
-  property float in
   @readonly property float out
+  property float in
   @config property float lowLmt
   @config property float highLmt
 
   virtual override void execute()
   {
-  	if(in > highLmt)
-  		out = highLmt
-  	else if (in < lowLmt)
-  		out = lowLmt
-  	else
-  		out = in
+    if(in > highLmt)
+      out = highLmt
+    else if (in < lowLmt)
+      out = lowLmt
+    else
+      out = in
   }
 }
