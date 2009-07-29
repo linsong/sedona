@@ -6,6 +6,8 @@
 //   10 Jan 07  Andy Saunders  Creation
 //   27 Apr 07  Brian Frank    Port from Java to Sedona
 //   22 Apr 09  Elizabeth McKenney   Updated
+//   29 Jul 09  Refactored to add computeConstants private method to fix scaledMin/scaledMax
+//              not being recomputed whenever ki or kp changed.
 //
 
 **
@@ -37,18 +39,7 @@ class LP
   **
   virtual override void start()
   {
-    executeTime = (long)exTime * 1ms
-    kPkIconst   = kp * ki / 60.0f
-    if (kPkIconst==0.0f)
-    {
-      scaledMax = 0.0f
-      scaledMin = 0.0f
-    }
-    else
-    {
-      scaledMax = max / kPkIconst
-      scaledMin = min / kPkIconst
-    }
+  	computeConstants()
   }
 
 
@@ -69,12 +60,7 @@ class LP
 
     lastExecTime = now
 
-    float kProportional = kp 
-    float kIntegral     = ki
-    float kDerivative   = kd 
-    //float kPkIconst     = kProportional * kIntegral / 60.0f
-
-    if (kProportional == 0.0f)
+    if (kp == 0.0f)
       return;
 
     // TODO check for valid setpoint and cv
@@ -86,7 +72,7 @@ class LP
     float error = sp - cv
 
     //  Accumulate the error for integral control
-    if (kIntegral != 0.0)
+    if (ki != 0.0)
     {
       float iError = deltaSecs * error
       errorSum += iError
@@ -109,16 +95,15 @@ class LP
     }
 
     //  Calculate the proportional gain
-    float proportionalGain = error * kProportional
+    float proportionalGain = error * kp
 
     //  Calculate the integral gain
     //  All gain values are calculated in seconds.  Convert integral
     //  term (resets per minute) to resets per second
-    float integralGain = kProportional * kIntegral * errorSum / 60.0f
-
+    float integralGain = kp * ki * errorSum / 60.0f
 
     //  Calculate the derivative gain
-    float derivativeGain = kProportional * kDerivative * (error - lastError) / deltaSecs
+    float derivativeGain = kp * kd * (error - lastError) / deltaSecs
 
     //  Store the last error for derivative gain
     lastError = error
@@ -131,7 +116,7 @@ class LP
       pv = - pv;
 
     //  Add bias if not PI
-    if (kIntegral == 0.0f)
+    if (ki == 0.0f)
       pv = pv + bias
 
     // Constrain the overall gain
@@ -147,33 +132,35 @@ class LP
   **
   ** Behavior to execute when a property is changed externally
   ** 
-  override void changed(Slot slot)
+  virtual override void changed(Slot slot)
   {
-    super.changed(slot)
-
-    if (slot == LP.exTime)
-      executeTime = (1ms *  (long)exTime)
-    
-    if ((slot == LP.kp) || (slot == LP.ki))
-      kPkIconst = kp * ki / 60.0f
-
-    if (slot == LP.max)
+    if ((slot == LP.kp) ||
+        (slot == LP.ki) ||
+        (slot == LP.kd) ||
+        (slot == LP.max) ||
+        (slot == LP.min) ||
+        (slot == LP.exTime))
     {
-      if (kPkIconst==0.0f)
-        scaledMax = 0.0f
-      else
-        scaledMax = max / kPkIconst
+      computeConstants()
     }
-
-    if (slot == LP.min)
-    {
-      if (kPkIconst==0.0f)
-        scaledMin = 0.0f
-      else
-        scaledMin = min / kPkIconst
-    }
+    super.changed(slot)    
   }
 
+  private void computeConstants()
+  {
+    executeTime = (long)exTime * 1ms
+    kPkIconst   = kp * ki / 60.0f
+    if (kPkIconst==0.0f)
+    {
+      scaledMax = 0.0f
+      scaledMin = 0.0f
+    }
+    else
+    {
+      scaledMax = max / kPkIconst
+      scaledMin = min / kPkIconst
+    }
+  }
 
   // Precalc seldom-changed values for better performance
   private long  executeTime
