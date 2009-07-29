@@ -40,6 +40,24 @@ public class KitPart
 //////////////////////////////////////////////////////////////////////////
 
   /**
+   * Parse from "{name}-{checksum}" format.
+   */
+  public static KitPart parse(String s)
+  {                   
+    try
+    {
+      int dash = s.indexOf('-');
+      String n = s.substring(0, dash);
+      int c = (int)java.lang.Long.parseLong(s.substring(dash+1), 16);
+      return new KitPart(n, c);
+    }
+    catch (Exception e)
+    {
+      throw new IllegalArgumentException("Invalid KitPart format: " + s);
+    }
+  }
+
+  /**
    * Construct with specified kit name and explicit checksum.
    */
   public KitPart(String name, int checksum)

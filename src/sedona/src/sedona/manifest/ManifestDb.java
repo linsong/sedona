@@ -172,6 +172,46 @@ public class ManifestDb
     if (!info.file.exists()) save(km);
 
     return km;
+  }                        
+  
+  
+  /**
+   * List all the kit manifests installed into the manifests directory.
+   * This method just scans the file system directories, it does not
+   * attempt to open the manifests themselves.
+   */
+  public static KitPart[] listInstalled()
+  {      
+    ArrayList acc = new ArrayList();    
+    File[] dirs = dir.listFiles();
+    // iterate the kit directories
+    for (int i=0; i<dirs.length; ++i)
+    {                                      
+      // if directory, iterate the xml files
+      if (!dirs[i].isDirectory()) continue;
+      File[] files = dirs[i].listFiles();
+      for (int j=0; j<files.length; ++j)
+      {
+        File f = files[j];
+        String n = f.getName();
+        if (!n.endsWith(".xml")) continue;
+        try 
+        { 
+          acc.add(KitPart.parse(n.substring(0, n.length()-4))); 
+        }
+        catch (Exception e) {}
+      }
+    }    
+    return (KitPart[])acc.toArray(new KitPart[acc.size()]);
+  }                  
+  
+  /**
+   * Given a kit name/checksum pair, get the file on the 
+   * local file system which should store the manifest XML.
+   */
+  public static File toFile(KitPart kit)
+  {
+    return new File(dir, kit.name + File.separator + kit.toString() + ".xml");
   }
 
 //////////////////////////////////////////////////////////////////////////
