@@ -176,35 +176,38 @@ public class ManifestDb
   
   
   /**
-   * List all the kit manifests installed into the manifests directory.
-   * This method just scans the file system directories, it does not
-   * attempt to open the manifests themselves.
+   * List the name of all the kits installed into the local manifest 
+   * database.  This method just scans the file system directories, 
+   * it does not attempt to open the manifests themselves.
    */
-  public static KitPart[] listInstalled()
-  {      
+  public static String[] listInstalledKits()
+  {
     ArrayList acc = new ArrayList();    
     File[] dirs = dir.listFiles();
-    // iterate the kit directories
     for (int i=0; i<dirs.length; ++i)
-    {                                      
-      // if directory, iterate the xml files
-      if (!dirs[i].isDirectory()) continue;
-      File[] files = dirs[i].listFiles();
-      for (int j=0; j<files.length; ++j)
-      {
-        File f = files[j];
-        String n = f.getName();
-        if (!n.endsWith(".xml")) continue;
-        try 
-        { 
-          acc.add(KitPart.parse(n.substring(0, n.length()-4))); 
-        }
-        catch (Exception e) {}
-      }
-    }    
-    return (KitPart[])acc.toArray(new KitPart[acc.size()]);
-  }                  
+      if (dirs[i].isDirectory()) acc.add(dirs[i].getName());
+    return (String[])acc.toArray(new String[acc.size()]);
+  }                          
   
+  /**
+   * Given a kit name, return all the checksum manifests installed
+   * in the local manifest database.  This method just scans the file 
+   * system, it does not attempt to open the manifests themselves.
+   */
+  public static KitPart[] listInstalledParts(String kit)
+  {
+    ArrayList acc = new ArrayList();      
+    File[] files = new File(dir, kit).listFiles();
+    for (int i=0; files != null && i<files.length; ++i)
+    {
+      File f = files[i];
+      String n = f.getName();
+      if (!n.endsWith(".xml")) continue;
+      try { acc.add(KitPart.parse(n.substring(0, n.length()-4))); } catch (Exception e) {}
+    } 
+    return (KitPart[])acc.toArray(new KitPart[acc.size()]);
+  }
+    
   /**
    * Given a kit name/checksum pair, get the file on the 
    * local file system which should store the manifest XML.
