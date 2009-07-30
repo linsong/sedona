@@ -1,0 +1,26 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   10 Jan 07  Andy Saunders  Creation
+//   27 Apr 07  Brian Frank    Port from Java to Sedona
+//
+
+**
+** Mul4 Four Input Multiplication object
+**
+** out = in1 * in2 * in3 * in4
+**
+class Mul4
+  extends Mul2
+{
+  property float in3
+  property float in4
+
+  virtual override void execute()
+  {
+    out = in1 * in2 * in3 * in4
+  }
+
+}
