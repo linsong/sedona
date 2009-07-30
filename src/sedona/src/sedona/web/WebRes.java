@@ -82,7 +82,7 @@ public class WebRes extends WebMsg
     writeLine(out, "HTTP/" + version + " " + code + " " + reason);
     writeHeadersText(out);
     if (body != null)
-      ByteUtil.hexDump(new PrintWriter(out), body, 0, body.length);
+      out.write(body);
     out.flush();
   }
 
@@ -101,7 +101,7 @@ public class WebRes extends WebMsg
     code = WebUtil.decompressStatusCode(in.read());
     reason = WebUtil.httpCodeToReason(code);
     readHeadersBinary(in);
-    
+
     // read body - in.read() does not seem to block here
     ByteArrayOutputStream b = new ByteArrayOutputStream();
     int i = in.read();

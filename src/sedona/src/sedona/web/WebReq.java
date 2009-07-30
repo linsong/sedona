@@ -89,7 +89,7 @@ public class WebReq extends WebMsg
     writeLine(out, method + " " + uri + " HTTP/" + version);
     writeHeadersText(out);
     if (body != null)
-      ByteUtil.hexDump(new PrintWriter(out), body, 0, body.length);
+      out.write(body);
     out.flush();
   }
 
@@ -108,7 +108,7 @@ public class WebReq extends WebMsg
     method = WebUtil.decompressMethod(in.read());
     uri = WebUtil.readStr(in);
     readHeadersBinary(in);
-    
+
     // read body - in.read() does not seem to block here
     ByteArrayOutputStream b = new ByteArrayOutputStream();
     int i = in.read();
