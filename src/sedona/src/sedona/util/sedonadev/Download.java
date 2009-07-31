@@ -69,6 +69,26 @@ public final class Download
     
     log.info("Downloading " + conn.getURL());
     return new ZipInputStream(new BufferedInputStream(conn.getInputStream()));
+  }                       
+   
+  /**
+   * Read a URL on the website as an in-memory string.  
+   * Return null if the URL does exist on website.
+   */ 
+  public static String fetchString(final String path) throws Exception
+  {
+    URLConnection conn = open(path);
+    if (conn == null) return null;
+    Reader in = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+    char[] buf = new char[1024];
+    StringBuffer s = new StringBuffer();
+    while (true)
+    {
+      int n = in.read(buf, 0, buf.length);    
+      if (n < 0) break;
+      s.append(buf, 0, n);
+    }                                   
+    return s.toString();
   }
   
   /**
