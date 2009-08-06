@@ -68,7 +68,11 @@ public class SoxClient
     session = socket.connect(addr, port, username, password, options);
     session.listener = new DaspSession.Listener()
     {
-      public void daspSessionClosed(DaspSession s) { closeCause = s.closeCause();  close(); }
+      public void daspSessionClosed(DaspSession s)
+      {
+        closeCause = s.closeCause();
+        if (!closing) close();
+      }
     };
     closeCause = "???";
 
@@ -123,6 +127,7 @@ public class SoxClient
    */
   public void close()
   {
+    if (this.closing) return;
     this.closing = true;
 
     // shut down receiver
