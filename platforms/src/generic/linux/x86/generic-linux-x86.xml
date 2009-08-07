@@ -1,0 +1,34 @@
+<!--
+  -  Sedona Platform Manifest
+  -  Copyright 2007 Tridium Inc
+  -  Licensed under the Academic Free License version 3.0
+  -->
+
+<sedonaPlatform vendor="Tridium">
+
+  <compile endian="little" blockSize="4" refSize="4" debug="true" test="true">
+
+    <!-- Native Kits -->
+    <nativeKit depend="sys 1.0"    />
+    <nativeKit depend="inet 1.0"   />
+    <nativeKit depend="datetimeStd 1.0" />
+    <!--<nativeKit depend="nrio 1.0"   />-->
+    <!--<nativeKit depend="jace 1.0"   />-->
+    <!--nativeKit depend="serial 1.0" /-->
+  
+    <!-- Sources -->
+    <nativeSource path="/src/vm" />
+    <nativeSource path="/src/sys/native" />
+    <nativeSource path="/src/sys/native/std" />
+    <nativeSource path="/src/sys/native/unix" />
+    <nativeSource path="/src/inet/native" />
+    <nativeSource path="/src/inet/native/std" />
+    <nativeSource path="/src/inet/native/sha1" />
+    <nativeSource path="/src/datetimeStd/native/std" />
+    <!--nativeSource path="/src/fw/serial/native/unix" /-->
+
+  </compile>    
+
+</sedonaPlatform>
+
+

@@ -1,0 +1,26 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   31 Aug 07  Andy Saunders    Creation
+//
+
+**
+** ConstFloat: float constant  
+**    out should never be a link destination.
+**
+@niagaraIcon="module://icons/x16/control/math/add.png"
+class FloatOffset
+  extends Component
+{
+  @readonly property float out
+  property float in
+  @config property float offset
+  
+  virtual override void execute()
+  {
+    out = in + offset
+  }
+  
+}

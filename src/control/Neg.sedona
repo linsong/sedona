@@ -1,0 +1,27 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   10 Jan 07  Andy Saunders  Creation
+//   27 Apr 07  Brian Frank    Port from Java to Sedona
+//
+
+**
+** Neg Negate math object
+**
+** out = -in
+**
+@niagaraIcon="module://icons/x16/control/math/subtract.png"
+class Neg
+  extends Component
+{
+  @readonly property float out
+  property float in
+
+  virtual override void execute()
+  {
+    out = -in
+  }
+
+}
