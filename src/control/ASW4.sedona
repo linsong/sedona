@@ -4,6 +4,7 @@
 //
 // History:
 //   02 Jul 09  Clif Turman    Creation
+//   07 Aug 09  Clif Turman    Added checks for sel <> acceptable range
 //
 
 **
@@ -23,7 +24,11 @@ class ASW4
 
   virtual override void execute()
   {
-    if(sel == startsAt)
+  	if(sel < startsAt)
+  	  out = in1
+  	else if(sel > startsAt + 3)
+  	  out = in4
+    else if(sel == startsAt)
       out = in1
     else if(sel == startsAt + 1)
       out = in2
