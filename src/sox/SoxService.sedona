@@ -27,6 +27,13 @@ class SoxService
   ** Max of number of messages in receiving window.
   @config property byte receiveMax = 8
 
+  ** Max of number of async events sent per second.
+  ** Tuning this number down towards zero will decrease
+  ** the number of messages sent, but increase the latency
+  ** of real-time change propogation.  If set all the way
+  ** down to zero, then no change of value events are sent.
+  @config property short eventsPerSec = 100
+
 ////////////////////////////////////////////////////////////////
 // Sessions
 ////////////////////////////////////////////////////////////////
@@ -135,6 +142,20 @@ class SoxService
   {
     socket.close()
     isPortOpen = false
+  }                  
+  
+  **
+  ** Execute - called once per cycle.
+  **
+  virtual override void execute()
+  {                                  
+    // reset event counter every 250ms
+    long ticks = Sys.ticks()
+    if (ticks >= periodEnd)
+    {
+      numEventsThisPeriod = 0  
+      periodEnd = ticks + 250ms
+    }
   }
 
   **
@@ -173,8 +194,20 @@ class SoxService
     // message we are done this work slice
     if (size > 0) return true
 
-    // check for pending events to fire
-    return checkForEvents()
+    // if we haven't exceed our event threshold for the
+    // cycle, then check for pending events to fire;
+    // we configure events/sec - but actually distribute
+    // over 250ms period so UI isn't jerky    
+    int eventsPer250ms = eventsPerSec < 4 ? eventsPerSec : eventsPerSec >> 2 
+    if (numEventsThisPeriod < eventsPer250ms)
+    {
+      if (checkForEvents())
+      {                   
+        numEventsThisPeriod++    
+        return true
+      }
+    }
+    return false
   }
 
 ////////////////////////////////////////////////////////////////
@@ -419,7 +452,9 @@ class SoxService
   bool isPortOpen                   // have we successfully opened the port
   long lastHouseKeeping             // time we last performed house keeping
   short lastCompId                  // last comp we fired events on in checkForEvents()
-  UserService userService           // user service
+  UserService userService           // user service                     
+  long periodEnd                    // in current 250ms second period
+  short numEventsThisPeriod         // number of events fired this 250ms period
 }
 
 
