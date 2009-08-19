@@ -1017,6 +1017,12 @@ public class Parser
     }
     else
     {
+      // Check for qname (kit::Type)
+      if (curt == Token.DOUBLE_COLON)
+      {
+        consume(Token.DOUBLE_COLON);
+        name += "::" + consumeId();
+      }
       expr = new Expr.Name(loc, target, name);
     }       
     expr.safeNav = safeNav;

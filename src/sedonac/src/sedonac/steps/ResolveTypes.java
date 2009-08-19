@@ -111,6 +111,7 @@ public class ResolveTypes
     // if no matches
     if (matches.length == 0)
     {
+      try { return ns.resolveType(name); } catch (Exception e) {}
       if (reportErr) err("Unknown type '" + name + "'", loc);
       return null;
     }
