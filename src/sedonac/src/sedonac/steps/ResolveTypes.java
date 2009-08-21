@@ -107,13 +107,16 @@ public class ResolveTypes
     // for right now we match type name to all the
     // types imported from our dependency
     Type[] matches = ns.resolveTypeBySimpleName(name);
-
+    
     // if no matches
     if (matches.length == 0)
     {
-      try { return ns.resolveType(name); } catch (Exception e) {}
+      Type qnameType = null;
+      if ((name.indexOf("::") > 0) && (qnameType = ns.resolveType(name)) != null)
+        return qnameType;
+      
       if (reportErr) err("Unknown type '" + name + "'", loc);
-      return null;
+      return qnameType;
     }
 
     // if more than one match
