@@ -768,7 +768,7 @@ public class Parser
   private Expr bitOrExpr()
   {
     Expr expr = bitXorExpr();
-    while (curt == Token.CARET || curt == Token.PIPE)
+    while (curt == Token.PIPE)
       expr = new Expr.Binary(expr.loc, consume(), expr, bitXorExpr());
     return expr;
   }
@@ -776,7 +776,7 @@ public class Parser
   private Expr bitXorExpr()
   {
     Expr expr = bitAndExpr();
-    while (curt == Token.CARET || curt == Token.PIPE)
+    while (curt == Token.CARET)
       expr = new Expr.Binary(expr.loc, consume(), expr, bitAndExpr());
     return expr;
   }
