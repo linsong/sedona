@@ -99,7 +99,8 @@ public class Parser
     if (curt == Token.EXTENDS)
     {
       consume();
-      def.base = tryTypeBase();
+      if ((def.base = tryTypeBase()) == null)
+        err("'extends' missing base class identifier", this.loc);
     }
     else
     {
