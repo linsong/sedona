@@ -171,6 +171,9 @@ public class SoxClient
     {
       e.printStackTrace();
     }
+    
+    // done closing
+    this.closing = false;
   }
 
 ////////////////////////////////////////////////////////////////
