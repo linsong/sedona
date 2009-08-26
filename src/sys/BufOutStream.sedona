@@ -1,0 +1,52 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   26 Jul 06  Brian Frank  Creation
+//   24 May 07  Brian Frank  Port from Java to Sedona
+//   10 Sep 07  Brian Frank  Split out from from Buf
+//
+
+**
+** BufOutStream is used to write bytes to a memory Buf.
+**
+final class BufOutStream extends OutStream
+{                 
+
+  **
+  ** Construct for specified Buf instance. 
+  **                      
+  BufOutStream(Buf buf)
+  {
+    this.buf = buf
+  }
+
+  **
+  ** Write a byte to the end of the buffer at buf[size].
+  ** Return true on success, false if buffer is full.
+  **
+  override bool write(int x)
+  {     
+    Buf buf = this.buf
+    if (buf.size >= buf.bytesLen) return false
+    buf.bytes[buf.size++] = x
+    return true
+  }
+
+  **
+  ** Write a block of bytes to the end of the buffer.
+  ** buffer size.  Return true on success, false if
+  ** there is not enough room in the buffer.
+  **
+  override bool writeBytes(byte[] b, int off, int len)
+  {
+    Buf buf = this.buf
+    if (buf.size + len >= buf.bytesLen) return false
+    Sys.copy(b, off, buf.bytes, buf.size, len)
+    buf.size += len
+    return true
+  }
+    
+  Buf buf
+}

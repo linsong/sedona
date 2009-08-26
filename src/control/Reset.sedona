@@ -1,0 +1,94 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   10 Jan 07  Andy Saunders  Creation
+//   27 Apr 07  Brian Frank    Port from Java to Sedona
+//   22 Apr 09  Elizabeth McKenney   Updated
+//
+
+**
+** Reset rescale in value to out value object
+**
+**
+** This function performs a "reset" on the input value.
+**
+** "Reset" is a HVAC term for scaling a number between two limits.  
+**
+** When inMin < inA < inMax, the output value scales linearly 
+** between outMin and outMax.  
+**
+** If inA < inMin, the value is capped at outMin.  
+** 
+** If inA > inMax, the value is capped at outMax.
+** 
+** To calculate out, the following equation is used:
+** <pre>
+**         (outMax-outMin)
+**   out = --------------- * (in - inMin) + outMin
+**          (inMax-inMin)  
+** </pre>
+
+@niagaraIcon="module://icons/x16/control/math/reset.png"
+class Reset
+  extends Component
+{
+
+  @readonly property float out
+  property float in
+
+  @config property float inMin = 0.0
+  @config property float inMax = 4095.0
+  @config property float outMin = 0.0
+  @config property float outMax = 100.0
+
+  **
+  ** Callback when component is first started in an app.
+  **
+  virtual override void start()
+  {
+    updateRatio()
+  }
+
+
+  **
+  ** Execute is called once every scan.
+  **
+  virtual override void execute()
+  {
+    if (in <= inMin)
+      out = outMin
+    else if (in >= inMax)
+      out = outMax
+    else
+      out = outInRatio * (in-inMin) + outMin
+  }
+
+
+  **
+  ** Behavior to execute when a property is changed externally
+  ** 
+  override void changed(Slot slot)
+  {
+    super.changed(slot)
+
+    if ((slot == Reset.inMin)  || (slot == Reset.inMax) ||
+        (slot == Reset.outMin) || (slot == Reset.outMax))
+    {
+      updateRatio()
+    }
+  }
+
+
+  private void updateRatio()
+  {
+    if (inMax==inMin)
+      outInRatio = 0.0
+    else
+      outInRatio = (outMax - outMin) / (inMax - inMin)
+  }
+
+
+  private float outInRatio
+}

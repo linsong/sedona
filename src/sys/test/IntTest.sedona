@@ -1,0 +1,169 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   01 Mar 07  Brian Frank  Creation
+//
+
+**
+** IntTest
+**
+class IntTest
+  extends Test
+{
+  static int x(int v) { return v }    
+  
+  /* LOOPTEST
+  static void testReset()
+  {                                
+    byteVal = 0
+    shortVal = 0
+  }
+  */
+
+  static void testOps()
+  {
+    // arithmetic operators
+    assert(x(1) + 255 == 256)
+    assert(x(2) + 123456789 == 123456791)
+    assert(x(0x3) - 0xfedc_ba98 == 0x123_456b)
+    assert(x(4) * -123 == -492)
+    assert(x(5) / -1 == -5)
+    assert(x(0x5ed0_f00d) / 0x6 == 0xfcd_7d57)
+    assert(x(12345) % 31 == 7)
+    assert(x(0x123_4567) % 0xef == 0x34)
+    assert(-x(2147483647)  == -2147483647)
+
+    // bitwise operators
+    assert((x(0xabcd_0123) & 0xfedc_0853) == 0xaacc_0003)
+    assert((x(0x38b_def3) | 0x947b_e320) == 0x97fb_fff3)
+    assert((x(-1) ^ 12345678) == -12345679)
+    assert(~x(0xab58)  == 0xffff_54a7)
+    assert(x(0xa482_9e23) << 4 == 0x4829_e230)
+    assert(x(0xa482_9e23) >> 3 == 0xf490_53c4)
+    assert(x(0x482_9e23)  >> 12 == 0x4829)
+
+    // comparision operators
+    assert(x(2) != -2)
+    assert(x(1234) >= 1234)
+    assert(x(1234) >= -1234)
+    assert(x(-1) > -2)
+    assert(x(99) <= 99)
+    assert(x(0x78ab) <= 0x78ac)
+    assert(x(255) < 256)
+  }
+
+  static void testAssigns()
+  {
+    verifyAssigns(2);
+  }
+
+  static void verifyAssigns(int p)
+  {
+    // param increment/decrement
+    p = 3; ++p; assert(p == 4)
+    p = 3; p--; assert(p == 2)
+    p = 3; assert(++p == 4); assert(p == 4)
+    p = 3; assert(p++ == 3); assert(p == 4)
+    p = 3; assert(--p == 2); assert(p == 2)
+    p = 3; assert(p-- == 3); assert(p == 2)
+
+    // local increment/decrement
+    int x
+    x = 'd'; x++; assert(x == 'e')
+    x = 'B'; --x; assert(x == 'A')
+    x = 3; assert(++x == 4); assert(x == 4)
+    x = 3; assert(x++ == 3); assert(x == 4)
+    x = 3; assert(--x == 2); assert(x == 2)
+    x = 3; assert(x-- == 3); assert(x == 2)
+
+    // param +=, -=, etc
+    p += 3; assert(p == 5)
+    p -= 1; assert(p == 4)
+    p *= 5; assert(p == 20)
+    p /= 2; assert(p == 10)
+    p %= 3; assert(p == 1)
+    p = 0x7bc2
+    p &= 0x32fe; assert(p == 0x32c2)
+    p |= 0xc435; assert(p == 0xf6f7)
+    p ^= 0x89f3; assert(p == 0x7f04)
+    p <<= 4;     assert(p == 0x7f040)
+    p >>= 8;     assert(p == 0x7f0)
+
+    // local +=, -=, etc
+    assert((x += 3) == 5); assert(x == 5)
+    assert((x -= 1) == 4);  assert(x == 4)
+    assert((x *= 5) == 20); assert(x == 20)
+    assert((x /= 2) == 10); assert(x == 10)
+    assert((x %= 3) == 1);  assert(x == 1)
+    x = 0x7bc2
+    assert((x &= 0x32fe) == 0x32c2); assert(x == 0x32c2)
+    assert((x |= 0xc435) == 0xf6f7); assert(x == 0xf6f7)
+    assert((x ^= 0x89f3) == 0x7f04); assert(x == 0x7f04)
+    assert((x <<= 4) == 0x7f040);    assert(x == 0x7f040)
+    assert((x >>= 8) == 0x7f0);      assert(x == 0x7f0)
+
+    // asignment
+    assert((p = x = 7) == 7)
+    assert(p == 7)
+    assert(x == 7)
+  }
+
+  static void testCasts()
+  {                                               
+    // * -> int
+    assert((int)LongTest.x(-999L) == -999)
+    assert((int)FloatTest.x(51.89f) == 51)
+    assert((int)DoubleTest.x(-999.7d) == -999)
+    
+    // * -> long
+    assert((long)IntTest.x(0x0123_abcd) == 0x0123_abcdL)
+    assert((long)FloatTest.x(51.89f) == 51L)
+    assert((long)DoubleTest.x(51.89d) == 51L)
+    
+    // * -> float
+    assert((float)IntTest.x(12456) == 12456.0f)
+    assert((float)LongTest.x(12456L) == 12456.0f)
+    assert((float)DoubleTest.x(51.89d) == 51.89f)
+    
+    // * -> double
+    assert((double)IntTest.x(12456) == 12456.0d)
+    assert((double)LongTest.x(12456L) == 12456.0d)
+    assert((double)FloatTest.x(5189f) == 5189d)
+  }            
+  
+  static void testByte()
+  {        
+    assert(byteVal == 0)
+    byteVal = -1
+    assert(byteVal == 0xff)
+    byteVal++
+    assert(byteVal == 0)
+    
+    int x = byteVal
+    byteVal = x - 1
+    assert(byteVal == 0xff)    
+  }                 
+
+  static void testShort()
+  {        
+    assert(shortVal == 0)
+    shortVal = -1
+    assert(shortVal == 0xffff)
+    shortVal++
+    assert(shortVal == 0)
+    
+    int x = shortVal
+    shortVal = x - 1
+    assert(shortVal == 0xffff)    
+    
+    x = shortVal
+    shortVal = x - 1
+    assert(shortVal == 0xfffe)
+  }                 
+  
+  static byte byteVal    
+  static short shortVal    
+  
+}

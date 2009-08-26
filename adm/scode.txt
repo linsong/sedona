@@ -1,0 +1,317 @@
+-------------------------------------------------
+$opcodes
+-------------------------------------------------
+
+  // literals
+  Nop               // no op
+  LoadIM1           // push -1 on stack
+  LoadI0            // push 0 on stack
+  LoadI1            // push 1 on stack
+  LoadI2            // push 2 on stack
+  LoadI3            // push 3 on stack
+  LoadI4            // push 4 on stack
+  LoadI5            // push 5 on stack
+  LoadIntU1  u1     // push u1 int literal on stack
+  LoadIntU2  u2     // push u2 int literal on stack
+  LoadL0            // push 0L on stack
+  LoadL1            // push 1L on stack
+  LoadF0            // push 0.0f on stack
+  LoadF1            // push 1.0f on stack
+  LoadD0            // push 0.0d on stack
+  LoadD1            // push 1.0d on stack
+  LoadNull          // push null pointer (0) on stack
+  LoadNullBool      // push null bool (2) on stack
+  LoadNullFloat     // push null float (nan) on stack
+  LoadNullDouble    // push null double (nan) on stack
+  LoadInt   int     // push int literal on stack from block index
+  LoadFloat float   // push float literal on stack from block index
+  LoadLong  long    // push long literal on stack from block index
+  LoadDouble double // push double literal on stack from block index
+  LoadStr    str    // push Str literal pointer on stack from block index
+  LoadBuf    buf    // push Buf literal pointer on stack from block index
+  LoadType   type   // push type pointer on stack from block index
+  LoadSlot   slot   // push slot pointer on stack from block index
+  LoadDefine field  // load define literal (ir only)
+  
+  // load params
+  LoadParam0        // push param 0 on stack
+  LoadParam1        // push param 1 on stack
+  LoadParam2        // push param 2 on stack
+  LoadParam3        // push param 3 on stack
+  LoadParam u1      // push param x on stack
+  LoadParamWide u1  // push wide param x on stack (long/double)
+
+  // store params
+  StoreParam u1     // store stack to param x
+  StoreParamWide u1 // store stack to wide param x (long/double)
+
+  // load locals
+  LoadLocal0        // push local 0 on stack
+  LoadLocal1        // push local 1 on stack
+  LoadLocal2        // push local 2 on stack
+  LoadLocal3        // push local 3 on stack
+  LoadLocal4        // push local 4 on stack
+  LoadLocal5        // push local 5 on stack
+  LoadLocal6        // push local 6 on stack
+  LoadLocal7        // push local 7 on stack
+  LoadLocal u1      // push local x on stack
+  LoadLocalWide u1  // push wide local x on stack (long/double)
+
+  // store locals
+  StoreLocal0       // store stack to local 0
+  StoreLocal1       // store stack to local 1
+  StoreLocal2       // store stack to local 2
+  StoreLocal3       // store stack to local 3
+  StoreLocal4       // store stack to local 4
+  StoreLocal5       // store stack to local 5
+  StoreLocal6       // store stack to local 6
+  StoreLocal7       // store stack to local 7
+  StoreLocal u1     // store stack to local x
+  StoreLocalWide u1 // store stack to local x (long/double)
+
+  // int compare
+  IntEq            // a == b
+  IntNotEq         // a != b
+  IntGt            // a > b
+  IntGtEq          // a >= b
+  IntLt            // a < b
+  IntLtEq          // a <= b
+
+  // int math
+  IntMul           // a * b
+  IntDiv           // a / b
+  IntMod           // a % b
+  IntAdd           // a + b
+  IntSub           // a - b
+  IntOr            // a | b
+  IntXor           // a ^ b
+  IntAnd           // a & b
+  IntNot           // ~a
+  IntNeg           // -a
+  IntShiftL        // a << b
+  IntShiftR        // a >> b    
+  IntInc           // a + 1
+  IntDec           // a - 1
+
+  // long compare
+  LongEq            // a == b
+  LongNotEq         // a != b
+  LongGt            // a > b
+  LongGtEq          // a >= b
+  LongLt            // a < b
+  LongLtEq          // a <= b
+
+  // long math
+  LongMul           // a * b
+  LongDiv           // a / b
+  LongMod           // a % b
+  LongAdd           // a + b
+  LongSub           // a - b
+  LongOr            // a | b
+  LongXor           // a ^ b
+  LongAnd           // a & b
+  LongNot           // ~a
+  LongNeg           // -a
+  LongShiftL        // a << b
+  LongShiftR        // a >> b    
+
+  // float compare
+  FloatEq           // a == b
+  FloatNotEq        // a != b
+  FloatGt           // a > b
+  FloatGtEq         // a >= b
+  FloatLt           // a < b
+  FloatLtEq         // a <= b
+
+  // float math
+  FloatMul          // a * b
+  FloatDiv          // a / b
+  FloatAdd          // a + b
+  FloatSub          // a - b
+  FloatNeg          // -a
+
+  // double compare
+  DoubleEq          // a == b
+  DoubleNotEq       // a != b
+  DoubleGt          // a > b
+  DoubleGtEq        // a >= b
+  DoubleLt          // a < b
+  DoubleLtEq        // a <= b
+
+  // double math
+  DoubleMul          // a * b
+  DoubleDiv          // a / b
+  DoubleAdd          // a + b
+  DoubleSub          // a - b
+  DoubleNeg          // -a
+  
+  // casts
+  IntToFloat         // int -> float
+  IntToLong          // int -> long
+  IntToDouble        // int -> double
+  LongToInt          // long -> int
+  LongToFloat        // long -> float
+  LongToDouble       // long -> double
+  FloatToInt         // float -> int
+  FloatToLong        // float -> long
+  FloatToDouble      // float -> double
+  DoubleToInt        // double -> int
+  DoubleToLong       // double -> long
+  DoubleToFloat      // double -> float
+
+  // object compare
+  ObjEq              // a == b
+  ObjNotEq           // a != b
+
+  // general purpose compare
+  EqZero             // a == 0 or null
+  NotEqZero          // a != 0 or null
+
+  // stack manipulation
+  Pop                // pop top of stack
+  Pop2               // pop top two cells of stack
+  Pop3               // pop top three cells of stack
+  Dup                // duplicate top of stack
+  Dup2               // duplicate top two cells of stack
+  DupDown2           // duplicate top of stack, push down 2 cells
+  DupDown3           // duplicate top of stack, push down 3 cells
+  Dup2Down2          // duplicate top two cells of stack, push down 2 cells
+  Dup2Down3          // duplicate top two cells of stack, push down 3 cells
+
+  // branching
+  Jump           jmp      // unconditional jump (1 sbyte offset)
+  JumpNonZero    jmp      // jump if non-zero (1 sbyte offset)
+  JumpZero       jmp      // jump if zero (1 sbyte offset)
+  Foreach        jmp      // array, length, counter on stack (1 sbyte offset)
+  JumpFar        jmpfar   // unconditional far jump (2 sbyte offset)
+  JumpFarNonZero jmpfar   // far jump if true (2 sbyte offset)
+  JumpFarZero    jmpfar   // far jump if false (2 sbyte offset)
+  ForeachFar     jmpfar   // array, length, counter on stack (2 sbyte offset)
+
+  // int compare branching
+  JumpIntEq       jmp     // jump if a == b
+  JumpIntNotEq    jmp     // jump if a != b
+  JumpIntGt       jmp     // jump if a > b
+  JumpIntGtEq     jmp     // jump if a >= b
+  JumpIntLt       jmp     // jump if a < b
+  JumpIntLtEq     jmp     // jump if a <= b
+  JumpFarIntEq    jmpfar  // jump if a == b
+  JumpFarIntNotEq jmpfar  // jump if a != b
+  JumpFarIntGt    jmpfar  // jump if a > b
+  JumpFarIntGtEq  jmpfar  // jump if a >= b
+  JumpFarIntLt    jmpfar  // jump if a < b
+  JumpFarIntLtEq  jmpfar  // jump if a <= b
+  
+  // storage
+  LoadDataAddr                   // load data segment base address of static fields
+  
+  // 8 bit storage (bytes, bools)
+  Load8BitFieldU1     field  0  // load 8 bit field (1 ubyte offset)
+  Load8BitFieldU2     field  0  // load 8 bit field (2 ubyte offset)
+  Load8BitFieldU4     field  0  // load 8 bit field (4 ubyte offset)
+  Load8BitArray              1  // load 8 bit array item (int offset on stack)
+  Store8BitFieldU1    field  1  // store 8 bit field (1 ubyte offset)
+  Store8BitFieldU2    field  1  // store 8 bit field (2 ubyte offset)
+  Store8BitFieldU4    field  1  // store 8 bit field (4 ubyte offset)
+  Store8BitArray             2  // store 8 bit array item (int offset on stack)
+  Add8BitArray               1  // add int on stack to 8 bit array pointer
+
+  // 16 bit storage (shorts)
+  Load16BitFieldU1    field  0  // load 16 bit field (1 ubyte offset)
+  Load16BitFieldU2    field  0  // load 16 bit field (2 ubyte offset)
+  Load16BitFieldU4    field  0  // load 16 bit field (4 ubyte offset)
+  Load16BitArray             1  // load 16 bit array item (int offset on stack)
+  Store16BitFieldU1   field  1  // store 16 bit field (1 ubyte offset)
+  Store16BitFieldU2   field  1  // store 16 bit field (2 ubyte offset)
+  Store16BitFieldU4   field  1  // store 16 bit field (4 ubyte offset)
+  Store16BitArray            2  // store 16 bit array item (int offset on stack)
+  Add16BitArray              1  // add int on stack to 8 bit array pointer
+
+  // 32 bit storage (int/float)
+  Load32BitFieldU1    field  0  // load 32 bit field (1 ubyte offset)
+  Load32BitFieldU2    field  0  // load 32 bit field (2 ubyte offset)
+  Load32BitFieldU4    field  0  // load 32 bit field (4 ubyte offset)
+  Load32BitArray             1  // load 32 bit array item (int offset on stack)
+  Store32BitFieldU1   field  1  // store 32 bit field (1 ubyte offset)
+  Store32BitFieldU2   field  1  // store 32 bit field (2 ubyte offset)
+  Store32BitFieldU4   field  1  // store 32 bit field (4 ubyte offset)
+  Store32BitArray            2  // store 32 bit array item (int offset on stack)
+  Add32BitArray              1  // add int on stack to 32 bit array pointer
+
+  // 64 bit storage (long/double)
+  Load64BitFieldU1    field  0  // load 64 bit field (1 ubyte offset)
+  Load64BitFieldU2    field  0  // load 64 bit field (2 ubyte offset)
+  Load64BitFieldU4    field  0  // load 64 bit field (4 ubyte offset)
+  Load64BitArray             1  // load 64 bit array item (int offset on stack)
+  Store64BitFieldU1   field  2  // store 64 bit field (1 ubyte offset)
+  Store64BitFieldU2   field  2  // store 64 bit field (2 ubyte offset)
+  Store64BitFieldU4   field  2  // store 64 bit field (4 ubyte offset)
+  Store64BitArray            3  // store 64 bit array item (int offset on stack)
+  Add64BitArray              1  // add int on stack to 64 bit array pointer
+
+  // ref storage (pointers - variable width)
+  LoadRefFieldU1      field  0  // load pointer field (1 ubyte offset)
+  LoadRefFieldU2      field  0  // load pointer field (2 ubyte offset)
+  LoadRefFieldU4      field  0  // load pointer field (4 ubyte offset)
+  LoadRefArray               1  // load pointer array item (int offset on stack)
+  StoreRefFieldU1     field  1  // store pointer field (1 ubyte offset)
+  StoreRefFieldU2     field  1  // store pointer field (2 ubyte offset)
+  StoreRefFieldU4     field  1  // store pointer field (4 ubyte offset)
+  StoreRefArray              2  // store pointer array item (int offset on stack)
+  AddRefArray                1  // add int on stack to pointer array pointer
+
+  // const storage (block index)
+  LoadConstFieldU1    field  0  // load const instance field (1 ubyte offset)
+  LoadConstFieldU2    field  0  // load const instance field (2 ubyte offset)
+  LoadConstStatic     field     // load const static field (2 block index)
+  LoadConstArray             1  // load const pointer array item (int offset on stack)
+
+  // inline storage (pointer addition)
+  LoadInlineFieldU1   field  0  // load inline field (1 ubyte offset)
+  LoadInlineFieldU2   field  0  // load inline field (2 ubyte offset)
+  LoadInlineFieldU4   field  0  // load inline field (4 ubyte offset)
+
+  // param0 + inline storage
+  LoadParam0InlineFieldU1 field  // LoadParam0 + LoadInlineFieldU1
+  LoadParam0InlineFieldU2 field  // LoadParam0 + LoadInlineFieldU2
+  LoadParam0InlineFieldU4 field  // LoadParam0 + LoadInlineFieldU4
+  
+  // static + inline storage
+  LoadDataInlineFieldU1 field    // LoadDataAddr + LoadInlineFieldU1
+  LoadDataInlineFieldU2 field    // LoadDataAddr + LoadInlineFieldU2
+  LoadDataInlineFieldU4 field    // LoadDataAddr + LoadInlineFieldU4
+  
+  // call control
+  Call           method // u2 block index (unaligned!) to non-virtual method
+  CallVirtual    method // scode: u2 u1 - block index to type (unaligned!), num params
+  CallNative     method // scode: u1 u1 u1 - kit index, method index, num params
+  CallNativeWide method // scode: u1 u1 u1 - kit index, method index, num params
+  CallNativeVoid method // scode: u1 u1 u1 - kit index, method index, num params
+  ReturnVoid            // return void
+  ReturnPop             // return top of stack
+  ReturnPopWide         // return top of stack (wide - long/double)
+  LoadParam0Call method // param0 + call
+  
+  // misc
+  InitArray              // addr, length, sizeof on stack; setup inline obj array pointers
+  InitVirt    type       // init Virtual.vtable; this on stack
+  InitComp    type       // init Component.type; this on stack
+  SizeOf      type       // size of type in bytes (IR only)
+  Assert      u2         // assert top of stack, u2 is linenum
+  Switch      switch     // switch with index into jump table (u2 is table count)
+  MetaSlot    u2         // inline meta-data, index to slot qname triple
+  Cast        type       // only used for Java bytecode
+  LoadArrayLiteral array // in SVM we use LoadBuf as pointer to array in code section
+  
+-------------------------------------------------
+$constants
+-------------------------------------------------
+
+  int vmMagic        = 0x5ED0BA07  // 4 byte magic
+  int vmMajorVer     = 0x01        // 1 byte major version
+  int vmMinorVer     = 0x05        // 1 byte minor version
+  int vmMaxParams    = 255         // max num method parameters
+  int vmMaxLocals    = 255         // max num method locals
+
+  int vmBigEndian    = 'B'         // big endian constant
+  int vmLittleEndian = 'L'         // little endian constant
