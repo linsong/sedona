@@ -190,7 +190,11 @@ public class Parser
     // if parens then this an inline field with ctor arguments
     Expr[] ctorArgs = null;
     if (curt == Token.LPAREN)
+    {
+      if (type.isArray())
+        err("Cannot call constructor on an array field", this.loc);
       ctorArgs = callArgs();
+    }
 
     // field or method name
     String name = consumeId();

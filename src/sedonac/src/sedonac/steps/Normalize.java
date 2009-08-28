@@ -8,6 +8,8 @@
 
 package sedonac.steps;
 
+import java.io.File;
+
 import sedonac.*;
 import sedonac.Compiler;
 import sedonac.ast.*;
@@ -221,11 +223,18 @@ public class Normalize
     // if not array of refs just bail - we'll catch later in CheckErrors
     if (!f.type.isArray() || !f.type.arrayOf().isRef())
       return;
-
+    
     Location loc = f.init.loc;
     Type of = f.type.arrayOf();
     ArrayType.Len arrayLen = f.type.arrayLength();
     Method ofInit = (Method)of.slot(Method.INSTANCE_INIT);
+    
+    // take into account implicit 'this' parameter
+    if (ofInit.numParams() > 1)
+    {
+      err("Cannot create an initialized field array of type '" + of + "' because its constructor takes arguments", f.loc);
+      return ;
+    }
 
     // append "ArrayInit field length sizeof(of)"
     Expr.InitArray init = (Expr.InitArray)f.init;
