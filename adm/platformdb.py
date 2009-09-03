@@ -15,7 +15,7 @@ import env
 
 # Main
 if __name__ == '__main__': 
-  cmd = os.path.join(env.javaBin, "java")
+  cmd = '"' + os.path.join(env.javaBin, "java") + '"'
   cmd += " -Dsedona.home=" + env.envHome
   cmd += " -cp " + env.sedonaJar
   cmd += " sedona.platform.PlatformDb "
