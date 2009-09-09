@@ -81,13 +81,13 @@ class SoxService
   **
   ** Close a session.
   **
-  internal void closeSession(SoxSession s)
+  internal void closeSession(SoxSession s, Str cause)
   {
     // free watch slot in the application
     Sys.app.closeWatch(s)
 
     // log close
-    log.message("closed ${Sys.hexStr(s.id())}")
+    log.message("closed ${Sys.hexStr(s.id())} : $cause")
   }
 
 ////////////////////////////////////////////////////////////////
@@ -254,7 +254,7 @@ class SoxService
         session.welcome(this, numFields);
         return
       case Dasp.CLOSE:
-        closeSession(session);
+        closeSession(session, "Recd close msg");
         return
     }
 
