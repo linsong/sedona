@@ -85,6 +85,10 @@ class DateTime extends Virtual
        
     //  Determine year    
     long rem = nanos;
+    
+    //  Adjust for utcOffset 
+    rem += (long)utcOffset * 1sec
+    
     int y = 0;    
     for(;;)
     {     
@@ -98,9 +102,6 @@ class DateTime extends Virtual
       daysSinceEpoch += daysInYear
       rem -= nanosInYear;                            
     }         
-    
-    //  Adjust for utcOffset 
-    rem += (long)utcOffset * 1sec
     
     //  Determine month 
     int m = 1
