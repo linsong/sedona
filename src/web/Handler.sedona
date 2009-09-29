@@ -73,11 +73,18 @@ internal class Handler
     if (left < 5) { socket.close(); return true }
 
     // read request bytes
-    int read = socket.read(buf, 0, bufLen)
-    if (read <= 0) return false
+    int read = socket.read(buf, pos, bufLen)
+    if (read <= 0) 
+    { 
+      res.writeStatus(HttpCode.badRequest).finishHeaders().close()
+      return true 
+    }
 
     // update read offset
     pos += read
+    
+    // start parsing from the beginning of the buffer
+    cur = 0
 
     // parse request-line
     if ((req.method  = token(' '))  == null ||
@@ -166,13 +173,16 @@ internal class Handler
   ** character with '\0'.  Return null if we are out
   ** of tokens.
   **
+  ** In order for the handler to be re-entrant, the '0' 
+  ** character is always assumed to be a valid separator.
+  **
   private Str token(int sep)
   {
     if (cur >= pos) return null
     Str s = Str.fromBytes(buf, cur)
     for (int start=cur; cur<pos; ++cur)
     {
-      if (buf[cur] != sep) continue
+      if (buf[cur] != sep && buf[cur] != 0) continue
       buf[cur++] = 0
       return s
     }

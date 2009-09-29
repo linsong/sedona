@@ -100,7 +100,7 @@ final class HttpCode
   define int preconditionFailed = 412
   
   ** 413: Request Entity Too Large
-  define int toolarge = 413
+  define int tooLarge = 413
   
   ** 414: Request-URI Too Long
   define int uriTooLong = 414
