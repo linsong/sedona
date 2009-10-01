@@ -129,7 +129,7 @@ class Device
   ** setAoValue -- call back to write a AO point value
   **   Subclasses may or maynot need to override.
   **    	
-  virtual void setAoValue(int address, int value)
+  virtual void setAoValue(int address, float value)
   {
   }  	
 

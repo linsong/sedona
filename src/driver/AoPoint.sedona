@@ -49,6 +49,6 @@ class AoPoint
   **
   virtual void wrValue(float value)
   {                
-    getDevice()?.setAoValue(address, (int)(value * 40.96))
+    getDevice()?.setAoValue(address, value)
   }
 }
