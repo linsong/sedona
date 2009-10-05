@@ -87,7 +87,7 @@ class SoxService
     Sys.app.closeWatch(s)
 
     // log close
-    log.message("closed ${Sys.hexStr(s.id())} : $cause")
+    log.message("closed ${Sys.hexStr(s.id())} ($cause)")
   }
 
 ////////////////////////////////////////////////////////////////
@@ -254,7 +254,7 @@ class SoxService
         session.welcome(this, numFields);
         return
       case Dasp.CLOSE:
-        closeSession(session, "Recd close msg");
+        closeSession(session, "Recd cmd");
         return
     }
 

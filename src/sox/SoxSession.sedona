@@ -84,7 +84,7 @@ class SoxSession
           s.remoteId == this.remoteId &&
           s.addr.equals(this.addr))
       {
-        service.closeSession(s, "Duplicate session ID")
+        service.closeSession(s, "Dup ID")
         break
       }
     }
