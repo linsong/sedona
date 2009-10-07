@@ -30,6 +30,8 @@ public class Main
     println("  dir          directory containing kit.xml file");
     println("  kit.xml      compile Sedona source files into kit file");
     println("  scode.xml    compile Sedona kits into a scode image");
+    println("  *.sax        convert sax to sab");
+    println("  *.sab        convert sab to sax");
     println("options:");
     println("  -doc         generate HTML Sedona docs for kit");
     println("  -outDir      output directory");
@@ -40,6 +42,7 @@ public class Main
     println("  -layout      dump field layout (when compiling image)");
     println("  -kitVersion  force output kit to have specified version");
     println("  -noOptimize  skip const folding and optimization steps");
+    println("  -noChecksum  exclude checksums from sax if input is sab file");
   }
 
   public static void println(String msg)
@@ -141,6 +144,10 @@ public class Main
           println("WARNING: Invalid kitVersion option");
         else
           compiler.kitVersion = new Version(args[++i]);          
+      }
+      else if (arg.equals("-noChecksum"))
+      {
+        compiler.nochk = true;
       }
       else if (arg.startsWith("-"))
       {

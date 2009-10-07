@@ -62,7 +62,7 @@ public class ConvertAppFile
     try
     {
       if (xml == null)
-        app.encodeAppXml(to);
+        app.encodeAppXml(to,compiler.nochk);
       else
         app.encodeAppBinary().writeTo(to);
     }

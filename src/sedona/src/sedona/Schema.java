@@ -252,18 +252,26 @@ public class Schema
 // XML IO
 //////////////////////////////////////////////////////////////////////////
 
+  public void encodeXml(XWriter out)
+  {
+    encodeXml(out, false);
+  }
+  
   /**
    * Encode this schema to XML format.
    */
-  public void encodeXml(XWriter out)
+  public void encodeXml(XWriter out, boolean nochk)
   {
     out.write("<schema>\n");
     for (int i=0; i<kits.length; ++i)
     {
       Kit kit = kits[i];
       out.w("  <kit ")
-         .attr("name", kit.name).w(" ")
-         .attr("checksum", TextUtil.intToHexString(kit.checksum)).w(" />\n");
+         .attr("name", kit.name).w(" ");
+      if(nochk)
+        out.w("/>\n");
+      else
+        out.attr("checksum", TextUtil.intToHexString(kit.checksum)).w(" />\n");
     }
     out.write("</schema>\n");
   }

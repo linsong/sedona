@@ -332,6 +332,7 @@ public class Compiler
   public File outDir;              // env -outDir     
   public boolean optimize = true;  // env -noOptimize
   public boolean www = false;      // env -www
+  public boolean nochk = false;    // env -noChecksum
   public Namespace ns;             // ctor
   public XElem xml;                // compile(String)
   ArrayList errors;                // err()

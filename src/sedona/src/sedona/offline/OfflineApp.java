@@ -359,10 +359,16 @@ public class OfflineApp
   public void encodeAppXml(File file)
     throws Exception
   {
+    encodeAppXml(file, false);
+  }
+  
+  public void encodeAppXml(File file, boolean nochk)
+    throws Exception
+  {
     XWriter out = new XWriter(file);
     try
     {
-      encodeAppXml(out);
+      encodeAppXml(out,nochk);
     }
     finally
     {
@@ -373,14 +379,25 @@ public class OfflineApp
   public void encodeAppXml(OutputStream out)
     throws Exception
   {
-    encodeAppXml(new XWriter(out));
+    encodeAppXml(out,false);
+  }
+  
+  public void encodeAppXml(OutputStream out,boolean nochk)
+    throws Exception
+  {
+    encodeAppXml(new XWriter(out),nochk);
   }
 
   public void encodeAppXml(XWriter out)
   {
+    encodeAppXml(out,false);
+  }
+  
+  public void encodeAppXml(XWriter out,boolean nochk)
+  {
     out.w("<?xml version='1.0'?>\n");
     out.w("<sedonaApp>\n");
-    schema.encodeXml(out);
+    schema.encodeXml(out, nochk);
     out.w("<app>\n");
     encodeXmlProps(out, 2, true);
     encodeXmlChildren(out, 2, true);
@@ -395,7 +412,7 @@ public class OfflineApp
   public void dump()
   {
     XWriter out = new XWriter(System.out);
-    encodeAppXml(out);
+    encodeAppXml(out, false);
     out.flush();
   }
 

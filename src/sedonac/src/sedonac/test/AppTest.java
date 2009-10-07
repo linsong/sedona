@@ -42,7 +42,7 @@ public class AppTest
     // serialize to XML
     ByteArrayOutputStream bout = new ByteArrayOutputStream();
     XWriter xout = new XWriter(bout);
-    app.encodeAppXml(xout);
+    app.encodeAppXml(xout,false);
     xout.flush();
 
     // serialize from XML
