@@ -22,10 +22,15 @@ class WriteBool
   @readonly
    property bool out
   
-//  action void set(float x)
-//  {           
-//    in = x
-//  }
+  action void setTrue()
+  {           
+    in = true
+  }
+  
+  action void setFalse()
+  {           
+    in = false
+  }
   
   virtual override void execute()
   {

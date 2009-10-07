@@ -22,10 +22,10 @@ class WriteFloat
   @readonly
    property float out
   
-//  action void set(float x)
-//  {           
-//    in = x
-//  }
+  action void set(float x)
+  {           
+    in = x
+  }
   
   virtual override void execute()
   {

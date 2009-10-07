@@ -22,10 +22,10 @@ class WriteInt
   @readonly
    property int out
   
-//  action void set(int x)
-//  {           
-//    in = x
-//  }
+  action void set(int x)
+  {           
+    in = x
+  }
   
   virtual override void execute()
   {
