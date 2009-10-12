@@ -164,28 +164,31 @@ Cell;
 </pre>
 
 <p>
-Every native method must be implemented in C as a function that takes
-a Cell pointer into the stack and returns a Cell.  The typedef for a
-native method pointer in <code>sedona.h</code> is:
+Every native method must be implemented in C as a function that takes a
+SedonaVM pointer, and a Cell pointer into the stack and returns a Cell (native
+methods that return a <code>long</code> or a <code>double</code> require special
+handling, described in more detail below). The typedef for SedonaVM_s is
+defined in <code>sedona.h</code>.  The typedef for a native method
+pointer in <code>sedona.h</code> is:
 </p>
 
 <pre>
-typedef Cell (*NativeMethod)(Cell* params);
+typedef Cell (*NativeMethod)(struct SedonaVM_s* vm, Cell* params);
 </pre>
 
 <p>
-The parameters are passed as a Cell pointer to the first parameter.  You
+The parameters are passed as a Cell pointer to the second parameter.  You
 can manually extract the individual parameters using array indexing.  If
 the native method is not static, then the implicit <code>this</code> pointer
 is always parameter 0.  
 </p>
+
 <p>
-It is important to note that all native methods return a Cell value
-even when the Sedona signature has a <code>void</code> return.  You can use
-the constant <code>nullCell</code> 
-to return from a Sedona method that returns <code>void</code>.  
-Constants <code>trueCell</code> and <code>falseCell</code> can similarly be used for
-<code>bool</code> returns.
+It is important to note that all native methods return a Cell value even
+when the Sedona signature has a <code>void</code> return. You can use the
+constant <code>nullCell</code> to return from a Sedona method that returns <code>void</code>.
+Constants <code>trueCell</code> and <code>falseCell</code> can similarly be used
+for <code>bool</code> returns.
 </p>
 
 <p>
@@ -193,7 +196,7 @@ An example implementation of the <code>foo::Type2.add</code> method:
 </p>
 
 <pre>
-Cell foo_Type2_add(Cell* params)
+Cell foo_Type2_add(SedonaVM* vm, Cell* params)
 {
   int32_t a = params[0].ival;
   int32_t b = params[1].ival;
@@ -209,7 +212,7 @@ An example implementation of the <code>foo::Type2.test</code> method:
 </p>
 
 <pre>
-Cell foo_Type2_test(Cell* params)
+Cell foo_Type2_test(SedonaVM* vm, Cell* params)
 {
   int32_t z = params[0].ival;
   int32_t b = params[1].ival;
@@ -233,22 +236,20 @@ respectively.  Arrays of primitives are accessed like their C counterparts.
 </p>
 
 <p>
-Native methods that pass or return <code>long</code> or <code>double</code> are a bit
-trickier.  A single <code>long</code> or <code>double</code> value requires
-two Cells to store the full 64-bits.  
-To access a <code>long</code> or 
-<code>double</code> function argument requires the use of pointer casting to access 
-two consecutive elements of the parameter array.  
-A native method that returns a <code>long</code>
+Native methods that pass or return <code>long</code> or <code>double</code>
+are a bit trickier. A single <code>long</code> or <code>double</code> value
+requires two Cells to store the full 64-bits. To access a <code>long</code> or <code>double</code>
+function argument requires the use of pointer casting to access two consecutive
+elements of the parameter array. A native method that returns a <code>long</code>
 or <code>double</code> should declare the return type to be <code>int64_t</code>
-instead of <code>Cell</code>. The following is an example - note how each
-<code>long</code> parameter actually consumes two cells of the parameter list:
+instead of <code>Cell</code>. The following is an example - note how each <code>long</code>
+parameter actually consumes two cells of the parameter list:
 </p>
 
 <pre> 
 native static long addTwoLongs(long a, long b)
 
-int64_t foo_Type3_addTwoLongs(Cell* params)
+int64_t foo_Type3_addTwoLongs(SedonaVM* vm, Cell* params)
 {
   int64_t a = *(int64_t*)(params+0); // param 0+1
   int64_t b = *(int64_t*)(params+2); // param 2+3
