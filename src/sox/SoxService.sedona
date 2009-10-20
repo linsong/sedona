@@ -85,6 +85,9 @@ class SoxService
   {
     // free watch slot in the application
     Sys.app.closeWatch(s)
+    
+    // rest transfer (i.e. close it)
+    s.transfer.reset()
 
     // log close
     log.message("closed ${Sys.hexStr(s.id())} ($cause)")

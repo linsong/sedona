@@ -21,6 +21,7 @@ class FileTransfer
   **            
   void reset()
   {
+    file.close()
     mode = unused
   }
 
