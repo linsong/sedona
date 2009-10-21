@@ -199,7 +199,8 @@ class SoxCommands
     out.write(Sys.scodeAddr()[23]) // scode flags fixed at 23 byte offset
     foreach (Kit kit : Sys.kits, Sys.kitsLen)
       out.writeStr(kit.version)
-    out.write(0)
+    out.write(1)
+    out.writeStr("soxVer"); out.writeStr("1.1");
   }
 
 ////////////////////////////////////////////////////////////////
@@ -307,32 +308,37 @@ class SoxCommands
   ** {
   **   u1   's'
   **   u1   replyNum
-  **   u2   componentId
-  **   u1   what: 't', 'c', 'r', 'l', 'a' (tree, config, runtime, links, all tree)
+  **   u1   whatMask: tree=0x01 config=0x02 rt=0x04 links=0x8 0xff all tree
+  **   u1   size
+  **   u2[] compIds
   ** }
   **
-  static void subscribeReq(SoxService service, SoxSession session, SendPacket res) 
+  static void subscribeReq(SoxService service, SoxSession session, SendPacket res)
   {
     res.cmd = 'S'
     
     // parse req
     BufInStream in = service.in
-    int compId  = res.u2Data1 = in.readU2()
-    int what    = res.u2Data2 = in.read()
+    int whatMask = in.read()
+    int num = in.read()
     
     // handle all tree events
-    if (what == 'a') { session.allTreeEvents = true; return }
-
-    // lookup component
-    Component c = Sys.app.lookup(compId)
-    if (c == null) { res.error("bad compId"); return }
+    if (num == 0 &&  whatMask == 0xff) { session.allTreeEvents = true; return }
     
-    // permissions check
-    if (!session.user.has(c, User.or)) { res.error("denied"); return }
-
-    // set subscription bit and clear event bit
-    c.watchFlags[session.index] |= Watch.toSubBit(what)
-    c.watchFlags[session.index] &= ~Watch.toEventBit(what)
+    // subscribe
+    whatMask &= 0x0f
+    int numSubscribed = 0
+    for (int i=0; i<num; ++i)
+    {
+      Component c = Sys.app.lookup(in.readU2())
+      if (c == null || !session.user.has(c, User.or)) continue
+      
+      // turn on subscription and event bits
+      c.watchFlags[session.index] |= (whatMask << 4)
+      c.watchFlags[session.index] |= whatMask
+      numSubscribed++
+    }
+    res.u2Data1 = numSubscribed
   }
   
   **
@@ -340,18 +346,13 @@ class SoxCommands
   ** {
   **   u1     'S'
   **   u1     replyNum
-  **   u2   componentId
-  **   compTree | compProps | compLinks
+  **   u1     numSubscribed
   ** }
   **
   static void subscribeRes(SoxService service, SoxSession session, SendPacket res) 
   {
-    Component c = Sys.app.lookup(res.u2Data1)
-    int what = res.u2Data2
-    
     OutStream out = prepareRes(service, session, res)
-    out.writeI2(res.u2Data1)
-    if (c != null && what != 'a') writeComp(service, session, c, what)
+    out.write(res.u2Data1)
   }
 
 ////////////////////////////////////////////////////////////////
@@ -373,19 +374,23 @@ class SoxCommands
     
     // parse req
     BufInStream in = service.in
-    int compId   = in.readU2()
     int whatMask = in.read()
+    int num = in.read()
     
     // handle all tree
-    if (whatMask == 0xff) { session.allTreeEvents = false; return }
-
-    // lookup component
-    Component c = Sys.app.lookup(compId)
-    if (c == null) { res.error("bad compId"); return }
-
-    // clear subscription bits (we define the sox protocol
-    // mask to match the top nibble of the watch mask)
-    c.watchFlags[session.index] &= ~(whatMask << 4)
+    if (num == 0 &&  whatMask == 0xff) { session.allTreeEvents = false; return }
+    
+    // unsubscribe - silently ignore errors
+    whatMask &= 0x0f;
+    for (int i=0; i<num; ++i)
+    {
+      Component c = Sys.app.lookup(in.readU2())
+      if (c == null || !session.user.has(c, User.or)) continue
+      
+      // clear subscription bits (we define the sox protocol
+      // mask to match the top nibble of the watch mask)
+      c.watchFlags[session.index] &= ~(whatMask << 4)      
+    }
   }       
 
   **

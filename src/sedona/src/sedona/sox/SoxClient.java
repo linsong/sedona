@@ -436,12 +436,15 @@ public class SoxClient
   public synchronized void subscribeToAllTreeEvents()
     throws Exception
   {
-    request(Msg.makeSubscribeReq(0, 'a'));
+    // necessarily for pre batch-subscribe compatibility
+    if (getSoxVersion() == null)
+      request(Msg.makeSubscribeReq(0, 'a'));
+    else
+      request(Msg.makeSubscribeReq(0, 0xff));
 
     allTreeEvents = true;
     for (int i=0; i<cache.length; ++i)
       if (cache[i] != null) cache[i].subscription |= SoxComponent.TREE;
-
   }
 
   /**
@@ -454,7 +457,7 @@ public class SoxClient
   }
 
   /**
-   * Perform a series of requests to subscribe the components
+   * Perform a synchronous request to subscribe the components
    * with their current values.  The mask specifies which
    * information to synchronized (TREE, CONFIG, RUNTIME, LINKS).
    * If any component is already subscribed to a specific
@@ -463,8 +466,114 @@ public class SoxClient
   public synchronized void subscribe(SoxComponent[] comps, int mask)
     throws Exception
   {
+    if (getSoxVersion() != null)
+      batchSubscribe(comps, mask, 5000);
+    else
+      doSubscribe(comps, mask);
+  }
+  
+  /**
+   * Perform an asynchronous request to subscribe the components
+   * with their current values.  The mask specifies which
+   * information to synchronized (TREE, CONFIG, RUNTIME, LINKS).
+   * If any component is already subscribed to a specific
+   * category then short circuit the network call.
+   * <p>
+   * Note: If the remote sox server does not support batch subscription,
+   * this will route to a non-batched, synchronous implementation.
+   */
+  public synchronized void subscribeAsync(SoxComponent[] comps, int mask)
+    throws Exception
+  {
+    if (getSoxVersion() != null)
+      batchSubscribe(comps, mask, -1);
+    else
+      doSubscribe(comps, mask);
+  }
+  
+  /**
+   * @return the Version of the sox protocol running on the Sox server, or 
+   * null if the remote server did not report a sox protocol version.
+   */
+  private Version getSoxVersion()
+  {
+    try
+    {
+      VersionInfo version = readVersion();
+      return Version.parse(version.props.getProperty("soxVer"));
+    }
+    catch (Exception e)
+    {
+      return null;
+    }
+  }
+  
+  private void batchSubscribe(SoxComponent[] comps, final int mask, final long timeout)
+    throws Exception
+  {
+    if (comps.length > 255) 
+      throw new SoxException("Cannot subscribe to more than 255 components: '" + comps.length + "'");
+    
     checkMine(comps);
+    
+    // filter components that are already subscribed
+    ArrayList arr = new ArrayList();
+    for (int i=0; i<comps.length; ++i)
+    {
+      SoxComponent comp = comps[i];
+      if ((comps[i].subscription() & mask) != mask)
+        arr.add(comps[i]);
+    }
+    if (arr.size() == 0) return;
+    
+    // build request
+    SoxComponent[] toSubscribe = (SoxComponent[])arr.toArray(new SoxComponent[arr.size()]);
+    Msg req = Msg.prepareRequest('s');
+    req.u1(mask);
+    req.u1(toSubscribe.length);
+    for (int i=0; i<toSubscribe.length; ++i)
+      req.u2(toSubscribe[i].id);
+    
+    Msg response = request(req);
+    response.checkResponse('S');
+    if (timeout < 0) return; // async
+    
+    synchronized (subscribeSyncLock)
+    {  
+      boolean[] syncState = new boolean[toSubscribe.length];
+      long lastEvent = Env.ticks();
+      int remaining = response.u1();
+      while ((remaining > 0) && 
+             (lastEvent + timeout > Env.ticks()))
+      {
+        subscribeSyncLock.wait(250);
+        for (int i=0; i<toSubscribe.length; ++i)
+        {
+          // skip components we have already determined to be subscribed
+          if (syncState[i]) continue;
 
+          SoxComponent cacheComp = cache(toSubscribe[i].id);
+          if (cacheComp == null) continue;
+          if ((syncState[i] = ((cacheComp.subscription() & mask) == mask)))
+          {
+            --remaining;
+            lastEvent = System.currentTimeMillis();
+          }
+        }
+      }
+    }
+  }
+    
+  /**
+   * Pre sox protocol implementation of subscribe.  It does not support batch
+   * and is synchronous.  This method is only used if the remote server
+   * does not have a sox protocol version.
+   */
+  private void doSubscribe(SoxComponent[] comps, int mask)
+    throws Exception
+  {
+    checkMine(comps);
+    
     // build requests
     ArrayList reqs = new ArrayList();
     for (int i=0; i<comps.length; ++i)
@@ -540,24 +649,44 @@ public class SoxClient
     // if we're always subscribed to tree events,
     // then don't bother to include that bit
     if (allTreeEvents) mask &= ~SoxComponent.TREE;
-
-    // build requests
-    ArrayList reqs = new ArrayList();
+    
+    ArrayList arr = new ArrayList();
     for (int i=0; i<comps.length; ++i)
     {
-      SoxComponent comp = comps[i];
-      int id = comp.id;
-      if ((comp.subscription & mask) != 0)
-        reqs.add(Msg.makeUnsubscribeReq(id, mask));
+      if ((comps[i].subscription & mask) != 0)
+        arr.add(comps[i]);
     }
-    if (reqs.size() == 0) return;
-
-    // send requests
-    requests((Msg[])reqs.toArray(new Msg[reqs.size()]));
+    if (arr.size() == 0) return;
+    
+    SoxComponent[] toUnsubscribe = (SoxComponent[])arr.toArray(new SoxComponent[arr.size()]);
+    if (getSoxVersion() != null)
+      batchUnsubscribe(toUnsubscribe, mask);
+    else
+      doUnsubscribe(toUnsubscribe, mask);
 
     // update subscription mask on each component
     for (int i=0; i<comps.length; ++i)
       comps[i].subscription &= ~mask;
+  }
+  
+  private void batchUnsubscribe(SoxComponent[] comps, int mask)
+    throws Exception
+  {
+    Msg req = Msg.prepareRequest('u');
+    req.u1(mask);
+    req.u1(comps.length);
+    for (int i=0; i<comps.length; ++i)
+      req.u2(comps[i].id);
+    request(req);
+  }
+  
+  private void doUnsubscribe(SoxComponent[] comps, int mask)
+    throws Exception
+  {
+    Msg[] reqs = new Msg[comps.length];
+    for (int i=0; i<comps.length; ++i)
+      reqs[i] = Msg.makeUnsubscribeReq(comps[i].id, mask);
+    requests(reqs);
   }
 
 ////////////////////////////////////////////////////////////////
@@ -979,16 +1108,49 @@ public class SoxClient
 //////////////////////////////////////////////////////////////////////////
 // Apply
 //////////////////////////////////////////////////////////////////////////
-
+  
   void applyToCache(Msg msg)
     throws Exception
   {
+    final boolean isEvent = msg.command() == 'e';
+    
     int compId = msg.u2();
     int what = msg.u1();
     SoxComponent cached = cache(compId);
     SoxComponent sc = util.apply(msg, compId, what, cached);
     if (cached == null)
       cacheAdd(sc);
+
+    if (isEvent)
+      applyEvent(sc, what);
+  }
+  
+  private void applyEvent(SoxComponent sc, final int what)
+  {
+    if (sc ==  null) return;
+    int mask = 0;
+    switch (what)
+    {
+      case 't': 
+        mask = SoxComponent.TREE; break;
+      case 'c':
+      case 'C':
+        mask = SoxComponent.CONFIG; break;
+      case 'r':
+      case 'R':
+        mask = SoxComponent.RUNTIME; break;
+      case 'l':
+        mask = SoxComponent.LINKS; break;
+      default: throw new IllegalStateException("Unknown event: " + (char)what);
+    }
+    if ((sc.subscription & mask) == 0)
+    {
+      synchronized (subscribeSyncLock)
+      {
+        sc.subscription |= mask;
+        subscribeSyncLock.notifyAll();
+      }
+    }
   }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1166,5 +1328,6 @@ public class SoxClient
   volatile boolean closing;
 
   private SoxUtil util;
+  private final Object subscribeSyncLock = new Object();
 
 }

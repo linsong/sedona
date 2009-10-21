@@ -41,7 +41,7 @@
 
 <p>
 <i>Sox</i> is the standard protocol used to communicate
-with Sedona devices.  Sox provides the following services:
+with Sedona devices. Sox provides the following services:
 </p>
 
 <ul>
@@ -452,7 +452,6 @@ res
         the file already exists.  'm' opens the file for random access.</td>
   </tr>
 </table>
-</p>
 
 <h2 id="invoke">invoke</h2>
 <p>Invoke an action on a component.  This command can be used as
@@ -556,40 +555,50 @@ res
 </pre>
 
 <h2 id="subscribe">subscribe</h2>
-<p>The subscribe command works just like the <a href='#readComp'>readComp</a>
-command, except it registers for change <a href='#event'>events</a>.
-You can also subscribe to all tree events (instead of subscribing to
-individual component tree events).</p>
+<p>The subscribe command allows you to subscribe to multiple components by
+registering for a set of change <a href='#event'>events</a>.  The subscribe
+command will return the number of components that were actually subscribed. 
+This number may be less than the number of components requested if the
+user does not have permissions on a component, or if the component does not
+exist anymore
+</p>
+<p>
+You can also subscribe to all tree events (instead of subscribing to 
+individual component tree events).  In this case, the reponse contains
+no payload.
+</p>
 
 <pre>
 req
 {
   u1   's'
   u1   replyNum
-  u2   componentId
-  u1   what: 't', 'c', 'r', 'l', 'a' (tree, config, runtime, links, all tree)
+  u1   whatMask: tree=0x1 config=0x2 rt=0x4 links=0x8 0xff all tree
+  u1   num:
+  u2[] compIds: The ids of all the components to subscribe to
 }
 
 res
 {
   u1     'S'
   u1     replyNum
-  u2   componentId
-  compTree | compProps | compLinks
+  u1     numSubscribed: The actual number of components that were subscribed
 }
 </pre>
 
 <h2 id="unsubscribe">unsubscribe</h2>
 <p>Unregister a <a href='#subscribe'>subscription</a>.  The client
-will stop receiving change <a href='#event'>events</a>.</p>
+will stop receiving change <a href='#event'>events</a> for the set 
+of components specified.</p>
 
 <pre>
 req
 {
   u1   'u'
   u1   replyNum
-  u2   componentId
   u1   whatMask: tree=0x1 config=0x2 rt=0x4 links=0x8 0xff all tree
+  u1   num
+  u2[] compIds
 }
 
 res
@@ -647,6 +656,27 @@ res
 <p>
 Get extra version information, which includes the version of
 the installed kits plus platform specific name/value pairs.
+</p>
+
+<p>
+<table border="1">
+  <caption>Name/Value pairs</caption>
+  <tr>
+   <th align="left">Name</th><th>Value</th><th>Notes</th>
+  </tr>
+  
+  <tr>
+    <th align="left">soxVer</th>
+    <td>Sox protocol version</td>
+    <td>Introduced in build 1.0.44 (see discussion below)</td>
+</table>
+
+<p>
+All builds of Sedona prior to 1.0.44 will return <code>null</code> for the
+sox protocol version.  Starting in build 1.0.44 the sox protocol was changed
+to allow <a href='#subscribe'>batch subscription</a>, to components.  If the 
+sox protocol supports batch subscription, then it will return a 
+soxVer of <code>1.1</code> (or higher).
 </p>
 
 <pre>
