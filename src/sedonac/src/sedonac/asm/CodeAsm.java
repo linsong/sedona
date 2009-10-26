@@ -144,20 +144,10 @@ public class CodeAsm
     IrOp endJump = null;
     Cond c = new Cond();
 
-    // optimize: if (true)
-    if (stmt.cond.id == Expr.TRUE_LITERAL)
-    {
-      block(stmt.trueBlock);
-      return;
-    }
-
-    // optimize: if (false)
-    if (stmt.cond.id == Expr.FALSE_LITERAL)
-    {
-      if (stmt.falseBlock != null)
-        block(stmt.falseBlock);
-      return;
-    }
+    // NOTE: we cannot optimize the cases:
+    // 1) if (true)
+    // 2) if (false)
+    // because there might be goto labels inside the seemingly "dead" block
 
     // check condition - if the condition is itself a Expr.Cond
     // then we just have it branch directly to the true/false
