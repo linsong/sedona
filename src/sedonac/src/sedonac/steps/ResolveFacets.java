@@ -33,7 +33,7 @@ public class ResolveFacets
 
   public void run()
   {
-    log.debug("  CheckErrors");
+    log.debug("  ResolveFacets");
     walkAst(WALK_TO_SLOTS);
     quitIfErrors();
   }
