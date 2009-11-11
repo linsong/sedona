@@ -216,8 +216,8 @@ public class CodeAsm
     loopStack.push(loop);
 
     // assemble the do/while loop code
-    int continueMark = mark();
     block(stmt.block);
+    int continueMark = mark();
     expr(stmt.cond);
     jump(SCode.JumpNonZero, continueMark);
     int breakMark = mark();
