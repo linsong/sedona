@@ -1,0 +1,111 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   17 May 07  Andy Sunders  Creation
+//
+
+**
+** LSeqTest
+**
+class LSeqTest
+  extends Test
+{
+  static inline LSeq seq
+  static inline B2F  b2f
+
+  static void test()
+  {
+    // not in an app, so call this explicitly
+    seq.start()
+
+    // test 16 outputs
+    for(int i = 0; i <=100; i++)
+    {
+      seq.in = (float)i
+      seq.execute()
+      validateOutputs()
+    }
+
+    for(int i = 100; i >= 0; i--)
+    {
+      seq.in = (float)i
+      seq.execute()
+      validateOutputs()
+    }
+
+    // test 10 outputs
+    seq.numOuts = 10
+    for(int i = 0; i <=100; i++)
+    {
+      seq.in = (float)i
+      seq.execute()
+      validateOutputs()
+    }
+    
+    for(int i = 100; i >= 0; i--)
+    {
+      seq.in = (float)i
+      seq.execute()
+      validateOutputs()
+    }
+  }
+
+  static void validateOutputs()
+  {
+    float cIn = seq.in
+    float stepSize = (seq.inMax - seq.inMin) / (float)seq.numOuts
+    int desiredOn = (int)( (cIn - seq.inMin  ) / stepSize )
+    //Sys.out.print("   seq.in = ${seq.in} stepSize = ${stepSize}  desiredOn = ${desiredOn}\n")
+
+    assert(seq.out1 == (desiredOn >= 1))
+    assert(seq.out2 == (desiredOn >= 2))
+    assert(seq.out3 == (desiredOn >= 3))
+    assert(seq.out4 == (desiredOn >= 4))
+    assert(seq.out5 == (desiredOn >= 5))
+    assert(seq.out6 == (desiredOn >= 6))
+    assert(seq.out7 == (desiredOn >= 7))
+    assert(seq.out8 == (desiredOn >= 8))
+    assert(seq.out9 == (desiredOn >= 9))
+    assert(seq.out10 == (desiredOn >= 10))
+    assert(seq.out11 == (desiredOn >= 11))
+    assert(seq.out12 == (desiredOn >= 12))
+    assert(seq.out13 == (desiredOn >= 13))
+    assert(seq.out14 == (desiredOn >= 14))
+    assert(seq.out15 == (desiredOn >= 15))
+    assert(seq.out16 == (desiredOn >= 16))
+
+    b2f.in1  = seq.out1
+    b2f.in2  = seq.out2
+    b2f.in3  = seq.out3
+    b2f.in4  = seq.out4
+    b2f.in5  = seq.out5
+    b2f.in6  = seq.out6
+    b2f.in7  = seq.out7
+    b2f.in8  = seq.out8
+    b2f.in9  = seq.out9
+    b2f.in10 = seq.out10
+    b2f.in11 = seq.out11
+    b2f.in12 = seq.out12
+    b2f.in13 = seq.out13
+    b2f.in14 = seq.out14
+    b2f.in15 = seq.out15
+    b2f.in16 = seq.out16
+    b2f.execute()
+
+    float b2fValue = 0.0
+    int mask = 1
+    for(int i = 0; i < desiredOn; i++)
+    {
+      b2fValue = b2fValue + (float)mask
+      mask = mask * 2
+    }
+    assert(b2f.count == (float)desiredOn)
+    assert(b2f.out == b2fValue)
+
+    //Sys.out.print(" c= ${desiredOn} d= ${b2fValue} a= ${b2f.out}\n")
+  }
+
+
+}

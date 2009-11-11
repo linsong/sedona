@@ -1,0 +1,172 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   23 Aug 07  Andy Saunders  Creation
+//
+
+**
+** Auto-generated template Sedona Class
+**
+class Device
+  extends Component 
+{
+  property bool fault = false
+  property int status = 0
+  @config property bool enable = true 
+
+  **
+  ** start
+  **   init net pointer
+  **   init ping timer
+  virtual override void start()
+  {
+  	app = Sys.app
+  	net = getNetwork()
+  	if(net == null)
+  	  return
+  	pingTime = 1sec * (long)net.pingTimeSec
+    lastUpTime = Sys.ticks()
+    nextPingTime = Sys.ticks()
+  	
+  }
+
+  **
+  ** execute override
+  **  postPing when time
+  **  
+  virtual override void execute()
+  {
+  	long now = Sys.ticks()
+  	if(now > nextPingTime)
+  	{
+      nextPingTime = now + pingTime
+  	  postPing()
+  	}
+  	fault = status != 0
+  }
+
+////////////////////////////////////////////////////////////////
+// app support
+////////////////////////////////////////////////////////////////
+  **
+  ** getNetwork()
+  **   returns a reference to the parent network
+  **
+  DeviceNetwork getNetwork()
+  {
+    for (Component c = app.lookup(parent); c != null; c = app.lookup(c.parent))
+      if (c.type.is(DeviceNetwork.type))
+        return (DeviceNetwork)c
+    return null
+  }
+
+  **
+  ** addPoint() -- add a point to this device
+  ** 
+  void addPoint(Str name, int address, Type type)
+  {
+  	if(lookupByName(name) == null)
+  	{
+  	  Point c = (Point)app.add(this, name, type)
+  	  if(c == null)
+  	    Sys.out.print("   add ").print(name).print(" failed").nl()
+  	  else
+  	  {
+  	    c.address = address	
+  	  }
+  	}
+  }
+  
+  **
+  ** getPoint -- get point by type and address
+  **
+  Point getPoint(Type type, int address)
+  {
+    for (Component c = app.lookup(children); c != null; c = app.lookup(c.nextSibling))
+      if (c.type.is(type) && ((Point)c).address == address)
+        return (Point)c
+    return null
+  	
+  }
+  
+  Point getFirstPoint()
+  {
+    for (Component c = app.lookup(children); c != null; c = app.lookup(c.nextSibling))
+      if (c.type.is(Point.type))
+        return (Point)c
+    return null
+  }
+
+  Point getNextPoint(Point point)
+  {
+    for (Component c = app.lookup(point.id); c != null; c = app.lookup(c.nextSibling))
+      if (c.id != point.id && c.type.is(Point.type))
+        return (Point)c
+    return null
+  }
+
+
+////////////////////////////////////////////////////////////////
+// override methods
+////////////////////////////////////////////////////////////////
+  **
+  ** postPing()
+  **   method is invoked when time to ping device
+  **
+  virtual void postPing() {}
+  
+  **
+  ** setDoValue -- call back to write a DO point value
+  **   Subclasses may or maynot need to override.
+  **    	
+  virtual void setDoValue(int address, bool value)
+  {
+  }  	
+
+  **
+  ** setAoValue -- call back to write a AO point value
+  **   Subclasses may or maynot need to override.
+  **    	
+  virtual void setAoValue(int address, float value)
+  {
+  }  	
+
+////////////////////////////////////////////////////////////////
+// status
+////////////////////////////////////////////////////////////////
+  **
+  ** isDown -- test down status flag
+  **
+  virtual bool isDown()
+  {
+  	return (status & Status.DOWN) != 0
+  }
+ 
+  **
+  ** setDown -- set/clears the down status flag
+  **
+  virtual void setDown(bool isDown)
+  {
+    if(isDown)
+      status = status | Status.DOWN
+    else
+    {
+      status = status & ~Status.DOWN
+      lastUpTime = Sys.ticks()
+//      pingTime.mult(1sec, net.pingTimeSec)
+      nextPingTime = lastUpTime + pingTime
+    }	
+  }  	
+////////////////////////////////////////////////////////////////
+// Fields
+////////////////////////////////////////////////////////////////
+
+  DeviceNetwork net
+  App app
+  long lastUpTime   = 0L
+  long nextPingTime = 0L
+  long pingTime     = 0L  
+
+}
