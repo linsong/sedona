@@ -523,7 +523,7 @@ public class DaspSession
       // close b/c we don't need to send the close msg)
       case CLOSE:
         enqueue(msg);
-        shutdown("remote endpoint sent close");
+        shutdown("remote endpoint sent close (" + msg.errorCode + ")");
         return;                                        
       
       // datagrams always stuck on the queue to 
