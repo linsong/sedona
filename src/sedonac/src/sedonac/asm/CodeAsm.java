@@ -216,10 +216,11 @@ public class CodeAsm
     loopStack.push(loop);
 
     // assemble the do/while loop code
+    int startWhile = mark();
     block(stmt.block);
     int continueMark = mark();
     expr(stmt.cond);
-    jump(SCode.JumpNonZero, continueMark);
+    jump(SCode.JumpNonZero, startWhile);
     int breakMark = mark();
 
     // backpatch continues

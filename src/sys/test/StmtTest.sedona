@@ -248,8 +248,8 @@ class StmtTest
     assert(verifyDoWhile2(1, 9, 9) == 2)
     assert(verifyDoWhile2(5, 9, 9) == 16)
     assert(verifyDoWhile2(5, 4, 9) == 6)
-    assert(verifyDoWhile2(5, 9, 3) == 13)
-    assert(verifyDoWhile2(5, 2, 4) == 9)
+    assert(verifyDoWhile2(5, 9, 3) == 11)
+    assert(verifyDoWhile2(5, 2, 4) == 6)
   }
   
   static int verifyDoWhile1(int x)
