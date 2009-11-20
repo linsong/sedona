@@ -103,7 +103,7 @@ public class ResolveIncludes
       .append("Auto-Including '").append(base.toString()).append("' from kit ")
       .append(include.sourceKit.file).append(". '").append(typeName)
       .append("' depends on it.");
-      log.warn(sb.toString());
+      warn(sb.toString());
       
       include.typeToSource.put(baseTypeName, null);
       recursivelyAutoInclude(include, baseTypeName);

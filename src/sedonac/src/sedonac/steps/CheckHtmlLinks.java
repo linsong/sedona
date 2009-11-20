@@ -188,7 +188,7 @@ public class CheckHtmlLinks
         if (!f.exists())
         {
           if (filename.startsWith("../"))
-            log.warn("WARNING: " + new Location(elem) + ": Cannot resolve relative href target '" + href + "'");
+            warn("Cannot resolve relateive href target '" + href + "'", new Location(elem));
           else
             err("Unknown href target '" + href + "'", new Location(elem));
         }

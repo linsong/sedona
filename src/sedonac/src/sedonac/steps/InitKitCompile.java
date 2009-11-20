@@ -220,8 +220,7 @@ public class InitKitCompile
   
   private boolean isTestonly(XElem xsource)
   {
-    Location l = new Location(xsource);
-    final String loc = "["+l.toFileName()+":"+l.line+"]";
+    Location loc = new Location(xsource);
     boolean testonly = false;
     try
     {
@@ -242,7 +241,7 @@ public class InitKitCompile
       try
       {
         testonly = xsource.getb("test");
-        log.warn("The 'test' attribute is deprecated. Use 'testonly' instead. " + loc);
+        warn("The 'test' attribute is deprecated. Use 'testonly' instead. ", loc);
       }
       catch (XException ee)
       {

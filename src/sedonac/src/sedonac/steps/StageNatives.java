@@ -77,7 +77,7 @@ public class StageNatives
     File dir = new File(Env.home, path.substring(1));
     if (!dir.exists() || !dir.isDirectory())
     {
-      log.warn("Source path not found '" + dir + "'");
+      warn("Source path not found '" + dir + "'");
       return;
     }
 
