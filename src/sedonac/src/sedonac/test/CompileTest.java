@@ -9,10 +9,13 @@
 package sedonac.test;
 
 import java.io.*;
+import java.util.*;
+
 import sedonac.Compiler;
+import sedonac.CompilerException;
 
 /**
- * CompileTest is an end-to-end test from source to VM execution
+ * CompileTest compiles a single Sedona source file.
  */
 public abstract class CompileTest
   extends Test
@@ -20,10 +23,12 @@ public abstract class CompileTest
 
   public void compile(String src)
   {
-    File f = new File("sedona-test.tmp");
+    File xml = new File("compile-test.xml");
+    writeKitXml(xml);
+    File source = new File("sedona-test.sedona");
     try
     {
-      FileWriter out = new FileWriter(f);
+      FileWriter out = new FileWriter(source);
       out.write(src);
       out.close();
     }
@@ -33,10 +38,55 @@ public abstract class CompileTest
       fail();
     }
 
-    compiler = new Compiler();
-    compiler.compile(f);
+    try
+    {
+      compiler = new TestCompiler();
+      compiler.compile(xml);
+    }
+    catch (CompilerException e)
+    {
+    }
+
+    xml.delete();
+    source.delete();
+  }
+  
+  public void writeKitXml(File xml)
+  {
+    try
+    {
+      FileWriter out = new FileWriter(xml);
+      out.write("<sedonaKit name='sedonacCompileTest' vendor='Tridium' description=''><depend on='sys 1.0' /><source dir='.' /></sedonaKit>");
+      out.close();
+    }
+    catch (IOException e)
+    {
+      e.printStackTrace();
+      fail();
+    }
+  }
+  
+  /**
+   * Test Compiler. Turns off logging, and captures warnings for testing 
+   * purposes.
+   */
+  protected class TestCompiler extends Compiler
+  {
+    public TestCompiler()
+    {
+      super();
+      this.log.severity = 1000;
+      this.warnings = new ArrayList();
+    }
+    
+    public void warn(String msg)
+    {
+      super.warn(msg);
+      warnings.add(msg);
+    }
+    public ArrayList warnings;
   }
 
-  Compiler compiler;
+  protected TestCompiler compiler;
   byte[] image;
 }

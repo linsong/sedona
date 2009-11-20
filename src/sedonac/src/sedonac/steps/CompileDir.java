@@ -51,6 +51,7 @@ public class CompileDir
     log.info("Compile [" + name + "]");  
     Compiler c = compiler.spawn();
     c.compile(new File(xmlDir, name));
+    System.out.println();
   }
 
   File xmlFile;

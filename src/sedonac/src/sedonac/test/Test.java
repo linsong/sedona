@@ -35,6 +35,8 @@ public class Test extends Verifies
       {
         "sedonac.test.TokenizerTest",
         "sedonac.test.ParserTest",
+        "sedonac.test.DefiniteAssignmentTest",
+        "sedonac.test.DeadCodeTest",
         "sedonac.test.ManifestTest",
         "sedonac.test.KitDbTest",
         "sedonac.test.AppTest",        

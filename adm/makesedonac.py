@@ -17,6 +17,7 @@ srcDir  = os.path.join(env.src, "sedonac", "src")
 jarFile = env.sedonacJar
 packages = [ 
   "sedonac",
+  "sedonac.analysis",
   "sedonac.asm",
   "sedonac.ast",
   "sedonac.gen",

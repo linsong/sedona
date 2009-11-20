@@ -39,6 +39,7 @@ public class Compiler
   {
     log     = new CompilerLog();
     errors  = new ArrayList();
+    warnings= new ArrayList();
     ns      = new Namespace();
   }
 
@@ -123,13 +124,14 @@ public class Compiler
     new CheckErrors(this).run();
     new NormalizeExpr(this).run();
     new ResolveNatives(this).run();
+    new StaticAnalysis(this).run();
     new Assemble(this).run();
     new FieldLayout(this).run();
     new BuildManifest(this).run();
     new AssembleJava(this).run();
     new OptimizeIr(this).run();
     new WriteKit(this).run();
-    new WriteDoc(this).run();        
+    new WriteDoc(this).run(); 
   }
 
   /**
@@ -298,6 +300,21 @@ public class Compiler
     return err(new CompilerException(err));
   }
                        
+////////////////////////////////////////////////////////////////
+// Warnings
+////////////////////////////////////////////////////////////////
+  
+  public void warn(String msg)
+  {
+    log.warn("[WARNING] " + msg);
+    warnings.add(msg);
+  }
+  
+  public void warn(String msg, Location loc)
+  {
+    if (loc != null) msg = loc + ": " + msg;
+    warn(msg);
+  }
 
 ////////////////////////////////////////////////////////////////
 // New Copy
@@ -314,6 +331,7 @@ public class Compiler
     c.doc        = this.doc;
     c.dumpLayout = this.dumpLayout;
     c.errors     = this.errors;
+    c.warnings   = this.warnings;
     c.outDir     = this.outDir;
     c.www        = this.www;
     return c;
@@ -336,6 +354,7 @@ public class Compiler
   public Namespace ns;             // ctor
   public XElem xml;                // compile(String)
   ArrayList errors;                // err()
+  ArrayList warnings;              // warn() - ArrayList so spawn retains state
 
   // compile kit pipeline
   public KitDef ast;               // InitKitCompile

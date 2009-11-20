@@ -172,18 +172,23 @@ public class Main
     try
     {
       compiler.compile(new File(input));
-      System.out.println("*** Success! ***");
+      int num = compiler.warnings.size();
+      if (num > 0)
+        System.out.println("*** Success with " + num + " warning(s) ***");
+      else
+        System.out.println("*** Success! ***");
       return 0;
     }
     catch(CompilerException e)
     {
-      int num = compiler.logErrors();
-      if (num == 0)
+      int numWarn = compiler.warnings.size();
+      int numErr  = compiler.logErrors();
+      if (numErr == 0)
         e.printStackTrace();
-      else if (num == 1)
-        System.out.println("*** FAILED with 1 error ***");
-      else
-        System.out.println("*** FAILED with " + compiler.errors().length + " errors ***");
+      else 
+      {
+        System.out.println("*** FAILED with " + numErr + " error(s) and " + numWarn + " warning(s) ***");
+      }
       return 1;
     }
     catch(Throwable e)

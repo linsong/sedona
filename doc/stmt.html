@@ -117,8 +117,9 @@ Component c = doSomething()
 
 <p>                     
 Local variables are scoped within their block - they are not visible
-to parent blocks.  Sedona doesn't currently support declaring multiple 
-local variables in one statement like C or Java.                
+to parent blocks.  A local variable must be definitely assigned before it is
+used or the compiler will generate an error. Sedona doesn't currently support 
+declaring multiple local variables in one statement like C or Java.
 </p>
 
 <!--/////////////////////////////////////////////////////////-->

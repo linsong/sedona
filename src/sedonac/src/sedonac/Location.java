@@ -16,6 +16,7 @@ import sedona.xml.*;
  * Location stores a filename and line number.
  */
 public class Location
+  implements Comparable
 {                  
 
   public static String toString(File f)
@@ -71,6 +72,60 @@ public class Location
 
   public Location()
   {
+  }
+  
+  public int hashCode()
+  {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + col;
+    result = prime * result + ((file == null) ? 0 : file.hashCode());
+    result = prime * result + line;
+    return result;
+  }
+
+  public boolean equals(Object obj)
+  {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    Location other = (Location)obj;
+    if (col != other.col)
+      return false;
+    if (file == null)
+    {
+      if (other.file != null)
+        return false;
+    }
+    else if (!file.equals(other.file))
+      return false;
+    if (line != other.line)
+      return false;
+    return true;
+  }
+  
+  public int compareTo(Object o)
+  {
+    Location other = (Location)o;
+    int cmp = 0;
+    if (file == null)
+    {
+      if (other.file != null)
+        return -1;
+    }
+    else
+    {
+      if ((cmp = file.compareTo(other.file)) != 0)
+        return cmp;
+    }
+    
+    if ((cmp = line - other.line) != 0)
+      return cmp;
+    
+    return col - other.col;
   }
 
   public String toFileName()
