@@ -179,6 +179,8 @@ class ActionTest extends Test
 
 abstract class AbstractBase extends Component
 {
+  @config @asStr property Buf(16) absBuf = "ActionTest"
+  
   abstract action void doAbstract()
   action void doBool(bool z) { z1 = z }
   action void doInt(int i) { i1 = i }
@@ -206,8 +208,9 @@ abstract class AbstractBase extends Component
 }
 
 class FooAction extends AbstractBase
-{
+{ 
   override action void doAbstract() { i1 = -1 }
+  @config property int fooInt1 = 1
 }
 
 class BarAction extends FooAction 
@@ -218,10 +221,11 @@ class BarAction extends FooAction
   override action void doFloat(float f) { super.doFloat(f) }
   override action void doDouble(double d) { super.doDouble(d) }
   override action void doBuf(Buf b) { super.doBuf(b) }
+  @config @asStr property Buf(8) barBuf = "BarBuf"
 }
 
 class BazAction extends BarAction
-{
+{ 
   override action void doAbstract() { i1 = -2 }
   override action void doBool(bool z) { z1 = !z }
   override action void doInt(int i) { i1 = -i }
@@ -229,4 +233,5 @@ class BazAction extends BarAction
   override action void doFloat(float f) { f1 = -f }
   override action void doDouble(double d) { d1 = -d }
   override action void doBuf(Buf b) { buf.copyFromBytes(b.bytes,0,1) }
+  @config property float bazFloat = 1.0
 }

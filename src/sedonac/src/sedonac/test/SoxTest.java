@@ -166,10 +166,11 @@ public class SoxTest
     verifyEq(capp.path(), "/");
     verifyEq(capp.parentId(), Component.nullId);
     verifyEq(capp.type, schema.type("sys::App"));
-    verifyEq(capp.childrenIds().length, 3);
+    verifyEq(capp.childrenIds().length, 4);
     verifyEq(capp.childrenIds()[0], app.children()[0].id());
     verifyEq(capp.childrenIds()[1], app.children()[1].id());
     verifyEq(capp.childrenIds()[2], app.children()[2].id());
+    verifyEq(capp.childrenIds()[3], app.children()[3].id());
 
     // verify read skipping parents
     SoxComponent csoxTest = client.load(soxTestId);
@@ -184,10 +185,12 @@ public class SoxTest
     SoxComponent cservice = capp.child("service");
     SoxComponent ca = capp.child("a");
     SoxComponent cb = capp.child("b");
-    verifyEq(kids.length, 3);
+    SoxComponent cbaz = capp.child("baz");
+    verifyEq(kids.length, 4);
     verify(kids[0] == cservice);
     verify(kids[1] == ca);
     verify(kids[2] == cb);
+    verify(kids[3] == cbaz);
 
     // verify a
     verifyEq(ca.id(), a.id());
@@ -262,6 +265,11 @@ public class SoxTest
     verify(ex != null);
     ex = null; try {  client.write(aa.id(), aa.type.slot("str", true), Str.make("\u0080")); } catch(Exception e) { ex = e; }
     verify(ex != null);
+    
+    // test write to component with virtual actions
+    ex = null; try { client.write(baz.id(), baz.type.slot("bazFloat", true), Float.make(2.0f)); } catch(Exception e) { ex = e; }
+    if (ex != null) ex.printStackTrace();
+    verify(ex == null);
   }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1211,6 +1219,7 @@ public class SoxTest
       this.r = new OfflineComponent(schema.type("sys::TestComp"), "r");
       this.s = new OfflineComponent(schema.type("sys::TestComp"), "s");
       this.t = new OfflineComponent(schema.type("sys::TestComp"), "t");
+    this.baz = new OfflineComponent(schema.type("sys::BazAction"), "baz");
     app.add(app, a);
       app.add(a, aa);
         app.add(aa, aa1);
@@ -1220,6 +1229,7 @@ public class SoxTest
       app.add(b, r);
       app.add(b, s);
       app.add(b, t);
+    app.add(app, baz);
     app.assignIds();
 
     // a.b1   -> aa.b2
@@ -1350,6 +1360,7 @@ public class SoxTest
   //     r:         TestComp
   //     s:         TestComp
   //     t:         TestComp
+  //   c:           BazAction
   //
   // a.b1   -> aa.b2
   // aa.i1  -> b.i2
@@ -1375,6 +1386,7 @@ public class SoxTest
       OfflineComponent r;
       OfflineComponent s;
       OfflineComponent t;
+    OfflineComponent baz;
 
 //////////////////////////////////////////////////////////////////////////
 // Fields
