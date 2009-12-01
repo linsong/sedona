@@ -448,7 +448,7 @@ class SpyWeblet
     res.w("</tr>\n")
   }
 */
-
+/*
   private void tdWatchFlags(WebRes res, int flags)
   {
     res.td()
@@ -458,6 +458,7 @@ class SpyWeblet
     if ((flags & Watch.eventLinks)   != 0) res.writeChar('l')
     res.w("</td>")
   }
+*/
 
 ////////////////////////////////////////////////////////////////
 // Logs
