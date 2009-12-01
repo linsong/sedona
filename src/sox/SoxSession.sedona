@@ -278,7 +278,6 @@ class SoxSession
           int c = in.read()
           if (c <= 0) return
         }
-        return
       case Dasp.BYTES:
         int len = in.read()
         if (len > 0) in.skip(len)
