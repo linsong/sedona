@@ -7,11 +7,16 @@
 //
 
 **
-** AiPoint -- Class to model a Analog input point in a Device.
+** Models an analog input point in a Device.
 **
 class AiPoint
   extends Point 
 {
+  ////////////////////////////////////////////////////////////////
+  // Properties
+  ////////////////////////////////////////////////////////////////
+
+  ** Value read from analog input
   property float out  = 0.0
   
 }

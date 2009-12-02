@@ -7,7 +7,7 @@
 //
 
 **
-** Status -- Class to model status info.
+** Status -- Constants representing status info.
 **
 class Status 
 {

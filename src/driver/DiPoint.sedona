@@ -7,11 +7,16 @@
 //
 
 **
-** AoPoint -- Class to model a Digital input point in a Device.
+** DiPoint models a digital input point in a Device.
 **
 class DiPoint
   extends Point 
 {
-   property bool  out  = false
+  ////////////////////////////////////////////////////////////////
+  // Properties
+  ////////////////////////////////////////////////////////////////
+
+  ** Value read from digital input
+  property bool  out  = false
   
 }

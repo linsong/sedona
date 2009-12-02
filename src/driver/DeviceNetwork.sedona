@@ -7,12 +7,21 @@
 //
 
 **
-** Auto-generated template Sedona Class
+** Models a network of devices.  Provides access to child components of type
+** Device or a subclass of it.
 **
 class DeviceNetwork
   extends Service 
 {
+  ////////////////////////////////////////////////////////////////
+  // Properties
+  ////////////////////////////////////////////////////////////////
+
   @config property int pingTimeSec = 30  
+
+  ////////////////////////////////////////////////////////////////
+  // Life cycle
+  ////////////////////////////////////////////////////////////////
 
   virtual override void start()
   {
@@ -20,18 +29,28 @@ class DeviceNetwork
   }
 
   
+  ////////////////////////////////////////////////////////////////
+  // App support
+  ////////////////////////////////////////////////////////////////
+
+  **
+  ** Get first child component of type Device (or subclass).
+  ** Returns null if no Device objects found.
+  **
   Device getFirstDevice()
   {
-  	App app = Sys.app
     for (Component c = app.lookup(children); c != null; c = app.lookup(c.nextSibling))
       if (c.type.is(Device.type))
         return (Device)c
     return null
   }
 
+  **
+  ** Get next child component after 'device' that is of type Device (or subclass).
+  ** Returns null if it reaches the end of the list without finding one.
+  **
   Device getNextDevice(Device device)
   {
-  	App app = Sys.app
     for (Component c = app.lookup(device.id); c != null; c = app.lookup(c.nextSibling))
       if (c.id != device.id && c.type.is(Device.type))
         return (Device)c
@@ -39,5 +58,8 @@ class DeviceNetwork
   }
   
   
+  ////////////////////////////////////////////////////////////////
+  // Fields
+  ////////////////////////////////////////////////////////////////
   App app
 }

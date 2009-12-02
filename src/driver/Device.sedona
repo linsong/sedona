@@ -7,34 +7,47 @@
 //
 
 **
-** Auto-generated template Sedona Class
+** Models a device as a collection of I/O points.  Provides access to child components 
+** of type Point or a subclass of it.
 **
 class Device
   extends Component 
 {
+  ////////////////////////////////////////////////////////////////
+  // Properties
+  ////////////////////////////////////////////////////////////////
+
+  ** Whether the device is in fault.
   property bool fault = false
+
+  ** Status bitmask for device.
   property int status = 0
+
+  ** Whether the device is enabled.
   @config property bool enable = true 
 
+
+  ////////////////////////////////////////////////////////////////
+  // Life cycle
+  ////////////////////////////////////////////////////////////////
+
   **
-  ** start
-  **   init net pointer
-  **   init ping timer
+  ** Sets up pointers and timestamps.
+  **   
   virtual override void start()
   {
-  	app = Sys.app
-  	net = getNetwork()
-  	if(net == null)
-  	  return
-  	pingTime = 1sec * (long)net.pingTimeSec
+    app = Sys.app
+    net = getNetwork()
+    if(net == null)
+      return
+    pingTime = 1sec * (long)net.pingTimeSec
     lastUpTime = Sys.ticks()
     nextPingTime = Sys.ticks()
   	
   }
 
   **
-  ** execute override
-  **  postPing when time
+  ** Updates fault state, posts ping at appropriate time.
   **  
   virtual override void execute()
   {
@@ -47,12 +60,12 @@ class Device
   	fault = status != 0
   }
 
-////////////////////////////////////////////////////////////////
-// app support
-////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////
+  // App support
+  ////////////////////////////////////////////////////////////////
+
   **
-  ** getNetwork()
-  **   returns a reference to the parent network
+  ** Returns a reference to the parent network.
   **
   DeviceNetwork getNetwork()
   {
@@ -63,7 +76,7 @@ class Device
   }
 
   **
-  ** addPoint() -- add a point to this device
+  ** Adds a point to this device.
   ** 
   void addPoint(Str name, int address, Type type)
   {
@@ -80,7 +93,7 @@ class Device
   }
   
   **
-  ** getPoint -- get point by type and address
+  ** Gets point by type and address.
   **
   Point getPoint(Type type, int address)
   {
@@ -91,6 +104,10 @@ class Device
   	
   }
   
+  **
+  ** Gets first child component of type Point (or subclass).
+  ** Returns null if no Point objects found.
+  **
   Point getFirstPoint()
   {
     for (Component c = app.lookup(children); c != null; c = app.lookup(c.nextSibling))
@@ -99,6 +116,10 @@ class Device
     return null
   }
 
+  **
+  ** Gets next child component after 'point' that is of type Point (or subclass).
+  ** Returns null if end of child list is reached without finding one.
+  **
   Point getNextPoint(Point point)
   {
     for (Component c = app.lookup(point.id); c != null; c = app.lookup(c.nextSibling))
@@ -108,36 +129,32 @@ class Device
   }
 
 
-////////////////////////////////////////////////////////////////
-// override methods
-////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////
+  // Callback methods
+  ////////////////////////////////////////////////////////////////
+
   **
-  ** postPing()
-  **   method is invoked when time to ping device
+  ** Method invoked when time to ping device.
   **
   virtual void postPing() {}
   
   **
-  ** setDoValue -- call back to write a DO point value
-  **   Subclasses may or maynot need to override.
+  ** Callback to write a DO point value.
   **    	
-  virtual void setDoValue(int address, bool value)
-  {
-  }  	
+  virtual void setDoValue(int address, bool value) { }  	
 
   **
-  ** setAoValue -- call back to write a AO point value
-  **   Subclasses may or maynot need to override.
+  ** Callback to write a AO point value.
   **    	
-  virtual void setAoValue(int address, float value)
-  {
-  }  	
+  virtual void setAoValue(int address, float value) { }  	
 
-////////////////////////////////////////////////////////////////
-// status
-////////////////////////////////////////////////////////////////
+
+  ////////////////////////////////////////////////////////////////
+  // Status
+  ////////////////////////////////////////////////////////////////
+
   **
-  ** isDown -- test down status flag
+  ** Test down status flag.
   **
   virtual bool isDown()
   {
@@ -145,7 +162,7 @@ class Device
   }
  
   **
-  ** setDown -- set/clears the down status flag
+  ** Sets/clears the down status flag.
   **
   virtual void setDown(bool isDown)
   {
@@ -155,13 +172,14 @@ class Device
     {
       status = status & ~Status.DOWN
       lastUpTime = Sys.ticks()
-//      pingTime.mult(1sec, net.pingTimeSec)
       nextPingTime = lastUpTime + pingTime
     }	
   }  	
-////////////////////////////////////////////////////////////////
-// Fields
-////////////////////////////////////////////////////////////////
+
+
+  ////////////////////////////////////////////////////////////////
+  // Fields
+  ////////////////////////////////////////////////////////////////
 
   DeviceNetwork net
   App app
