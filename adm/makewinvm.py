@@ -13,6 +13,7 @@ import env
 import fileutil
 import compilewin
 import compilekit
+import platArchive
 
 platFile = os.path.join(env.platforms, "src", "generic", "win32", "generic-win32.xml")
 
@@ -32,6 +33,7 @@ defs = []
 # Make
 def compile():
   try:
+    fileutil.rmdir(stageDir)
     compilekit.compile(platFile + " -outDir " + stageDir)
     compilewin.compile(exeFile, srcFiles, includes, libs, defs)
 
@@ -44,4 +46,5 @@ def compile():
 # Main
 if __name__ == '__main__':
   compile()
+  platArchive.main(["--db", "--stage", os.path.join(stageDir, ".par")])
 

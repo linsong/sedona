@@ -62,6 +62,7 @@
 #define ERR_INVALID_METHOD_PARAMS   102
 
 // special codes (shared with Sedona)
+#define ERR_RESTART					        254
 #define ERR_HIBERNATE               255
 
 #endif

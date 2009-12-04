@@ -53,5 +53,6 @@ class Err
   define int nameTooLong          = 61
 
   // special codes
+  define int restart              = 254
   define int hibernate            = 255
 }

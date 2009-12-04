@@ -852,7 +852,9 @@ class App
   @confirmRequired
   action void restart()
   {
-    platform.restart()                  
+    platform.restart()
+    running = false
+    runStatus = Err.restart                  
   }
 
   **
@@ -861,7 +863,7 @@ class App
   @confirmRequired
   action void reboot()
   {
-    platform.reboot()                  
+    platform.reboot()
   }
 
 ////////////////////////////////////////////////////////////////
