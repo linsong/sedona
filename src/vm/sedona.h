@@ -183,6 +183,14 @@ typedef short             int_least16_t;
 #define block2addr(cb, block) ((cb) + (block<<2))
 #define _chdir chdir
 
+#ifndef TRUE
+#  define TRUE 1
+#endif
+
+#ifndef FALSE
+#  define FALSE 0
+#endif
+
 #if __WORDSIZE == 64
 #  define CLOCK_T_MAX INT64_MAX
 #elif __WORDSIZE == 32
