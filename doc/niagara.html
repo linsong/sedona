@@ -306,19 +306,19 @@ protected void doLoadValue(BObject value, Context cx) throws Exception
 When using Niagara tools to provision a Sedona instance, there are a few things to be aware of.
 </p>
 <dl>
-  <dt> File names 
+  <dt>File names</dt>
   <dd> Niagara makes assumptions about the file names used to launch the remote Sedona platform.  
   In particular, it assumes: the Sedona VM is named "svm.bin" (or "svm.exe"), 
-  the kit bundle file is named "kits.scode", and the app binary is named "app.sab".
-  <dt> File PUT
+  the kit bundle file is named "kits.scode", and the app binary is named "app.sab".</dd>
+  <dt>File PUT</dt>
   <dd> A file PUT operation from Niagara to Sedona will always append ".stage" to the filename 
   before it sends the file.  For example, it sends the app binary as "app.sab.stage".  
   It is the responsibility of the Sedona launcher to rename the file once it is received, 
-  or to use the new filename when Sedona is restarted after provisioning.
-  <dt> File GET 
+  or to use the new filename when Sedona is restarted after provisioning.</dd>
+  <dt>File GET</dt>
   <dd> A file GET operation from Sedona to Niagara will prompt the user for the path 
   and filename to be used on the local host for the received file.  The name of the file
-  as it is being transferred is normally not visible (or relevant) to the user.
+  as it is being transferred is normally not visible (or relevant) to the user.</dd>
 </dl>
 
 
