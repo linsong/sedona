@@ -94,6 +94,7 @@ static int runInPlatformMode()
   const char* scode = "kits.scode";
   const char* app   = "app.sab";
   SedonaVM vm;
+  bool quit = FALSE;
 
   printf("Running SVM in Platform Mode\n");
   do
@@ -119,10 +120,15 @@ static int runInPlatformMode()
       else
       {
         printf("Cannot run VM (%d)\n", result);
-        break;
+        quit = TRUE;
       }
     }
-  } while (TRUE);
+    else
+    {
+      printf("Quitting\n");
+      quit = TRUE;
+    }
+  } while (!quit);
 
   return result;
 }
