@@ -88,7 +88,7 @@ public class ProvAddKit extends ProvTest
   
   private File getSax(File sab)
   {
-    return new File(FileUtil.getBase(sab.getName())+".sax");
+    return new File(runner.testDir, FileUtil.getBase(sab.getName())+".sax");
   }
   
   public static final String certName = "cert"; 

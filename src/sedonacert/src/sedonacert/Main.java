@@ -8,8 +8,6 @@
 
 package sedonacert;
 
-import java.io.*;
-import java.util.*;
 import sedona.*;
 
 /**
@@ -64,7 +62,27 @@ public class Main
       {
         println("WARNING: unknown option '" + arg + "'");
       }                                                  
-      else if (runner.host == null) runner.host = arg;
+      else if (runner.host == null)
+      {
+        int colon = arg.indexOf(':');
+        runner.host = arg;
+        runner.port = 1876;
+        if (colon != -1)
+        {
+          try
+          {
+            if (colon == 0 || colon == arg.length() -1) throw new Exception();
+            runner.host = arg.substring(0, colon);
+            runner.port = Integer.parseInt(arg.substring(colon+1));
+          }
+          catch (Exception e)
+          {
+            println("ERROR: invalid host parameter: " + arg);
+            usage();
+            return 1;
+          }
+        }
+      }
       else if (runner.username == null) runner.username = arg;
       else if (runner.password == null) runner.password = arg;
     }

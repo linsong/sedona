@@ -46,6 +46,7 @@ alias makesedonac='makesedonac.py'
 alias makesedonacert='makesedonacert.py'
 alias platformdb='platformdb.py'
 alias sedonac='sedonac.sh'
+alias sedonacert='sedonacert.sh'
 alias jsvm='jsvm.sh'
 
 # functions

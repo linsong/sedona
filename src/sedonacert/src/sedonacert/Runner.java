@@ -37,6 +37,11 @@ public class Runner
   public String host;
   
   /**
+   * Sox port to connect to.
+   */
+  public int port = 1876;
+  
+  /**
    * Admin user name to use for sox authentication.
    */
   public String username;
@@ -49,11 +54,7 @@ public class Runner
   /**
    * All the bundles to test.
    */
-  public Bundle[] bundles = new Bundle[]
-  { 
-    new sedonacert.sox.Sox(this),
-    new sedonacert.prov.Prov(this),
-  };
+  public Bundle[] bundles; 
   
   /**
    * Sox connection maintained during test run.
@@ -120,7 +121,7 @@ public class Runner
   }      
   
   /**
-   * Initialize the test environment.
+   * Initialize the test environment and all test bundles.
    */
   public boolean init()          
     throws Exception
@@ -128,6 +129,13 @@ public class Runner
     testDir = new File("sedona-cert");
     FileUtil.delete(testDir, log);        
     FileUtil.mkdir(testDir, log);
+    
+    // set the test bundles to run
+    bundles = new Bundle[] {
+                 new sedonacert.sox.Sox(this),
+                 new sedonacert.prov.Prov(this),
+    };
+    
     return true;
   }
   
@@ -137,11 +145,11 @@ public class Runner
   public boolean connect()                         
     throws Exception
   {            
-    log.info("Connecting to " + host + ":1876 as " + username + ":" + password + "...");
+    log.info("Connecting to " + host + ":" + port + " as " + username + ":" + password + "...");
     try
     {
       DaspSocket sock = DaspSocket.open(-1, null, DaspSocket.SESSION_QUEUING);
-      sox = new SoxClient(sock, InetAddress.getByName(host), 1876, username, password);
+      sox = new SoxClient(sock, InetAddress.getByName(host), port, username, password);
       sox.connect();             
       schema  = sox.readSchema();
       version = sox.readVersion();
