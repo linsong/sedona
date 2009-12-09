@@ -15,7 +15,7 @@ import sys
 import shutil
 import xml.dom.minidom
 import zipfile
-import tridiumenv
+import subprocess
 import env
 
 # Command-line Options
@@ -117,7 +117,9 @@ def addToPlatformDb(platformId):
   for d in platformId.split("-"):
     platDir = os.path.join(platDir, d)
   platDir = os.path.join(platDir, ".par")
-  os.system("platformdb -i " + outFile)
+  cmd = "platformdb.py -i " + outFile
+  if subprocess.call(cmd, shell=True, env=os.environ.copy()):
+    raise Exception, "call failed: " + cmd
   
 def main(argv=[]):
   parseOpts(argv)

@@ -19,6 +19,7 @@
   <target name="basicSchedule" />
   <target name="pstore" />
   <target name="../platforms/src/generic/win32" />
+  <target name="../platforms/src/generic/unix" />
 
 </sedonaDir>
 

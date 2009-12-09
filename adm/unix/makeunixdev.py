@@ -16,6 +16,7 @@ import env
 import fileutil
 import makesedona
 import makesedonac
+import makesedonacert
 import makeunixvm
 import compilekit
 
@@ -26,12 +27,15 @@ if __name__ == '__main__':
   
   # make sedonac.jar  
   makesedonac.compile()
+
+  # make sedonacert.jar
+  makesedonacert.compile()
   
   # make all kits
   compilekit.compile(env.src)
 
   # make unix svm
-  makeunixvm.compile()
+  makeunixvm.main([])
   
   # make windows test scode
   #compilekit.compile(os.path.join(env.scode, "x86-test.xml"))  

@@ -1,15 +1,16 @@
 //
 // Copyright (c) 2009 Tridium, Inc
 // Licensed under the Academic Free License version 3.0
+//
 // History:
-// 12/3/2009 - Matthew Giannini - creation
+// 12/8/2009 - Matthew Giannini - creation
 
 
 **
-** Generic Win32 Platform Service
+** Generic Unix Platform Service
 **
 **
-class Win32PlatformService extends PlatformService
+class UnixPlatformService extends PlatformService
 {
   **
   ** Get the platform identifier which defines how
@@ -25,7 +26,7 @@ class Win32PlatformService extends PlatformService
   {
     super.start()
     updatePlatformId(doPlatformId())
-    // TODO: Win32Platform needs to dynamically update available memory???
+    // TODO: UNIX  needs to dynamically update available memory???
     memAvailable = 314159265L
   }
 }

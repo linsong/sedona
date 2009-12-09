@@ -1,5 +1,7 @@
 <!--
   -  Sedona Platform Manifest
+  -  Copyright 2009 Tridium Inc
+  -  Licensed under the Academic Free License version 3.0
   -->
 
 <sedonaPlatform vendor="Tridium" id="tridium-generic-win32-${sedona.env.version}" >

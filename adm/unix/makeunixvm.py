@@ -17,16 +17,15 @@ import env
 import fileutil
 import compileunix
 import compilekit
+import platArchive
+import xml.dom.minidom
 
 compiler = "gcc"
-platDir = os.environ.get("SVM_PLATFORM")
-
+platFile = ""
+stageDir = ""
 includes = []
-
 libs = []
-
 defs = [("__UNIX__", "1")]
-
 
 # usage
 def usage():
@@ -36,10 +35,11 @@ def usage():
   print ""
   print " Options:"
   print "   -c, --compiler      The compiler to use. Defaults to 'gcc'."
-  print "   -p, --platform      The path that contains the sedonaPlatform XML file. If"
-  print "                       the path is relative, it is assumed to be rooted at"
-  print "                       $sedona_home/platforms. If this option is omitted, then"
-  print "                       the environment variable $SVM_PLATFORM is used."
+  print "   -p, --platform      The path to the sedonaPlatform XML file. If this option"
+  print "                       is omitted, then environment variable $SVM_PLATFORM will"
+  print "                       be checked. If that variable is not set, then"
+  print "                       $sedona_home/platforms/src/generic/unix/generic-unix.xml"
+  print "                       will be used."
   print "   -l                  List the supported compilers."   
   print "   -h, --help          Show this usage"
 
@@ -55,35 +55,39 @@ def listCompilers():
 
 # Make
 def compile():
-  global platDir
+  global platFile, stageDir
   try:
     # init all variables
-    platDir = platDir if os.path.isdir(platDir) else os.path.join(env.platforms, platDir)
-    platFile = glob.glob(os.path.join(platDir, "*.xml"))[0]
+    if xml.dom.minidom.parse(platFile).documentElement.nodeName != "sedonaPlatform":
+      raise env.BuildError("" + platFile + " is not a sedonaPlatform XML file")
+
     stageDir = os.path.join(env.temp, re.sub("\.xml$", "", os.path.split(platFile)[1]))
     srcFiles = [ os.path.join(stageDir, "*.c") ]
-
     fileutil.rmdir(stageDir)
     compilekit.compile(platFile + " -outDir " + stageDir)
     getattr(compileunix, compiler)(env.svmExe, srcFiles, includes, libs, defs)
     os.chmod(env.svmExe, 0755)
 
-  except env.BuildError:
+  except env.BuildError, err:
     print "**"
-    print "** FAILED [" + exeFile + "]"
+    print "** " + str(err) 
+    print "** FAILED [" + env.svmExe + "]"
     print "**"
 
 def verifyOpts():
-  if not platDir:
-    print "Error: Sedona platform is not specified (--platform), or $SVM_PLATFORM is not set."
-    sys.exit(1)
-  elif not getattr(compileunix, compiler, None):
+  global platFile
+  if not platFile:
+    platFile = os.environ.get("SVM_PLATFORM")
+    if not platFile:
+      platFile = os.path.join(env.platforms,"src","generic","unix","generic-unix.xml")
+    
+  if not getattr(compileunix, compiler, None):
     print "Error: Compiler '" + compiler + "' is not supported."
     sys.exit(1)
   
 # main
 def main(argv):
-  global compiler, platDir
+  global compiler, platFile, stageDir
   try:
     opts, args = getopt.getopt(argv, "c:hlp:", ["compiler=", "platform="])
     for opt, arg in opts:
@@ -96,10 +100,11 @@ def main(argv):
       elif opt in ("-c", "--compiler"):
         compiler = arg
       elif opt in ("-p", "--platform"):
-        platDir = arg
+        platFile  = arg
 
     verifyOpts()
     compile()
+    platArchive.main(["--db", "--stage", os.path.join(stageDir, ".par")])
 
   except getopt.GetoptError:
     usage()

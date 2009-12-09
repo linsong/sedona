@@ -8,10 +8,9 @@
 
 #include "sedona.h"
 #include "sedonaPlatform.h"
-#include <windows.h>
 
-// Str Win32PlatformService.doPlatformId()
-Cell platWin32_Win32PlatformService_doPlatformId(SedonaVM* vm, Cell* params)
+// Str UnixPlatformService.doPlatformId()
+Cell platUnix_UnixPlatformService_doPlatformId(SedonaVM* vm, Cell* params)
 {         
   Cell result;
   result.aval = PLATFORM_ID;
