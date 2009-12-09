@@ -10,6 +10,7 @@
   <target name="sys" />
   <target name="inet" />
   <target name="sox" />
+  <target name="soxcert" />
   <target name="serial" />
   <target name="web" />
   <target name="control" />

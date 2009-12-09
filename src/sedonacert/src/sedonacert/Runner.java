@@ -12,6 +12,7 @@ import java.io.*;
 import java.net.*;
 import sedona.*;
 import sedona.dasp.*;
+import sedona.platform.*;
 import sedona.sox.*;
 import sedona.util.*;
 
@@ -68,6 +69,11 @@ public class Runner
    * Version of kits installed on device.
    */
   public VersionInfo version;
+  
+  /**
+   * Platform manifest for svm running on the device.
+   */
+  public PlatformManifest platform;
 
   /**
    * Test scratch directory.
@@ -140,13 +146,20 @@ public class Runner
       schema  = sox.readSchema();
       version = sox.readVersion();
       log.info("Connected.");
-      return true;
     }
     catch (Exception e)
     {     
       log.error("Cannot connect via sox", e);        
       return false;
     }
+    
+    if ((platform = PlatformDb.db().loadExact(version.platformId)) == null)
+    {
+      log.error(version.platformId + " is not in the platform database.");
+      return false;
+    }
+    
+    return true;
   }
 
   /**
@@ -155,7 +168,41 @@ public class Runner
   public void disconnect()
   {
     sox.close();
+    sox = null;
     log.info("Disconnected.");
+  }
+  
+  /**
+   * Restart the device.
+   */
+  public boolean restart()
+  {
+    try
+    {
+      SoxComponent app = sox.loadApp();
+      try
+      {
+        log.info("restart");
+        sox.invoke(app, app.slot("restart"), null);
+      }
+      catch (SoxException e) { }
+      catch (Exception e) { e.printStackTrace(); }
+      disconnect();
+      int attempts = 10;
+      final int sleep = 1000;
+      while (!connect())
+      {
+        if (--attempts == 0) return false;
+        log.info("Try to connect again in " + sleep + " ms...");
+        Thread.sleep(sleep);
+      }
+    }
+    catch (Exception e)
+    {
+      e.printStackTrace();
+      return false;
+    }
+    return true;
   }
   
   /**
