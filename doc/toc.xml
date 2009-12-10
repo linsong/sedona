@@ -54,6 +54,7 @@
   <chapter name="Conventions" href="conventions.html" blurb="Coding conventions"/>
   <chapter name="SCode Format" href="scodeFormat.html" blurb="reference for scode image binary format"/>
   <chapter name="Change Log" href="changeLog.html" blurb="history of changes"/>
+  <chapter name="Sedona Grammar" href="grammar.html" blurb="Sedona language grammar" />
 </section>
 
 </toc>
