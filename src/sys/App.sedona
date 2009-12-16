@@ -3,8 +3,9 @@
 // Licensed under the Academic Free License version 3.0
 //
 // History:
-//    1 Aug 06  Brian Frank  Creation
-//   22 May 07  Brian Frank  Port from Java to Sedona
+//    1 Aug 06  Brian Frank         Creation
+//   22 May 07  Brian Frank         Port from Java to Sedona
+//   15 Dec 09  Elizabeth McKenney  Add steady state feature
 //
 
 **
@@ -77,13 +78,26 @@ class App
 //////////////////////////////////////////////////////////////// 
    
   **
-  ** Is the application current running.
+  ** Is the application currently running
   ** 
   bool isRunning()
   {                     
     return running
   }   
   
+  **
+  ** Has the application reached steady state (as defined by timeToSteadyState)
+  ** 
+  bool isSteadyState()
+  {                     
+    // See whether we have reached steady state yet
+    if (!atSteadyState)
+      atSteadyState = running && (Sys.ticks() > steadyAt)
+
+    return atSteadyState
+  }   
+  
+
   **
   ** Start all the components.  Return 0 on success, 
   ** error code on failure.
@@ -140,6 +154,9 @@ class App
     log.message("running")
     platform.notify("app", "running")
     
+    // Start counting time to steady state
+    steadyAt = Sys.ticks() + (long)timeToSteadyState*1ms
+
     running = true
     runStatus = 0
     while (running)
@@ -805,6 +822,7 @@ class App
   **
   int load()
   {
+    // Read app from file and create objects
     if (!file.open("r")) return Err.cannotOpenFile
     int r = loadApp(file.in)
     file.close()  
@@ -866,6 +884,8 @@ class App
     platform.reboot()
   }
 
+
+
 ////////////////////////////////////////////////////////////////
 // Properties
 ////////////////////////////////////////////////////////////////
@@ -874,7 +894,14 @@ class App
   @config @asStr property Buf(16) appName
   
   ** Scan cycle period in milliseconds.  
+  @unit=Units.millisecond 
   @config property int scanPeriod = 50
+
+  ** Time from app start to steady state, in milliseconds.
+  @unit=Units.millisecond 
+  @config property int timeToSteadyState = 0
+
+
 
 ////////////////////////////////////////////////////////////////
 // Fields
@@ -911,4 +938,11 @@ class App
 
   ** Status to return from run() method
   internal byte runStatus = 0
+
+  ** Indicates whether App has reached steady state
+  internal bool atSteadyState = false
+
+  ** Timestamp at which App will be considered steady state
+  internal long steadyAt      = 0L
+
 }
