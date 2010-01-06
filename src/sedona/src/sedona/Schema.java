@@ -52,13 +52,17 @@ public class Schema
     // try to load it
     log.debug("Loading... [" + key + "]");
     schema = new Schema(key, new Kit[parts.length]);
+    ArrayList missingParts = new ArrayList();
     for (int i=0; i<parts.length; ++i)
     {
       // load part's manifest
       KitPart part = parts[i];
       KitManifest mf = ManifestDb.load(part);
       if (mf == null)
-        throw new MissingKitManifestException(part);
+      {
+        missingParts.add(part);
+        continue;
+      }
 
       // sanity check no duplicate kit names
       if (schema.kitsByName.get(mf.name) != null)
@@ -69,6 +73,9 @@ public class Schema
       schema.kits[i] = kit;
       schema.kitsByName.put(kit.name, kit);
     }
+    
+    if (missingParts.size() > 0)
+      throw new MissingKitManifestException((KitPart[])missingParts.toArray(new KitPart[missingParts.size()]));
 
     // now resolve it
     schema.resolve();
@@ -347,10 +354,27 @@ public class Schema
   {
     public MissingKitManifestException(KitPart part)
     {
-      super("Missing kit manifest: " + part);
-      this.part = part;
-    }    
-    public final KitPart part;
+      this(new KitPart[]{part});
+    }
+    
+    public MissingKitManifestException(KitPart[] parts)
+    {
+      this.parts = parts;
+    }
+    
+    public String getMessage()
+    {
+      StringBuffer sb = new StringBuffer();
+      sb.append("Missing kit manifest(s): ");
+      for (int i=0; i<parts.length; ++i)
+      {
+        if (i > 0) sb.append(", ");
+        sb.append(parts[i]);
+      }
+      return sb.append('.').toString();
+    }
+    
+    public KitPart[] parts;
   }
 
 //////////////////////////////////////////////////////////////////////////
