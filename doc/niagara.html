@@ -29,7 +29,7 @@
 <div class='nav'>
   <a href='index.html'>Index</a>
  | <a href='sedonac.html'>Prev</a>
- | <a href='license.html'>Next</a>
+ | <a href='networking.html'>Next</a>
 </div>
 <h1 class='title'>Niagara AX</h1>
 <div class='content'>
@@ -311,10 +311,21 @@ When using Niagara tools to provision a Sedona instance, there are a few things 
   In particular, it assumes: the Sedona VM is named "svm.bin" (or "svm.exe"), 
   the kit bundle file is named "kits.scode", and the app binary is named "app.sab".</dd>
   <dt>File PUT</dt>
-  <dd> A file PUT operation from Niagara to Sedona will always append ".stage" to the filename 
-  before it sends the file.  For example, it sends the app binary as "app.sab.stage".  
-  It is the responsibility of the Sedona launcher to rename the file once it is received, 
-  or to use the new filename when Sedona is restarted after provisioning.</dd>
+  <dd><p>To be Sox compliant, Sedona platforms must use <code>app.sab</code> as
+  the file name of the Sedona app to run, and <code>kits.scode</code> as the
+  file name of the scode image to run. Further, to be Sox compliant, a platform must
+  look for an <code>app.sab.stage</code> and a <code>kits.scode.stage</code>
+  file when starting and rename them to <code>app.sab</code> and <code>kits.scode</code>
+  respectively before the SVM attempts to load the app and scode.</p>
+  <p>
+  Hence, when Niagara writes new app and scode files to the device, it does so in three stages:
+  </p>
+  <ol>
+  <li>Write the app as <code>app.sab.writing</code> and the scode as <code>kits.scode.writing</code>.</li>
+  <li>Rename those files to <code>app.sab.stage</code> and <code>kits.scode.stage</code> respectively.</li>
+  <li>Restart the device.</li>
+  </ol> 
+  </dd>
   <dt>File GET</dt>
   <dd> A file GET operation from Sedona to Niagara will prompt the user for the path 
   and filename to be used on the local host for the received file.  The name of the file
@@ -328,7 +339,7 @@ When using Niagara tools to provision a Sedona instance, there are a few things 
 <div class='nav'>
   <a href='index.html'>Index</a>
  | <a href='sedonac.html'>Prev</a>
- | <a href='license.html'>Next</a>
+ | <a href='networking.html'>Next</a>
 </div>
 <div class='copyright'>Copyright &#169; 2009, Tridium, Inc.</div>
 </body>

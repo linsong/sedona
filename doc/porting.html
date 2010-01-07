@@ -252,11 +252,11 @@ single directory in order to compile them using the appropriate native
 toolchain.</p>
 
 <p>Staging is accomplished by running sedonac with a 
-<a href="platforms.html#definition">platform definition</a> file and specifying
+<a href="platDef.html#definition">platform definition</a> file and specifying
 the output directory for the staged files. The platform definition lists all the
 directories containing C source files required to build the Sedona VM for a
 target platform. (The platform toolchain may add additional non-Sedona files
-when it builds the final executable). See the <a href="platforms.html">Platform</a>
+when it builds the final executable). See the <a href="platDef.html">platform definition</a>
 section for more details and an example platform definition file.
 </p>
 
@@ -296,12 +296,12 @@ This results in the following:
   file is created, which contains the <code>PLATFORM_ID</code> macro.
   </li>
 
-  <li>The <a href="platforms.html#manifest">platform manifest</a> is staged
+  <li>The <a href="platDef.html#manifest">platform manifest</a> is staged
   in <code>tempStageDir/.par/platformManifest.xml</code>. The toolchain later
   add the SVM binary to into the <code>.par/svm/</code> directory and then
-  generate a <a href="platforms.html#par">PAR file</a>. The PAR file could be
+  generate a <a href="par.html">PAR file</a>. The PAR file could be
   uploaded to <a href="http://sedonadev.org">sedonadev.org</a> or copied to the
-  local <a href="platforms.html#db">platform database</a>.
+  local <a href="par.html#db">platform database</a>.
   </li>
 </ul>
 

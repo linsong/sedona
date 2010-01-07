@@ -32,14 +32,14 @@
 <section name="Deployment">
   <chapter name="Kits" href="kits.html" blurb="unit of modularity, versioning, and dependencies"/>
   <chapter name="Schema" href="schema.html" blurb="manifests: type meta-data and schemas"/>
-  <chapter name="Platforms" href="platforms.html" blurb="managing platform binaries"/>
 </section>
 
-<section name="Networking">
-  <chapter name="Networking" href="networking.html" blurb="Overview of network communications in Sedona"/>
-  <chapter name="DASP" href="dasp.html" blurb="Datagram Authenticated Session Protocol"/>
-  <chapter name="Sox" href="sox.html" blurb="Sox protocol: provisioning and configuration"/>
-</section>  
+<section name="Sedona Platforms">
+  <chapter name="Platform Definition" href="platDef.html" blurb="the platform definition XML file" />
+  <chapter name="Platform Archive" href="par.html" blurb="metadata about a unique Sedona platform" />
+  <chapter name="Platform Tutorial" href="platTutorial.html" blurb="how to create a Sedona platform" />
+  <chapter name="Sedona Certified Platforms" href="platCertified.html" blurb="creating platforms that pass Sedona certification" />
+</section>
 
 <section name="Development">
   <chapter name="Java VM" href="jvm.html" blurb="running Sedona on the Java VM"/>
@@ -48,6 +48,12 @@
   <chapter name="Sedonac" href="sedonac.html" blurb="command line sedonac tool"/>
   <chapter name="Niagara AX" href="niagara.html" blurb="how to integrate Sedona components with the Niagara AX Framework"/>
 </section>
+
+<section name="Networking">
+  <chapter name="Networking" href="networking.html" blurb="Overview of network communications in Sedona"/>
+  <chapter name="DASP" href="dasp.html" blurb="Datagram Authenticated Session Protocol"/>
+  <chapter name="Sox" href="sox.html" blurb="Sox protocol: provisioning and configuration"/>
+</section>  
 
 <section name="Appendix">
   <chapter name="License" href="license.html" blurb="Academic Free License 3.0"/>
