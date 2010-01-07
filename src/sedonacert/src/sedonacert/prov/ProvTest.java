@@ -10,6 +10,7 @@ import sedona.*;
 import sedona.platform.*;
 import sedona.sox.*;
 import sedona.util.TextUtil;
+import sedona.util.Version;
 import sedona.xml.*;
 
 import sedonac.Compiler;
@@ -30,6 +31,15 @@ public abstract class ProvTest extends Test
   }
   
   protected final Prov prov() { return (Prov)bundle; }
+  
+  protected void provision(File appSab, File scodeBin) throws Exception
+  {
+    putFile(appSab, "app.sab.writing");
+    putFile(scodeBin, "kits.scode.writing");
+    runner.sox.renameFile("app.sab.writing", "app.sab.stage");
+    runner.sox.renameFile("kits.scode.writing", "kits.scode.stage");
+    if (!runner.restart()) fail("could not restart device");
+  }
   
   protected Properties getApp(File saveFile) throws Exception
   {
@@ -66,13 +76,26 @@ public abstract class ProvTest extends Test
     .addAttr("debug", Boolean.toString(plat.debug))
     .addAttr("test", Boolean.toString(plat.test));
     
-    Kit[] kits = schema.kits;
-    for (int i=0; i<kits.length; ++i)
+    KitVersion[] deviceKits = runner.version.kits;
+    Kit[] schemaKits = schema.kits;
+    
+    for (int i=0; i<schemaKits.length; ++i)
     {
-      // use an exact match
-      Depend d = Depend.parse(kits[i].name + " " + 
-        kits[i].manifest.version + "=, " + 
-        "0x" + TextUtil.intToHexString(kits[i].checksum));
+      final String name = schemaKits[i].name;
+      final String checksum = "0x" + TextUtil.intToHexString(schemaKits[i].checksum);
+      Version version = schemaKits[i].manifest.version;
+      for (int j=0; j<deviceKits.length; ++j)
+      {
+        // prefer the version on the device to the one determined locally.
+        if (deviceKits[j].name.equals(name))
+        {
+          version = deviceKits[j].version;
+          if (deviceKits[j].checksum != schemaKits[i].checksum)
+            throw new IllegalStateException("checksum mismatch for " + name + ": " + deviceKits[j].checksum + " <> " + schemaKits[i].checksum);
+          break;
+        }
+      }
+      Depend d = Depend.parse(name + " " + version + "=, " + checksum);
       root.addContent(new XElem("depend").addAttr("on", d.toString()));
     }
    

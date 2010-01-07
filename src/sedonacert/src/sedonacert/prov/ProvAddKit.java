@@ -32,9 +32,7 @@ public class ProvAddKit extends ProvTest
     init();
     createAddSab();
     makeScode(schema, addScodeXml, true);
-    putFile(addSab, "app.sab.stage");
-    putFile(addScodeBin, "kits.scode.stage");
-    if (!runner.restart()) fail("could not restart device");
+    provision(addSab, addScodeBin);
     
     // now get the running app and scode. Verify the schema
     getApp(prov().addSab);

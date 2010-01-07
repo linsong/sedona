@@ -24,9 +24,8 @@ public class ProvRestore extends ProvTest
   
   public void run() throws Throwable
   {
-    putFile(prov().initSab,   "app.sab.stage");
-    putFile(prov().initScode, "kits.scode.stage");
-    if (!runner.restart()) fail("could not restart device");
+    provision(prov().initSab, prov().initScode);
+    
     
     OfflineApp origApp = OfflineApp.decodeAppBinary(prov().initSab);
     SoxClient c = runner.sox;
