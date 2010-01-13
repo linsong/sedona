@@ -51,7 +51,10 @@ class FileStore extends Virtual
   ** Implementation for 'File.close'.
   **
   virtual bool close(File f) 
-  { 
+  {
+    // If fp is null, then the file was never open
+    if (null == f.fp) return true
+    
     bool ok = doClose(f.fp)  
     f.fp = null
     return ok
