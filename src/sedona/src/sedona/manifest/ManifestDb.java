@@ -179,10 +179,13 @@ public class ManifestDb
    * List the name of all the kits installed into the local manifest 
    * database.  This method just scans the file system directories, 
    * it does not attempt to open the manifests themselves.
+   * @return the list of installed kits by name, or an empty array
+   *         if the sedona manifests home directory does not exist.
    */
   public static String[] listInstalledKits()
   {
-    ArrayList acc = new ArrayList();    
+    if (!dir.exists()) return new String[0];
+    ArrayList acc = new ArrayList();
     File[] dirs = dir.listFiles();
     for (int i=0; i<dirs.length; ++i)
       if (dirs[i].isDirectory()) acc.add(dirs[i].getName());
@@ -193,9 +196,12 @@ public class ManifestDb
    * Given a kit name, return all the checksum manifests installed
    * in the local manifest database.  This method just scans the file 
    * system, it does not attempt to open the manifests themselves.
+   * @return the list of installed <code>KitParts</code>, or an empty array
+   *         if the sedona manifests home directory does not exist.
    */
   public static KitPart[] listInstalledParts(String kit)
   {
+    if (!dir.exists()) return new KitPart[0];
     ArrayList acc = new ArrayList();      
     File[] files = new File(dir, kit).listFiles();
     for (int i=0; files != null && i<files.length; ++i)
