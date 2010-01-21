@@ -1,0 +1,111 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   21 Aug 07  Brian Frank  Creation
+//
+
+**
+** FileTransfer manages the state of a session's file transfer.
+**
+class FileTransfer
+{            
+
+////////////////////////////////////////////////////////////////
+// Methods
+////////////////////////////////////////////////////////////////
+
+  **
+  ** Reset into a clean state for new session.
+  **            
+  void reset()
+  {
+    file.close()
+    mode = unused
+  }
+
+  **
+  ** Poll for work on a get.  Attempt to send the next 
+  ** chunk of a file get.
+  **
+  bool checkGet(SoxService service, SoxSession session) 
+  {
+    // if we've reached the end then we've sent the whole file 
+    // and we're just waiting for the client to ack with close
+    if (nextChunk >= numChunks) return false
+      
+    // allocate packet for chunk
+    SendPacket res = session.sendWindow.nextPacket()    
+    if (res == null) return false    
+
+    // compute this specific chunk's size (in case
+    // we are processing the last odd-sized chunk)
+    int thisChunkNum  = nextChunk++
+    int thisChunkSize = chunkSize
+    if (nextChunk == numChunks)
+    {
+      int remainder = fileSize % chunkSize
+      if (remainder != 0)thisChunkSize = remainder
+    }
+
+    // setup packet
+    res.cmd      = 'k'
+    res.replyNum = 0xff
+    res.u2Data1   = thisChunkNum
+    res.u2Data2   = thisChunkSize
+    
+    // send packet
+    SoxCommands.send(service, session, res)
+    return true
+  }
+
+  **
+  ** Poll for work on a put.  Check if we need to send the close.
+  **
+  bool checkPut(SoxService service, SoxSession session) 
+  {                             
+    // if still receiving chunks, not ready for close
+    if (numChunks > 0) return false  
+
+    // allocate packet for close
+    SendPacket res = session.sendWindow.nextPacket()    
+    if (res == null) return false    
+
+    // close file
+    file.close()         
+    
+    // free this transfer instance
+    mode = unused
+
+    // notify platform - Jennic uses this to auto-tune the network 
+    // since we expect a burst of incoming messages on put
+    Sys.app.platform.notify("sox.put", "c")
+      
+    // send close message to let other side know we are done
+    res.cmd = 'z'
+    res.replyNum = 0xff
+    SoxCommands.send(service, session, res)
+
+    // we did some work              
+    return true
+  }
+
+////////////////////////////////////////////////////////////////
+// Fields
+////////////////////////////////////////////////////////////////
+
+  define int unused = 0
+  define int get    = 1
+  define int put    = 2  
+
+  byte mode              // FileTransfer mode
+  inline File file       // for file transfers  
+  int fileSize           // Size of the file we are currently reading/writing
+  int offset             // Byte offset into file for reading/writing
+  short numChunks        // Number of chunks in this file transaction
+  short chunkSize        // Size of the chunks we are currently reading/writing
+  short nextChunk        // Index of the next chunk to send (if a file get).
+
+}
+
