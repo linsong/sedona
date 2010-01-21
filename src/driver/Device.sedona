@@ -7,11 +7,11 @@
 //
 
 **
-** Models a device as a collection of I/O points.  Provides access to child components 
+** Models a device as a collection of I/O points.  Provides access to child components
 ** of type Point or a subclass of it.
 **
 class Device
-  extends Component 
+  extends Component
 {
   ////////////////////////////////////////////////////////////////
   // Properties
@@ -24,7 +24,7 @@ class Device
   property int status = 0
 
   ** Whether the device is enabled.
-  @config property bool enable = true 
+  @config property bool enable = true
 
 
   ////////////////////////////////////////////////////////////////
@@ -33,27 +33,29 @@ class Device
 
   **
   ** Sets up pointers and timestamps.
-  **   
+  **
   virtual override void start()
   {
     app = Sys.app
     net = getNetwork()
     if(net == null)
       return
-    pingTime = 1sec * (long)net.pingTimeSec
     lastUpTime = Sys.ticks()
-    nextPingTime = Sys.ticks()
-  	
+
+    // Calc next ping time first to ensure a small startup delay
+    nextPingTime = lastUpTime + pingTime
+    pingTime = 1sec * (long)net.pingTimeSec
   }
 
   **
   ** Updates fault state, posts ping at appropriate time.
-  **  
+  **
   virtual override void execute()
   {
   	long now = Sys.ticks()
   	if(now > nextPingTime)
   	{
+      pingTime = 1sec * (long)net.pingTimeSec
       nextPingTime = now + pingTime
   	  postPing()
   	}
@@ -77,7 +79,7 @@ class Device
 
   **
   ** Adds a point to this device.
-  ** 
+  **
   void addPoint(Str name, int address, Type type)
   {
   	if(lookupByName(name) == null)
@@ -87,11 +89,11 @@ class Device
   	    Sys.out.print("   add ").print(name).print(" failed").nl()
   	  else
   	  {
-  	    c.address = address	
+  	    c.address = address
   	  }
   	}
   }
-  
+
   **
   ** Gets point by type and address.
   **
@@ -101,9 +103,9 @@ class Device
       if (c.type.is(type) && ((Point)c).address == address)
         return (Point)c
     return null
-  	
+
   }
-  
+
   **
   ** Gets first child component of type Point (or subclass).
   ** Returns null if no Point objects found.
@@ -137,16 +139,16 @@ class Device
   ** Method invoked when time to ping device.
   **
   virtual void postPing() {}
-  
+
   **
   ** Callback to write a DO point value.
-  **    	
-  virtual void setDoValue(int address, bool value) { }  	
+  **
+  virtual void setDoValue(int address, bool value) { }
 
   **
   ** Callback to write a AO point value.
-  **    	
-  virtual void setAoValue(int address, float value) { }  	
+  **
+  virtual void setAoValue(int address, float value) { }
 
 
   ////////////////////////////////////////////////////////////////
@@ -160,7 +162,7 @@ class Device
   {
   	return (status & Status.DOWN) != 0
   }
- 
+
   **
   ** Sets/clears the down status flag.
   **
@@ -173,8 +175,8 @@ class Device
       status = status & ~Status.DOWN
       lastUpTime = Sys.ticks()
       nextPingTime = lastUpTime + pingTime
-    }	
-  }  	
+    }
+  }
 
 
   ////////////////////////////////////////////////////////////////
@@ -185,6 +187,6 @@ class Device
   App app
   long lastUpTime   = 0L
   long nextPingTime = 0L
-  long pingTime     = 0L  
+  long pingTime     = 1sec * 20L
 
 }

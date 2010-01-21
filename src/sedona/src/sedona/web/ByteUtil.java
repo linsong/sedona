@@ -16,6 +16,7 @@ public class ByteUtil
    */
   public static void hexDump(byte[] b)
   {
+    if (b == null) return;
     PrintWriter out = new PrintWriter(System.out);
     hexDump(out, b, 0, b.length);
     out.flush();
@@ -36,6 +37,7 @@ public class ByteUtil
    */
   public static void hexDump(PrintWriter out, byte[] b, int offset, int length)
   {
+    if (b == null) return;
     int rowLen = 0;
     byte[] row = new byte[16];
 
