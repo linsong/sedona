@@ -19,6 +19,7 @@ import sedonac.*;
 import sedonac.Compiler;
 import sedonac.ir.*;
 import sedonac.platform.*;
+import sedonac.util.VarResolver;
 
 /**
  * InitStagePlatform uses the platform definition to load the kits
@@ -126,6 +127,7 @@ public class InitStagePlatform
   
   private void parseCompile(PlatformDef plat, XElem xml)
   {
+    VarResolver vars = new VarResolver();
     plat.refSize   = xml.geti("refSize");
     plat.blockSize = xml.geti("blockSize");
     plat.endian    = xml.get("endian");
@@ -141,9 +143,13 @@ public class InitStagePlatform
       
     x = xml.elems("nativeSource");
     String[] paths = new String[x.length];
-    for (int i=0; i<x.length; ++i)
-      paths[i] = x[i].get("path");
-    plat.nativePaths = paths;
+    try
+    {
+      for (int i=0; i<x.length; ++i)
+        paths[i] = vars.resolve(x[i].get("path"));
+      plat.nativePaths = paths;
+    }
+    catch (Exception e) { throw err(e.getMessage()); }
     
     x = xml.elems("nativePatch");
     String[] slots  = new String[x.length];
