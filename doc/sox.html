@@ -455,9 +455,11 @@ res
 </p>
 
 <h2 id="invoke">invoke</h2>
-<p>Invoke an action on a component.  This command can be used as
-an <a href='http://en.wikipedia.org/wiki/Remote_procedure_call'>RPC</a>
-mechanism.</p>
+<p>Invoke an action on a component.  This command can be used as an 
+<a href='http://en.wikipedia.org/wiki/Remote_procedure_call'>RPC</a> mechanism.  
+Note that the action is executed synchronously; the Sox server blocks until 
+the action completes and returns.
+</p>
 
 <pre>
 req
