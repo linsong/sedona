@@ -15,6 +15,11 @@
   <!-- Source Directories -->
   <source dir="." />
   <source dir="test" testonly="true"/>
+  <source dir="debug" testonly="true"/>
+
+ 
+
+  
 
   <!-- Natives -->
   <native qname="sys::Sys.platformType"          id="0::0"  />

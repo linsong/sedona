@@ -165,8 +165,9 @@ class App
       cycleCount++
 
       // get start ticks and compute cycle deadline
-      // using fixed 50ms period for now
-      long deadline = Sys.ticks() + (long)scanPeriod*1ms
+      lastStartExec = newStartExec
+      newStartExec = Sys.ticks()
+      long deadline = newStartExec + (long)scanPeriod*1ms
       
       // execute every component in the tree
       executeTree(this)
@@ -174,6 +175,7 @@ class App
       // give each service a chance to do background work
       // as long as we have spare time in this cycle and
       // isRunning has not become false
+      lastStartWork = Sys.ticks()
       bool more = true
       while (more && running)
       {                                 
@@ -187,7 +189,9 @@ class App
       }
 
       // sleep until next cycle if we have time remaining
-      Sys.sleep(deadline - Sys.ticks());
+      lastEndWork = Sys.ticks()
+      Sys.sleep(deadline - lastEndWork)
+                  
     }           
     
     return runStatus
@@ -901,8 +905,6 @@ class App
   @unit=Units.millisecond 
   @config property int timeToSteadyState = 0
 
-
-
 ////////////////////////////////////////////////////////////////
 // Fields
 ////////////////////////////////////////////////////////////////
@@ -945,4 +947,29 @@ class App
   ** Timestamp at which App will be considered steady state
   internal long steadyAt      = 0L
 
+  //following 4 fields added 2/2/2010 to support AppDbg object
+  
+  ** End of previous scan sleep time is also the start of a new component tree execution
+  ** This marks start of he CURRENT scan, such that:
+  **     newStartExec - lastStartExec = scan time of PREVIOUS scan
+  long newStartExec = 0L
+  
+  ** Cache of the timestamp of the start of the component tree execution of
+  ** the PREVIOUS scan.  It is intended that that timing statistics to be computed
+  ** within the execute method of a component dropped into the component tree, so 
+  ** we need to cache the start of the last component tree execution.  Also marks
+  ** the time that sleep ends on previous scan.
+  **     lastStartWork - lastStartExec = execution time of previous scan 
+  long lastStartExec = 0L
+  
+  ** Timestamp of start of service work (also marks the end of component tree execution). If
+  ** timing statistics computed during component tree execution, this timestamp
+  ** corresponds to the PREVIOUS scan.
+  **     lastEndWork - lastStartWork = work time of previous scan
+  long lastStartWork = 0L
+  
+  ** Timestamp of end of service's work (also start of sleep time).  This timestamp
+  ** corresponds to the PREVIOUS scan. 
+  **     lastEndWork - lastStartWork = work time of previous scan
+  long lastEndWork   = 0L
 }

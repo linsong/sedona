@@ -1,0 +1,131 @@
+//
+// Copyright (c) 2010 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   02 Feb 2010  Clif Turman  Creation
+//
+
+**
+** AppDbg is an optional component which displays
+** the AppCnts object.
+** This object should only be used during tuning of an application
+** and should not be a permanent part.
+** Note that inclusion of this component increases the execute
+** cycle time and memory footprint, so it is not "non-invasive"
+**
+@niagaraIcon="module://icons/x16/bug.png"
+class AppDbg
+  extends Component
+{
+	**
+	** How often to update the execTime, workTime, and actualScanTime properties
+	** Actual time = (App.scanPeriod) * (scanCyclesPerUpdate)
+	**
+  property long scanCyclesPerUpdate = 10L
+
+  **
+  ** Execution time for component tree for previous scan.
+  ** Calculated every scan, but updated only
+  ** once per scanCyclesPerUpdate scans.
+  ** execTime = App.lastStartWork - App.lastStartExec
+  **
+	@unit=Units.millisecond
+  @readonly property float execTime
+
+  **
+  ** Max execution time for all scans
+  ** Can be reset by "resetValues" action
+  **
+  @unit=Units.millisecond
+  @readonly property float execTimeMax
+
+  ** Work time for all services from previous scan
+  ** Calculated every scan, but updated only
+  ** once per scanCyclesPerUpdate scans.
+  ** workTime = App.lastEndWork - App.lastStartWork
+  @unit=Units.millisecond
+  @readonly property float workTime
+
+  **
+  ** Max work time for all scans
+  ** Can be reset by "resetValues" action
+  **
+  @unit=Units.millisecond
+  @readonly property float workTimeMax
+
+  **
+  ** Total scan time for previous scan
+  ** Calculated every scan, but updated only
+  ** once per scanCyclesPerUpdate scans.
+  ** actualScanTime = App.newStartExec - App.lastStartExec
+  **
+  @unit=Units.millisecond
+  @readonly property float actualScanTime
+
+  **
+  ** Max scan time for all scans
+  ** Can be reset by "resetValues" action
+  **
+  @unit=Units.millisecond
+  @readonly property float actualScanTimeMax
+
+  **
+  ** Number of times scan time has exceeded configured scan time
+  **
+  property int overruns
+
+  **
+  ** Calculate and cache previous scan's times every scan
+  **
+  virtual override void execute()
+  {
+  	//cache calculated values for last scan cycle
+    tmpExecTime = ((float)(Sys.app.lastStartWork - Sys.app.lastStartExec))*1e-6
+    tmpWorkTime = ((float)(Sys.app.lastEndWork   - Sys.app.lastStartWork))*1e-6
+    tmpScanTime = ((float)(Sys.app.newStartExec  - Sys.app.lastStartExec))*1e-6
+
+    //see if we have a new max value
+    execTimeMax = tmpExecTime > execTimeMax ? tmpExecTime : execTimeMax
+    workTimeMax = tmpWorkTime > workTimeMax ? tmpWorkTime : workTimeMax
+    actualScanTimeMax = tmpScanTime > actualScanTimeMax ? tmpScanTime : actualScanTimeMax
+
+    //see if we have any overruns
+    if((int)tmpScanTime > Sys.app.scanPeriod + 1)
+      overruns++
+
+    //update fast changing properties every scanCyclesPerUpdate scans to prevent sox message flooding
+    if(Sys.app.cycleCount % scanCyclesPerUpdate == 0L)
+    {
+      execTime = tmpExecTime
+      workTime = tmpWorkTime
+      actualScanTime = tmpScanTime
+    }
+  }
+  
+  **
+  ** Reset the max value calculations and the overruns value
+  **
+  action void resetValues()
+  {
+    execTimeMax = 0.0
+    workTimeMax = 0.0
+    actualScanTimeMax = 0.0
+    overruns = 0
+  }
+
+  ** total number of overruns (actual scan time exceeds desired scan time)
+  ** A steadily increasing number here indicates a scan time too small (execute time +
+  ** work time exceeds scan time)
+  int appOverruns = 0
+  
+  ** caches calculated execute time for purposes of calculating max value and updating execTime property 
+  float tmpExecTime
+
+  ** caches calculated work time for purposes of calculating max value and updating workTime property 
+  float tmpWorkTime
+
+  ** caches calculated scan time for purposes of calculating max value and updating actualScanTime property
+  float tmpScanTime
+  
+}
