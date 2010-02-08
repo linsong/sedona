@@ -159,6 +159,9 @@ class App
 
     running = true
     runStatus = 0
+    long deadline = Sys.ticks()
+    lastEndWork = deadline
+    
     while (running)
     {
       // update our cycle counter
@@ -166,8 +169,10 @@ class App
 
       // get start ticks and compute cycle deadline
       lastStartExec = newStartExec
+      
       newStartExec = Sys.ticks()
-      long deadline = newStartExec + (long)scanPeriod*1ms
+
+      deadline = deadline + (long)scanPeriod*1ms
       
       // execute every component in the tree
       executeTree(this)
@@ -176,6 +181,7 @@ class App
       // as long as we have spare time in this cycle and
       // isRunning has not become false
       lastStartWork = Sys.ticks()
+
       bool more = true
       while (more && running)
       {                                 
@@ -190,6 +196,7 @@ class App
 
       // sleep until next cycle if we have time remaining
       lastEndWork = Sys.ticks()
+
       Sys.sleep(deadline - lastEndWork)
                   
     }           
