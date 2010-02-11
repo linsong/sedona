@@ -7,6 +7,8 @@
 //   08 Feb 2010  Clif Turman  Added MinMin and MaxMax properties
 //                             Changed scanCyclesPerUpdate default to 1000
 //                             Rearranged property ordering
+//   11 Feb 2010  Clif Turman  Removed execTime/workTime/scanTime as properties
+//                             Changed scanCyclesPerUpdate from long to int, added config facet
 //
 
 **
@@ -21,11 +23,13 @@ class AppDbg
   extends Component
 {
 	**
-	** How often to update the execTime, workTime, and actualScanTime properties
+	** Over how many scans to update statistics
 	** Actual time = (App.scanPeriod) * (scanCyclesPerUpdate)
+	** Does not begin calculation until App.isSteadyState is reached
 	**
 	@summary=false
-  property long scanCyclesPerUpdate = 1000L
+	@config
+  property int scanCyclesPerUpdate = 1000
 
   **
   ** Execution time for component tree for previous scan.
@@ -33,141 +37,132 @@ class AppDbg
   ** once per scanCyclesPerUpdate scans.
   ** execTime = App.lastStartWork - App.lastStartExec
   **
-  @summary=false
-	@unit=Units.millisecond
-  @readonly property float execTime
+  //@summary=false
+	//@unit=Units.millisecond
+  //@readonly property float execTime
 
   **
-  ** Average execute time of scanCyclesPerUpdate scans
-  ** Can be reset by "resetValues" action
+  ** Average execute time over scanCyclesPerUpdate scans
   **
   @summary=false
   @unit=Units.millisecond
   @readonly property float execTimeAvg
 
   **
-  ** Max execution time for all scans
-  ** Can be reset by "resetValues" action
+  ** Min execute time over scanCyclesPerUpdate scans
   **
   @summary=false
   @unit=Units.millisecond
   @readonly property float execTimeMin
 
   **
-  ** Max execution time for all scans
-  ** Can be reset by "resetValues" action
+  ** Max execute time over scanCyclesPerUpdate scans
   **
   @summary=false
   @unit=Units.millisecond
   @readonly property float execTimeMax
 
+  **
+  ** Min of all execTimeMin since boot or since last "resetValues"
+  **
   @summary=false
   @unit=Units.millisecond
   @readonly property float execTimeMinMin
 
+  **
+  ** Max of all execTimeMax since boot or since last "resetValues"
+  **
   @summary=false
   @unit=Units.millisecond
   @readonly property float execTimeMaxMax
 
-
-  ** Work time for all services from previous scan
-  ** Calculated every scan, but updated only
-  ** once per scanCyclesPerUpdate scans.
-  ** workTime = App.lastEndWork - App.lastStartWork
-  @summary=false
-  @unit=Units.millisecond
-  @readonly property float workTime
-
   **
-  ** Average work time of scanCyclesPerUpdate scans
-  ** Can be reset by "resetValues" action
+  ** Average work time over scanCyclesPerUpdate scans
   **
   @summary=false
   @unit=Units.millisecond
   @readonly property float workTimeAvg
 
   **
-  ** Max work time for all scans
-  ** Can be reset by "resetValues" action
+  ** Min work time over scanCyclesPerUpdate scans
   **
   @summary=false
   @unit=Units.millisecond
   @readonly property float workTimeMin
 
   **
-  ** Max work time for all scans
-  ** Can be reset by "resetValues" action
+  ** Max work time over scanCyclesPerUpdate scans
   **
   @summary=false
   @unit=Units.millisecond
   @readonly property float workTimeMax
 
+  **
+  ** Min of all workTimeMin since boot or since last "resetValues"
+  **
   @summary=false
   @unit=Units.millisecond
   @readonly property float workTimeMinMin
 
+  **
+  ** Max of all workTimeMax since boot or since last "resetValues"
+  **
   @summary=false
   @unit=Units.millisecond
   @readonly property float workTimeMaxMax
 
   **
-  ** Total scan time for previous scan
-  ** Calculated every scan, but updated only
-  ** once per scanCyclesPerUpdate scans.
-  ** actualScanTime = App.newStartExec - App.lastStartExec
-  **
-  @summary=false
-  @unit=Units.millisecond
-  @readonly property float scanTime
-
-  **
-  ** Average scan time of scanCyclesPerUpdate scans
-  ** Can be reset by "resetValues" action
+  ** Average scan time over scanCyclesPerUpdate scans
   **
   @summary=false
   @unit=Units.millisecond
   @readonly property float scanTimeAvg
 
   **
-  ** Max scan time for all scans
-  ** Can be reset by "resetValues" action
+  ** Min scan time over scanCyclesPerUpdate scans
   **
   @summary=false
   @unit=Units.millisecond
   @readonly property float scanTimeMin
 
   **
-  ** Max scan time for all scans
-  ** Can be reset by "resetValues" action
+  ** Max scan time over scanCyclesPerUpdate scans
   **
   @summary=false
   @unit=Units.millisecond
   @readonly property float scanTimeMax
 
+  **
+  ** Min of all scanTimeMin since boot or since last "resetValues"
+  **
   @summary=false
   @unit=Units.millisecond
   @readonly property float scanTimeMinMin
 
+  **
+  ** Max of all scanTimeMax since boot or since last "resetValues"
+  **
   @summary=false
   @unit=Units.millisecond
   @readonly property float scanTimeMaxMax
 
-
-
   ** total number of overruns (actual scan time exceeds desired scan time)
   ** A steadily increasing number here indicates a scan time too small (execute time +
-  ** work time exceeds scan time)
+  ** work time exceeds scan time).  Occasional overruns are to be expected.
   @summary=false
-  @readonly property int overruns
+  @readonly property int overruns = 0
 
   virtual override void start()
   {
-  	execTimeMin = (float)Sys.maxInt
-    workTimeMin = (float)Sys.maxInt
-    scanTimeMin = (float)Sys.maxInt
-    execTimeMax = 0.0
-    workTimeMax = 0.0
-    scanTimeMax = 0.0
+  	tmpExecTimeMin = (float)Sys.maxInt
+    tmpWorkTimeMin = (float)Sys.maxInt
+    tmpScanTimeMin = (float)Sys.maxInt
+    tmpExecTimeMax = 0.0
+    tmpWorkTimeMax = 0.0
+    tmpScanTimeMax = 0.0
+    tmpExecTime = 0.0
+    tmpWorkTime = 0.0
+    tmpScanTime = 0.0
   	resetValues()
   }
 
@@ -185,34 +180,56 @@ class AppDbg
     tmpScanTime = ((float)(Sys.app.newStartExec  - Sys.app.lastStartExec))*1e-6
 
     //compute new execution time max/min
-    execTimeMax = tmpExecTime > execTimeMax ? tmpExecTime : execTimeMax
-    execTimeMaxMax = execTimeMax > execTimeMaxMax ? execTimeMax : execTimeMaxMax
-    execTimeMin = tmpExecTime < execTimeMin ? tmpExecTime : execTimeMin
-    execTimeMinMin = execTimeMin < execTimeMinMin ? execTimeMin : execTimeMinMin
+    tmpExecTimeMax = tmpExecTime > tmpExecTimeMax ? tmpExecTime : tmpExecTimeMax
+    tmpExecTimeMin = tmpExecTime < tmpExecTimeMin ? tmpExecTime : tmpExecTimeMin
     
     //compute new work time max/min
-    workTimeMax = tmpWorkTime > workTimeMax ? tmpWorkTime : workTimeMax
-    workTimeMaxMax = workTimeMax > workTimeMaxMax ? workTimeMax : workTimeMaxMax
-    workTimeMin = tmpWorkTime < workTimeMin ? tmpWorkTime : workTimeMin
-    workTimeMinMin = workTimeMin < workTimeMinMin ? workTimeMin : workTimeMinMin
+    tmpWorkTimeMax = tmpWorkTime > tmpWorkTimeMax ? tmpWorkTime : tmpWorkTimeMax
+    tmpWorkTimeMin = tmpWorkTime < tmpWorkTimeMin ? tmpWorkTime : tmpWorkTimeMin
 
     //compute new actual scan time max/min
-    scanTimeMax = tmpScanTime > scanTimeMax ? tmpScanTime : scanTimeMax
-    scanTimeMaxMax = scanTimeMax > scanTimeMaxMax ? scanTimeMax : scanTimeMaxMax
-    scanTimeMin = tmpScanTime < scanTimeMin ? tmpScanTime : scanTimeMin
-    scanTimeMinMin = scanTimeMin < scanTimeMinMin ? scanTimeMin : scanTimeMinMin
+    tmpScanTimeMax = tmpScanTime > tmpScanTimeMax ? tmpScanTime : tmpScanTimeMax
+    tmpScanTimeMin = tmpScanTime < tmpScanTimeMin ? tmpScanTime : tmpScanTimeMin
 
     //see if we have any overruns and update
     if(tmpScanTime > (float)Sys.app.scanPeriod + 1.0)
       overruns++
 
     //compute averages
-    if(Sys.app.cycleCount % scanCyclesPerUpdate == 0L)
+    if(Sys.app.cycleCount % (long)scanCyclesPerUpdate == 0L)
     {
       //update fast changing properties every scanCyclesPerUpdate scans to prevent sox message flooding
       execTime = tmpExecTime
       workTime = tmpWorkTime
       scanTime = tmpScanTime
+      
+      execTimeMin = tmpExecTimeMin
+      execTimeMax = tmpExecTimeMax
+      workTimeMin = tmpWorkTimeMin
+      workTimeMax = tmpWorkTimeMax
+      scanTimeMin = tmpScanTimeMin
+      scanTimeMax = tmpScanTimeMax
+
+      if(first)
+      {
+      	first = false
+        execTimeMinMin = execTimeMin
+        execTimeMaxMax = execTimeMax
+        workTimeMinMin = workTimeMin
+        workTimeMaxMax = workTimeMax
+        scanTimeMinMin = scanTimeMin
+        scanTimeMaxMax = scanTimeMax
+      }
+      else
+      {
+        execTimeMinMin = execTimeMin < execTimeMinMin ? execTimeMin : execTimeMinMin
+        execTimeMaxMax = execTimeMax > execTimeMaxMax ? execTimeMax : execTimeMaxMax
+        workTimeMinMin = workTimeMin < workTimeMinMin ? workTimeMin : workTimeMinMin
+        workTimeMaxMax = workTimeMax > workTimeMaxMax ? workTimeMax : workTimeMaxMax
+        scanTimeMinMin = scanTimeMin < scanTimeMinMin ? scanTimeMin : scanTimeMinMin
+        scanTimeMaxMax = scanTimeMax > scanTimeMaxMax ? scanTimeMax : scanTimeMaxMax
+      }
+      
 
       //compute and update averages
       execTimeAvg = execTimeRunningTotal/(float)scanCyclesPerUpdate
@@ -224,12 +241,12 @@ class AppDbg
       workTimeRunningTotal = 0.0
       scanTimeRunningTotal = 0.0
       
-      execTimeMax = 0.0
-      execTimeMin = (float)Sys.maxInt
-      workTimeMax = 0.0
-      workTimeMin = (float)Sys.maxInt
-      scanTimeMax = 0.0
-      scanTimeMin = (float)Sys.maxInt
+      tmpExecTimeMax = 0.0
+      tmpExecTimeMin = (float)Sys.maxInt
+      tmpWorkTimeMax = 0.0
+      tmpWorkTimeMin = (float)Sys.maxInt
+      tmpScanTimeMax = 0.0
+      tmpScanTimeMin = (float)Sys.maxInt
       
     }
     
@@ -244,32 +261,37 @@ class AppDbg
   **
   action void resetValues()
   {
+    first = true
     execTimeMaxMax = 0.0
     execTimeMinMin = (float)Sys.maxInt
-    execTimeAvg = 0.0
-    execTimeRunningTotal = 0.0
+    //execTimeAvg = 0.0
+    //execTimeRunningTotal = 0.0
     workTimeMaxMax = 0.0
     workTimeMinMin = (float)Sys.maxInt
-    workTimeAvg = 0.0
-    workTimeRunningTotal = 0.0
+    //workTimeAvg = 0.0
+    //workTimeRunningTotal = 0.0
     scanTimeMaxMax = 0.0
     scanTimeMinMin = (float)Sys.maxInt
-    scanTimeAvg = 0.0
-    scanTimeRunningTotal = 0.0
+    //scanTimeAvg = 0.0
+    //scanTimeRunningTotal = 0.0
     overruns = 0
   }
 
-  ** caches calculated exec time for purposes of calculating max value and updating execTime property 
+  internal float execTime
+  internal float workTime
+  internal float scanTime
   internal float tmpExecTime
-
-  ** caches calculated work time for purposes of calculating max value and updating workTime property 
   internal float tmpWorkTime
-
-  ** caches calculated scan time for purposes of calculating max value and updating scanTime property
-  internal float tmpScanTime
-  
+  internal float tmpScanTime  
+  internal float tmpExecTimeMax
+  internal float tmpWorkTimeMax
+  internal float tmpScanTimeMax
+  internal float tmpExecTimeMin
+  internal float tmpWorkTimeMin
+  internal float tmpScanTimeMin
   internal float execTimeRunningTotal
   internal float workTimeRunningTotal
   internal float scanTimeRunningTotal
+  bool first
   
 }
