@@ -15,7 +15,7 @@
   <!-- Source Directories -->
   <source dir="." />
   <source dir="test" testonly="true"/>
-  <source dir="debug" testonly="false"/>
+  <source dir="debug" testonly="true"/>
 
  
 

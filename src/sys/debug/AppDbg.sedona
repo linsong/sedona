@@ -7,6 +7,8 @@
 //   08 Feb 2010  Clif Turman  Added MinMin and MaxMax properties
 //                             Changed scanCyclesPerUpdate default to 1000
 //                             Rearranged property ordering
+//   11 Feb 2010  Clif Turman  Removed execTime/workTime/scanTime as properties
+//                             Changed scanCyclesPerUpdate from long to int, added config facet
 //
 
 **
