@@ -170,7 +170,8 @@ class App
       // get start ticks and compute cycle deadline
       lastStartExec = newStartExec
       
-      newStartExec = Sys.ticks()
+      while(newStartExec < lastEndWork)   //hack to get around Sys.ticks() bug
+        newStartExec = Sys.ticks()
 
       deadline = deadline + (long)scanPeriod*1ms
       
@@ -180,7 +181,8 @@ class App
       // give each service a chance to do background work
       // as long as we have spare time in this cycle and
       // isRunning has not become false
-      lastStartWork = Sys.ticks()
+      while(lastStartWork < newStartExec)  //hack to get around Sys.ticks() bug
+        lastStartWork = Sys.ticks()
 
       bool more = true
       while (more && running)
@@ -195,7 +197,11 @@ class App
       }
 
       // sleep until next cycle if we have time remaining
-      lastEndWork = Sys.ticks()
+      while(lastEndWork < lastStartWork)  //hack to get around Sys.ticks() bug
+        lastEndWork = Sys.ticks()
+
+      //debug output in 1/100's ms
+      //Sys.out.printLong((lastStartWork-newStartExec)/10000L).print(" ").printLong((lastEndWork-lastStartWork)/10000L).nl()
 
       Sys.sleep(deadline - lastEndWork)
                   
