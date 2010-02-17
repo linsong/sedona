@@ -1,0 +1,91 @@
+//
+// Copyright (c) 2010 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   12 Feb 10  Clif Turman    Creation
+//
+
+**
+** pulse counter object, counts transitions form 0 to 1 of input "in"
+** Counts up if dir == true, counts down if dir == false
+** Forced to preset value if enable = false
+** In the case where dir == false, the counter will stop counting down at 0
+**
+@niagaraIcon="module://icons/x16/control/util/step.png"
+class Count
+  extends Component
+{
+  **
+  ** Number of times "in" property has transitioned from 0 to 1
+  **
+  @readonly property int out
+  
+  **
+  ** input, transitions from false to true increment out by 1
+  **
+  property bool in
+
+	**
+	** Presets the counter to a specific value, defaults to 0
+	**
+  @defaultOnClone
+	@config property int preset = 0
+	
+	**
+	** Configures direction.  True = "up", False = "down"
+	**
+	@trueText = "up"
+  @falseText = "down"
+  @defaultOnClone
+	@config property bool dir = false
+
+  **
+  ** enable input
+  **
+  property bool enable
+
+  **
+  ** if r is true, out = preset and no counting takes place
+  **
+  property bool r
+
+  **
+  ** Resets the counter to the "preset" value
+  **
+  action void reset()
+  {
+  	out = preset
+  	lastIn = in
+  }
+
+  **
+  ** Override of start method to initialize the counter
+  **
+  virtual override void start()
+  {
+  	reset()
+  }
+
+  **
+  ** increment/decrement the count on rising edge of "in" if "enable" is true 
+  **
+  virtual override void execute()
+  {
+  	if(!enable) return
+  	
+  	if(!lastIn & in)
+  	{
+  		if(dir) out++
+  		else    out--
+      if (out < 0) out = 0  		
+  	}
+    if(r) out = preset
+
+    lastIn = in
+  }
+  
+  private bool lastIn
+
+}
+
