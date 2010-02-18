@@ -22,6 +22,14 @@
 class AppDbg
   extends Component
 {
+	@summary=false
+	@config
+	property bool enable
+	
+	@summary=false
+	@config
+	property bool print
+	
 	**
 	** Over how many scans to update statistics
 	** Actual time = (App.scanPeriod) * (scanCyclesPerUpdate)
@@ -165,15 +173,6 @@ class AppDbg
 
   virtual override void start()
   {
-  	tmpExecTimeMin = (float)Sys.maxInt
-    tmpWorkTimeMin = (float)Sys.maxInt
-    tmpScanTimeMin = (float)Sys.maxInt
-    tmpExecTimeMax = 0.0
-    tmpWorkTimeMax = 0.0
-    tmpScanTimeMax = 0.0
-    tmpExecTime = 0.0
-    tmpWorkTime = 0.0
-    tmpScanTime = 0.0
   	resetValues()
   }
 
@@ -184,6 +183,9 @@ class AppDbg
   {
   	if(!Sys.app.isSteadyState())
   	  return
+    
+    if(!enable)
+      return
 
   	//cache calculated values for last scan cycle
     tmpExecTime = ((float)(Sys.app.lastStartWork - Sys.app.lastStartExec))*1e-6
@@ -206,6 +208,10 @@ class AppDbg
     if(tmpScanTime > (float)Sys.app.scanPeriod + 1.0)
       overruns++
 
+    if(print)
+      Sys.out.printInt((int)(tmpExecTime * 10f)).print(" ")
+             .printInt((int)(tmpWorkTime * 10f)).print(" ")
+             .printInt((int)(tmpScanTime * 10f)).nl()
     //compute averages
     if(Sys.app.cycleCount % (long)scanCyclesPerUpdate == 0L)
     {
@@ -273,19 +279,35 @@ class AppDbg
   action void resetValues()
   {
     first = true
-    execMaxMax = 0.0
+    execAvg = 0.0
+    execMin = 0.0
+    execMax = 0.0
     execMinMin = (float)Sys.maxInt
-    //execAvg = 0.0
-    //execRunningTotal = 0.0
-    workMaxMax = 0.0
+    execMaxMax = 0.0
+    execTimeRunningTotal = 0.0
+    workAvg = 0.0
+    workMin = 0.0
+    workMax = 0.0
     workMinMin = (float)Sys.maxInt
-    //workAvg = 0.0
-    //workTimeRunningTotal = 0.0
-    scanMaxMax = 0.0
+    workMaxMax = 0.0
+    workTimeRunningTotal = 0.0
+    scanAvg = 0f
+    scanMin = 0f
+    scanMax = 0f
     scanMinMin = (float)Sys.maxInt
-    //scanAvg = 0.0
-    //scanTimeRunningTotal = 0.0
+    scanMaxMax = 0f
+    scanTimeRunningTotal = 0f
     overruns = 0
+
+    tmpExecTimeMin = (float)Sys.maxInt
+    tmpWorkTimeMin = (float)Sys.maxInt
+    tmpScanTimeMin = (float)Sys.maxInt
+    tmpExecTimeMax = 0.0
+    tmpWorkTimeMax = 0.0
+    tmpScanTimeMax = 0.0
+    tmpExecTime = 0.0
+    tmpWorkTime = 0.0
+    tmpScanTime = 0.0
   }
 
   internal float execTime
