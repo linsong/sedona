@@ -22,10 +22,19 @@
 class AppDbg
   extends Component
 {
+	**
+	** Enable calculations.  If false, the execute() method returns immediately
+	** without doing anything.  If true, 
+	**
 	@summary=false
 	@config
 	property bool enable
 	
+	**
+	** prints exec time (ms*10), work time (ms*10), and 
+	** scan time (ms*10) on every execute() cycle
+	** NOTE that values printed need to be divided by 10!
+	**
 	@summary=false
 	@config
 	property bool print
@@ -174,6 +183,16 @@ class AppDbg
   virtual override void start()
   {
   	resetValues()
+  }
+
+  **
+  ** Detect if enable has changed from false to true, if so
+  ** reset all the calculation variables
+  **
+  virtual override void changed(Slot slot)
+  {
+  	if(slot == AppDbg.enable) reset()
+  	super.changed(slot)
   }
 
   **

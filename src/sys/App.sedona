@@ -191,7 +191,8 @@ class App
           more |= s.work()
         
         // check if our cycle time is up  
-        if (Sys.ticks() >= deadline) break
+        //if (Sys.ticks() >= deadline) break
+        if (Sys.ticks() >= deadline - ((long)guardTime*1ms)) break
       }
 
       // sleep until next cycle if we have time remaining
@@ -911,9 +912,16 @@ class App
   @unit=Units.millisecond 
   @config property int scanPeriod = 50
 
+  ** Time before the end of the scan period in which no new services work
+  ** should be started in order to allow work in progress to finish before
+  ** the end of scan.
+  @unit=Units.millisecond
+  @config property int guardTime = 5
+
   ** Time from app start to steady state, in milliseconds.
   @unit=Units.millisecond 
   @config property int timeToSteadyState = 0
+  
 
 ////////////////////////////////////////////////////////////////
 // Fields
