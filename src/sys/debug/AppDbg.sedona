@@ -191,7 +191,7 @@ class AppDbg
   **
   virtual override void changed(Slot slot)
   {
-  	if(slot == AppDbg.enable) reset()
+  	if(slot == AppDbg.enable) resetValues()
   	super.changed(slot)
   }
 
