@@ -1219,10 +1219,22 @@ call:   (++sp)->aval = fp;         // push old frame pointer
         cp += 3;
         EndInstr;
 
-      // these should never be in scode - they are just for IR
+
+      /****************************************/
+      /*  Unaccepted opcodes                  */
+      /****************************************/
+
+      // Currently never appears in scode; replaced by LoadBuf
+      Case LoadArrayLiteral:
+
+      // This should never be in scode, for Java bytecode only
+      Case Cast:
+
+      // These should never be in scode - they are just for IR
       Case SizeOf:
       Case LoadDefine:
         return ERR_UNKNOWN_OPCODE;
+
 
 #ifndef COMPUTED_GOTO
       default:
