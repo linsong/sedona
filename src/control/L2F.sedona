@@ -1,0 +1,25 @@
+//
+// Copyright (c) 2009 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   05 May 09  Brian Frank    Creation
+//   08 Oct 09  Clif Turman    Creation - modified I2F
+//
+
+**
+** I2F integer-to-float converter
+**
+@niagaraIcon="module://icons/x16/doubleArrowRight.png"
+class L2F
+  extends Component
+{
+  property long in
+  @readonly property float out
+
+  virtual override void execute()
+  {
+    out = (float)in
+  }
+}
+

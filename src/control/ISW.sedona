@@ -1,0 +1,28 @@
+//
+// Copyright (c) 2009 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   07 Aug 09  Clif Turman    Creation
+//
+
+**
+** ISW Integer Switch object
+**
+** out = s1 ? in2 : in1
+**
+@niagaraIcon="module://icons/x16/control/util/switch.png"
+class ISW
+  extends Component
+{
+  @readonly property int out
+  property int in1
+  property int in2
+  property bool s1
+
+  virtual override void execute()
+  {
+    out = s1 ? in2 : in1
+  }
+
+}

@@ -1,0 +1,63 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   24 Apr 07  Brian Frank  Creation
+//
+
+**
+** Kit is a top unit of modularity in a Sedona
+** environment and serves as the container for Types.
+**
+const class Kit
+{
+
+//////////////////////////////////////////////////////////////////////////
+// Methods
+//////////////////////////////////////////////////////////////////////////
+
+  **
+  ** Get the type for the specified id or return null if out of range.
+  **
+  Type type(int id)
+  {
+    if (0 <= id && id < typesLen)
+      return types[id]
+    return null
+  }
+
+  **
+  ** Find a type by its simple name unique to this
+  ** kit or return null if not found.
+  **
+  Type findType(Str name)
+  {
+    foreach (Type t : types, typesLen)
+      if (t.name.equals(name)) return t
+    return null
+  }
+
+//////////////////////////////////////////////////////////////////////////
+// Fields
+//////////////////////////////////////////////////////////////////////////
+
+  ** Unique id for kit within a given environment; index into Sys.kits
+  const byte id
+
+  ** Name string of this kit.
+  const Str name
+
+  ** Version of this kit.
+  const Str version
+
+  ** Checksum of this kit.
+  const int checksum
+
+  ** List of types this kit contains, bounded by typesLen.
+  const inline Type[] types
+
+  ** Length of the types array.
+  const byte typesLen
+
+}
