@@ -1,15 +1,15 @@
 #
 # .hgignore
 # Files to ignore for version control
-#                
+#
 
 syntax: glob
 
 *.pyc
 *.kit
 *.scode
-*.jar         
-*.class    
+*.jar
+*.class
 *.sab
 *libJar*
 *.swp
@@ -19,6 +19,7 @@ bin/svm
 # Ignore Eclipse metafiles
 *.classpath
 *.project
+*.settings
 
 syntax: regexp
 
@@ -28,6 +29,6 @@ syntax: regexp
 ^backup/
 ^temp/
 ^temp-provision/
-^test/ 
+^test/
 ^doc/.*/
 ^sedona-cert/
