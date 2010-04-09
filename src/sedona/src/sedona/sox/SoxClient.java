@@ -440,7 +440,13 @@ public class SoxClient
     if (getSoxVersion() == null)
       request(Msg.makeSubscribeReq(0, 'a'));
     else
-      request(Msg.makeSubscribeReq(0, 0xff));
+    {
+      Msg allTree = Msg.prepareRequest('s');
+      allTree.u1(0xff);
+      allTree.u1(0);
+      request(allTree);
+//      request(Msg.makeSubscribeReq(0xff00, 0));
+    }
 
     allTreeEvents = true;
     for (int i=0; i<cache.length; ++i)
@@ -618,7 +624,18 @@ public class SoxClient
     // silently ignore unsubscribes if closed
     if (isClosed()) return;
 
-    request(Msg.makeUnsubscribeReq(0, 0xff));
+    // necessary for pre batch-subscribe compatibility
+    if (getSoxVersion() == null)
+    {
+      request(Msg.makeUnsubscribeReq(0, 0xff));
+    }
+    else
+    {
+      Msg allTree = Msg.prepareRequest('u');
+      allTree.u1(0xff);
+      allTree.u1(0);
+      request(allTree);
+    }
 
     allTreeEvents = false;
     for (int i=0; i<cache.length; ++i)

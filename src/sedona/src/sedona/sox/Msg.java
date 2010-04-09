@@ -43,6 +43,9 @@ public class Msg
     return req;
   }
 
+  /**
+   * @deprecated Pre Sox 1.1 messaging only
+   */
   static Msg makeSubscribeReq(int compId, int what)
   {
     Msg req = prepareRequest('s');
@@ -51,6 +54,9 @@ public class Msg
     return req;
   }
 
+  /**
+   * @deprecated Pre Sox 1.1 messaging only
+   */
   static Msg makeUnsubscribeReq(int compId, int whatMask)
   {
     Msg req = prepareRequest('u');
