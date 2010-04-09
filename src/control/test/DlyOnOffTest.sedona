@@ -1,0 +1,85 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   17 May 07  Andy Sunders  Creation
+//
+
+**
+** DlyOnOffTest
+**
+class DlyOnOffTest
+  extends Test
+{
+  //
+  // Test each component separately to avoid race conditions in test
+  //
+  static inline DlyOn dlyOn
+  static inline DlyOff dlyOff
+
+  static void test()
+  {
+    long startTicks = 0L
+
+    // Not run in app context, so we need to call start() explicitly
+    dlyOn.start()
+
+    // Set delay to 1 sec
+    dlyOn.delayTime = 1.0
+
+    // Set input to untriggered value & verify output remains untriggered
+    dlyOn.in = false
+    dlyOn.execute()
+    assert(dlyOn.out == false)
+
+
+    // Set input to triggered value & loop until delay expires
+    // to verify output doesn't change early
+    dlyOn.in = true
+
+    startTicks = Sys.ticks()
+    while ((Sys.ticks() - startTicks) < 995ms)
+    {
+      dlyOn.execute()
+      assert(dlyOn.out == false)
+    }
+
+    // Wait a little longer, then verify output has changed
+    startTicks = Sys.ticks()
+    while ((Sys.ticks() - startTicks) < 20ms)
+    {
+    }
+
+    // Execute once more, then verify output has changed now
+    dlyOn.execute()
+    assert(dlyOn.out == true)
+  
+
+    //
+    // Now repeat the test for dlyOff
+    //
+    dlyOff.start()
+    dlyOff.delayTime = 1.0
+    dlyOff.in = true
+    dlyOff.execute()
+    assert(dlyOff.out == true)
+
+    dlyOff.in = false
+    startTicks = Sys.ticks()
+    while ((Sys.ticks() - startTicks) < 995ms)
+    {
+      dlyOff.execute()
+      assert(dlyOff.out == true)
+    }
+
+    startTicks = Sys.ticks()
+    while ((Sys.ticks() - startTicks) < 20ms) { }
+
+    dlyOff.execute()
+    assert(dlyOff.out == false)
+  
+  }
+
+
+}
