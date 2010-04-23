@@ -98,13 +98,26 @@ class AppTest
     BufOutStream out = BufTest.out
     BufInStream in = BufTest.in
     buf.clear()
-    assert(a.saveApp(out) == 0)
-
-    // deserialize
-    in.rewind()
-    App b = appB
-    b.initApp(10)
-    assert(b.loadApp(in) == 0)
+    
+    // The schema for an App could be arbitrarily large, but our buf is
+    // fixed size. Save off the schema size in case serialization fails. 
+    a.saveSchema(out)
+    int schemaSize = buf.size
+  	buf.clear()
+  	if (a.saveApp(out) != 0)
+  	{
+  		Sys.out.print("Failed to serialize. buf.size = $buf.size, schema size = $schemaSize\n")
+  		       .print("If the schema is too large, there may not be enough room to serialize the app.\n")
+  		assert(false)
+  	}
+  	else
+  		assert(true)
+  	
+  	// deserialize
+  	in.rewind()
+  	App b = appB
+  	b.initApp(10)
+  	assert(b.loadApp(in) == 0)
 
     // verify what we serialized/deserialized is what we built
     s1 = (TestService)b.lookup(1);

@@ -18,7 +18,7 @@ class BufTest
 // Fields
 //////////////////////////////////////////////////////////////////////////
 
-  define int bufLen = 400
+  define int bufLen = 1024
   static inline Buf(bufLen) buf
   static inline Buf(4) copyBuf
   static inline BufInStream(buf) in
@@ -85,11 +85,13 @@ class BufTest
     assert(buf.size == 300);
     for (int i=0; i<300; ++i) assert(buf.bytes[i] == (i & 0xFF))
 
-    buf.size = 250
-    for (int i=0; i<200; ++i) out.write(i)
-    assert(buf.size == bufLen);
-    for (int i=0; i<250; ++i) assert(buf.bytes[i] == i)
-    for (int i=250; i<400; ++i) assert(buf.bytes[i] == i-250)
+		// overrun the buffer and verify behavior when that happens
+		int offset = bufLen - 150
+		buf.size = offset
+		for (int i=0; i<200; ++i) out.write(i)
+		assert(buf.size == bufLen)
+		for (int i=0; i<250; ++i) assert(buf.bytes[i] == i)
+		for (int i=offset; i<bufLen; ++i) assert(buf.bytes[i] == i-offset)
   }
 
 ////////////////////////////////////////////////////////////////

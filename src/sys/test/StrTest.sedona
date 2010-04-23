@@ -112,9 +112,12 @@ class StrTest
     out.write(0)
     assert(buf.toStr().equals("(2989 bad)"))
 
+		
     buf.clear()
-    out.print("($b \$ ${Sys.hexStr(x)} $buf.bytesLen)").write(0)
-    assert(buf.toStr().equals("(true \$ bad 400)"))
+    BufTest.copyBuf.size = 4
+    out.print("($b \$ ${Sys.hexStr(x)} $BufTest.copyBuf.size)").write(0)
+    assert(buf.toStr().equals("(true \$ bad 4)"))
+   	BufTest.copyBuf.clear()
 
     long j = 4L
     float f = 20f
