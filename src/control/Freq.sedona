@@ -37,18 +37,16 @@ class Freq
   {
     long now = Sys.ticks()
 
-    if (in && !lastIn)  // rising edge detected
+    float period = (float)(now - lastEdge)
+
+    if (period != 0.0f)
     {
-      float period = (float)(now - lastEdge)
-
-      if (period != 0.0f)
-      {
-        pps = float1sec / period
-        ppm = pps * 60.0
-      }
-
-      lastEdge = now
+      pps = float1sec / period
+      ppm = pps * 60.0
     }
+
+    if (in && !lastIn)  // rising edge detected
+      lastEdge = now
 
     lastIn = in
   }
