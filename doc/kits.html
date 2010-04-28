@@ -167,36 +167,38 @@ less than 32 characters.  Examples of valid vendor names:
 </p>                                
 
 <pre>
-Foo
-Foo12
-FooBar
+Acme
+Acme12
+AcmeCompany
 </pre>
 
 <p>
-Your kit names must be prepended with your vendor name.  The vendor
-name is treated as case-insensitive when it is verified, all these
-are valid kit names for a kit owned by the <code>Foo</code> vendor:
+Your kit names must be prepended with your vendor name.  Kit names are
+alphanumeric and may contain the underscore ('_') character after the vendor
+prefix. The vendor name is treated as case-insensitive when it is verified. 
+All these are valid kit names for a kit owned by the <code>Acme</code> vendor:
 </p>
 
 <pre>
-foo-control
-fooControl
-FooControl
+acme_control
+acmecontrol
+Acmecontrol
 </pre>
 
 <p>
-Likewise, the prefix must match the vendor name specificed in the
-kit manifest (ignoring case):
+Likewise, the prefix must match the vendor name specified in the
+kit manifest (ignoring case); this will be handled by sedonac during 
+compilation when it generates your kit manifest.
 </p>  
 
 <pre>
 &lt;kitManifest
-   name="foo-control"
+   name="acme_control"
+   vendor="Acme"
    checksum="40464bf3"
    hasNatives="false"
    doc="false"
    version="1.0.5"
-   vendor="Foo"
    description="Basic function block library"
 &gt;
 </pre>
