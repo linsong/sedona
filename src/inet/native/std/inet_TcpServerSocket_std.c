@@ -20,6 +20,8 @@ Cell inet_TcpServerSocket_bind(SedonaVM* vm, Cell* params)
   void* self   = params[0].aval;
   int32_t port = params[1].ival;
   bool closed = getClosed(self);
+  int val;
+
 #ifdef _WIN32
   WSADATA wsaData;
 #endif
@@ -37,6 +39,14 @@ Cell inet_TcpServerSocket_bind(SedonaVM* vm, Cell* params)
   // create socket
   sock = socket(AF_INET, SOCK_STREAM,  0);
   if (sock < 0) return falseCell;
+
+  // set socket to reuse it's port
+  val = 1;
+  if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (void*)&val, sizeof(val)) != 0)
+  {
+    closesocket(sock);
+    return falseCell;
+  }
 
   // bind to port
   if (inet_bind(sock, port) != 0)
