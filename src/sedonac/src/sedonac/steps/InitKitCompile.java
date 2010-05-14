@@ -41,7 +41,7 @@ public class InitKitCompile
       log.debug("  InitKitCompile");
       parseKitDef();
       findSourceFiles();    
-      checkVendor();
+      validateNames();
     }
     catch (XException e)
     {
@@ -49,7 +49,7 @@ public class InitKitCompile
     }
   }        
   
-  private void checkVendor()
+  private void validateNames()
   {
     KitDef kit = compiler.ast;
     Location loc = new Location(kitFile);
@@ -58,21 +58,34 @@ public class InitKitCompile
     
     // if vendor is Tridium we don't enforce kit/vendor name 
     // rule since Tridium is the vendor of the core kits
-    if (vendor.equals("Tridium")) return;
-    try
+    if (!vendor.equals("Tridium"))
     {
-      VendorUtil.checkVendorName(vendor);
-    }
-    catch (Exception e)
-    {
-      throw err(e.getMessage(), loc);
-    }
+      try
+      {
+        VendorUtil.checkVendorName(vendor);
+      }
+      catch (Exception e)
+      {
+        throw err(e.getMessage(), loc);
+      }
 
-    // we require that the kit name starts with the vendor name
-    // to ensure a sane strategy for allowing vendor's to post 
-    // manifests to the sedonadev.org website  
-    if (!name.toLowerCase().startsWith(vendor.toLowerCase()))
-      throw err("Kit name '" + name + "' must be prefixed with vendor name '" + vendor + "'", loc);
+      // we require that the kit name starts with the vendor name
+      // to ensure a sane strategy for allowing vendor's to post
+      // manifests to the sedonadev.org website
+      if (!name.toLowerCase().startsWith(vendor.toLowerCase()))
+        throw err("Kit name '" + name + "' must be prefixed with vendor name '" + vendor + "'", loc);
+    }
+    
+    // kit name can only contain alphanumeric or '_' characters
+    name = name.toLowerCase();
+    for (int i=0; i<name.length(); ++i)
+    {
+      char c = name.charAt(i);
+      if (c >= 'a' && c <= 'z') continue;
+      if (c >= '0' && c <= '9') continue;
+      if (c == '_') continue;
+      throw err("Invalid kit name '" + kit.name + "'. Valid characters: [a-zA-Z0-9_]");
+    }
   }
 
   private void parseKitDef()
