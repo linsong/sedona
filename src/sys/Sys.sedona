@@ -201,6 +201,7 @@ class Sys
 
   **
   ** Sleep for the specified time in nanosecond ticks.
+  ** If t <= 0, then sleep should return immediately.
   **
   native static void sleep(long t)
 

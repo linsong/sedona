@@ -30,6 +30,9 @@ Cell sys_Sys_sleep(SedonaVM* vm, Cell* params)
 {
   int64_t ns = *(int64_t*)params;
   struct timespec ts;
+
+  if (ns <= 0) return nullCell;
+
   if (ns < 1000LL * 1000LL * 1000LL)
   {
     ts.tv_sec = 0;

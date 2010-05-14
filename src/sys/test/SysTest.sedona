@@ -78,6 +78,13 @@ class SysTest
     // this is a pretty lame range, but needed for consistent
     // passing on Windows
     assert(80ms < slept && slept < 120ms)
+
+    // test negative sleep
+    t1 = Sys.ticks()
+    Sys.sleep(-100ms)
+    t2 = Sys.ticks()
+    slept = t2 - t1
+    assert(0ms <= slept && slept < 20ms)
   } 
 
 }
