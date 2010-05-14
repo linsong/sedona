@@ -1,0 +1,29 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   10 Jan 07  Andy Saunders  Creation
+//   27 Apr 07  Brian Frank    Port from Java to Sedona
+//
+
+**
+** ASW Analog Switch object
+**
+** out = s1 ? in2 : in1
+**
+@niagaraIcon="module://icons/x16/control/util/switch.png"
+class ASW
+  extends Component
+{
+  @readonly property float out
+  property float in1
+  property float in2
+  property bool  s1
+
+  virtual override void execute()
+  {
+    out = s1 ? in2 : in1
+  }
+
+}

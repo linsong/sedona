@@ -1,0 +1,78 @@
+<!-- This SAX file contains a platUnix::UnixPlatformService -->
+
+<sedonaApp>
+<schema>
+  <kit name='sys'/>
+  <kit name='sox'/>
+  <kit name='inet'/>
+  <kit name='control'/>
+  <kit name='web'/>
+  <kit name='pstore'/>
+  <kit name='datetime'/>
+  <kit name='datetimeStd'/>
+  <kit name='basicSchedule' />
+  <kit name='platUnix' />
+</schema>
+<app>               
+  <prop name="appName" val="demo"/>
+  <!-- /service -->
+  <comp name="service" id="1" type="sys::Folder">
+    <prop name="meta" val="33685505"/>
+    <!-- /service/plat -->
+    <comp name="plat" type="platUnix::UnixPlatformService"/>
+    <!-- /service/users -->
+    <comp name="users" id="3" type="sys::UserService">
+      <prop name="meta" val="17367041"/>
+      <!-- /service/users/admin -->
+      <comp name="admin" id="4" type="sys::User">
+        <prop name="cred" val="hE49ksThgAeLkWB3NUU1NWeDO54="/>
+        <prop name="perm" val="2147483647"/>
+        <prop name="prov" val="255"/>
+      </comp>
+    </comp>
+    <!-- /service/sox -->
+    <comp name="sox" id="5" type="sox::SoxService">
+      <prop name="meta" val="17104897"/>
+    </comp>
+    <!-- /service/web -->
+    <comp name="web" id="6" type="web::WebService">
+      <prop name="meta" val="16842753"/>
+      <prop name="port" val="8080"/>
+    </comp>
+    <!-- /service/pstore -->
+    <comp name="pstore" type="pstore::PstoreService">
+    </comp>
+    <!-- /service/time -->
+    <comp name="time" type="datetimeStd::DateTimeServiceStd">
+      <prop name="osUtcOffset" val="true"/>
+    </comp>
+
+  </comp>
+  <!-- /play -->
+  <comp name="play" id="10" type="sys::Folder">
+    <prop name="meta" val="34013185"/>
+    <!-- /play/rampA -->
+    <comp name="rampA" id="7" type="control::Ramp">
+      <prop name="meta" val="67371009"/>
+      <prop name="min" val="20.00000"/>
+      <prop name="max" val="80.00000"/>
+    </comp>
+    <!-- /play/rampB -->
+    <comp name="rampB" id="8" type="control::Ramp">
+      <prop name="meta" val="68288513"/>
+    </comp>
+    <!-- /play/adder -->
+    <comp name="adder" id="2" type="control::Add2">
+      <prop name="meta" val="386662401"/>
+    </comp>
+    <!-- /play/test -->
+    <comp name="test" id="9" type="sys::TestComp">
+      <prop name="meta" val="671350785"/>
+    </comp>
+  </comp>
+</app>
+<links>
+  <link from="/play/rampB.out" to="/play/adder.in2"/>
+  <link from="/play/rampA.out" to="/play/adder.in1"/>
+</links>
+</sedonaApp>
