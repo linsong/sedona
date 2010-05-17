@@ -70,20 +70,25 @@ class SysTest
 
   static void testTime()
   {
-    long t1 = Sys.ticks()                   
-    Sys.sleep(100ms)
-    long t2 = Sys.ticks()
-    long slept = t2-t1   
-                    
+    long t1   = 0ms
+    long avg  = 0ms
+
+    for (int i=0; i<50; ++i)
+    {
+      t1 = Sys.ticks()
+      Sys.sleep(100ms)
+      avg += Sys.ticks() - t1
+    }
+    avg /= 50L
+
     // this is a pretty lame range, but needed for consistent
     // passing on Windows
-    assert(80ms < slept && slept < 120ms)
+    assert(80ms < avg && avg < 120ms)
 
     // test negative sleep
     t1 = Sys.ticks()
     Sys.sleep(-100ms)
-    t2 = Sys.ticks()
-    slept = t2 - t1
+    long slept = Sys.ticks() - t1
     assert(0ms <= slept && slept < 20ms)
   } 
 
