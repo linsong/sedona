@@ -220,7 +220,7 @@ class WebRes
   **
   WebRes printElapsed(long ticks)
   {
-    if (ticks == 0L) return w("null")
+    if (ticks < 0L) return w("null")
     return printDuration(Sys.ticks() - ticks)
   }
 

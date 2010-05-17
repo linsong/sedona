@@ -191,14 +191,6 @@ typedef short             int_least16_t;
 #  define FALSE 0
 #endif
 
-#if __WORDSIZE == 64
-#  define CLOCK_T_MAX INT64_MAX
-#elif __WORDSIZE == 32
-#  define CLOCK_T_MAX INT32_MAX
-#else
-#  error "cannot determine __WORDSIZE"
-#endif
-
 ////////////////////////////////////////////////////////////////
 //
 // If none of the above platforms, look for local sedona.h file 
