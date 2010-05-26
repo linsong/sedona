@@ -48,13 +48,10 @@ Cell sys_Sys_sleep(SedonaVM* vm, Cell* params)
   return nullCell;
 }
 
-
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 uint64_t last_cycles    = 0;
 uint64_t cycles_total   = -1;
-//uint64_t cycles_mult    = 0;
-double cycles_mult = 0.0;
-
+uint64_t cycles_per_sec = 0;
 
 // static long Sys.ticks()
 int64_t sys_Sys_ticks(SedonaVM* vm, Cell* params)
@@ -66,35 +63,33 @@ int64_t sys_Sys_ticks(SedonaVM* vm, Cell* params)
 
   pthread_mutex_lock(&mutex);
   
+  // first time only
+  if (cycles_per_sec == 0)
+  {
+    cycles_total = 0;
+    cycles_per_sec = sysconf(_SC_CLK_TCK);
+  }
+
   cycles = times(&tmsbuf);
   if (sizeof(clock_t) == 4)
     cycles &= 0x0FFFFFFFF;
 
-  // first time only
-  if (-1 == cycles_total)
-  {
-    cycles_total = 0;
-    cycles_mult = ((double)(1000LL * 1000LL * 1000LL)) / sysconf(_SC_CLK_TCK);
-  }
+  if (cycles >= last_cycles)
+    cycles_delta = cycles - last_cycles;
   else
   {
-    if (cycles >= last_cycles)
-      cycles_delta = cycles - last_cycles;
+    // by how much did we rollover?
+    if (sizeof(clock_t) == 4)
+      cycles_delta = 0x100000000LL - last_cycles;
     else
-    {
-      // by how much did we rollover?
-      if (sizeof(clock_t) == 4)
-        cycles_delta = 0x100000000LL - last_cycles;
-      else
-        cycles_delta = UINT64_MAX - last_cycles + 1;
-      
-      // how far above 0 now? 
-      cycles_delta += cycles;
-    }
+      cycles_delta = UINT64_MAX - last_cycles + 1;
+    
+    // how far above 0 now? 
+    cycles_delta += cycles;
   }
 
   cycles_total += cycles_delta;
-  ticks = cycles_total * cycles_mult;
+  ticks = (((int64_t)(1000L*1000L*1000L*cycles_total)) / cycles_per_sec);
   last_cycles = cycles;
 
   pthread_mutex_unlock(&mutex);
