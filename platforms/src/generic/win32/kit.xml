@@ -20,6 +20,10 @@
 
   <!-- Natives -->
   <native qname="platWin32::Win32PlatformService.doPlatformId" id="1::0" />
+  <native qname="platWin32::Win32YieldPlatformService.doYield" id="1::1" />
+  
+
+
 
 </sedonaKit>
 

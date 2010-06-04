@@ -206,56 +206,38 @@ class Sys
   native static void sleep(long t)
 
 ////////////////////////////////////////////////////////////////
-// Power Management
+//  Entry / Exit points
 ////////////////////////////////////////////////////////////////
-  
-  **
-  ** Put the device into a low power sleep state.  It is up the 
-  ** device implementation to decide how we might wake up from 
-  ** hibernation.  
-  **
-  ** This method unwinds the Sedona call stack and the VM returns 
-  ** 'Err.hibernate'.  However we assume that the Sedona heap 
-  ** remains intact and can be restarted via 'unhibernate'.
-  **
-  static void hibernate()
-  {              
-    // this only works in conjunction with applications
-    if (app == null) return
-
-    // call Service.onHibernate for all the services
-    for (Service s = app.services; s != null; s = s.nextService)
-      s.onHibernate()
-        
-    // have application terminate with special error code
-    app.runStatus = Err.hibernate                        
-    app.running = false
-  }
-
-  **
-  ** This is the entry point where native code restarts the 
-  ** Sedona VM to wake up from a low power sleep state.  We 
-  ** assume that we are restarting the VM call stack from scratch 
-  ** but with the heap intact in the exact state it was during
-  ** when hibernated.
-  **
-  static int unhibernate(Str[] args, int argsLen)
-  {                         
-    // call Service.onUnhibernate for all the services
-    for (Service s = app.services; s != null; s = s.nextService)
-      s.onUnhibernate() 
     
+    
+  **
+  ** This is the entry point where native code resumes the 
+  ** Sedona VM from a yield or hibernate state.  VM heap
+  ** remains intact.
+  **
+  static int resume(Str[] args, int argsLen)
+  {                             
     // run the app's main loop, but skip initialization      
-    return shutdown(app.runApp())
+    return shutdown(app.resumeApp())
   }
 
   **
-  ** If the specified result is not the hibernate error 
-  ** code, then stop the application and cleanup memory.
+  ** This method unwinds the Sedona call stack and the VM exits
+  ** with the given error code.
+  **
+  ** If it returns 'Err.hibernate' or 'Err.yield', the Sedona heap 
+  ** remains intact and can be restarted via 'resume' entry point
+  **
+  ** If the specified result is not the hibernate or yield error
+  ** codes, then stop the application and cleanup memory.
   **
   static int shutdown(int result)
   {
-    if (result != Err.hibernate)
+    if ((result == Err.yield) || (result == Err.hibernate))
+    {
+      // Do nothing
+    }  
+    else  // full shutdown  
     { 
       if (app != null)
       {                                             

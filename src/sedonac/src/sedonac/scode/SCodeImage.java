@@ -24,7 +24,7 @@ public class SCodeImage
   public int refSize;        // address pointer width in bytes
   public boolean armDouble;  // 64-bit double layout of ARM using byte little endian, word big endian
   public String main;        // main method qname
-  public String unhibernate; // unhibernate method qname
+  public String resume;      // resume method qname
   public boolean debug;      // include debug meta-data
   public boolean test;       // include tests
   public byte[] code;        // image file

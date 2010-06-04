@@ -79,11 +79,11 @@ int vmRun(SedonaVM* vm)
 }
 
 /**
- * Unhibernate the Sedona VM (vm must already be initialized).
+ * Resume the Sedona VM (vm must already be initialized).
  */
-int vmUnhibernate(SedonaVM* vm)
+int vmResume(SedonaVM* vm)
 {           
-  // run unhibernate method
+  // run resume method
   return vmEntry(vm, 24);  // see ImageGen.java header()
 }
 

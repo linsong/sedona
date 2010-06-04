@@ -17,3 +17,12 @@ Cell platWin32_Win32PlatformService_doPlatformId(SedonaVM* vm, Cell* params)
   result.aval = PLATFORM_ID;
   return result;
 }                      
+
+extern int64_t yieldNs;
+
+// void Win32YieldPlatformService.doYield()
+Cell platWin32_Win32YieldPlatformService_doYield(SedonaVM* vm, Cell* params)
+{         
+  yieldNs = *(int64_t*)params;   
+  return nullCell;
+}                      

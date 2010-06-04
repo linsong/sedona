@@ -87,13 +87,13 @@ public class ImageGen
     code.u2(-1);                 // 20 spacer for kits block index
     code.u1(flat.kits.length);   // 22 num kits
     code.u1(scodeFlags());       // 23 scode flags
-    unhibernateBlockIndex();     // 24 unhibernate method block index
+    resumeBlockIndex();          // 24 resume method block index
     blockAlign();
   }              
   
-  void unhibernateBlockIndex()
+  void resumeBlockIndex()
   {                                  
-    addBlockIndex(findMain(image.unhibernate).codeAddr);
+    addBlockIndex(findMain(image.resume).codeAddr);
   }           
   
   int scodeFlags()

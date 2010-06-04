@@ -156,12 +156,31 @@ class App
     
     // Start counting time to steady state
     steadyAt = Sys.ticks() + (long)timeToSteadyState*1ms
+    
+    return resumeApp()
+  }
 
+
+  **
+  ** Run this application - right now this is a
+  ** simple round robin execution.
+  **
+  int resumeApp()
+  {       
+    //  Are we returning from hibernate?
+    if (runStatus == Err.hibernate)
+    {
+      // call Service.onUnhibernate for all the services
+      for (Service s = services; s != null; s = s.nextService)
+        s.onUnhibernate() 
+    }     
+    
     running = true
-    runStatus = 0
+    runStatus = 0 
     long deadline = Sys.ticks()
     lastEndWork = deadline
     
+        
     while (running)
     {
       // update our cycle counter
@@ -189,25 +208,45 @@ class App
         more = false
         for (Service s = services; s != null; s = s.nextService)
           more |= s.work()
-        
-        // check if our cycle time is up  
-        //if (Sys.ticks() >= deadline) break
+                
         if (Sys.ticks() >= deadline - ((long)guardTime*1ms)) break
       }
-
-      // sleep until next cycle if we have time remaining
+      
       lastEndWork = Sys.ticks()
+      long nsUntilDeadline = deadline - lastEndWork
 
-      //debug output in 1/100's ms
-      //Sys.out.printLong((lastStartWork-newStartExec)/10000L).print(" ").printLong((lastEndWork-lastStartWork)/10000L).nl()
-
-      Sys.sleep(deadline - lastEndWork)
-                  
+      //  If hibernating, inform services.
+      //  Note that hibernation check must take place before yield since
+      //  hibernation is higher priority then yielding
+      if (runStatus == Err.hibernate) 
+      {
+        for (Service s = services; s != null; s = s.nextService)
+          s.onHibernate()                     
+        
+        return runStatus
+      }            
+      else if (platform.yieldRequired())
+      { 
+        platform.yield(nsUntilDeadline);
+        runStatus = Err.yield
+        return runStatus;
+      }  
+      else
+      {  
+        // sleep until next cycle if we have time remaining      
+  
+        //debug output in 1/100's ms
+        //Sys.out.printLong((lastStartWork-newStartExec)/10000L).print(" ").printLong((lastEndWork-lastStartWork)/10000L).nl()
+  
+        // note that if we have overrun our deadline, sleep time will be
+        // negative and Sys.sleep will return immediately.
+        Sys.sleep(nsUntilDeadline)
+      }                  
     }           
     
     return runStatus
   }  
-  
+    
   **
   ** Recursively execute the component and its children.
   **
@@ -861,12 +900,14 @@ class App
   }
 
   **
-  ** Action to invoke Sys.hibernate.
+  ** Action to request hibernation.  Current execute loop will
+  ** complete and all services will get a chance to work before
+  ** hibernation occurs
   **
   @confirmRequired
   action void hibernate()
   {
-    Sys.hibernate()                  
+    runStatus = Err.hibernate;
   }
 
   **

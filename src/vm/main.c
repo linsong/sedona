@@ -18,6 +18,8 @@
 int64_t sys_Sys_ticks(SedonaVM* vm, Cell* params);
 void sys_Sys_sleep(SedonaVM* vm, Cell* params);
 
+int64_t yieldNs = 0;
+
 // forwards
 static int printUsage(const char* exe);
 static int printVersion();
@@ -107,10 +109,19 @@ static int runInPlatformMode()
     vm.argsLen  = 1;
 
     result = vmRun(&vm);
-    while (result == ERR_HIBERNATE)
+    while ((result == ERR_HIBERNATE) || (result == ERR_YIELD))
     {
-      printf("-- Simulated hibernate --\n");
-      result = vmUnhibernate(&vm);
+      //  Simulate hibernate and yield
+      if (result == ERR_HIBERNATE)
+        printf("-- Simulated hibernate --\n");       
+      else
+      {  
+        sys_Sys_sleep(NULL, (Cell*)&yieldNs); 
+        yieldNs = 0;
+      }  
+      
+      
+      result = vmResume(&vm);
     }
 
     if (result != 0)
@@ -154,13 +165,22 @@ static int runInStandaloneMode(const char* filename, int vmArgc, char* vmArgv[])
   t1 = sys_Sys_ticks(NULL, NULL);
   result = vmRun(&vm);
 
-  // if the VM exited into a hibernation state, then
-  // simulate a hibernate with a sleep and resume
-  while (result == ERR_HIBERNATE)
+  while ((result == ERR_HIBERNATE) || (result == ERR_YIELD))
   {
-    printf("-- Simulated hibernate --\n");
-    result = vmUnhibernate(&vm);
+    //  Simulate hibernate and yield    
+    if (result == ERR_HIBERNATE)
+    {  
+      printf("-- Simulated hibernate --\n");             
+    }  
+    else
+    { 
+      printf("Simulate yield %I64d ", yieldNs); 
+      sys_Sys_sleep(NULL, (Cell*)&yieldNs);   
+      yieldNs = 0;   
+    }
+    result = vmResume(&vm);
   }
+
 
   // done
   if (result != 0)

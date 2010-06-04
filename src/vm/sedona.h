@@ -335,7 +335,7 @@ SedonaVM;
 
 // Virtual Machine Control
 extern int vmRun(SedonaVM* vm);
-extern int vmUnhibernate(SedonaVM* vm);
+extern int vmResume(SedonaVM* vm);
 extern int vmCall(SedonaVM* vm, uint16_t method, Cell* args, int argc);
 
 // Virtual Machine Debug

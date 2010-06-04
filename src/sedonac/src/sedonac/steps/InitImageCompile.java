@@ -56,7 +56,7 @@ public class InitImageCompile
     image.blockSize   = xml.geti("blockSize");
     image.refSize     = xml.geti("refSize");
     image.main        = xml.get("main", "sys::Sys.main");
-    image.unhibernate = xml.get("unhibernate", "sys::Sys.unhibernate");
+    image.resume      = xml.get("resume", "sys::Sys.resume");
     image.debug       = xml.getb("debug", false);
     image.test        = xml.getb("test", false);
     image.armDouble   = xml.getb("armDouble", false);
