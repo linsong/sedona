@@ -1,0 +1,237 @@
+//
+// Copyright (c) 2009 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+
+class ActionTest extends Test
+{
+  static inline FooAction fooAction
+  static inline BarAction barAction
+  static inline BazAction bazAction
+  static inline Buf(8) abuf
+  
+  static void reset()
+  {
+    fooAction.reset()
+    barAction.reset()
+    bazAction.reset()
+  }
+  
+  static void testAbstract()
+  {
+    reset()
+    fooAction.doAbstract(); assert(fooAction.i1 == -1)
+    barAction.doAbstract(); assert(barAction.i1 == -1)
+    bazAction.doAbstract(); assert(bazAction.i1 == -2)
+    
+    verifyAbstract(fooAction, -1)
+    verifyAbstract(barAction, -1)
+    verifyAbstract(bazAction, -2)
+    
+    Slot m = fooAction.type.findSlot("doAbstract")
+    assert(m != null)
+    reset()
+    fooAction.invokeVoid(m); assert(fooAction.i1 == -1)
+    barAction.invokeVoid(m); assert(barAction.i1 == -1)
+  }
+  
+  private static void verifyAbstract(AbstractBase aref, int verify)
+  {
+    aref.i1 = 2; assert(aref.i1 == 2)
+    aref.doAbstract(); assert(aref.i1 == verify)
+  }
+  
+  static void testBool()
+  {
+    AbstractBase aref
+    reset()
+    fooAction.doBool(true); assert(fooAction.z1)
+    barAction.doBool(true); assert(barAction.z1)
+    bazAction.doBool(false);assert(bazAction.z1) // baz flips bool value
+    
+    aref = fooAction
+    aref.doBool(false); assert(!fooAction.z1)
+    aref = barAction
+    aref.doBool(false); assert(!barAction.z1)
+    aref = bazAction
+    aref.doBool(true); assert(!bazAction.z1)
+    
+    Slot m = fooAction.type.findSlot("doBool")
+    assert(m != null)
+    fooAction.invokeBool(m, true); assert(fooAction.z1)
+    barAction.invokeBool(m, true); assert(barAction.z1)
+    bazAction.invokeBool(m, false); assert(bazAction.z1)
+  }
+  
+  static void testInt()
+  {
+    AbstractBase aref
+    reset()
+    fooAction.doInt(100); assert(fooAction.i1 == 100)
+    barAction.doInt(100); assert(barAction.i1 == 100)
+    bazAction.doInt(-100); assert(bazAction.i1 == 100) // baz negates value
+    
+    aref = fooAction
+    aref.doInt(200); assert(fooAction.i1 == 200)
+    aref = barAction
+    aref.doInt(200); assert(barAction.i1 == 200)
+    aref = bazAction
+    aref.doInt(-200); assert(bazAction.i1 == 200)
+    
+    Slot m = fooAction.type.findSlot("doInt")
+    assert(m != null)
+    fooAction.invokeInt(m, 300); assert(fooAction.i1 == 300)
+    barAction.invokeInt(m, 300); assert(barAction.i1 == 300)
+    bazAction.invokeInt(m, -300); assert(bazAction.i1 == 300)
+  }
+  
+  static void testLong()
+  {
+    AbstractBase aref
+    reset()
+    fooAction.doLong(100L); assert(fooAction.l1 == 100L)
+    barAction.doLong(100L); assert(barAction.l1 == 100L)
+    bazAction.doLong(-100L); assert(bazAction.l1 == 100L) // baz negates value
+    
+    aref = fooAction
+    aref.doLong(200L); assert(fooAction.l1 == 200L)
+    aref = barAction
+    aref.doLong(200L); assert(barAction.l1 == 200L)
+    aref = bazAction
+    aref.doLong(-200L); assert(bazAction.l1 == 200L)
+    
+    Slot m = fooAction.type.findSlot("doLong")
+    assert(m != null)
+    fooAction.invokeLong(m, 300L); assert(fooAction.l1 == 300L)
+    barAction.invokeLong(m, 300L); assert(barAction.l1 == 300L)
+    bazAction.invokeLong(m, -300L); assert(bazAction.l1 == 300L)
+  }
+  
+  static void testFloat()
+  {
+    AbstractBase aref
+    reset()
+    fooAction.doFloat(100f); assert(fooAction.f1 == 100f)
+    barAction.doFloat(100f); assert(barAction.f1 == 100f)
+    bazAction.doFloat(-100f); assert(bazAction.f1 == 100f) // baz negates value
+    
+    aref = fooAction
+    aref.doFloat(200f); assert(fooAction.f1 == 200f)
+    aref = barAction
+    aref.doFloat(200f); assert(barAction.f1 == 200f)
+    aref = bazAction
+    aref.doFloat(-200f); assert(bazAction.f1 == 200f)
+    
+    Slot m = fooAction.type.findSlot("doFloat")
+    assert(m != null)
+    fooAction.invokeFloat(m, 300f); assert(fooAction.f1 == 300f)
+    barAction.invokeFloat(m, 300f); assert(barAction.f1 == 300f)
+    bazAction.invokeFloat(m, -300f); assert(bazAction.f1 == 300f)
+  }
+  
+  static void testDouble()
+  {
+    AbstractBase aref
+    reset()
+    fooAction.doDouble(100d); assert(fooAction.d1 == 100d)
+    barAction.doDouble(100d); assert(barAction.d1 == 100d)
+    bazAction.doDouble(-100d); assert(bazAction.d1 == 100d) // baz negates value
+    
+    aref = fooAction
+    aref.doDouble(200d); assert(fooAction.d1 == 200d)
+    aref = barAction
+    aref.doDouble(200d); assert(barAction.d1 == 200d)
+    aref = bazAction
+    aref.doDouble(-200d); assert(bazAction.d1 == 200d)
+    
+    Slot m = fooAction.type.findSlot("doDouble")
+    assert(m != null)
+    fooAction.invokeDouble(m, 300d); assert(fooAction.d1 == 300d)
+    barAction.invokeDouble(m, 300d); assert(barAction.d1 == 300d)
+    bazAction.invokeDouble(m, -300d); assert(bazAction.d1 == 300d)
+  }
+  
+  static void testBuf()
+  {
+    AbstractBase aref
+    reset()
+    abuf.copyFromStr("x1")
+    fooAction.doBuf(abuf); assert(fooAction.buf.toStr().equals("x1"))
+    barAction.doBuf(abuf); assert(barAction.buf.toStr().equals("x1"))
+    bazAction.doBuf(abuf); assert(bazAction.buf.toStr().equals("x")) // baz stores first char
+    
+    abuf.copyFromStr("y1")
+    aref = fooAction
+    aref.doBuf(abuf); assert(fooAction.buf.toStr().equals("y1"))
+    aref = barAction
+    aref.doBuf(abuf); assert(barAction.buf.toStr().equals("y1"))
+    aref = bazAction
+    aref.doBuf(abuf); assert(bazAction.buf.toStr().equals("y"))
+    
+    abuf.copyFromStr("z1")
+    Slot m = fooAction.type.findSlot("doBuf")
+    assert(m != null)
+    fooAction.invokeBuf(m, abuf); assert(fooAction.buf.toStr().equals("z1"))
+    barAction.invokeBuf(m, abuf); assert(barAction.buf.toStr().equals("z1"))
+    bazAction.invokeBuf(m, abuf); assert(bazAction.buf.toStr().equals("z"))
+  }
+}
+
+abstract class AbstractBase extends Component
+{
+  @config @asStr property Buf(16) absBuf = "ActionTest"
+  
+  abstract action void doAbstract()
+  action void doBool(bool z) { z1 = z }
+  action void doInt(int i) { i1 = i }
+  action void doLong(long l) { l1 = l }
+  action void doFloat(float f) { f1 = f }
+  action void doDouble(double d) { d1 = d }
+  action void doBuf(Buf b) { buf.copyFromBuf(b) }
+    
+  void reset()
+  {
+    buf.copyFromStr("")
+    z1 = false
+    i1 = 0
+    f1 = 0f
+    l1 = 0L
+    d1 = 0d
+  }
+  
+  inline Buf(8) buf
+  bool     z1
+  int      i1
+  float    f1
+  long     l1
+  double   d1
+}
+
+class FooAction extends AbstractBase
+{ 
+  override action void doAbstract() { i1 = -1 }
+  @config property int fooInt1 = 1
+}
+
+class BarAction extends FooAction 
+{
+  override action void doBool(bool z) { super.doBool(z) }
+  override action void doInt(int i) { super.doInt(i) }
+  override action void doLong(long l) { super.doLong(l) }
+  override action void doFloat(float f) { super.doFloat(f) }
+  override action void doDouble(double d) { super.doDouble(d) }
+  override action void doBuf(Buf b) { super.doBuf(b) }
+  @config @asStr property Buf(8) barBuf = "BarBuf"
+}
+
+class BazAction extends BarAction
+{ 
+  override action void doAbstract() { i1 = -2 }
+  override action void doBool(bool z) { z1 = !z }
+  override action void doInt(int i) { i1 = -i }
+  override action void doLong(long l) { l1 = -l }
+  override action void doFloat(float f) { f1 = -f }
+  override action void doDouble(double d) { d1 = -d }
+  override action void doBuf(Buf b) { buf.copyFromBytes(b.bytes,0,1) }
+  @config property float bazFloat = 1.0
+}

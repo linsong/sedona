@@ -1,0 +1,115 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   26 Apr 07  Brian Frank  Creation
+//
+
+**
+** Slot models a property or action slot which is
+** available to the runtime via the reflection APIs.
+**
+const class Slot
+{
+
+////////////////////////////////////////////////////////////////
+// Methods
+////////////////////////////////////////////////////////////////
+
+  **
+  ** Is this a property slot.
+  **
+  bool isProp() { return (flags & ACTION) == 0 }
+
+  **
+  ** Is this an action slot.
+  **
+  bool isAction() { return (flags & ACTION) != 0 }
+
+  **
+  ** Is this a config property.
+  **
+  bool isConfig() { return (flags & CONFIG) != 0 }
+
+  **
+  ** Is this a Buf property which should be treated as a Str.
+  **
+  bool isAsStr() { return (flags & AS_STR) != 0 }
+
+  **
+  ** Is true if an operator level slot, or false if admin level.
+  **
+  bool isOperator() { return (flags & OPERATOR) != 0 }
+
+  **
+  ** Return if this slot is a property against the specified
+  ** filter:
+  **    '*' = any property
+  **    'c' = only config properties
+  **    'r' = only runtime properties
+  **    'C' = only operator level config properties
+  **    'R' = only operator level runtime properties
+  **
+  bool matchProp(int filter)
+  {
+    if (isProp())
+    {
+      if (filter == '*') return true
+      if (filter == 'c') return (flags & CONFIG) != 0
+      if (filter == 'r') return (flags & CONFIG) == 0
+      if (filter == 'C') return (flags & (CONFIG|OPERATOR)) == (CONFIG|OPERATOR)
+      if (filter == 'R') return (flags & (CONFIG|OPERATOR)) == OPERATOR
+    }
+    return false
+  }
+
+  **
+  ** Get the event mask for the property type.
+  **
+  internal int watchEvent()
+  {
+    return ((flags & CONFIG) != 0) ? Watch.eventConfig : Watch.eventRuntime
+  }
+
+////////////////////////////////////////////////////////////////
+// Flags
+////////////////////////////////////////////////////////////////
+
+  ** Flag to indicate property versus action
+  define int ACTION = 0x01
+
+  ** Flag to indicate configuration property versus runtime property
+  define int CONFIG = 0x02
+
+  ** Flag to indicate if a Buf should be treated as a Str
+  define int AS_STR = 0x04
+
+  ** Flag to indicate if slot is operator level - if not 
+  ** operator then a slot is consider admin level.
+  define int OPERATOR = 0x08
+
+////////////////////////////////////////////////////////////////
+// Fields
+////////////////////////////////////////////////////////////////
+
+  ** Index of this slot in its type slot list
+  const byte id
+
+  ** Unique name of this slot in its type
+  const Str name
+
+  ** Bitmask for flags
+  const byte flags
+
+  ** Type of the slot.  If the slot is a property this is the type
+  ** the property stores.  If the slot is an action this is the
+  ** argument type.
+  const Type type
+
+  ** If a property this is the memory offset from the start of the
+  ** instance used to store the value.  If an action this is the block
+  ** index for the method.
+  private short handle
+
+}
