@@ -8,15 +8,21 @@
 
 package sedonac.steps;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+
 import sedona.Depend;
-import sedona.kit.*;
-import sedona.xml.*;
-import sedonac.*;
+import sedona.kit.KitDb;
+import sedona.kit.KitFile;
+import sedona.util.Version;
+import sedona.xml.XElem;
+import sedona.xml.XException;
 import sedonac.Compiler;
-import sedonac.ir.*;
-import sedonac.scode.*;
+import sedonac.CompilerStep;
+import sedonac.Location;
+import sedonac.ir.IrKit;
+import sedonac.scode.SCode;
+import sedonac.scode.SCodeImage;
+
 
 /**
  * InitImageCompile initializes the compiler to run the pipeline
@@ -41,6 +47,7 @@ public class InitImageCompile
       log.debug("  InitImageCompile");
       initImage();
       initKits();
+      initResume();
     }
     catch (XException e)
     {
@@ -56,7 +63,6 @@ public class InitImageCompile
     image.blockSize   = xml.geti("blockSize");
     image.refSize     = xml.geti("refSize");
     image.main        = xml.get("main", "sys::Sys.main");
-    image.resume      = xml.get("resume", "sys::Sys.resume");
     image.debug       = xml.getb("debug", false);
     image.test        = xml.getb("test", false);
     image.armDouble   = xml.getb("armDouble", false);
@@ -94,6 +100,8 @@ public class InitImageCompile
       log.debug("    "+kitFile.toString());   
       
       IrKit kit = kits[i] = new IrKit(loc, kitFile);
+      if (kit.name.equals("sys")) sysKit = kitFile;
+      
       String t = elem.get("test", null);
       if (t != null)
         kit.test = t.equals("true");   
@@ -103,9 +111,39 @@ public class InitImageCompile
     compiler.kits = kits;
     quitIfErrors();
   }
+  
+  private void initResume()
+  {  
+    final String unhibernate = xml.get("unhibernate", null);
+    final String resume = xml.get("resume", null);
+    final boolean hasUnhibernate = (unhibernate != null);
+    final boolean hasResume = (resume != null);
+    
+    if (hasUnhibernate && hasResume)
+      throw new XException("Cannot specify both 'unhibernate' and 'resume' attributes", xml);
+    
+    if (hasResume)
+      compiler.image.resume = resume;
+    else if (hasUnhibernate)
+    {
+      warn("'unhibernate' attribute is deprecated. Use 'resume' instead.", new Location(xml));
+      compiler.image.resume = unhibernate;
+    }
+    else
+    {
+      // In build 1.0.47 we renamed sys::Sys.unhibernate to sys::Sys.resume.
+      // In order to support scode generation for older sys kits, we have
+      // to check the sys version to determine what the default "resume"
+      // entry point method should be.
+      compiler.image.resume = (sysKit.version.compareTo(new Version("1.0.47")) < 0)
+        ? "sys::Sys.unhibernate"
+        : "sys::Sys.resume";
+    }    
+  }
 
   File xmlFile;
   File xmlDir;
   XElem xml;
+  KitFile sysKit;
 
 }
