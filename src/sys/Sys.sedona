@@ -202,6 +202,9 @@ class Sys
   **
   ** Sleep for the specified time in nanosecond ticks.
   ** If t <= 0, then sleep should return immediately.
+  ** 
+  ** This method is for use by App and test code only.  Do not call from
+  ** within Component execute() or Service work() methods.
   **
   native static void sleep(long t)
 

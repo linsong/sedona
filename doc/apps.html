@@ -107,8 +107,111 @@ with a fixed scan rate:
 </li>
 <li>Give any remaining time in the scan cycle to services via 
 <code>Service.work</code></li>
-<li>If no services have remaining work, then sleep until next cycle</li>
+<li>If no services have remaining work, then relinquish CPU (via yield or sleep) until next cycle</li>
 </ol>
+
+<!--/////////////////////////////////////////////////////////-->
+<h1 id="yieldSleep">Yield vs Sleep</h1>
+<!--/////////////////////////////////////////////////////////-->
+
+<p>
+Depending on the underlying execution environment, the App can either 
+return control to the OS (exit the VM) or sleep until it's time to run again.
+</p>
+<h2>Preemptive multithreaded OS</h2>
+<p>
+  These include Windows, Linux or QNX.  When a thread calls the OS sleep 
+  primitive, other threads are given a chance to run.  The VM may be 
+  swapped in and out several times during an execute cycle.
+</p>                                             
+<h2>Main Loop</h2>
+<p>
+  In this environment, the Sedona VM executes as the main loop and 
+  all other work is done @ ISR level.  Once the App completes an 
+  execute cycle, it can delay by entering a busy-wait loop.  
+</p>                                               
+<h2>Cooperative tasking OS </h2>
+<p>
+In this environment, a task must return control to the scheduler to allow other tasks a chance to run.  The sleep and busy-wait approaches won't work here since the VM will never exit, so the VM must support a clean exit and re-entry. This is accomplished by the yield mechanism described below.
+</p>  
+  
+  
+<!--/////////////////////////////////////////////////////////-->
+<h1 id="yield">Yield</h1>
+<!--/////////////////////////////////////////////////////////-->
+<p>
+  Sedona supports <i>yielding</i> to provide a graceful exit (and 
+  subsequent reentry) of the VM, allowing the CPU to perform other 
+  operations.  
+</p>
+<p>  
+  Systems that require yield functionality must override the following 
+  functions on Platform
+</p>
+<p>  
+  <code>yieldRequired()</code> - return true if the VM should exit after each App execute cycle  
+</p>  
+<p>   
+  <code>yield(long yieldTime)</code> - indicates the VM will be exiting and requests to be resumed in yieldTime nanoseconds.
+</p>  
+<p>    
+  If a Platform returns true to yieldRequired(), then the VM will exit with
+  the error code <code>ERR_YIELD</code> after each pass execution loop.  Before
+  exiting, <code>yield(yieldTime</code>) will be called indicating how long 
+  the VM wishes to delay before re-entry.
+</p>    
+<p>    
+  Native code can resume the VM via <code>vmResume(SedonaVM*)</code>
+</p>
+<p>      
+  If vmResume is not called before yieldTime expires, App overruns will occur.    
+ </p>
+
+
+
+<!--/////////////////////////////////////////////////////////-->
+<h1 id="hibernation">Hibernation</h1>
+<!--/////////////////////////////////////////////////////////-->
+<p>
+When entering hibernation, the Sedona App exits and returns control to the bootstrap code.  
+It is similar to yield but it is expected that the hibernation time will be much longer 
+than a typical yield time.  Hibernation is driven by application logic and most likely 
+will not occur each App execute cycle, whereas yield must occur each cycle.
+</p>
+
+<p>
+To enter the hibernation state, an application calls <code>App.hibernate()</code>.
+This will set a flag on App and when the current execution cycle is complete,
+it will cause the App to exit with error code <code>ERR_HIBERNATE</code>. 
+This will gracefully unwind the Sedona call stack, returning control to the boot code.
+The device's boot code should then put the device to sleep.  It is a device dependent 
+issue to decide how it will wake up from hibernation.  When the device does wake, it 
+should restart the VM with a call to <code>vmResume(SedonaVM*)</code>.  If your device
+doesn't support hibernation, then you will need to simulate it using code such 
+as the following:
+</p>
+
+<pre>
+result = vmRun(&amp;vm);
+while (result == ERR_HIBERNATE)
+{
+  printf("-- Simulated hibernate --\n");
+  result = vmResume(&amp;vm);
+}
+</pre>  
+
+<p>
+If you are developing Sedona components, applications, or drivers you should
+keep hibernation in mind. Any software that might run on a battery powered 
+device needs to support hibernation cleanly. This means that function blocks 
+should assume the scan rate might have hibernation pauses. If you have 
+services that need to do something special when hibernating or waking, then 
+you will need to override the functions 
+<code>Service.onHibernate()</code> and <code>Service.onUnhibernate()</code>.
+<code>Service.onHibernate()</code> will be called prior to VM exit.  <code>Service.onUnhibernate()</code> will be called after the VM is resumed and prior to the App execution loop starting back up.
+
+</p>
+
 
 <!--/////////////////////////////////////////////////////////-->
 <h1 id="steadystate">Steady State</h1>
@@ -155,6 +258,7 @@ It only affects behavior of Sedona components that use the <code>isSteadyState()
 It is the responsibility of each kit developer to call this method as needed to protect the 
 hardware.
 </p>
+<code>App.timeToSteadyState</code> applies only to the first time the VM is started.  Once steady time has elapsed, hibernate/yield will not affect it.
 
 
 <!--/////////////////////////////////////////////////////////-->
