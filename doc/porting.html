@@ -219,19 +219,26 @@ automatically during the VM code generation stage.  See the
 
 <p>When the <code>SedonaVM</code> struct has been initialized, start the Sedona VM 
 by calling the <code>vmRun()</code> function and passing a pointer to the struct.  
-If <code>vmRun</code> returns a non-zero value (other than <code>ERR_HIBERNATE</code>, 
-discussed below), then there is a problem.  Errors in the scode
+If <code>vmRun</code> returns a non-zero value (other than <code>ERR_HIBERNATE</code>
+or <code>ERR_YIELD</code>, discussed below), then there is a problem.  Errors in the scode
 image or the app will generally produce an error code defined in src/sys/Err.sedona;
 errors in the VM itself are usually indicated by an error code in "src/vm/errorcodes.h".
+</p>
+
+<p>Some platforms may require the VM yield execution control to allow other task to 
+run.  When <code>vmRun()</code> returns <code>ERR_YIELD</code>, the application is
+yielding CPU control.  
+See the <a href='apps.html#yield'>Yield</a> section for
+more details.
 </p>
 
 <p>Each platform requires the implmentation of an appropriate hibernation strategy.
 When <code>vmRun()</code> returns <code>ERR_HIBERNATE</code> then the application
 has requested that the platform go into a low-power or sleep state.  Awakening from
 this state is under the control of the device, not the Sedona application.
-Upon awaking, call the <code>vmUnhibernate()</code> function to start the Sedona VM
+Upon awaking, call the <code>vmResume()</code> function to start the Sedona VM
 again from where it left off.
-See the <a href='memory.html#hibernation'>Hibernation</a> section for
+See the <a href='apps.html#hibernation'>Hibernation</a> section for
 more details.
 </p>
 

@@ -87,15 +87,15 @@ class PlatformService
   }
 
   **  
-  **  Return true if App must yield CPU by exiting VM each cycle.  
-  **
-  **  Platforms that support pre-emptive multitasking should return false
-  **  since App can sleep to yield CPU.  
+  ** Return true if App must yield CPU by exiting VM each cycle.
   ** 
-  **  Cooperative multitasking platforms that expect tasks to run to 
-  **  completion and return so other tasks can execute should return true. 
-  **  
-  **  See also yieldHibernate.html in Sedona docs
+  ** Platforms that support pre-emptive multitasking should return false
+  ** since App can sleep to yield CPU.
+  **
+  ** Cooperative multitasking platforms that expect tasks to run to
+  ** completion and return so other tasks can execute should return true.
+  **
+  ** See also the Apps chapter in Sedona docs
   **
   virtual bool yieldRequired()   
   { 
@@ -103,14 +103,14 @@ class PlatformService
   }
 
   ** 
-  **  Inform platform that SVM will be exiting with Err.yield and needs 
-  **  to be scheduled to run again (via resume in vm.c) in ns nanoseconds to meet
-  **  the desired App.scanPeriod value
-  ** 
-  **  If the application overruns its scan period, yieldTime will be negative. 
-  **  In this case the VM should be scheduled to run again as soon as possible.
+  ** Inform platform that SVM will be exiting with Err.yield and needs 
+  ** to be scheduled to run again (via resume in vm.c) in ns nanoseconds to meet
+  ** the desired App.scanPeriod value.
   **
-  **  See also yieldHibernate.html in Sedona docs
+  ** If the application overruns its scan period, yieldTime will be negative. 
+  ** In this case the VM should be scheduled to run again as soon as possible.
+  **
+  ** See also the Apps chapter in Sedona docs
   **
   virtual void yield(long yieldTime)
   {    
