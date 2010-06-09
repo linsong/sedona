@@ -40,393 +40,61 @@
 <!--/////////////////////////////////////////////////////////-->
 
 <pre>
-2 Mar 07
-  - Refactor Sedona source layout and compiler front end
-4 Mar 07
-  - IR model and IrReader/IrWriter
-5 Mar 07
-  - Stub VM and main C code
-6 Mar 07
- - SCode generation
- - Int math operations
-8 Mar 07
-  - Assert VM callbacks
-  - Int comparison/bitwise operations
-  - AST and IR unified namespace
-  - Type resolution (kit internal)
-  - Param and local variables
-  - Assignment statements
-9 Mar 07
-  - Branching, if/else statements
-10 Mar 07
-  - Int prefix/postfix increment and decrement
-  - While/for loop statements
-  - Conditional and/or expressions with if stmt optimization
-  - CheckErrors step
-11 Mar 07
-  - Ternary operator
-  - Leave, pop, and stack balancing
-  - Float operations
-12 Mar 07
-  - Float/int cast conversion
-  - Static fields
-  - Static initializers for field init
-14 Mar 07
-  - Inline field layout
-  - Instance fields
-  - Arrays of primitives
-15 Mar 07
-  - Variable sized references (pointers)
-16 Mar 07
-  - Translations to Java and C
-  - Performance benchmarks
-21 Mar 07
-  - Instance methods
-  - Object arrays and {...} array initialization
-  - Instance initializers
-  - Foreach statement and opcode
-22 Mar 07
-  - Field, array increment, decrement, leaves
-28 Mar 07
-  - Inheritance support
-  - Inherited field layout
-  - Abstract, virtual, and override methods support
-  - Virtual method dispatch
-  - Component and Type (for vtables)
-29 Mar 07
-  - Native methods
-  - Primitives and native method doc chapters
-30 Mar 07
-  - Time API and time literals
-  - Support for multiple kits
-  - Break tests out into sysTest kit
-31 Mar 07
-  - Public, protected, private, internal scoping
-2 Apr 07
-  - VM staging
-3 Apr 07
-  - This and super keywords (super non-virtual calls)
-  - Instance and static access error checking
-  - Time.mult, div, hiInt, and loInt
-  - Sys natives for formating strings
-  - OutStream and Sys.out
-4 Apr 07
-  - Non-standard string formatting
-  - Define fields
-24 Apr 07
-  - Str class wrapper for byte[]
-  - Type literal syntax
-  - Const keyword for reflective meta-data
-  - Rework virtual table into sys::Virtual base class
-  - Added OutStream.flush
-  - Const instances and arrays embedded in scode
-  - Kit and type meta-data APIs
-26 Apr 07
-  - Const static fields and Sys.kits
-  - Primitive type reflection and type literals
-  - Slot reflection and APIs
-  - Native methods take SedonaVM parameter
-  - Reflective getter and setters
-27 Apr 07
-  - Rework VM to enable calling a Sedona method from C
-  - Reflective invokes
-  - Foreach with count expression
-  - Slot runtime flags using {config} syntax
-  - Port control block library from old Sedona
-30 Apr 07
-  - Time compare, nsInt, nsFloat, msInt, and msFloat APIs
-8 May 07
-  - Sys.sleep native call
-  - Inet kit: IpAddr, TcpSocket, UdpSocket
-9 May 07
-  - Refactor Java code into two jars: sedona, sedonac
-10 May 07
-  - Kit manifest using oBIX
-16 May 07
-  - New kit manifest API and XML format
-  - Kit checksum
-17 May 07
-  - Manifest database
-  - Schema API
-22 May 07
-  - Array type local variable declarations fixed
-  - New natives: Time.setInt, Sys.malloc, Sys.free
-  - New Type slots: base, sizeof, is(), malloc()
-  - App database: add and remove
-23 May 07
-  - Doc compiler pipeline
-24 May 07
-  - Final keyword for classes
-  - Constructors
-  - Support for ctor sizing of inline arrays
-29 May 07
-  - Fix checking for duplicate locals in scope
-  - Fix constructor statement ordering
-  - Array pointer arithmetic
-  - Buf API
-  - App save/load
-  - New doc chapters: architecture
-30 May 07
-  - Rework qname meta-data to use less memory
-  - Automate the test case harness
-  - New doc chapters: testing, porting
-1 Jun 07
-  - Refactor Java Buf API
-4 Jun 07
-  - Add property default values to manifests
-  - Component model APIs for Java toolkit
-5 Jun 07
-  - Java support for app XML and binary encoding/decoding
-  - Change OutStream write APIs to return bool
-  - File API
-6 Jun 07
-  - Sedona main and now requires Str[] arguments
-  - New standard Sys.main() entry point
-  - App load from file
-  - Remove offset from socket APIs
-  - WebService up and running again
-7 Jun 07
-  - WebRes buffered output
-  - Linking
-  - Port SoxService, UdpSoxService
-  - Stub API doc compiler
-19 Jun 07
-  - SoxClient, connection setup and teardown
-21 Jun 07
-  - Refactor into OfflineComponent and SoxComponent
-  - Refactor link storage to use to/from comp linked lists
-  - Added Component.pos property
-26 Jun 07
-  - Redesign subscription/event engine using Watches
-  - Redesign sox protocol to be stateless
-27 Jun 07
-  - Short circuit reflection setters if no value change
-  - Normalize property sets into Component.setx() calls
-  - Slot literals: TypeName.slotName
-  - Sizeof literals: TypeName.sizeof
-28 Jun 07
-  - Redesign SoxClient load, read, sub/unsub
-2 Jul 07
-  - Sox unsubscribe, add, delete, rename
-5 Jul 07
-  - Link add/remove
-  - Facets support
-9 Jul 07
-  - Sox error responses
-10 Jul 07
-  - Assignment operators +=, -=, *=, /=, etc
-12 Jul 07
-  - More robust watchId assignment
-  - More robust event queuing, firing, and retries
-  - SerialPort API
-24 Jul 07
-  - Symbolic array lengths using define
-  - Symbolic ctor length argument using define
-31 Jul 07
-  - Switch statement
-  - Fix local variable not in scope used
-20 Aug 07
-  - Sox file transfer
-  - Collapse inet::UdpSocketService into SoxServer (reverse depends)
-11 Sep 07
-  - Buf and asStr property support
-  - Null pointer trap in VM
-  - Add property default to checksum calculation
-  - Recursive dependency checking
-  - Do/while statement
-18 Sep 07
-  - nullbool, nullfloat
-  - string interpolation
-  - rework facets syntax
-  - icons
-25 Sep 07
-  - Logging
-4 Oct 07
-  - Max length facets for Buf and Str
-Nov 07
-  - 64-bit long/double support
-Build 1.0.1 (17 Dec 07)
-  - Reorg source tree
-  - Kit database of multiple versions
-  - Platform database for provisioning
-  - Python build scripts
-Build 1.0.2 (10 Jan 08)
-  - Buf literals
-  - Rework IpAddr for IPv6
-  - Labelled goto statements
-Build 1.0.3 (16 Jan 08)
-  - Bug fixes
-Build 1.0.4 (16 Jan 08)
-  - Fix checksums
-Build 1.0.5 (17 Jan 08)
-  - Set SoxClient tuning options from sedona.properties
-  - Fix deadlock on timeouts
-  - Add jenStuff kit for demos
-Build 1.0.6 (12 Feb 08)
-  - Portal build support
-Build 1.0.7 (5 Mar 08)
-  - Replace nullbool, nullfloat keywords with just null
-  - Support for null doubles
-  - Redesign of provisioning tools
-Build 1.0.8 (11 Mar 08)
-  - Added Sys.rand
-  - Added inet::Crypt
-  - Added LoadNullDouble opcode
-  - Added File.rename
-  - Provisioning tool works for Win32/QNX
-Build 1.0.9 (18 Mar 08)
-  - Provisioning tool enhancements
-Build 1.0.10 (25 Mar 08)
-  - Fixes
-Build 1.0.11 (16 Apr 08)
-  - Rework Sox to use Dasp
-  - Unified 6LoWPAN coordinator software
-Build 1.0.12 (22 Apr 08)
-  - Coordinator uses IP mapping table
-  - SedonaNetwork fixes
-Build 1.0.13 (23 Apr 08)
-  - Workbench Jennic Service
-  - SoxSession spy page
-Build 1.0.14 (24 Apr 08)
-  - Tweaks to jenStuff
-  - SedonaDevice spy for dasp diagnostics
-Build 1.0.15 (29 Apr 08)
-  - Fix send window ackMore overrun bug
-  - Fix jennic circuluar queue bug
-  - Fix double session bug when challenge dropped
-  - Fix various SedonaNetwork bugs
-Build 1.0.16 (29 Apr 08)
-  - Minor fix to send window
-Build 1.0.17 (27 May 08)
-  - Reorder sox support
-  - Execution order is based on tree order
-  - Sys.compareBytes native method
-  - Sox authentication
-  - Limit children under one component to 200
-  - Depend version and checksum matched with logical and
-  - ConstFolding compiler step
-  - Peephole IR optimizations
-  - EqZero and NotEqZero opcodes
-  - New JumpIntXxx opcodes
-  - New combination opcodes
-  - Optimize space for long, float, double literals
-  - Unaligned arguments for call opcodes
-  - VM and scode version rolled to 1.4
-  - Scode image flags for test/debug (versionMore)
-Build 1.0.18 (11 Jun 08)
-  - Fix delete bug when component has circular link
-  - Computed goto vm optimization
-  - Doc chapters: Expr, Stmt, Fields, Methods
-Build 1.0.19 (17 Jun 08)
-  - Security model and permission checking
-Build 1.0.20 (25 Jun 08)
-Build 1.0.21 (25 Jun 08)
-  - Reorganize code for open source
-Build 1.0.22 (26 Jun 08)
-  - Cleanup doc and src for full build
-Build 1.0.23 (9 Jul 08)
-  - More code reorg for Jennic ROM
-Build 1.0.24 (30 Jul 08)
-  - Null safe navigation ?. operator
-  - Elvis ?: operator
-  - Rename runVM => vmRun
-  - Abstract call() as function pointer
-  - Platform manifest nativePatch
-  - New doc chapters: networking, dasp, sox
-Build 1.0.25 (21 Aug 08)
-  - Added dasp connectTimeout option (defaults to 10sec)
-  - Hibernate APIs
-  - Workbench convert to Sax/Sab on SaxFile/SabFile
-  - Workbench SlotSheet
-Build 1.0.26 (3 Sep 08)
-  - New docs: introduction, architecture, licensing
-  - Fix bug related to dasp sending window size
-Build 1.0.27 (17 Sep 08)
-  - Stop and free mememory on app exit
-  - Fix bugs and optimize dasp tuning
-Build 1.0.28 (2 Dec 08)
-  - Sedonac generates Java bytecode
-  - Sedona Java runtime (jsvm.exe)
-  - Remove ability to perform pointer arithmetic
-  - Change array based APIs to pass offset
-  - Str.set -> copyFromStr
-  - Buf.getStr -> toStr
-  - Buf.setStr -> copyFromStr
-  - Buf.set -> copyFromBuf
-  - Str.buf made private (use get/set/toBytes)
-  - Cast type checking
-  - Heap new/delete operators
-  - Limit dasp max receive window to 31 to fit within 32-bit int
-Build 1.0.29 (16 Dec 08)
-  - Fix JVM SedonaClassLoader to use match correct kit by checksum
-  - Optimize Str.get/set into byte[] array load/store instructions
-  - App.initApp now takes initial comps array size
-  - Linux tooling and SVM support
-  - Optimize Sedona reflection on JVM
-Build 1.0.30
-  - Updated documentation
-  - Kit names must now be prefixed with vendor name
-  - Vendor names restricted to less than 32 alphanum chars
-  - Add support for maxStack to Java bytecode
-  - Map Sedona slot facets thru to Niagara slot facets
-Build 1.0.31
-  - Update build scripts
-Build 1.0.32
-  - Updated documentation
-  - Fix auto-close when issuing commands that shutdown the VM
-  - Add Sys maxInt, minInt, maxLong, minLong
-  - Support for Str defines
-  - Array literal defines (byte, short, int, long, float, double, Str)
-Build 1.0.33 (24 Feb 09)
-  - Updated documentation
-  - Add exact version match to Depend grammar. ("foo 1.0.10=")
-  - Check that continue/break are inside of loop
-Build 1.0.34 (05 Mar 09)
-  - Sox queryService message type
-Build 1.0.35 (27 Mar 09)
-  - Rename Platform to PlatformService
-  - Move Sys.platform to App.platform
-  - Require all sab files to declare PlatformService
-Build 1.0.36 (22 Apr 09)        
-  - Add version information into sedona.jar
-  - Support scientific notation
-  - All actions are now virtual by definition. (Action overridding)
-  - Roll scode version to 1.5 for virtual actions
-Build 1.0.37 (14 May 09)
-  - Support define exprs as facet values
-  - updated docs
-  - Enum range facet  
-Build 1.0.38 (09 June 09)
-  - Units.sedona with defines for standard unit database
-  - Rework sys::File API and natives
-  - Sox enhancements for file get/put
-Build 1.0.40 (24 June 09)
-  - New sedonacert Java module   
-  - Add Context parameter to all the Java native methods
-  - Platform Redesign
-Build 1.0.41 (21 July 09)
-  - Sox enhancements for Chopan
-  - Weblet enhancements
-  - Various bug fixes
-Build 1.0.42 (skipped)
-Build 1.0.43 (30 July 09)
-  - Various bug fixes
-Build 1.0.44 (12 Oct 09)
-  - reserve 'function' as a keyword
-  - add support for qualified names to Sedona grammar (type dis-ambiguation),
-    and other compiler grammar refinements and fixes
-  - various enhancements and bug fixes
+Build 1.0.47 (09 Jun 10)
+  - fix DASP ackMore header bug (sox kit and SoxClient)
+  - changes to support yield in the SVM and App
+  - other bug fixes (see hg.sedonadev.org)
+Build 1.0.46 (17 Mar 10)
+  - generic unix platform
+  - add steady-state to App
+  - platform certification in soxcert
+  - various other enhancements and bug fixes (see hg.sedonadev.org)
 Build 1.0.45 (07 Dec 10)
   - sedonac enhancements: definite assignment, dead code, unused types/methods
   - generic svm enhancements: run svm in "platform" mode
   - version the sox protocol and change sox subscribe to support batch
     subscription. See docs for SOX.
   - fix a number of sedonac bugs (see HG repository for changelogs)
-Build 1.0.46 (17 Mar 10)
-  - generic unix platform
-  - add steady-state to App
-  - platform certification in soxcert
-  - various other enhancements and bug fixes (see hg.sedonadev.org)
+Build 1.0.44 (12 Oct 09)
+  - reserve 'function' as a keyword
+  - add support for qualified names to Sedona grammar (type dis-ambiguation),
+    and other compiler grammar refinements and fixes
+  - various enhancements and bug fixes
+Build 1.0.43 (30 July 09)
+  - Various bug fixes
+Build 1.0.42 (skipped)
+Build 1.0.41 (21 July 09)
+  - Sox enhancements for Chopan
+  - Weblet enhancements
+  - Various bug fixes
+Build 1.0.40 (24 June 09)
+  - New sedonacert Java module   
+  - Add Context parameter to all the Java native methods
+  - Platform Redesign
+Build 1.0.38 (09 June 09)
+  - Units.sedona with defines for standard unit database
+  - Rework sys::File API and natives
+  - Sox enhancements for file get/put
+Build 1.0.37 (14 May 09)
+  - Support define exprs as facet values
+  - updated docs
+  - Enum range facet  
+Build 1.0.36 (22 Apr 09)        
+  - Add version information into sedona.jar
+  - Support scientific notation
+  - All actions are now virtual by definition. (Action overridding)
+  - Roll scode version to 1.5 for virtual actions
+Build 1.0.35 (27 Mar 09)
+  - Rename Platform to PlatformService
+  - Move Sys.platform to App.platform
+  - Require all sab files to declare PlatformService
+Build 1.0.34 (05 Mar 09)
+  - Sox queryService message type
+Build 1.0.33 (24 Feb 09)
+  - Updated documentation
+  - Add exact version match to Depend grammar. ("foo 1.0.10=")
+  - Check that continue/break are inside of loop
+
 </pre>
 
 <pre>
