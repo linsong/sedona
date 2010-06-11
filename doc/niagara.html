@@ -85,12 +85,18 @@ that Niagara will recognize.
 
 <tr>  <td>niagaraIcon</td> <td>Str</td>
       <td>The Ord to the location of the icon to use for this component.</td></tr>
+<tr>  <td>palette</td> <td>bool</td>
+      <td>If set to false, then the type will not be displayed in the Sedona Palette.
+          Otherwise, it will be shown in the palette.</td></tr>
 </table>
 
 <p> Examples </p>
 <pre>
 @niagaraIcon="module://icons/x16/control/math/add.png"
 public class Add2 extends Component { ... }
+
+@palette=false
+public class CommonBase extends Component { ... }
 </pre>
 
 <!--/////////////////////////////////////////////////////////-->
