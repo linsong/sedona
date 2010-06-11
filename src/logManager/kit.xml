@@ -1,0 +1,12 @@
+<sedonaKit 
+  vendor="Tridium" 
+  name="logManager" 
+  description="Support for managing logs" 
+  includeSource="true" 
+  doc="true">
+  
+  <depend on="sys 1.0"/>
+  
+  <source dir="."/>
+  <source dir="test" testonly="true"/>
+</sedonaKit>
