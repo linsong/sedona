@@ -77,9 +77,17 @@ public class UnusedCodeAnalysis extends CompilerStep
   {
     switch (expr.id)
     {
-      case Expr.STATIC_TYPE: markReferenced(expr.type); break;
-      case Expr.CALL: markReferenced(((Expr.Call)expr).method); break;
-      case Expr.FIELD: markReferenced(((Expr.Field)expr).field); break;
+      case Expr.CALL:         markReferenced(((Expr.Call)expr).method); break;
+      case Expr.CAST:         markReferenced(((Expr.Cast)expr).type);   break;
+      case Expr.FIELD:        markReferenced(((Expr.Field)expr).field); break;
+      case Expr.LOCAL:        markReferenced(((Expr.Local)expr).type);  break;
+      case Expr.SLOT_LITERAL: 
+        markReferenced(((Expr.Literal)expr).asSlot().parent()); 
+        break;
+      case Expr.STATIC_TYPE:  markReferenced(expr.type);                break;
+      case Expr.TYPE_LITERAL: 
+        markReferenced(((Expr.Literal)expr).asType()); 
+        break;
     }
     return super.expr(expr);
   }
@@ -142,6 +150,18 @@ public class UnusedCodeAnalysis extends CompilerStep
       }
       */
     }
+  }
+  
+  public void exitMethod(MethodDef m)
+  {
+    // Mark return type and parameter types as referenced
+    markReferenced(m.ret);
+    
+    Type[] paramTypes = m.paramTypes();
+    for (int i=0; i<paramTypes.length; ++i)
+      markReferenced(paramTypes[i]);
+    
+    super.exitMethod(m);
   }
 
   private HashMap refs;
