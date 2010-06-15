@@ -42,32 +42,32 @@
 <p>
 The sedonac tool is like a swiss army knife, it is used for the
 following tasks:
-</p>            
+</p>
 
 <ul>
 <li><a href='#compileKit'>Compile Kit</a>: compile Sedona source
-code into a kit file.</li>             
+code into a kit file.</li>
 <li><a href='#compileDir'>Compile Dir</a>: compile a group of
-Sedona kits</li>             
+Sedona kits</li>
 <li><a href='#compileCode'>Compile Code</a>: compile a set of
-kits into an scode file</li>             
+kits into an scode file</li>
 <li><a href='#compilePlatform'>Compile Platform</a>: stage
-the native code for a specific platform binary</li>             
+the native code for a specific platform binary</li>
 <li><a href='#compileApp'>Compile App</a>: convert between
-sax and sab formats</li>             
-<li><a href='#run'>Run</a>: run an arbitrary class within "sedona.jar" 
-or "sedoanc.jar".</li>      
-<li><a href='#docs'>Build Docs</a>: auto-generate HTML documentation </li>             
+sax and sab formats</li>
+<li><a href='#run'>Run</a>: run an arbitrary class within "sedona.jar"
+or "sedoanc.jar".</li>
+<li><a href='#docs'>Build Docs</a>: auto-generate HTML documentation </li>
 </ul>
 
 <!--/////////////////////////////////////////////////////////-->
 <h1 id="compileKit">Compile Kit</h1>
 <!--/////////////////////////////////////////////////////////-->
 
-<p> 
+<p>
 Sedonac compiles Sedona source files into a kit file when run
 on a "kit.xml" file or a directory that contains a "kit.xml" file.
-</p>                                                           
+</p>
 
 <pre>
 &lt;sedonaKit
@@ -80,7 +80,7 @@ on a "kit.xml" file or a directory that contains a "kit.xml" file.
 
   &lt;!-- Dependencies -->
   &lt;depend on="sys 1.0" />
-  
+
   &lt;!-- Includes -->
   &lt;include from="otherKit 1.0">
     &lt;type name="Foo" />
@@ -96,36 +96,36 @@ on a "kit.xml" file or a directory that contains a "kit.xml" file.
   &lt;native qname="serial::SerialPort.doClose"  id="4::1" />
   &lt;native qname="serial::SerialPort.doRead"   id="4::2" />
   &lt;native qname="serial::SerialPort.doWrite"  id="4::3" />
-  
+
 &lt;/sedonaKit>
-</pre>           
+</pre>
 
 <p>Specification of elements and attributes:</p>
 
 <p><b>&lt;sedonaKit></b> top level element:</p>
 
 <ul>
-  <li><b>name</b>: (required) name of kit.  See <a href='kits.html#vendors'>Vendors</a> 
+  <li><b>name</b>: (required) name of kit.  See <a href='kits.html#vendors'>Vendors</a>
   for rules on kit names. </li>
 <li><b>vendor</b>: (required) name of vendor for kit</li>
 <li><b>description</b>: (required) short description for kit</li>
-<li><b>includeSource</b>: (optional) boolean indicates whether to include source in kit zip.  
+<li><b>includeSource</b>: (optional) boolean indicates whether to include source in kit zip.
 Defaults to false.</li>
-<li><b>doc</b>: (optional) boolean indicates whether to include this kit in API 
+<li><b>doc</b>: (optional) boolean indicates whether to include this kit in API
 documentation.  Defaults to false.</li>
-<li><b>version</b>: (optional) version string. 
+<li><b>version</b>: (optional) version string.
 See <a href='kits.html#versioning'>versioning</a></li>
 </ul>
 
 <p><b>&lt;depend></b> specifies the dependencies of the kits</p>
 
 <ul>
-<li><b>on</b>: (required) <a href='kits.html#depends'>dependency</a> as a kit 
+<li><b>on</b>: (required) <a href='kits.html#depends'>dependency</a> as a kit
 name and version constraint.</li>
 </ul>
 
-<p><b>&lt;include></b> specifies types from other kits to be included in this kit.   
-The include directive in the example will cause two <i>new</i> types to be 
+<p><b>&lt;include></b> specifies types from other kits to be included in this kit.
+The include directive in the example will cause two <i>new</i> types to be
 added to the serial kit:
 </p>
 <ul>
@@ -134,14 +134,14 @@ added to the serial kit:
 </ul>
 
 <p>
-This makes the two types from "otherKit" available to any application that 
+This makes the two types from "otherKit" available to any application that
 uses the serial kit, even though otherKit itself is not included in the scode image.
 </p>
 
 
 <p>
 Restrictions:  An included type cannot be from a kit in the dependency list, and must be
-included from the kit where its code resides.  You cannot include any type 
+included from the kit where its code resides.  You cannot include any type
 from a kit with native methods.
 </p>
 
@@ -152,7 +152,7 @@ from a kit with native methods.
   relative to top directory </li>
   <li><b>testonly</b>: (optional) boolean indicating whether the classes in the kit
   should be used in the test harness.  If true, it infers the
-  <code>@testonly</code> facet on all the classes in that directory.  
+  <code>@testonly</code> facet on all the classes in that directory.
   Default is false.</li>
 </ul>
 
@@ -168,7 +168,7 @@ identifier:</p>
 <h1 id="compileDir">Compile Dir</h1>
 <!--/////////////////////////////////////////////////////////-->
 
-<p> 
+<p>
 If sedonac is run on a file containing a <code>sedonaDir</code> element
 (usually named "dir.xml"), it compiles all the kits named in the list:
 </p>
@@ -195,13 +195,13 @@ The kits will be compiled separately; to assemble them into an scode image, see
 <h1 id="compileCode">Compile Code</h1>
 <!--/////////////////////////////////////////////////////////-->
 
-<p> 
+<p>
 If sedonac is run on a file containing a <code>sedonaCode</code>
-element, it compiles the given set of kits into an scode image.  
-The filename of the input XML file is used for the output scode file, 
-e.g. if the input file is "foo.xml" sedonac will create a file called 
+element, it compiles the given set of kits into an scode image.
+The filename of the input XML file is used for the output scode file,
+e.g. if the input file is "foo.xml" sedonac will create a file called
 "foo.scode" in the same directory.
-</p>    
+</p>
 
 <pre>
 &lt;sedonaCode
@@ -226,9 +226,8 @@ e.g. if the input file is "foo.xml" sedonac will create a file called
 <ul>
 <li><b>name</b>: name of the scode image.</li>
 <li><b>endian</b>: either "little" or "big" based on target processor.</li>
-<li><b>blockSize</b>: size of a scode block in bytes 
-(see "<a href="../src/vm/sedona.h">sedona.h</a>")</li>
-<li><b>refSize</b>: size of a memory pointer in bytes for target processor 
+<li><b>blockSize</b>: size of a scode block in bytes (see "sedona.h")</li>
+<li><b>refSize</b>: size of a memory pointer in bytes for target processor
 (4 for 32-bit processor).</li>
 <li><b>main</b>: qualified method name of main method (typically always "sys::Sys.main").</li>
 <li><b>debug</b>: (optional) boolean to include debug meta-data in image.  Defaults to false</li>
@@ -240,22 +239,22 @@ doubles are stored using byte level little endian, word level big endian.</li>
 <p><b>&lt;depend></b> specifies the kits to compile into the image:</p>
 
 <ul>
-<li><b>on</b>: (required) <a href='kits.html#depends'>dependency</a> as a kit 
+<li><b>on</b>: (required) <a href='kits.html#depends'>dependency</a> as a kit
 name and version constraint.</li>
-<li><b>test</b>: (optional) boolean to include tests for this key.  
+<li><b>test</b>: (optional) boolean to include tests for this key.
 Defaults to value of <code>sedonaCode.test</code> if unspecified.</li>
 </ul>
 
-<p> 
+<p>
 Note that the <code>test</code>
 and <code>debug</code> flags may have a significant impact on scode size.
-</p> 
+</p>
 
 <!--/////////////////////////////////////////////////////////-->
 <h1 id="compilePlatform">Compile Platform</h1>
 <!--/////////////////////////////////////////////////////////-->
 
-<p> 
+<p>
 Sedonac is used to <i>stage</i> the native code when compiling
 a binary image for a given platform.  This happens when sedonac
 is run against an XML file with a <code>sedonaPlatform</code> root
@@ -268,27 +267,27 @@ details.
 <h1 id="compileApp">Compile App</h1>
 <!--/////////////////////////////////////////////////////////-->
 
-<p> 
+<p>
 If you run sedonac against a file with a ".sax" extension it
 converts the application to a ".sab" file, and vice versa.
 The output file is placed in the same directory as the input file:
-</p>       
+</p>
 
-<pre> 
+<pre>
 D:\sedona\pub\apps>sedonac test.sax
   ConvertAppFile [D:\sedona\pub\apps\test.sax -> D:\sedona\pub\apps\test.sab]
   +----------------------------------
   |  RAM:     14.2kb (14588 bytes)
   |  FLASH:    0.4kb (382 bytes)
   +----------------------------------
-</pre>                               
+</pre>
 
 <p>
-Running sedonac on an application file also prints a memory impact report.  
+Running sedonac on an application file also prints a memory impact report.
 The RAM value is an estimate of how much memory the application
-consumes in RAM during runtime.   
-FLASH is the size required to persist the application to durable storage like FLASH 
-(always exactly the same as the size of the sab file).  
+consumes in RAM during runtime.
+FLASH is the size required to persist the application to durable storage like FLASH
+(always exactly the same as the size of the sab file).
 Also see the <a href='apps.html'>Apps</a> and <a href='memory.html'>Memory</a> chapters.
 </p>
 
@@ -296,19 +295,19 @@ Also see the <a href='apps.html'>Apps</a> and <a href='memory.html'>Memory</a> c
 <h1 id="run">Run</h1>
 <!--/////////////////////////////////////////////////////////-->
 
-<p> 
+<p>
 If you pass a qualified classname to sedonac it will attempt to
-run that class's main() method:  
+run that class's main() method:
 </p>
 
-<pre>    
+<pre>
 D:\sedona>sedonac sedona.util.UserUtil brian pass
 User:   brian:pass
 Digest: 0x[ca4d1fd9a089ff9d50ab1f1dc4e4772a6b24c6bb]
 Base64: yk0f2aCJ/51Qqx8dxOR3Kmskxrs=
 </pre>
 
-<p> 
+<p>
 The class must be defined in "sedona.jar" or "sedonac.jar":
 </p>
 
@@ -318,11 +317,11 @@ The class must be defined in "sedona.jar" or "sedonac.jar":
 <h1 id="docs">Build Docs</h1>
 <!--/////////////////////////////////////////////////////////-->
 
-<p> 
+<p>
 The <code>-doc</code> switch builds HTML documentation along with the scode.  For example:
-</p> 
+</p>
 
-<pre>    
+<pre>
 D:\sedona>sedonac -doc pub/src/sys
   Parse [44 files]
   WriteKit [D:\sedona\pub\kits\sys\sys-b0ce639-1.0.36.kit]
@@ -337,11 +336,11 @@ D:\sedona\sedonac -doc pub/doc/toc.xml
 D:\sedona\sedonac
 </pre>
 
-<p> 
-If the input file is a directory of Sedona kit source folders, then it will build 
+<p>
+If the input file is a directory of Sedona kit source folders, then it will build
 the kits and automatically generate HTML documentation for each class, as well as
 a summary page for each kit.
-All fields and methods for each class will be included in the documentation, 
+All fields and methods for each class will be included in the documentation,
 and any <code>**</code> style comments above a given field or method
 will be included with the entry for that field or method.
 </p>
@@ -358,7 +357,7 @@ See the file <code>doc/toc.xml</code> for an example.
 <p>
 Some attributes in the various input XML files allow for variable substitution.
 Such attributes will be read by sedonac, and any variables present in the
-attribute text will be replaced by the variable value. 
+attribute text will be replaced by the variable value.
 A variable is specified as <code>${variableName}</code>. For example:
 </p>
 
