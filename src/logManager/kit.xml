@@ -8,5 +8,4 @@
   <depend on="sys 1.0"/>
   
   <source dir="."/>
-  <source dir="test" testonly="true"/>
 </sedonaKit>
