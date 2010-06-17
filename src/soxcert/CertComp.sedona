@@ -9,6 +9,7 @@
 **
 ** This component is used by the soxcert test suite.
 **
+@palette=false
 final class CertComp extends Component
 {
   @config property int certInt = 0

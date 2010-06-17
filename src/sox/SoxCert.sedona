@@ -10,6 +10,7 @@
 ** SoxCert is used as the Sedona side component of the 
 ** Sox certification testing.
 **
+@palette=false
 class SoxCert
   extends Component
 {                         
