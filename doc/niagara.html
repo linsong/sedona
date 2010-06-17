@@ -166,7 +166,7 @@ public class Foo extends Component
   action void reboot() { ... }
   
   // Don't want UI to allow user to edit password property
-  @config @readonly property Str(17) password
+  @config @readonly @asStr property Buf(17) password
   
   // This slot we don't want displayed to users, but we
   // want operators to be allowed to change it.
@@ -245,8 +245,8 @@ public class Foo extends Component
   
   // Property for password - must be at least 8 chars long
   // and no more than 16. 
-  @min=8 @max=16 @config
-  property Str(17) pwd
+  @min=8 @max=16
+  @config @asStr property Buf(17) pwd
   
   // The debug level should be specified in base 16.
   @radix=16 @min=0 @config 
