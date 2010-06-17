@@ -169,25 +169,26 @@ public class Version
     return -1;
   }
 
-  /**
-   * Return true if the versions equal.
-   */
+  public int hashCode()
+  {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + toString().hashCode();
+    return result;
+  }
+
   public boolean equals(Object obj)
   {
-    if (obj instanceof Version)
-    {
-      Version v = (Version)obj;
-
-      if (versions.length != v.versions.length)
-        return false;
-
-      for(int i=0; i<versions.length; ++i)
-        if (versions[i] != v.versions[i])
-          return false;
-
+    if (this == obj)
       return true;
-    }
-    return false;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    Version other = (Version)obj;
+    if (!Arrays.equals(versions, other.versions))
+      return false;
+    return true;
   }
 
   /**
