@@ -193,16 +193,14 @@ public class Normalize
   private void initFieldStr(FieldDef f)
   {
     // sanity check - bail and catch later in CheckErrors
-    if (!(f.type.isBuf() || f.type.isStr()) || !f.isInline() || f.init.id != Expr.STR_LITERAL)                                   
-      return;    
+    if (!(f.type.isBuf() || f.type.isStr()) || !f.isInline() || f.init.id != Expr.STR_LITERAL)
+      return;
     
     Location loc = f.init.loc;
     
     if (f.ctorArgs == null || f.ctorArgs.length == 0) return;
-    Integer len = f.ctorArgs[0].toIntLiteral();
-    if (len == null) return;
-    Method copyFromStr = (Method)f.type.slot("copyFromStr");
     
+    Method copyFromStr = (Method)f.type.slot("copyFromStr");
     Expr call = null;
     if (f.type.isBuf())
     {
@@ -210,7 +208,7 @@ public class Normalize
     }
     else
     {
-      Expr max = new Expr.Literal(loc, ns, Expr.INT_LITERAL, len);
+      Expr max = f.ctorArgs[0];
       call = new Expr.Call(loc, toFieldExpr(loc, f), copyFromStr, new Expr[] {f.init, max});
     }
 
