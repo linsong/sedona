@@ -174,7 +174,7 @@ static int runInStandaloneMode(const char* filename, int vmArgc, char* vmArgv[])
     }  
     else
     { 
-      printf("Simulate yield %I64d ", yieldNs); 
+      printf("Simulate yield %lld ", yieldNs); 
       sys_Sys_sleep(NULL, (Cell*)&yieldNs);   
       yieldNs = 0;   
     }
