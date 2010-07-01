@@ -800,8 +800,16 @@ public class SoxClient
 
     // check type
     if (type.schema != util.schema)
-      throw new IllegalArgumentException("Type's schema doesn't match client: " +
-                                      type.schema.toString() + " != " + util.schema.toString());
+    {
+      KitPart typePart = type.kit.manifest.part();
+      Kit remoteKit = util.schema.kit(type.kit.name);
+      if (remoteKit == null) 
+        throw new IllegalArgumentException("Schema does not support type: " + type);
+      KitPart remotePart = remoteKit.manifest.part();
+      if (!typePart.toString().equals(remotePart.toString()))
+        throw new IllegalArgumentException("Type's KitPart does not match client's: " + typePart + " != " + remotePart);
+      type = util.schema.type(type.qname);
+    }
 
     // check config props
     Slot[] props = type.configProps();
