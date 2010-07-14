@@ -88,10 +88,10 @@ final class SendWindow
    * Convert a packet item in our linked list to a message, we
    * always do this on-the-fly to get the latest ack headers.
    */
-  private DaspMessage toMsg(Packet packet)
+  private DaspMsg toMsg(Packet packet)
   { 
     // construct datagram message                  
-    DaspMessage msg = new DaspMessage();
+    DaspMsg msg = new DaspMsg();
     msg.msgType   = DaspConst.DATAGRAM;
     msg.sessionId = session.remoteId;
     msg.seqNum    = packet.seqNum;
@@ -164,7 +164,7 @@ final class SendWindow
    * Check if we've got some acks which will let us 
    * slide our sending window. 
    */
-  synchronized void checkAckHeaders(DaspMessage msg)
+  synchronized void checkAckHeaders(DaspMsg msg)
   {
     int ackNum = msg.ack;
     if (ackNum < 0 || head == null) return;              
@@ -204,7 +204,7 @@ final class SendWindow
    * considered acked).  We also check our ackMore mask for
    * unordered acks.
    */
-  boolean isAcked(int unackStart, int unackEnd, DaspMessage msg, int seqNum)
+  boolean isAcked(int unackStart, int unackEnd, DaspMsg msg, int seqNum)
   {                     
     // if outside the unacked range, then definitely acked
     if (unackStart <= unackEnd)
@@ -412,7 +412,7 @@ final class SendWindow
   
   private void ack(int[] nums) 
   {                  
-    DaspMessage msg = new DaspMessage();    
+    DaspMsg msg = new DaspMsg();    
     msg.ack = nums[0];
     if (nums.length > 1)
     {

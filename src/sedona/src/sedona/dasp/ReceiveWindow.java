@@ -39,7 +39,7 @@ final class ReceiveWindow
    * If we have room within idealMax then 
    * add the ack and ackMore headers. 
    */
-  final synchronized void setAckHeaders(DaspMessage msg)
+  final synchronized void setAckHeaders(DaspMsg msg)
   {   
     // if we have room within idealMax always add ack 
     // header where 8 = 5 fixed header + 3 ack header

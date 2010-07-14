@@ -82,7 +82,7 @@ final class ReceiveQueue
    *    if the queue is empty and the timeout
    *    expired.
    */
-  public synchronized DaspSessionMessage dequeue(long timeout)   
+  public synchronized DaspMessage dequeue(long timeout)   
     throws InterruptedException
   {
     while (isAlive && size == 0 && timeout != 0)
@@ -91,7 +91,7 @@ final class ReceiveQueue
       else { wait(timeout); break; }
     }
     
-    DaspSessionMessage m = head;
+    DaspMessage m = head;
     if (m == null) return null;
     head = m.next;
     if (head == null) tail = null;
@@ -105,7 +105,7 @@ final class ReceiveQueue
    * Add a message to the end of the Queue.
    * Throw FullException if queue is full.
    */
-  public synchronized void enqueue(DaspSessionMessage m)
+  public synchronized void enqueue(DaspMessage m)
     throws FullException
   {                     
     if (isAlive && size >= max()) 
@@ -152,8 +152,8 @@ final class ReceiveQueue
 // Attributes
 ////////////////////////////////////////////////////////////////
 
-  private DaspSessionMessage head;
-  private DaspSessionMessage tail;
+  private DaspMessage head;
+  private DaspMessage tail;
   private int size;
   private int peak;
   private String blocked;

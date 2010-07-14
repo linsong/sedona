@@ -170,13 +170,13 @@ public class DaspSession
    * @param timeout number of milliseconds to wait
    *    before timing out or -1 to wait forever.
    */
-  public DaspSessionMessage receive(long timeout)
+  public DaspMessage receive(long timeout)
     throws Exception
   {                     
     if (socket.qMode != DaspSocket.SESSION_QUEUING)
       throw new IllegalStateException("not using session queuing mode");
               
-    DaspSessionMessage msg = receiveQueue.dequeue(timeout);
+    DaspMessage msg = receiveQueue.dequeue(timeout);
     if (isClosed) throw new DaspException("DaspSession is closed: " + closeCause);                  
     if (msg == null) return null;
     if (msg.msgType != DATAGRAM) throw new DaspException("Invalid message received: " + msg.msgType);
@@ -218,7 +218,7 @@ public class DaspSession
     if (isClosed) return;
 
     // build close message    
-    DaspMessage close = new DaspMessage();        
+    DaspMsg close = new DaspMsg();        
     close.msgType   = CLOSE;        
     close.sessionId = remoteId;        
     close.seqNum    = 0xffff;
@@ -277,10 +277,10 @@ public class DaspSession
     throws Exception
   {             
     // send hello, receiver response
-    DaspMessage res = hello();     
+    DaspMsg res = hello();     
     
     // process challenge (or close, welcome)
-    DaspMessage welcome = null;
+    DaspMsg welcome = null;
     switch (res.msgType)
     {
       case CLOSE:
@@ -311,11 +311,11 @@ public class DaspSession
   }
     
 
-  DaspMessage hello()
+  DaspMsg hello()
     throws Exception
   {
     // build hello
-    DaspMessage hello = new DaspMessage();
+    DaspMsg hello = new DaspMsg();
     hello.msgType        = HELLO;
     hello.sessionId      = 0xffff;
     hello.seqNum         = sendWindow.curSeqNum();
@@ -332,13 +332,13 @@ public class DaspSession
     for (int i=0; i<3; ++i)
     {                                               
       send(hello);                                        
-      DaspMessage res = receiveQueue.dequeue(timeout);
+      DaspMsg res = receiveQueue.dequeue(timeout);
       if (res != null) return res;
     }      
     throw new DaspException("No response from hello");
   } 
 
-  DaspMessage authenticate(DaspMessage challenge)
+  DaspMsg authenticate(DaspMsg challenge)
     throws Exception
   {
     // process challenge       
@@ -359,7 +359,7 @@ public class DaspSession
     byte[] digest = md.digest();
     
     // build authenticate message
-    DaspMessage auth = new DaspMessage();
+    DaspMsg auth = new DaspMsg();
     auth.msgType   = AUTHENTICATE;
     auth.sessionId = remoteId;
     auth.seqNum    = sendWindow.curSeqNum();
@@ -372,7 +372,7 @@ public class DaspSession
     for (int i=0; i<3; ++i)
     {  
       send(auth);
-      DaspMessage res = receiveQueue.dequeue(timeout);
+      DaspMsg res = receiveQueue.dequeue(timeout);
       if (res != null) return res;
     }                                  
     throw new DaspException("No response from authenticate");
@@ -383,7 +383,7 @@ public class DaspSession
 // Server Handshake
 ////////////////////////////////////////////////////////////////
 
-  void challenge(DaspMessage hello)
+  void challenge(DaspMsg hello)
   {                          
     // process hello
     this.remoteId = hello.remoteId();
@@ -400,7 +400,7 @@ public class DaspSession
      this.nonce[i] = (byte)socket.rand.nextInt();
     
     // build challenge message
-    DaspMessage chal = new DaspMessage();
+    DaspMsg chal = new DaspMsg();
     chal.msgType   = CHALLENGE;
     chal.sessionId = remoteId;
     chal.seqNum    = sendWindow.curSeqNum();
@@ -411,7 +411,7 @@ public class DaspSession
     send(chal);
   }
 
-  void welcome(DaspMessage auth)
+  void welcome(DaspMsg auth)
   {                          
      // authenticate
      boolean ok = false;
@@ -441,7 +441,7 @@ public class DaspSession
      }     
      
      // build welcome
-     DaspMessage welcome = new DaspMessage();
+     DaspMsg welcome = new DaspMsg();
      welcome.msgType        = WELCOME;
      welcome.sessionId      = remoteId;
      welcome.seqNum         = sendWindow.curSeqNum();
@@ -467,7 +467,7 @@ public class DaspSession
     return true;
   }
 
-  void tune(DaspMessage x)
+  void tune(DaspMsg x)
   {          
     this.idealMax         = Math.min(x.idealMax(), this.idealMax);        
     this.absMax           = Math.min(x.absMax(), this.absMax);        
@@ -485,7 +485,7 @@ public class DaspSession
    * Dispatch a message for this session - this callback 
    * occurs on the DaspSocket Receiver thread.
    */
-  void dispatch(DaspSessionMessage msg)
+  void dispatch(DaspMessage msg)
   {                                                                               
     // test hooks to drop received packets
     if (test != null && !test.receive(msg.msgType, msg.seqNum, msg.payload)) return;
@@ -551,7 +551,7 @@ public class DaspSession
    * this queue, so we kill the session (we never want to block the
    * socket receiver thread). 
    */
-  void enqueue(DaspSessionMessage msg)
+  void enqueue(DaspMessage msg)
   {
     try
     {                    
@@ -604,7 +604,7 @@ public class DaspSession
    */
   void keepAlive()
   {                              
-    DaspMessage keepAlive = new DaspMessage();
+    DaspMsg keepAlive = new DaspMsg();
     keepAlive.msgType    = KEEPALIVE;
     keepAlive.sessionId  = remoteId;
     keepAlive.seqNum     = 0xffff;
@@ -616,7 +616,7 @@ public class DaspSession
 // Utils
 ////////////////////////////////////////////////////////////////
 
-  protected void send(DaspMessage msg)
+  protected void send(DaspMsg msg)
   { 
     lastSend = ticks();
     if (test != null && !test.send(msg.msgType, msg.seqNum, msg.payload)) return;

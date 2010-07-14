@@ -1279,7 +1279,7 @@ public class SoxClient
   Msg receive(long timeout)
     throws Exception
   {
-    DaspMessage rec = session.receive(timeout);
+    DaspMsg rec = session.receive(timeout);
     if (rec == null) return null;
 
     Msg msg = new Msg(rec.payload());

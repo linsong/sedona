@@ -151,7 +151,7 @@ public class DaspTest
   private byte[] receive(long timeout)
     throws Exception
   {   
-    DaspSessionMessage msg;                        
+    DaspMessage msg;                        
     if (socket.queuingMode() == DaspSocket.SESSION_QUEUING)
     {
       msg = server.receive(timeout);

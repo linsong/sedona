@@ -258,13 +258,13 @@ public class DaspSocket
    * @param timeout number of milliseconds to wait
    *    before timing out or -1 to wait forever.
    */
-  public DaspSessionMessage receive(long timeout)
+  public DaspMessage receive(long timeout)
     throws Exception
   {                     
     if (qMode != DaspSocket.SOCKET_QUEUING)
       throw new IllegalStateException("not using socket queuing mode");
               
-    DaspSessionMessage msg = queue.dequeue(timeout);
+    DaspMessage msg = queue.dequeue(timeout);
     if (msg == null) return null;
     if (msg.msgType != DATAGRAM) throw new DaspException("Invalid message received: " + msg.msgType);
     return msg;
@@ -274,7 +274,7 @@ public class DaspSocket
    * Enqueue a message for the socket - if the 
    * queue is full then we have big problems.
    */
-  void enqueue(DaspSessionMessage msg)
+  void enqueue(DaspMessage msg)
   {
     try
     {                    
@@ -304,7 +304,7 @@ public class DaspSocket
     int len          = packet.getLength();  
 
     // parse into Msg
-    DaspSessionMessage msg = new DaspSessionMessage(buf, len);
+    DaspMessage msg = new DaspMessage(buf, len);
     
     // lookup session
     DaspSession session = session(msg.sessionId);
@@ -395,7 +395,7 @@ public class DaspSocket
   /**
    * All sends route thru here
    */                         
-  void send(DaspSession session, DaspMessage msg)
+  void send(DaspSession session, DaspMsg msg)
   {
     if (traceSend || session.traceSend) trace("send", msg);   
     session.iface.send(session, msg);    
@@ -406,7 +406,7 @@ public class DaspSocket
   /**
    * All receives route thru here
    */                         
-  void received(DaspSocketInterface iface, DaspSession session, DaspMessage msg)
+  void received(DaspSocketInterface iface, DaspSession session, DaspMsg msg)
   {
     if (traceReceive || (session != null && session.traceReceive)) trace("recv", msg);
     iface.numReceived++;
@@ -415,7 +415,7 @@ public class DaspSocket
   /**
    * Trace a message received or sent.
    */
-  void trace(String mode, DaspMessage msg)
+  void trace(String mode, DaspMsg msg)
   {                 
     System.out.print("-- " + mode + " s=" + Integer.toHexString(msg.sessionId) + 
                      " seq=" + Integer.toHexString(msg.seqNum));

@@ -111,7 +111,7 @@ public abstract class DaspSocketInterface
   /**
    * DaspSessions route here to send a packet.
    */
-  void send(DaspSession session, DaspMessage msg)
+  void send(DaspSession session, DaspMsg msg)
   {                  
     synchronized (sendPacket)
     {                        
