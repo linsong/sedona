@@ -27,7 +27,7 @@ public class DaspSession
   /**
    * Constructor.
    */
-  DaspSession(DaspSocketInterface iface, int id, InetAddress host, int port, boolean isClient, Hashtable options)
+  protected DaspSession(DaspSocketInterface iface, int id, InetAddress host, int port, boolean isClient, Hashtable options)
   {                                        
     this.socket          = iface.daspSocket;
     this.iface           = iface;
@@ -170,13 +170,13 @@ public class DaspSession
    * @param timeout number of milliseconds to wait
    *    before timing out or -1 to wait forever.
    */
-  public DaspMessage receive(long timeout)
+  public DaspSessionMessage receive(long timeout)
     throws Exception
   {                     
     if (socket.qMode != DaspSocket.SESSION_QUEUING)
       throw new IllegalStateException("not using session queuing mode");
               
-    DaspMessage msg = receiveQueue.dequeue(timeout);
+    DaspSessionMessage msg = receiveQueue.dequeue(timeout);
     if (isClosed) throw new DaspException("DaspSession is closed: " + closeCause);                  
     if (msg == null) return null;
     if (msg.msgType != DATAGRAM) throw new DaspException("Invalid message received: " + msg.msgType);
@@ -485,7 +485,7 @@ public class DaspSession
    * Dispatch a message for this session - this callback 
    * occurs on the DaspSocket Receiver thread.
    */
-  void dispatch(DaspMessage msg)
+  void dispatch(DaspSessionMessage msg)
   {                                                                               
     // test hooks to drop received packets
     if (test != null && !test.receive(msg.msgType, msg.seqNum, msg.payload)) return;
@@ -551,7 +551,7 @@ public class DaspSession
    * this queue, so we kill the session (we never want to block the
    * socket receiver thread). 
    */
-  void enqueue(DaspMessage msg)
+  void enqueue(DaspSessionMessage msg)
   {
     try
     {                    
@@ -616,7 +616,7 @@ public class DaspSession
 // Utils
 ////////////////////////////////////////////////////////////////
 
-  void send(DaspMessage msg)
+  protected void send(DaspMessage msg)
   { 
     lastSend = ticks();
     if (test != null && !test.send(msg.msgType, msg.seqNum, msg.payload)) return;

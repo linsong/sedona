@@ -51,7 +51,7 @@ public class DaspSocket
     return s;                                                                        
   }                
   
-  private DaspSocket(DaspAcceptor a, int qMode)
+  protected DaspSocket(DaspAcceptor a, int qMode)
   {
     Hashtable options = Env.getProperties();
     if (a != null) options = a.options();
@@ -258,13 +258,13 @@ public class DaspSocket
    * @param timeout number of milliseconds to wait
    *    before timing out or -1 to wait forever.
    */
-  public DaspMessage receive(long timeout)
+  public DaspSessionMessage receive(long timeout)
     throws Exception
   {                     
     if (qMode != DaspSocket.SOCKET_QUEUING)
       throw new IllegalStateException("not using socket queuing mode");
               
-    DaspMessage msg = queue.dequeue(timeout);
+    DaspSessionMessage msg = queue.dequeue(timeout);
     if (msg == null) return null;
     if (msg.msgType != DATAGRAM) throw new DaspException("Invalid message received: " + msg.msgType);
     return msg;
@@ -274,7 +274,7 @@ public class DaspSocket
    * Enqueue a message for the socket - if the 
    * queue is full then we have big problems.
    */
-  void enqueue(DaspMessage msg)
+  void enqueue(DaspSessionMessage msg)
   {
     try
     {                    
@@ -304,7 +304,7 @@ public class DaspSocket
     int len          = packet.getLength();  
 
     // parse into Msg
-    DaspMessage msg = new DaspMessage().decode(buf, len);    
+    DaspSessionMessage msg = new DaspSessionMessage(buf, len);
     
     // lookup session
     DaspSession session = session(msg.sessionId);
@@ -361,13 +361,19 @@ public class DaspSocket
       }       
       
       // create new session
-      DaspSession s = new DaspSession(iface, id.intValue(), host, port, isClient, options);
+      DaspSession s = createDaspSession(iface, id.intValue(), host, port, isClient, options);
+      if (s.id != id.intValue()) throw new IllegalStateException("session not created with required id: " + id);
       
       // put into tables
       sessions.put(id, s);
       
       return s;
     }
+  }
+  
+  protected DaspSession createDaspSession(DaspSocketInterface iface, int id, InetAddress host, int port, boolean isClient, Hashtable options)
+  {
+    return new DaspSession(iface, id, host, port, isClient, options);
   }
   
   /**

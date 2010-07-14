@@ -8,17 +8,19 @@
 
 package sedona.dasp;      
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+
 
 /**
  * DefaultDaspSocketInterface uses the standard Java 
  *  DatagramSocket and the built-in TCP/IP stack.
  */
-class DefaultDaspSocketInterface extends DaspSocketInterface  
+public final class DefaultDaspSocketInterface extends DaspSocketInterface  
 {                                      
-  DefaultDaspSocketInterface(int port)
+  public DefaultDaspSocketInterface(int port)
     throws IOException
   {
     this.sock = port < 0 ? new DatagramSocket() : new DatagramSocket(port);
