@@ -453,7 +453,13 @@ public class DaspMsg implements DaspConst
    */
   public final void setDigest(byte[] digest)
   {
-    this.digest = digest;
+    if (digest == null)
+      this.digest = null;
+    else
+    {
+      this.digest = new byte[digest.length];
+      System.arraycopy(digest, 0, this.digest, 0, digest.length);
+    }
   }
 
   /**

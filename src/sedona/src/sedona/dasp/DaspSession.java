@@ -181,7 +181,23 @@ public class DaspSession
     if (msg == null) return null;
     if (msg.msgType != DATAGRAM) throw new DaspException("Invalid message received: " + msg.msgType);
     return msg;
-  }                           
+  }
+  
+  /**
+   * Receive any type of message from the remote endpoint. This method blocks
+   * until a dasp message has been received or a timeout occurs. This method is
+   * only applicable if using session queueing.
+   * 
+   * @param timeout
+   *          number of milliseconds to wait before timing out, or -1 to wait
+   *          forever.
+   */
+  protected final DaspMessage receiveAny(final long timeout) throws Exception
+  {
+    if (socket.qMode != DaspSocket.SESSION_QUEUING)
+      throw new IllegalStateException("not using session queueing mode");
+    return receiveQueue.dequeue(timeout);
+  }
 
   /**
    * Return true if this session has been closed.
@@ -273,7 +289,7 @@ public class DaspSession
 // Client Handshake
 ////////////////////////////////////////////////////////////////
 
-  void connect()
+  protected void connect()
     throws Exception
   {             
     // send hello, receiver response
