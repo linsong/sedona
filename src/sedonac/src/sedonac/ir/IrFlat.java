@@ -8,9 +8,11 @@
 
 package sedonac.ir;
 
-import java.util.*;
-import sedonac.ir.*;
-import sedonac.namespace.*;
+import java.util.ArrayList;
+
+import sedonac.namespace.ArrayType;
+import sedonac.namespace.Namespace;
+
 
 /**
  * IrFlat is a flatten view of all the kits/types/slots
@@ -115,11 +117,20 @@ public class IrFlat
         }
       }
     }
-
+    
     this.compTypes = (IrType[])compTypes.toArray(new IrType[compTypes.size()]);
     this.virtTypes = (IrType[])virtTypes.toArray(new IrType[virtTypes.size()]);
     this.reflectiveTypes = (IrType[])reflectiveTypes.toArray(new IrType[reflectiveTypes.size()]);
     this.logDefines = (IrField[])logDefines.toArray(new IrField[logDefines.size()]);
+    
+    for (int i=0; i<fields.length; ++i)
+    {
+      if (fields[i].qname.equals("sys::Sys.logLevels"))
+      {
+        ((ArrayType)fields[i].type).len = new ArrayType.LiteralLen(this.logDefines.length);
+        break;
+      }
+    }
   }
 
 //////////////////////////////////////////////////////////////////////////
