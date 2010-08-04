@@ -232,11 +232,11 @@ public class Tokenizer
     if (!isHex)
     {
       if (cur == 'n' && peek == 's') { consume(); consume(); time = 1L; }
-      if (cur == 'm' && peek == 's') { consume(); consume(); time = 1000000L; }
-      if (cur == 's' && peek == 'e') { consume(); consume(); if (cur != 'c') throw err("Expected 'sec' in Time literal"); consume(); time = 1000000000L; }
-      if (cur == 'm' && peek == 'i') { consume(); consume(); if (cur != 'n') throw err("Expected 'min' in Time literal"); consume(); time = 60000000000L; }
-      if (cur == 'h' && peek == 'r') { consume(); consume(); time = 3600000000000L; }
-      if (cur == 'd' && peek == 'a') { consume(); consume(); if (cur != 'y' || peek != 's') throw err("Expected 'days' in Time literal"); consume(); consume(); time = 86400000000000L; }
+      else if (cur == 'm' && peek == 's') { consume(); consume(); time = 1000000L; }
+      else if (cur == 's' && peek == 'e') { consume(); consume(); if (cur != 'c') throw err("Expected 'sec' in Time literal"); consume(); time = 1000000000L; }
+      else if (cur == 'm' && peek == 'i') { consume(); consume(); if (cur != 'n') throw err("Expected 'min' in Time literal"); consume(); time = 60000000000L; }
+      else if (cur == 'h' && peek == 'r') { consume(); consume(); time = 3600000000000L; }
+      else if (cur == 'd' && peek == 'a') { consume(); consume(); if (cur != 'y' || peek != 's') throw err("Expected 'days' in Time literal"); consume(); consume(); time = 86400000000000L; }
     }
     switch (cur)
     {
