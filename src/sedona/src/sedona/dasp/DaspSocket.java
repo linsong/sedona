@@ -432,6 +432,11 @@ public class DaspSocket
       System.out.print(" cmd=" + (char)msg.payload[0] + " reply=" + msg.payload[1] + " ");
       System.out.print(new Buf(msg.payload).toString());
     }                          
+    else if (msg.msgType == DaspConst.CLOSE)
+    {                  
+      System.out.print(" cmd=" + (char)msg.payload[0] + " errcode=" + msg.errorCode + " ");
+      System.out.print(new Buf(msg.payload).toString());
+    }                          
     else
     {
       System.out.print(" msgType=" + msg.msgType);
