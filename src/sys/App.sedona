@@ -6,8 +6,6 @@
 //    1 Aug 06  Brian Frank         Creation
 //   22 May 07  Brian Frank         Port from Java to Sedona
 //   15 Dec 09  Elizabeth McKenney  Add steady state feature
-//   26 Aug 10  Clif Turman         Add getFirstChildOfType method
-//   26 Aug 10  Clif Turman         Add getNextSiblingOfType method
 //
 
 **
@@ -498,37 +496,6 @@ class App
     delete c
     return true
   }
-
-  **
-  ** Gets first child component of a given type.  The type
-  ** must be a subclass of component
-  ** Returns null if no objects found, otherwise returns
-  ** a Component
-  **
-  Component getFirstChildOfType(Component parent, Type t)
-  {
-    if(parent == null)
-      return null
-    for (Component c = lookup(parent.children); c != null; c = lookup(c.nextSibling))
-      if (c.type.is(t))
-        return c
-    return null
-  }
-
-  **
-  ** Gets next child component that is of same type as the given component.
-  ** Returns null if end of child list is reached without finding one.
-  **
-  Component getNextSiblingOfType(Component child)
-  {
-    if(child == null)
-      return null
-    for (Component c = lookup(child.id); c != null; c = lookup(c.nextSibling))
-      if (c.id != child.id && c.type.is(child.type))
-        return c
-    return null
-  }
-
 
 ////////////////////////////////////////////////////////////////
 // Links
