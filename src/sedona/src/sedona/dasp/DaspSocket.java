@@ -434,7 +434,7 @@ public class DaspSocket
     }                          
     else if (msg.msgType == DaspConst.CLOSE)
     {                  
-      System.out.print(" cmd=" + (char)msg.payload[0] + " errcode=" + msg.errorCode + " ");
+      System.out.print(" errcode=" + msg.errorCode + " ");
       System.out.print(new Buf(msg.payload).toString());
     }                          
     else
