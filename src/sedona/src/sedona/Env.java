@@ -173,8 +173,13 @@ public class Env
     try
     {
       String ver = System.getProperty("java.version");
-      int ub = ver.indexOf('_');
-      if (ub > 0) ver = ver.substring(0, ub);
+      int ub = 0;
+      while (ub < ver.length())
+      {
+        if (Character.isDigit(ver.charAt(ub)) || ver.charAt(ub) == '.') ++ub;
+        else break;
+      }
+      ver = ver.substring(0, ub);
 
       Version have = new Version(ver);
       Version need = new Version("1.4");

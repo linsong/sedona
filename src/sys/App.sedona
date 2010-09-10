@@ -500,15 +500,12 @@ class App
   }
 
   **
-  ** Gets first child component of a given type.  The type
-  ** must be a subclass of component
+  ** Gets first child component of a given type.
   ** Returns null if no objects found, otherwise returns
   ** a Component
   **
   Component getFirstChildOfType(Component parent, Type t)
   {
-    if(parent == null)
-      return null
     for (Component c = lookup(parent.children); c != null; c = lookup(c.nextSibling))
       if (c.type.is(t))
         return c
@@ -516,16 +513,19 @@ class App
   }
 
   **
-  ** Gets next child component that is of same type as the given component.
-  ** Returns null if end of child list is reached without finding one.
+  ** Gets next sibling of a component that is of type t.
+  ** Returns null if end of sibling list is reached without finding one.
   **
-  Component getNextSiblingOfType(Component child)
+  Component getNextSiblingOfType(Component component, Type t)
   {
-    if(child == null)
-      return null
-    for (Component c = lookup(child.id); c != null; c = lookup(c.nextSibling))
-      if (c.id != child.id && c.type.is(child.type))
-        return c
+    //short circuit if component is not mounted or is App
+    if(component.id == nullId) return null
+    //short circuit if no siblings
+    if(component.nextSibling == nullId) return null
+
+    for (Component c = lookup(component.nextSibling); c != null; c = lookup(c.nextSibling))
+      if (c.type.is(t)) return c
+      
     return null
   }
 
