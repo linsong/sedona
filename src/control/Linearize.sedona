@@ -1,0 +1,142 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   10 Aug 09  Clif Turman    Creation
+//
+
+**
+** Converts a table of values into a curve using linear interpolation between
+** the values
+**
+**
+@niagaraIcon="module://icons/x16/control/util/xy.png"
+class Linearize
+  extends Component
+{
+  @readonly property float out
+  property float in
+  @config property float x0
+  @config property float y0
+  @config property float x1
+  @config property float y1
+  @config property float x2
+  @config property float y2
+  @config property float x3
+  @config property float y3
+  @config property float x4
+  @config property float y4
+  @config property float x5
+  @config property float y5
+  @config property float x6
+  @config property float y6
+  @config property float x7
+  @config property float y7
+  @config property float x8
+  @config property float y8
+  @config property float x9
+  @config property float y9
+
+
+  **
+  ** Execute is called once every scan.
+  **
+  virtual override void execute()
+  {
+    if(in < x1)
+      convert(m01,b01)
+    else if(in < x2)
+      convert(m12,b12)
+    else if(in < x3)
+      convert(m23,b23)
+    else if(in < x4)
+      convert(m34,b34)
+    else if(in < x5)
+      convert(m45,b45)
+    else if(in < x6)
+      convert(m56,b56)
+    else if(in < x7)
+      convert(m67,b67)
+    else if(in < x8)
+      convert(m78,b78)
+    else if(in >= x8)
+      convert(m89,b89)
+    super.execute()
+  }
+
+  virtual override void changed(Slot slot)
+  {
+    if((slot == Linearize.x0)  ||
+       (slot == Linearize.x1)  ||
+       (slot == Linearize.x2)  ||
+       (slot == Linearize.x3)  ||
+       (slot == Linearize.x4)  ||
+       (slot == Linearize.x5)  ||
+       (slot == Linearize.x6)  ||
+       (slot == Linearize.x7)  ||
+       (slot == Linearize.x8)  ||
+       (slot == Linearize.x9)  ||
+       (slot == Linearize.y0)  ||
+       (slot == Linearize.y1)  ||
+       (slot == Linearize.y2)  ||
+       (slot == Linearize.y3)  ||
+       (slot == Linearize.y4)  ||
+       (slot == Linearize.y5)  ||
+       (slot == Linearize.y6)  ||
+       (slot == Linearize.y7)  ||
+       (slot == Linearize.y8)  ||
+       (slot == Linearize.y9)       )
+    {
+      m01 = (y1 - y0) /( x1 - x0)
+      m12 = (y2 - y1) /( x2 - x1)
+      m23 = (y3 - y2) / (x3 - x2)
+      m34 = (y4 - y3) / (x4 - x3)
+      m45 = (y5 - y4) / (x5 - x4)
+      m56 = (y6 - y5) / (x6 - x5)
+      m67 = (y7 - y6) / (x7 - x6)
+      m78 = (y8 - y7) / (x8 - x7)
+      m89 = (y9 - y8) / (x9 - x8)
+      b01 = y0 - (m01 * x0)
+      b12 = y1 - (m12 * x1)
+      b23 = y2 - (m23 * x2)
+      b34 = y3 - (m34 * x3)
+      b45 = y4 - (m45 * x4)
+      b56 = y5 - (m56 * x5)
+      b67 = y6 - (m67 * x6)
+      b78 = y7 - (m78 * x7)
+      b89 = y8 - (m89 * x8)
+    }
+    super.changed(slot)
+  }
+
+  **
+  **  Convert value in to value out by using linear interpolation
+  **  between point1 and point2 using formula y=mx + b
+  **  out = in*slope + 
+  **
+  virtual void convert(float m, float b)
+  {
+    out = (m * in) + b
+  }
+  
+  float m01
+  float m12
+  float m23
+  float m34
+  float m45
+  float m56
+  float m67
+  float m78
+  float m89
+  float b01
+  float b12
+  float b23
+  float b34
+  float b45
+  float b56
+  float b67
+  float b78
+  float b89
+  
+}

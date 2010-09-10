@@ -1,0 +1,60 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   10 Jan 07  Andy Saunders  Creation
+//   27 Apr 07  Brian Frank    Port from Java to Sedona
+//   22 Apr 09  Elizabeth McKenney   Updated
+//
+
+**
+** Freq object calculates a pulse input frequency
+**
+** out = 
+**
+@niagaraIcon="module://icons/x16/control/control.png"
+class Freq
+  extends Component
+{
+  @readonly property float pps
+  @readonly property float ppm
+  property bool in
+
+  **
+  ** Callback when component is first started in an app.
+  **
+  virtual override void start()
+  {
+    lastIn = in 
+  }
+
+
+  **
+  ** Execute is called once every scan.
+  **
+  virtual override void execute()
+  {
+    long now = Sys.ticks()
+
+    float period = (float)(now - lastEdge)
+
+    if (period != 0.0f)
+    {
+      pps = float1sec / period
+      ppm = pps * 60.0
+    }
+
+    if (in && !lastIn)  // rising edge detected
+      lastEdge = now
+
+    lastIn = in
+  }
+
+  private bool lastIn
+  private long lastEdge = 0L
+
+  // const float version of 1sec long
+  private define float float1sec = (float)1sec
+
+}

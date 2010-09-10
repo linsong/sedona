@@ -1,0 +1,95 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   22 May 07  Brian Frank  Creation
+//
+
+**
+** SysTest
+**
+class SysTest
+  extends Test
+{
+
+  @javaSkip
+  static void testDefines()
+  {
+    assert(Sys.sizeofRef >= 2)       
+  } 
+
+  @javaSkip
+  static void testSizeof()
+  {    
+    assert(bool.sizeof   == 1)
+    assert(byte.sizeof   == 1)
+    assert(short.sizeof  == 2)
+    assert(int.sizeof    == 4)
+    assert(long.sizeof   == 8)
+    assert(float.sizeof  == 4)
+    assert(double.sizeof == 8)
+    
+    if (Sys.sizeofRef == 4)
+      assert(Link.sizeof == 16)
+  }                    
+                    
+  static void testBytes()
+  {
+    for (int i=0; i<50; ++i)
+      verifyBytes(i)
+  }
+
+  static void verifyBytes(int len)
+  {
+    byte[] bytes = BufTest.buf.bytes
+
+    // equals
+    assert(Sys.compareBytes("abcz".toBytes(), 0, "abcx".toBytes(), 0, 3) == 0)
+    assert(Sys.compareBytes("abcz".toBytes(), 0, "abcx".toBytes(), 0, 4) == 1)
+    assert(Sys.compareBytes("abcx".toBytes(), 0,  "abcz".toBytes(), 0, 4) == -1)
+
+    // or
+    for (int i=0; i<50; ++i) bytes[i] = 0xa3
+    Sys.orBytes(0x18, bytes, 0, len)
+    for (int i=0; i<len; ++i) assert(bytes[i] == 0xbb)
+    for (int i=len; i<50; ++i) assert(bytes[i] == 0xa3)
+
+    // and
+    Sys.andBytes(0xcf, bytes, 0, len)
+    for (int i=0; i<len; ++i) assert(bytes[i] == 0x8b)
+    for (int i=len; i<50; ++i) assert(bytes[i] == 0xa3)
+  }
+
+  static void testLogs()
+  {
+    assert(App.log.qname.equals("sys::App"))                   
+    assert(Sys.log(App.log.id) == App.log)                   
+    assert(Sys.findLog(App.log.qname) == App.log)
+  }
+
+  static void testTime()
+  {
+    long t1   = 0ms
+    long avg  = 0ms
+
+    for (int i=0; i<50; ++i)
+    {
+      t1 = Sys.ticks()
+      Sys.sleep(100ms)
+      avg += Sys.ticks() - t1
+    }
+    avg /= 50L
+
+    // this is a pretty lame range, but needed for consistent
+    // passing on Windows
+    assert(80ms < avg && avg < 120ms)
+
+    // test negative sleep
+    t1 = Sys.ticks()
+    Sys.sleep(-100ms)
+    long slept = Sys.ticks() - t1
+    assert(0ms <= slept && slept < 20ms)
+  } 
+
+}
