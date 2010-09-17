@@ -33,7 +33,9 @@ public class ConvertAppFile
   {
     XElem xml    = compiler.xml;
     File from    = compiler.input;
-    File dir     = from.getParentFile();
+    File dir     = compiler.outDir;
+    if (dir == null)
+      dir = from.getParentFile();
     String base  = FileUtil.getBase(from.getName());
     String toExt = xml == null ? "sax" : "sab";
     File to      = new File(dir, base + "." + toExt);

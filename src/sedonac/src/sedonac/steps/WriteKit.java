@@ -39,7 +39,14 @@ public class WriteKit
     KitManifest manifest = compiler.manifest;
     File file = KitDb.toFile(kit.name, manifest.checksum, manifest.version);
     File dir = file.getParentFile();
-
+    
+    if (compiler.outDir != null)
+    {
+      // if -outDir command line option, then treat that as the KitDb root directory
+      dir = new File(compiler.outDir, file.getParentFile().getName());
+      file = new File(dir, file.getName());
+    }
+    
     log.info("  WriteKit [" + file + "]");
 
     try

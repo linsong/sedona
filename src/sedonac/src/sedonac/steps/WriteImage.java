@@ -34,7 +34,10 @@ public class WriteImage
     if (dot > 0) filename = filename.substring(0, dot);
     filename += ".scode";
 
-    File dir  = compiler.input.getParentFile();
+    File dir = compiler.outDir;
+    if (dir == null) 
+      dir = compiler.input.getParentFile();
+      
     File file = new File(dir, filename);
     byte[] code = compiler.image.code;
 
