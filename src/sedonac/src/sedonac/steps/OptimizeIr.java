@@ -133,7 +133,8 @@ public class OptimizeIr
   {
     IrOp[] code = m.code;
     for (int i=0; i<code.length-1; ++i)
-    {                    
+    {
+
       IrOp a = code[i];
       IrOp b = code[i+1];
       if (a.index != i) throw new IllegalStateException();
@@ -170,6 +171,7 @@ public class OptimizeIr
   void join(IrMethod m, int at, IrOp x)
   {
     // build new instruction array
+    final boolean isCast = m.code[at].opcode == SCode.Cast;
     IrOp[] o = m.code;
     IrOp[] n = new IrOp[o.length-1];
     for (int i=0; i<o.length; ++i)
@@ -189,7 +191,14 @@ public class OptimizeIr
       if (op.isJump())
       {
         int label = Integer.parseInt(op.arg);
-        if (label == at+1) throw new IllegalStateException(x.toString());
+        if (label == at+1) 
+        {
+          // this originally always threw an ISE, and I'm not sure what the
+          // thinking was there.  This case can legitimately happen when
+          // optimizing a Cast opcode, so we will explicitily check that case.
+          if (!isCast) throw new IllegalStateException(x.toString());
+          op.arg = String.valueOf(label-1);
+        }
         if (label > at) op.arg = String.valueOf(label-1);
       }
 
