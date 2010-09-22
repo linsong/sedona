@@ -333,6 +333,8 @@ public class Compiler
     c.errors     = this.errors;
     c.warnings   = this.warnings;
     c.outDir     = this.outDir;
+    c.kitVersion = this.kitVersion;
+    c.optimize   = this.optimize;
     c.www        = this.www;
     return c;
   }
