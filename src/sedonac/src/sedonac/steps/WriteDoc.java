@@ -47,6 +47,7 @@ public class WriteDoc
     
     File outDir = compiler.outDir;
     if (outDir == null) outDir = new File(Env.home, "doc");
+    else outDir = new File(compiler.outDir, "doc");
 
     this.www = compiler.www;
     this.kit = compiler.ast;

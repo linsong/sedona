@@ -42,8 +42,8 @@ public class WriteKit
     
     if (compiler.outDir != null)
     {
-      // if -outDir command line option, then treat that as the KitDb root directory
-      dir = new File(compiler.outDir, file.getParentFile().getName());
+      // write kit in <outDir>/kits/<kitname>/
+      dir = new File(new File(compiler.outDir, "kits"), file.getParentFile().getName());
       file = new File(dir, file.getName());
     }
     
