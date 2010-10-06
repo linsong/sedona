@@ -214,7 +214,7 @@ name of the header in the high 6 bits and the value type of the header in the
 bottom 2 bits. Implementations can always look at the least significant 2-bits
 of the headerIds to determine how to decode or skip the header value.
 Implementations must ignore unknown headers. The 2-bit value type identifiers:
-</p>                     
+</p>
 
 <table>
 <tr><th>Id</th><th>Name</th><th>Encoding</th></tr>
@@ -222,11 +222,11 @@ Implementations must ignore unknown headers. The 2-bit value type identifiers:
 <tr><td>0x1</td><td>u2</td><td>Unsigned 16-bit integer in network byte order</td></tr>
 <tr><td>0x2</td><td>str</td><td>UTF-8 encoded text string, followed by null terminator (zero) byte</td></tr>
 <tr><td>0x3</td><td>bytes</td><td>8-bit length, followed by string of raw bytes</td></tr>
-</table>   
+</table>
 
 <p>
 The list of headerIds defined by this  specification:
-</p>                               
+</p>
 
 <table>
 <tr><th>Id (6b, 2b)</th><th>Nam</th><th>Type</th><th>Description (default)</th></tr>
@@ -255,7 +255,7 @@ a specific order.
 <!-- /////////////////////////////////////////////////////// -->
 
 <p>
-The following types defines the error codes to be used with the errorCode 
+The following types defines the error codes to be used with the errorCode
 header field:
 </p>
 
@@ -330,7 +330,7 @@ client's sessionId, all messages back to the client will use this sessionId.
 The seqNum should be a randomly chosen number between 0 and 0xffff, which
 becomes the start of the client sending window - this sequence number must be
 the seqNum of the first datagram message sent by the client to server.
-</p>                 
+</p>
 
 
 <h2 id="challenge">Challenge</h2>
@@ -524,7 +524,7 @@ session: absMax=512, idealMax=64
 <p>
 Because we assume DASP runs over an unreliable transport, implementations must
 be prepared to handle lost, delayed, or unordered messages during the handshake
-process. The following are specific conditions that may arise, and the recommended 
+process. The following are specific conditions that may arise, and the recommended
 action for each:
 </p>
 
@@ -550,7 +550,7 @@ case, either the authenticate or the welcome message was lost. The client
 should resend the authenticate message two more times, before giving up.
 Servers should gracefully handle receiving multiple authenticate messages for
 the same session.
-</p>              
+</p>
 
 <!-- /////////////////////////////////////////////////////// -->
 <h1 id="messaging">Messaging</h1>
@@ -619,19 +619,20 @@ ack=10 ackMore=15, 18, 19  -> 0x03 0x21
 
 <p>
 Once an endpoint has sent a datagram message, it should wait for a period of
-time called the <i>sendRetry</i> (see <a href='#flowControl'>Flow Control</a>
+time called the <i>sendRetry</i> (default = 1 sec) (see <a href='#flowControl'>Flow Control</a>
 for details). If no acknowledgement has been received for the datagram's
 seqNum, then one of two things has happened: the original datagram was lost or
-the acknowledgement was lost. The endpoint should resend the datagram message
-with the original sequence number, then wait again for the sendRetry period. If
-no acknowledgment is still received, then a third attempt should be made. If
-the third attempt fails, then the session should be timed out and the close
-message sent to the remote endpoint with the timeout error code.
+the acknowledgement was lost.   The endpoint should resend the datagram message
+with the original sequence number, then wait again for sendRetry period.  This process
+should be repeated until the datagram has been sent the number of times specified
+by the <i>maxSend</i> (default = 3) parameter. If the maxSend attempt fails, then
+the session should be timed out and the close message sent to the remote endpoint
+with the timeout error code.
 </p>
 
 <h2 id="slidingWindow">Sliding Window</h2>
 
-<p> 
+<p>
 DASP supports full duplex messaging - either side may initiate application
 messages, which are identified with a 16-bit sequence number. An endpoint can
 have multiple outstanding messages that have not been acknowledged. The
@@ -645,7 +646,7 @@ receiving window are ignored. The receiveMax header is used to communicate the
 maximum size of receiving window so that the remote endpoint can tune its
 sending window. The receiveMax header of the client is specified in its hello
 message, and the receiveMax of the server is specified in the welcome message.
-Once receiveMax is established during the handshake, it cannot be changed. 
+Once receiveMax is established during the handshake, it cannot be changed.
 </p>
 
 <p>
@@ -673,7 +674,7 @@ The server's handshake challenge and welcome define the sequence number of the
 server's first datagram. The close and keepAlive messages should always use a
 sequence number of 0xffff.
 </p>
- 
+
 <!-- /////////////////////////////////////////////////////// -->
 <h1 id="flowControl">Flow Control</h1>
 <!-- /////////////////////////////////////////////////////// -->
@@ -713,7 +714,7 @@ A session is terminated via one of the following conditions:
 <li>No packets are received after a timeout period</li>
 </ul>
 
-<h2 id="close">Close</h2>       
+<h2 id="close">Close</h2>
 
 <p>
 If possible, sessions should be gracefully shutdown using the close message
@@ -775,8 +776,8 @@ acknowledgments when there are no outgoing application messages.
 If there are no outgoing datagram messages to piggyback an ack header, then an
 endpoint should sent a keepAlive to acknowledge received messages.
 Implementations can send these acknowledgements immediately or may use a small
-delay called the <i>ackDelay</i>. The ackDelay provides a period of time 
-to coalesce multiple acknowledgements and wait for an outgoing datagram message 
+delay called the <i>ackDelay</i>. The ackDelay provides a period of time
+to coalesce multiple acknowledgements and wait for an outgoing datagram message
 to be generated.
 </p>
 

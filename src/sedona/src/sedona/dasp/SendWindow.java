@@ -247,16 +247,24 @@ final class SendWindow
     Packet p = head;
     while (p != null)
     {
-      if (!p.acked && now - p.sentTime >= sendRetry)
-      {
-        p.sentTime = now;        
-        session.numRetries++;
-        session.iface.numRetries++;
-        session.send(toMsg(p));  
-      }       
-               
       if (!p.acked)
       {
+        if (p.sendAttempts >= maxSend)
+        {
+          // packet was never ack'd after maxSend attempts, so close the session.
+          session.close(DaspConst.TIMEOUT, "maxSend limit exceeded for seqNum="+Integer.toHexString(p.seqNum));
+          return oldest;
+        }
+        
+        if (now - p.sentTime >= sendRetry)
+        {
+          p.sentTime = now;        
+          ++p.sendAttempts;
+          ++session.numRetries;
+          ++session.iface.numRetries;
+          session.send(toMsg(p));  
+        }
+        
         oldest = Math.max(oldest, now-p.enqueuedTime);
       }
       
@@ -275,7 +283,8 @@ final class SendWindow
     byte[] payload;
     boolean acked;  
     long enqueuedTime;
-    long sentTime;    
+    long sentTime;
+    int sendAttempts = 1; // only incremented during retry
     Packet next;
   }
 
@@ -480,6 +489,7 @@ final class SendWindow
   private int size;                // current number of messages
   private int seqNum;              // next outgoing sequence number
   long sendRetry = 1000;           // ms
+  int  maxSend = 3;                // max number of times to send a datagram packet
   int sendSize = 8;                // current max num for sending window
   int[] ackTimes;                  // circular list of ack times in ms
   private int ackTimesPos;         // next index to write in ackTimes

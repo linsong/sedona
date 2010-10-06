@@ -253,7 +253,7 @@ class SoxSession
     service.send(this)
     
     // free the session          
-    service.closeSession(this, Sys.intStr(errorCode))
+    service.closeSession(this, Sys.hexStr(errorCode))
   }
   
 ////////////////////////////////////////////////////////////////

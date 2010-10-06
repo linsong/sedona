@@ -43,7 +43,8 @@ public class DaspSession
     this.absMax          = option(options, "dasp.absMax",         ABS_MAX_DEF);
     this.receiveTimeout  = option(options, "dasp.receiveTimeout", RECEIVE_TIMEOUT_DEF);
     this.connectTimeout  = option(options, "dasp.connectTimeout", CONNECT_TIMEOUT_VAL);
-    sendWindow.sendRetry = option(options, "dasp.sendRetry", SEND_RETRY_VAL);
+    sendWindow.sendRetry = option(options, "dasp.sendRetry",      SEND_RETRY_VAL);
+    sendWindow.maxSend   = option(options, "dasp.maxSend",        MAX_SEND);
     this.lastReceive     = ticks();                
     this.connectTime     = ticks();
     

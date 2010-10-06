@@ -37,6 +37,7 @@ public interface DaspConst
   public static final int  IDEAL_MAX_DEF       = 512;    // bytes
   public static final int  ABS_MAX_DEF         = 512;    // bytes
   public static final int  RECEIVE_MAX_DEF     = 31;     // msgs
+  public static final int  MAX_SEND            = 3;      // max times to resend unacked msg
   public static final long RECEIVE_TIMEOUT_DEF = 30000L; // ms
 
 ////////////////////////////////////////////////////////////////
