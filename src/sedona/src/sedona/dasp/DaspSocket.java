@@ -8,10 +8,19 @@
 
 package sedona.dasp;      
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
-import sedona.*;
+
+import java.net.DatagramPacket;
+import java.net.InetAddress;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Random;
+
+import sedona.Buf;
+import sedona.Env;
+
 
 /**
  * DaspSocket manages a UDP socket which is used by multiple
@@ -397,7 +406,7 @@ public class DaspSocket
    */                         
   void send(DaspSession session, DaspMsg msg)
   {
-    if (traceSend || session.traceSend) trace("send", msg);   
+    if (traceSend || session.traceSend) trace("->", msg);   
     session.iface.send(session, msg);    
     session.numSent++;
     session.iface.numSent++;
@@ -408,7 +417,7 @@ public class DaspSocket
    */                         
   void received(DaspSocketInterface iface, DaspSession session, DaspMsg msg)
   {
-    if (traceReceive || (session != null && session.traceReceive)) trace("recv", msg);
+    if (traceReceive || (session != null && session.traceReceive)) trace("<-", msg);
     iface.numReceived++;
   }                                 
   
@@ -417,32 +426,41 @@ public class DaspSocket
    */
   void trace(String mode, DaspMsg msg)
   {                 
-    System.out.print("-- " + mode + " s=" + Integer.toHexString(msg.sessionId) + 
-                     " seq=" + Integer.toHexString(msg.seqNum));
+    StringBuffer sb = new StringBuffer();
+    sb.append(format.format(new Date()))
+      .append(' ').append(mode)
+      .append(" s=").append(Integer.toHexString(msg.sessionId))
+      .append(" seq=").append(Integer.toHexString(msg.seqNum));
 
     if (msg.ack >= 0)                  
     {
-      System.out.print(" ackNum=" + Integer.toHexString(msg.ack));
+      sb.append(" ack=").append(Integer.toHexString(msg.ack));
       if (msg.ackMore != null)
-      System.out.print(" ackMore=" + new Buf(msg.ackMore));
+        sb.append(" ackMore=").append(new Buf(msg.ackMore));
     }
     
     if (msg.msgType == DaspConst.DATAGRAM)
-    {                  
-      System.out.print(" cmd=" + (char)msg.payload[0] + " reply=" + msg.payload[1] + " ");
-      System.out.print(new Buf(msg.payload).toString());
+    {          
+      final String r = (msg.payload[1] == -1) ? "ff" : Integer.toHexString(msg.payload[1]);
+      sb.append(" c=").append((char)msg.payload[0])
+        .append(" r=").append(r)
+        .append(' ').append(new Buf(msg.payload));
     }                          
     else if (msg.msgType == DaspConst.CLOSE)
     {                  
-      System.out.print(" errcode=" + msg.errorCode + " ");
-      System.out.print(new Buf(msg.payload).toString());
+      sb.append(" err=").append(Integer.toHexString(msg.errorCode))
+        .append(" msgType=").append(msg.msgType).append(' ')
+        .append(new Buf(msg.payload));
     }                          
     else
     {
-      System.out.print(" msgType=" + msg.msgType);
+      sb.append(" msgType=").append(msg.msgType);
     }
-    System.out.println();
+    System.out.println(sb.toString());
   }
+  
+  static final SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss.SSS");
+  
 
 ////////////////////////////////////////////////////////////////
 // Fields
