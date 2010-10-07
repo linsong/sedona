@@ -143,6 +143,7 @@ class PlatformService
   ** The platform identifier which defines how this
   ** Sedona device should be provisioned.
   **
+  @summary=false
   @readonly @asStr property Buf(128) platformId
   
   **
