@@ -30,7 +30,6 @@ class Dasp
   define int ABS_MAX_DEF           = 512     // bytes
   define int RECEIVE_MAX_DEF       = 31      // msgs
   define int RECEIVE_TIMEOUT_DEF   = 30      // seconds
-  define int MAX_SEND							 = 3       // attempts
                                             
 ////////////////////////////////////////////////////////////////
 // Message Types

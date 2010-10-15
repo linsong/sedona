@@ -249,12 +249,14 @@ final class SendWindow
     {
       if (!p.acked)
       {
-        if (p.sendAttempts >= maxSend)
-        {
-          // packet was never ack'd after maxSend attempts, so close the session.
-          session.close(DaspConst.TIMEOUT, "maxSend limit exceeded for seqNum="+Integer.toHexString(p.seqNum));
-          return oldest;
-        }
+        // MG - do not implement maxSend timeouts right now. The default
+        // behavior of the specification is too aggressive.
+//        if (p.sendAttempts >= maxSend)
+//        {
+//          // packet was never ack'd after maxSend attempts, so close the session.
+//          session.close(DaspConst.TIMEOUT, "maxSend limit exceeded for seqNum="+Integer.toHexString(p.seqNum));
+//          return oldest;
+//        }
         
         if (now - p.sentTime >= sendRetry)
         {

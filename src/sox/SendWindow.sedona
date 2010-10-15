@@ -26,7 +26,6 @@ class SendWindow
     foreach (SendPacket p : packets, max) 
     {
       p.age = 0
-      p.attempts = 0
     }
     numUnacked = 0
   } 
@@ -50,7 +49,6 @@ class SendWindow
       {                   
         p.cmd = '?'
         p.age = 1
-        p.attempts = 1
         p.seqNum = seqNum++    
         numUnacked++    
         return p
@@ -175,13 +173,6 @@ class SendWindow
       // if age 0 this isn't an used, unacked packet
       if (p.age == 0) continue                      
       
-      // if maxSend attempts exceeded, close this session
-      if (p.attempts > Dasp.MAX_SEND)
-      {
-      	service.closeSession(session, "max send")
-      	return work
-      }
-      
       // increment age which is a counter 
       // of house keeping ticks
       p.age++        
@@ -192,7 +183,6 @@ class SendWindow
       {
         SoxCommands.send(service, session, p)
         p.age = 1
-        p.attempts++    
         work = true
       }
     }
@@ -225,7 +215,6 @@ class SendPacket
   // managed by SendWindow
   short seqNum  
   byte age        // zero if unused, 1-255 for every 100ms house keeping tick
-  byte attempts   // for Sedona impl, maxSend must be 1-255
   
   // managed by SoxCommands
   byte cmd        // sox command

@@ -618,6 +618,11 @@ ack=10 ackMore=15, 18, 19  -> 0x03 0x21
 <h2 id="retries">Retries</h2>
 
 <p>
+<font color='red'>Note: the following behavior is not currently implemented
+in the opensource Java or Sedona implementations of DASP.</font>
+</p>
+
+<p>
 Once an endpoint has sent a datagram message, it should wait for a period of
 time called the <i>sendRetry</i> (default = 1 sec) (see <a href='#flowControl'>Flow Control</a>
 for details). If no acknowledgement has been received for the datagram's
