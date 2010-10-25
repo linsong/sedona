@@ -275,10 +275,9 @@ public class Schema
       Kit kit = kits[i];
       out.w("  <kit ")
          .attr("name", kit.name).w(" ");
-      if(nochk)
-        out.w("/>\n");
-      else
-        out.attr("checksum", TextUtil.intToHexString(kit.checksum)).w(" />\n");
+      if (!nochk)
+        out.attr("checksum", Integer.toHexString(kit.checksum));
+      out.w(" />").nl();
     }
     out.write("</schema>\n");
   }

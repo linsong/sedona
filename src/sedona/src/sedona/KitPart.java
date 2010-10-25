@@ -72,7 +72,7 @@ public class KitPart
   {                          
     this.name     = name;
     this.checksum = checksum;
-    this.key      = name + "-" + TextUtil.intToHexString(checksum);
+    this.key      = name + "-" + Integer.toHexString(checksum);
     this.version  = version;
   }
 
