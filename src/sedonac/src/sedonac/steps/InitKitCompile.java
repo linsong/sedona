@@ -8,15 +8,26 @@
 
 package sedonac.steps;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+
 import sedona.Env;
-import sedona.util.*;
-import sedona.xml.*;
-import sedonac.*;
+import sedona.util.FileUtil;
+import sedona.util.VendorUtil;
+import sedona.util.Version;
+import sedona.xml.XElem;
+import sedona.xml.XException;
 import sedonac.Compiler;
-import sedonac.ast.*;
-import sedonac.namespace.*;
+import sedonac.CompilerStep;
+import sedonac.Location;
+import sedonac.SourceFile;
+import sedonac.ast.DependDef;
+import sedonac.ast.IncludeDef;
+import sedonac.ast.KitDef;
+import sedonac.ast.NativeDef;
+import sedonac.namespace.NativeId;
 
 /**
  * InitKitCompile initializes the compiler to run the pipeline
@@ -208,6 +219,18 @@ public class InitKitCompile
     File dir = new File(kitFile.getParentFile(), dirName);
     if (!dir.exists() || !dir.isDirectory())
       throw err("Unknown source directory '" + dirName + "'", new Location(xml));
+    
+    try
+    {
+      // source must be sub-directory of directory kit.xml is in
+      if (!dir.getCanonicalPath().startsWith(kitFile.getParentFile().getCanonicalPath()))
+        throw err("Source directory must be a sub-directory of " + kitFile.getParentFile(), new Location(xml));
+    }
+    catch (IOException e)
+    {
+      // silently ignore and fail later
+    } 
+    
     boolean testOnly = isTestonly(xml);
 
     File[] list = dir.listFiles();

@@ -8,18 +8,29 @@
 
 package sedonac.steps;
 
-import java.io.*;
-import java.util.*;
-import java.util.zip.*;
-import sedona.kit.*;
-import sedona.manifest.*;
-import sedona.util.*;
-import sedona.xml.*;
-import sedonac.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
+import sedona.kit.KitDb;
+import sedona.manifest.KitManifest;
+import sedona.util.FileUtil;
+import sedona.xml.XWriter;
 import sedonac.Compiler;
-import sedonac.ast.*;
-import sedonac.ir.*;
-import sedonac.jasm.*;
+import sedonac.CompilerStep;
+import sedonac.Location;
+import sedonac.SourceFile;
+import sedonac.ir.IrKit;
+import sedonac.ir.IrType;
+import sedonac.ir.IrWriter;
+import sedonac.jasm.JavaClass;
+
 
 /**
  * WriteKit writes the IR data structure from memory into a zip file.
@@ -110,55 +121,29 @@ public class WriteKit
   private void writeSource(ZipOutputStream zout)
     throws Exception
   {
-    SourceFile[] files = compiler.sourceFiles;
-    HashMap names = new HashMap();
-    for (int i=0; i<files.length; ++i)
-      writeSource(zout, files[i].file.getName(), new FileInputStream(files[i].file), names);
+    // write kit.xml (as SourceFile so we can re-use writeSource(zout, SourceFile)
+    SourceFile kitXml = new SourceFile(); 
+    kitXml.file = compiler.input;
+    writeSource(zout, kitXml);
     
-    IncludeDef[] includes = compiler.ast.includes;
-    for (int i=0; i<includes.length; ++i)
-      writeSource(zout, includes[i], names);
+    // write source
+    SourceFile[] files = compiler.sourceFiles;
+    for (int i=0; i<files.length; ++i)
+      writeSource(zout, files[i]);
   }
   
-  /**
-   * Write source from existing kit.
-   */
-  private void writeSource(ZipOutputStream zout, IncludeDef include, HashMap names)
-    throws Exception
-  {
-    ZipFile zip = new ZipFile(include.sourceKit.file.file);
-    Iterator sources = include.typeToSource.values().iterator();
-    HashSet alreadyWritten = new HashSet();
-    while (sources.hasNext())
-    {
-      ZipEntry source = (ZipEntry)sources.next();
-      
-      // It is possible for multiple types to be defined in the same source
-      // file, so make sure we only write the source once.
-      if (alreadyWritten.add(source.getName()))
-      {
-        // pull off "source/"
-        String name = source.getName().substring(source.getName().indexOf('/')+1);
-        writeSource(zout, name, zip.getInputStream(source), names);
-      }
-    }
-
-    zip.close();
-  }
-
-  private void writeSource(ZipOutputStream zout, String name, InputStream source, HashMap names)
+  private void writeSource(ZipOutputStream zout, SourceFile source)
     throws IOException
   {
-    // generate unique name
-    for (int i=0; i<100; ++i)
-    {
-      if (names.get(name) == null) break;
-      name = FileUtil.getBase(name) + "_" + i + ".sedona";
-    }
-    names.put(name, name);
-
-    InputStream in = new BufferedInputStream(source);
-    zout.putNextEntry(new ZipEntry("source/" + name));
+    // get relative path to source file from kit file directory
+    // InitKitCompile step gaurantees src is subdirectory of root
+    final String rootPath = compiler.input.getParentFile().getCanonicalPath();
+    final String srcPath  = source.file.getCanonicalPath();
+    // do not include leading '/'
+    final String relPath  = srcPath.substring(rootPath.length()+1);
+    
+    InputStream in = new BufferedInputStream(new FileInputStream(source.file));
+    zout.putNextEntry(new ZipEntry("source/" + relPath));
     FileUtil.pipe(in, zout);
     in.close();
     zout.closeEntry();
