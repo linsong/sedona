@@ -58,7 +58,13 @@ public class InitImageCompile
   private void initImage()
   {
     SCodeImage image = new SCodeImage();
-    image.name        = xml.get("name");
+    
+    // the 'name' attribute has never been used. Scode image name is based
+    // on the scode xml input file name.  The attribute is now deprecated -
+    // display a warning if present, but still ignore it (as we always have).
+    if (xml.get("name", null) != null)
+      compiler.warn("'name' attribute is deprecated and will be ignored.", new Location(xml));
+
     image.endian      = toEndian(xml);
     image.blockSize   = xml.geti("blockSize");
     image.refSize     = xml.geti("refSize");

@@ -2,8 +2,7 @@
   -  Sedona SCode manifest
   -->
 
-<sedonaCode
-   name = "x86-test"
+<sedonaCode 
    endian="little"
    blockSize="4"
    refSize="4"

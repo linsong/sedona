@@ -8,17 +8,11 @@
 
 package sedonac.scode;
 
-import java.io.*;
-import java.util.*;
-import sedonac.util.*;
-
 /**
  * SCodeImage models a Sedona bytecode image in memory.
  */
 public class SCodeImage
 {
-
-  public String name;        // name of image
   public int endian;         // 'B' or 'L'
   public int blockSize;      // block size in bytes
   public int refSize;        // address pointer width in bytes
@@ -28,5 +22,4 @@ public class SCodeImage
   public boolean debug;      // include debug meta-data
   public boolean test;       // include tests
   public byte[] code;        // image file
-
 }

@@ -3,7 +3,6 @@
   -->
 
 <sedonaCode
-   name = "platWin32"
    endian="little"
    blockSize="4"
    refSize="4"

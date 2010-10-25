@@ -3,7 +3,6 @@
   -->
 
 <sedonaCode
-   name = "platUnix"
    endian="little"
    blockSize="4"
    refSize="4"

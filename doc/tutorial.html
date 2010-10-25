@@ -42,22 +42,22 @@
 <p>
 This tutorial takes you through the various development steps
 involved in building Sedona applications:
-</p>                                     
+</p>
 
 <ol>
 <li>Build a new kit and component</li>
 <li>Build a new scode image</li>
 <li>Build an application</li>
 <li>Run the application</li>
-</ol>                       
+</ol>
 
 <p>It is recommended that you read the <a href='architecture.html'>Architecture</a>
-chapter before exploring this tutorial.  Refer to the 
-<a href='architecture.html#workflow'>diagram</a>, which illustrates the 
-work flow this tutorial will take.  Also make sure you have your 
-Sedona environment  <a href='setup.html'>setup</a> correctly before.  
+chapter before exploring this tutorial.  Refer to the
+<a href='architecture.html#workflow'>diagram</a>, which illustrates the
+work flow this tutorial will take.  Also make sure you have your
+Sedona environment  <a href='setup.html'>setup</a> correctly before.
 </p>
-                 
+
 <!--/////////////////////////////////////////////////////////-->
 <h1 id="newKit">Build New Kit</h1>
 <!--/////////////////////////////////////////////////////////-->
@@ -66,16 +66,16 @@ Sedona environment  <a href='setup.html'>setup</a> correctly before.
 Kits are modules used to organize Sedona code.  For this
 example we will create a new kit called <code>tutorial</code>.
 In our kit we will create a component called <code>Add</code>,
-which adds two inputs together.  
+which adds two inputs together.
 </p>
 <p>
 First let's create a directory called "tutorial" with two files:
-</p>                             
-<pre> 
+</p>
+<pre>
 tutorial/
   +- kit.xml
   +- Add.sedona
-</pre>         
+</pre>
 
 <p>
 For more information see <a href='lang.html#structure'>Structure</a>
@@ -91,16 +91,16 @@ The "kit.xml" file is used to define the kit's meta-data for the compiler:
   &lt;depend on="sys 1.0" />
   &lt;source dir="." />
 &lt;/sedonaKit>
-</pre>       
+</pre>
 
 <p>
 The "kit.xml" file specifies the name of our kit, a short description,
 dependencies, and the directories of source code. The vendor attribute
 specifies the company that developed the kit - for the purposes of the tutorial
 leave this as "Tridium" because otherwise the kit name must be prefixed with
-the vendor name. For more information see <a href='kits.html'>Kits</a> and 
+the vendor name. For more information see <a href='kits.html'>Kits</a> and
 <a href='sedonac.html#compileKit'>Sedonac</a>.
-</p>    
+</p>
 
 <p>
 The "Add.sedona" file defines the Sedona source code for our new component:
@@ -114,7 +114,7 @@ public class Add extends Component
   property float in2
 
   override void execute() { out = in1 + in2 }
-}                 
+}
 </pre>
 
 <p>
@@ -126,9 +126,9 @@ output.  For more information see <a href='components.html'>Components</a>.
 <p>
 To compile our new kit we just need to run sedonac against our directory
 or the "kit.xml" file:
-</p>                    
+</p>
 
-<pre>          
+<pre>
 D:\sedona\src\tutorial>dir
 
  Directory of D:\sedona\src\tutorial
@@ -140,7 +140,7 @@ D:\sedona\src\tutorial>sedonac kit.xml
   Parse [1 files]
   WriteKit [D:\sedona\kits\tutorial\tutorial-89858e3e-1.0.30.kit]
 *** Success! ***
-</pre>           
+</pre>
 
 <p>
 If successful, you should have a new kit file in your
@@ -155,16 +155,16 @@ trouble running sedonac, then see <a href='setup.html'>Setup</a>.
 <!--/////////////////////////////////////////////////////////-->
 
 <p>
-Kits are units of deployment, but are not run directly by the 
+Kits are units of deployment, but are not run directly by the
 Sedona VM.  First we have to compile a set of kits into an scode
-image that can be run directly by the Sedona VM.  Create a new 
+image that can be run directly by the Sedona VM.  Create a new
 directory called "tutorialApp" with one file:
-</p>                  
+</p>
 
-<pre> 
+<pre>
 tutorialApp/
   +- kits.xml
-</pre>         
+</pre>
 
 <p>
 The "kits.xml" file specifies the kits we wist to compile into
@@ -172,8 +172,8 @@ an image:
 </p>
 
 <pre>
-&lt;sedonaCode 
-  name = "code" endian="little" blockSize="4"
+&lt;sedonaCode
+  endian="little" blockSize="4"
   refSize="4" main="sys::Sys.main" debug="true" test="true"
 &gt;
   &lt;depend on="sys 1.0" /&gt;
@@ -186,17 +186,17 @@ an image:
 </pre>
 
 <p>
-If you are running on 32-bit x86 then you can use the exact file 
+If you are running on 32-bit x86 then you can use the exact file
 listed above.  Otherwise you might need to tweak your settings for
-endian and refSize.  See <a href='sedonac.html#compileCode'>Sedonac</a> 
+endian and refSize.  See <a href='sedonac.html#compileCode'>Sedonac</a>
 for more information.
-</p>              
+</p>
 
 <p>
 Run sedonac on this file to produce an scode image:
 </p>
 
-<pre>              
+<pre>
 D:\sedona\tutorialApp>sedonac kits.xml
   ReadKits [6 kits]
   WriteImage [D:\sedona\tutorialApp\kits.scode] (79340 bytes)
@@ -225,16 +225,16 @@ If successful, then you should have now have a "kits.scode" file.
 <!--/////////////////////////////////////////////////////////-->
 
 <p>
-Sedona is a component oriented language that enables you to 
+Sedona is a component oriented language that enables you to
 build new applications by assembling components.  The application
 file stores a tree of components, their configuration properties,
 and how they are linked together.  Typically applications are built
-with graphical tools.  For this tutorial we will hand code an 
+with graphical tools.  For this tutorial we will hand code an
 application file using XML.  In the "tutorialApp" directory let's
 create a new "app.sax" file:
-</p>          
+</p>
 
-<pre>                    
+<pre>
 &lt;sedonaApp>
 &lt;schema>
   &lt;kit name='sys'/>
@@ -254,7 +254,7 @@ create a new "app.sax" file:
     &lt;/comp>
   &lt;/comp>
   &lt;comp name="sox" type="sox::SoxService"/>
-  &lt;comp name="web" type="web::WebService">  
+  &lt;comp name="web" type="web::WebService">
     &lt;prop name="port" val="8080"/>
   &lt;/comp>
   &lt;comp name="rampA" type="control::Ramp"/>
@@ -269,7 +269,7 @@ create a new "app.sax" file:
 </pre>
 
 <p>
-The file above declares four Service components. 
+The file above declares four Service components.
 <ul>
   <li>
   The <code>PlatformService</code> component provides access to platform properties
@@ -284,15 +284,15 @@ The <code>SoxService</code> component
 is required in order to create and use a Sox connection to or from the device.
   </li>
   <li>
-  The <code>WebService</code> component will run an HTTP server so we can use a 
-  browser for debugging. The web server's port is set to 8080.  
+  The <code>WebService</code> component will run an HTTP server so we can use a
+  browser for debugging. The web server's port is set to 8080.
   (Note that platforms with limited resources may not be able to run a web server.)
   </li>
 </ul>
 We then declare two <code>control::Ramp</code> components,
-which are used to generate dummy data. 
-Finally we declare a <code>tutorial::Add</code> 
-component, which is the component we built ourselves in the step above. 
+which are used to generate dummy data.
+Finally we declare a <code>tutorial::Add</code>
+component, which is the component we built ourselves in the step above.
 </p>
 <p>
 In the links section we create links between the Ramp component outputs and
@@ -302,7 +302,7 @@ the inputs to our <code>Add</code> block to create control flow.
 <p>
 Sedona devices don't run the XML file directly, so now we need
 to compile the XML into a binary format that the Sedona VM can
-use directly.  Do this by running sedonac on "app.sax":                 
+use directly.  Do this by running sedonac on "app.sax":
 </p>
 
 <pre>
@@ -313,12 +313,12 @@ D:\sedona\tutorialApp>sedonac app.sax
   |  FLASH:    0.2kb (207 bytes)
   +----------------------------------
 *** Success! ***
-</pre>          
+</pre>
 
 <p>
-Now we should have a file called "app.sab".  See <a href='apps.html'>Apps</a> 
+Now we should have a file called "app.sab".  See <a href='apps.html'>Apps</a>
 for more information.
-</p>               
+</p>
 
 <!--/////////////////////////////////////////////////////////-->
 <h1 id="runApp">Run App</h1>
@@ -339,7 +339,7 @@ At this point we can run our application using the Sedona VM.  Assuming
 we are running on Windows we can run our application as follows:
 </p>
 
-<pre>                          
+<pre>
 D:\sedona\tutorialApp>svm kits.scode app.sab
 
 Sedona VM 1.0
@@ -352,32 +352,32 @@ refSize:   4
 -- MESSAGE [sox::SoxService] started port=1876
 -- MESSAGE [web::WebService] started port=8080
 -- MESSAGE [sys::App] running
-</pre>                        
+</pre>
 
 <p>
 We just pass our code and application filenames to the "svm.exe" executable.
 If you are running on an alternate platform, you might need to compile the
 SVM from source - see <a href='porting.html'>Porting</a>.
-</p>     
+</p>
 
 <p>
 Assuming you have your SVM running the application, you should be able
 to hit it with your browser at <a href='http://localhost:8080/'>http://localhost:8080/</a>.
-If you go to the URL <a href='http://localhost:8080/spy/app/12'>http://localhost:8080/spy/app/12</a> 
-you should see the current values of your <code>tutorial::Add</code> component.  
+If you go to the URL <a href='http://localhost:8080/spy/app/12'>http://localhost:8080/spy/app/12</a>
+you should see the current values of your <code>tutorial::Add</code> component.
 Hit refresh a couple times to see how the inputs and output change in real-time.
 </p>
 
 <p>
 If you have a programming tool such as the Sedona Workbench, you should now
-be able to connect to Sox port 1876 with the username "admin" and empty password.  
+be able to connect to Sox port 1876 with the username "admin" and empty password.
 Refer to your Sedona tool documentation for more information.
-</p> 
+</p>
 
 <p>
 Congratulations, you've just built and deployed your first Sedona
-application!  Remember this tutorial illustrates the very basics 
-using only the command line tools.  Visit 
+application!  Remember this tutorial illustrates the very basics
+using only the command line tools.  Visit
 <a href='http://www.sedonadev.org/'>sedonadev.org</a> to learn more
 about the Sedona tools available.
 </p>
