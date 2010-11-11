@@ -430,7 +430,7 @@ public class OfflineApp
     if (file.getName().endsWith(".sax"))
       return decodeAppXml(file);
     else
-      return decodeAppBinary(new FileInputStream(file));
+      return decodeAppBinary(file);
   }
 
 //////////////////////////////////////////////////////////////////////////
@@ -527,7 +527,15 @@ public class OfflineApp
   public static OfflineApp decodeAppBinary(File file)
     throws Exception
   {
-    return decodeAppBinary(new FileInputStream(file));
+    FileInputStream in = new FileInputStream(file);
+    try
+    {
+      return decodeAppBinary(in);
+    }
+    finally
+    {
+      in.close();
+    }
   }
 
   public static OfflineApp decodeAppBinary(InputStream in)
