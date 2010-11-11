@@ -8,14 +8,21 @@
 
 package sedona.manifest;
 
-import java.io.*;
-import java.util.*;
-import java.util.zip.*;
-import sedona.*;
-import sedona.kit.*;
-import sedona.util.*;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+
+import sedona.Depend;
+import sedona.Env;
+import sedona.KitPart;
+import sedona.kit.KitDb;
+import sedona.kit.KitFile;
+import sedona.util.Log;
 import sedona.util.sedonadev.Download;
-import sedona.xml.*;
+import sedona.xml.XParser;
+import sedona.xml.XWriter;
 
 /**
  * ManifestDb manages the cache of kit manifests on disk under
@@ -68,8 +75,7 @@ public class ManifestDb
    */
   public static KitManifest load(KitPart part)
     throws Exception
-  {
-    synchronized (cache)
+  {    synchronized (cache)
     {
       // build name/checksum key
       Info info = new Info(part.name, part.checksum);
@@ -199,18 +205,18 @@ public class ManifestDb
    * @return the list of installed <code>KitParts</code>, or an empty array
    *         if the sedona manifests home directory does not exist.
    */
-  public static KitPart[] listInstalledParts(String kit)
+  public static KitPart[] listInstalledParts(final String kit)
   {
-    if (!dir.exists()) return new KitPart[0];
-    ArrayList acc = new ArrayList();      
     File[] files = new File(dir, kit).listFiles();
-    for (int i=0; files != null && i<files.length; ++i)
+    if (files == null) return new KitPart[0];
+    
+    ArrayList acc = new ArrayList();
+    for (int i=0; i<files.length; ++i)
     {
-      File f = files[i];
-      String n = f.getName();
-      if (!n.endsWith(".xml")) continue;
-      try { acc.add(KitPart.parse(n.substring(0, n.length()-4))); } catch (Exception e) {}
-    } 
+      final String n = files[i].getName();
+      if (!(n.startsWith(kit) && n.endsWith(".xml"))) continue;
+      try { acc.add(KitPart.parse(n.substring(0, n.length() - 4))); } catch (Exception e) {}
+    }
     return (KitPart[])acc.toArray(new KitPart[acc.size()]);
   }
     
