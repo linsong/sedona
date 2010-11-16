@@ -431,6 +431,9 @@ public class DaspSocket
       .append(' ').append(mode)
       .append(" s=").append(Integer.toHexString(msg.sessionId))
       .append(" seq=").append(Integer.toHexString(msg.seqNum));
+    
+    if (msg.msgType == DaspConst.HELLO || msg.msgType == DaspConst.CHALLENGE || msg.msgType == DaspConst.WELCOME)
+      sb.append(" remId=").append(Integer.toHexString(msg.remoteId()));
 
     if (msg.ack >= 0)                  
     {
