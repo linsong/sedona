@@ -205,13 +205,17 @@ class App
       lastStartWork = Sys.ticks()
 
       bool more = true
+      bool canHibernate = true
       while (more && running)
       {                                 
-        // give each service a chance to do a chunk of work
+        // give each service a chance to do a chunk of work and override any requests
+        // for hibernation
         more = false
         for (Service s = services; s != null; s = s.nextService)
+        {
           more |= s.work()
-                
+          canHibernate &= s.canHibernate()
+        }        
         if (Sys.ticks() >= deadline - ((long)guardTime*1ms)) break
       }
       
@@ -221,12 +225,22 @@ class App
       //  If hibernating, inform services.
       //  Note that hibernation check must take place before yield since
       //  hibernation is higher priority then yielding
-      if (runStatus == Err.hibernate) 
+      if (runStatus == Err.hibernate)
       {
-        for (Service s = services; s != null; s = s.nextService)
-          s.onHibernate()                     
+        //  Hibernation has been requested, but one or more services isn't ready to
+        //  hibernate.  Don't sleep in this case, but immediately begin another execution
+        //  cycle
+        if (!canHibernate)
+        {
+          continue;
+        }    
+        else
+        {     
+          for (Service s = services; s != null; s = s.nextService)
+            s.onHibernate()                     
         
-        return runStatus
+          return runStatus
+        }   
       }            
       else if (platform.yieldRequired())
       { 

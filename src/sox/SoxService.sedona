@@ -218,7 +218,7 @@ class SoxService
   ** The SoxService should not allow hibernation if any
   ** SoxSessions are open.
   **
-  virtual bool canHibernate()
+  virtual override bool canHibernate()
   {
     foreach (SoxSession s : sessions, Watch.max)
     {
