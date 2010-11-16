@@ -1,0 +1,16 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   23 Aug 07  Andy Saunders  Creation
+//
+
+**
+** Status -- Constants representing status info.
+**
+class Status 
+{
+  define int DOWN  = 0x0001
+  define int FAULT = 0x0002
+}

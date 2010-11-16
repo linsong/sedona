@@ -1,0 +1,55 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   21 Aug 06  Brian Frank  Creation
+//   07 May 07  Brian Frank  Port from Java to Sedona
+//
+
+**
+** TcpServerSocket is used to open a socket for listening
+** and accepting incoming TCP connections.
+**
+@javaPeer
+class TcpServerSocket
+{
+
+////////////////////////////////////////////////////////////////
+// Methods
+////////////////////////////////////////////////////////////////
+
+  **
+  ** Bind this socket the specified well-known port on this
+  ** machine. Return true on success, false on failure.
+  **
+  native bool bind(int port)
+
+  **
+  ** Poll the server socket to see if there are any pending
+  ** connections.  If a connection is pending then setup the
+  ** specified socket instance to handle the incoming connection.
+  ** The socket passed in must be closed, and if successful will
+  ** be open on return.  Return true if a connection was successfully
+  ** accepted or false if there are no pending connections.
+  **
+  native bool accept(TcpSocket socket)
+
+  **
+  ** Is this server socket closed.
+  **
+  bool isClosed() { return closed }
+
+  **
+  ** Shutdown and close this server socket.
+  **
+  native void close()
+
+////////////////////////////////////////////////////////////////
+// Fields
+////////////////////////////////////////////////////////////////
+
+  // these fields must match layout used in C code
+  @javaPublic private bool closed = true
+  private int socket  = -1
+}

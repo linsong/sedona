@@ -1,0 +1,40 @@
+//
+// Copyright (c) 2009 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   02 Jul 09  Clif Turman    Creation
+//   07 Aug 09  Clif Turman    Added checks for sel <> acceptable range
+//
+
+**
+** Selects 1 of 4 inputs to route to output based on selector value
+**
+@niagaraIcon="module://icons/x16/control/util/select.png"
+class ASW4
+  extends Component
+{
+  @readonly property float out
+  property float in1
+  property float in2
+  property float in3
+  property float in4
+  @config property int startsAt = 0
+  property int sel
+
+  virtual override void execute()
+  {
+  	if(sel < startsAt)
+  	  out = in1
+  	else if(sel > startsAt + 3)
+  	  out = in4
+    else if(sel == startsAt)
+      out = in1
+    else if(sel == startsAt + 1)
+      out = in2
+    else if(sel == startsAt + 2)
+      out = in3
+    else 
+      out = in4
+  }
+}
