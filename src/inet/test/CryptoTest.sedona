@@ -1,0 +1,35 @@
+//
+// Copyright (c) 2008 Tridium, Inc 
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   06 MaR 08  Brian Frank  Creation
+//
+
+**
+** CryptoTest
+**
+class CryptoTest
+  extends Test
+{   
+
+  static inline Buf(20) hash
+
+////////////////////////////////////////////////////////////////
+// Test SHA-1
+////////////////////////////////////////////////////////////////
+
+  static void testSha1()
+  {
+    verifySha1("hello", 0x[aaf4c61ddcc5e8a2dabede0f3b482cd9aea9434d])
+    verifySha1("user:password", 0x[b6952aff83e7e40eb87d567243480e27c656aa46])
+  }
+  
+  static void verifySha1(Str in, Buf expected)
+  {
+    Crypto.sha1(in.toBytes(), 0, in.length(), hash.bytes, 0)
+    for (int i=0; i<20; ++i)
+      assert(hash.bytes[i] == expected.get(i))
+  }
+
+}

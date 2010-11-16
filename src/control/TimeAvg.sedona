@@ -1,0 +1,95 @@
+//
+// Copyright (c) 2010 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   15 Feb 2010  Clif Turman  Creation
+//
+
+**
+** TimeAvg object averages "in" over the configured time.
+** The actual time is marked in a resolution of scan period (see App.scanPeriod)
+** such that number of samples averaged = time/Sys.app.scanPeriod
+**
+** Note that this is NOT a running average - this object caches the average over
+** the previous time as the out value, and updates out every "time" ms.
+**
+** Unil a full time cycle has elapsed, the out is set to the average off all samples
+** collected up until that point.
+**
+** The average may be reset/restarted at any time using the "reset" action.
+**
+@niagaraIcon="module://icons/x16/control/math/average.png"
+class TimeAvg
+  extends Component
+{
+	
+	**
+	** Value averaged over last "time" period
+	**
+	@readonly property float out
+  
+  **
+  ** The value to average
+  **
+  property float in
+  
+  **
+  ** The time period over which to average the in value to get the out value
+  **
+  @unit=Units.millisecond
+  @summary
+  @config property int time = 10000
+
+  **
+  ** Reset the average computation
+  **
+  action void reset()
+  {
+  	first = true
+  	sum = 0.0
+  	execCount = 0
+  }
+
+  **
+  ** Override start to initialize averaging variables
+  **
+  virtual override void start()
+  {
+  	reset()
+  }
+
+  **
+  ** calculate the average.  If not enough samples collected, then average the ones we have.
+  **
+  virtual override void execute()
+  {
+    if(!Sys.app.isSteadyState())
+      return
+
+  	//re-calculate scansPerCalc every cycle in case App.scanPeriod has changed
+    scansPerCalc = Sys.max(1,time/Sys.app.scanPeriod)
+  	  
+  	execCount++
+    sum += in
+
+  	if(first)
+  	{
+  		out = sum/(float)execCount
+  	}
+		if(execCount >= scansPerCalc)
+ 		{
+ 			out = sum/(float)execCount
+ 			sum = 0.0
+ 			execCount = 0
+ 			first = false
+ 		}
+  }
+
+  private int scansPerCalc
+  private bool first
+  private float sum
+  private int execCount
+
+}
+
