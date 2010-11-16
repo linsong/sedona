@@ -85,7 +85,7 @@ class SoxService
   {
     // free watch slot in the application
     Sys.app.closeWatch(s)
-    
+
     // rest transfer (i.e. close it)
     s.transfer.reset()
 
@@ -145,18 +145,18 @@ class SoxService
   {
     socket.close()
     isPortOpen = false
-  }                  
-  
+  }
+
   **
   ** Execute - called once per cycle.
   **
   virtual override void execute()
-  {                                  
+  {
     // reset event counter every 250ms
     long ticks = Sys.ticks()
     if (ticks >= periodEnd)
     {
-      numEventsThisPeriod = 0  
+      numEventsThisPeriod = 0
       periodEnd = ticks + 250ms
     }
   }
@@ -200,17 +200,31 @@ class SoxService
     // if we haven't exceed our event threshold for the
     // cycle, then check for pending events to fire;
     // we configure events/sec - but actually distribute
-    // over 250ms period so UI isn't jerky    
-    int eventsPer250ms = eventsPerSec < 4 ? eventsPerSec : eventsPerSec >> 2 
+    // over 250ms period so UI isn't jerky
+    int eventsPer250ms = eventsPerSec < 4 ? eventsPerSec : eventsPerSec >> 2
     if (numEventsThisPeriod < eventsPer250ms)
     {
       if (checkForEvents())
-      {                   
-        numEventsThisPeriod++    
+      {
+        numEventsThisPeriod++
         return true
       }
     }
     return false
+  }
+
+  **
+  ** Return true if this Service will allow hibernation.
+  ** The SoxService should not allow hibernation if any
+  ** SoxSessions are open.
+  **
+  virtual bool canHibernate()
+  {
+    foreach (SoxSession s : sessions, Watch.max)
+    {
+      if (!s.closed) return false
+    }
+    return true
   }
 
 ////////////////////////////////////////////////////////////////
@@ -455,7 +469,7 @@ class SoxService
   bool isPortOpen                   // have we successfully opened the port
   long lastHouseKeeping             // time we last performed house keeping
   short lastCompId                  // last comp we fired events on in checkForEvents()
-  UserService userService           // user service                     
+  UserService userService           // user service
   long periodEnd                    // in current 250ms second period
   short numEventsThisPeriod         // number of events fired this 250ms period
 }
