@@ -222,6 +222,11 @@ public class Env
         }
       }
       h = new File(homeProp).getCanonicalFile();
+      
+      if (!h.exists())
+        System.out.println("ERROR: system property 'sedona.home' does not exist: " + h);
+      else if (!h.isDirectory())
+        System.out.println("ERROR: system property 'sedona.home' is not a directory: " + h);
     }
     catch (Exception e)
     {
