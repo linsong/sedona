@@ -40,6 +40,10 @@ class TcpSocket
   **   - Pending: return false
   **   - Success: return true, closed=false
   **   - Failed:  return true, closed=true
+	**
+	** In the case that the state after a finishConnect() call is Failed, you
+	** must still call close() to properly free the socket that was opened in the
+	** connect() call.
   **
   native bool finishConnect()
 

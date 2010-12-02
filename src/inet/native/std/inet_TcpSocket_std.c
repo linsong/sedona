@@ -76,6 +76,10 @@ Cell inet_TcpSocket_connect(SedonaVM* vm, Cell* params)
 //   - Success: return true, closed=false
 //   - Failed:  return true, closed=true
 //
+// In the case that the state after a finishConnect() call is Failed, you
+// must still call close() to properly free the socket that was opened in the
+// connect() call.
+//
 // bool finishConnect()
 //
 Cell inet_TcpSocket_finishConnect(SedonaVM* vm, Cell* params)
@@ -144,12 +148,10 @@ Cell inet_TcpSocket_close(SedonaVM* vm, Cell* params)
   socket_t sock = getSocket(self);
   bool closed   = getClosed(self);
 
-  if (!closed)
-  {
-    closesocket(sock);
-    setClosed(self, 1);
-    setSocket(self, -1);
-  }
+  closesocket(sock);
+  setClosed(self, 1);
+  setSocket(self, -1);
+
   return nullCell;
 }
 
