@@ -53,6 +53,17 @@ class PlatformService
 // Service
 ////////////////////////////////////////////////////////////////
 
+	**
+	** By default, a Platform Service assumes that the platform does not
+	** support hibernation, so this method always returns false.  If your
+	** platform supports hibernation, you should override this method to return
+	** true.
+	**
+	override virtual bool canHibernate()
+	{
+		return false
+	}
+	
   override virtual void start()
   {
     super.start()
