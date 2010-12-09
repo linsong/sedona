@@ -18,8 +18,10 @@ import java.io.InputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import sedona.KitPart;
 import sedona.kit.KitDb;
 import sedona.manifest.KitManifest;
+import sedona.manifest.ManifestDb;
 import sedona.util.FileUtil;
 import sedona.xml.XWriter;
 import sedonac.Compiler;
@@ -38,13 +40,30 @@ import sedonac.jasm.JavaClass;
 public class WriteKit
   extends CompilerStep
 {
+//////////////////////////////////////////////////////////////////////////
+// Constructor
+//////////////////////////////////////////////////////////////////////////
 
   public WriteKit(Compiler compiler)
   {
     super(compiler);
   }
 
+//////////////////////////////////////////////////////////////////////////
+// CompilerStep
+//////////////////////////////////////////////////////////////////////////
+
   public void run()
+  {
+    writeKit();
+    writeManifest();
+  }
+  
+//////////////////////////////////////////////////////////////////////////
+// Write Kit
+//////////////////////////////////////////////////////////////////////////
+ 
+  private void writeKit()
   {
     IrKit kit = compiler.ir;               
     KitManifest manifest = compiler.manifest;
@@ -97,7 +116,7 @@ public class WriteKit
     XWriter out = new XWriter(zout);
     compiler.manifest.encodeXml(out);
     out.flush();
-    zout.closeEntry();
+    zout.closeEntry(); 
   }
 
   private void writeType(ZipOutputStream zout, IrType t)
@@ -147,6 +166,42 @@ public class WriteKit
     FileUtil.pipe(in, zout);
     in.close();
     zout.closeEntry();
+  }
+  
+//////////////////////////////////////////////////////////////////////////
+// Write Manifest
+//////////////////////////////////////////////////////////////////////////
+  
+  private void writeManifest()
+  {
+    // As part of kit compilation, always write the kit manifest.
+    // By default, we write it to the ManifestDb location, but if
+    // an "-outDir" command-line option was used, we write it to
+    // <outdir>/manifests/<kit>/<manifest>
+    
+    KitManifest manifest = compiler.manifest;
+    KitPart part = new KitPart(manifest.name, manifest.checksum);
+    File file = ManifestDb.toFile(part);
+    
+    if (compiler.outDir != null)
+    {
+      file = new File(new File(new File(compiler.outDir, "manifests"), part.name), file.getName());
+      File dir = file.getParentFile();
+    }
+    
+    log.info("  WriteManifest [" + file + "]");
+    file.getParentFile().mkdirs();
+    try
+    {
+      XWriter xml = new XWriter(file);
+      manifest.encodeXml(xml);
+      xml.close();
+    }
+    catch (Exception e)
+    {
+      e.printStackTrace();
+      throw err("Cannot write kit manifest", new Location(file));
+    }
   }
 
 }
