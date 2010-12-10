@@ -158,6 +158,15 @@ class PlatformService
   @readonly @asStr property Buf(128) platformId
   
   **
+  ** The platform version.  This should be a Dewey Decimal style
+  ** version (x.y.z).  The default value is "0" and should be used
+  ** to indicate that the platform does not have a meaningful concept
+  ** for platform version.
+  **
+  @summary=false
+  @readonly @asStr property Buf(17) platformVer = "0"
+  
+  **
   ** The amount of available runtime memory, in bytes. This property
   ** must be updated during execute()  
   **
