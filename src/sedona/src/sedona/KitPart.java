@@ -8,8 +8,11 @@
 
 package sedona;
 
-import sedona.manifest.*;
-import sedona.util.*;
+import sedona.manifest.KitManifest;
+import sedona.manifest.ManifestDb;
+import sedona.util.TextUtil;
+import sedona.util.Version;
+
 
 /**
  * KitPart is used to identify a specific version of a Kit by
@@ -72,7 +75,7 @@ public class KitPart
   {                          
     this.name     = name;
     this.checksum = checksum;
-    this.key      = name + "-" + Integer.toHexString(checksum);
+    this.key      = name + "-" + TextUtil.intToHexString(checksum);
     this.version  = version;
   }
 

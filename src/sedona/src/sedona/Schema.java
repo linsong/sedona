@@ -8,10 +8,19 @@
 
 package sedona;
 
-import java.util.*;
-import sedona.manifest.*;
-import sedona.util.*;
-import sedona.xml.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
+
+import sedona.manifest.KitManifest;
+import sedona.manifest.ManifestDb;
+import sedona.util.Log;
+import sedona.util.TextUtil;
+import sedona.xml.XElem;
+import sedona.xml.XException;
+import sedona.xml.XWriter;
+
 
 /**
  * Schema represents a list of kits with a specific schema
@@ -276,7 +285,7 @@ public class Schema
       out.w("  <kit ")
          .attr("name", kit.name).w(" ");
       if (!nochk)
-        out.attr("checksum", Integer.toHexString(kit.checksum));
+        out.attr("checksum", TextUtil.intToHexString(kit.checksum));
       out.w(" />").nl();
     }
     out.write("</schema>\n");
