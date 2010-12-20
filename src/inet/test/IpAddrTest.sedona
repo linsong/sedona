@@ -16,6 +16,7 @@ class IpAddrTest
 
   static inline IpAddr a
   static inline IpAddr b
+  static inline Buf(16) buf
 
 ////////////////////////////////////////////////////////////////
 // Test Parse
@@ -74,6 +75,31 @@ class IpAddrTest
     b.set(a)
     verifyNotation(a, "1.2.3.4")
     verifyNotation(b, "1.2.3.4")
+  }
+  
+  public static void testLoad()
+  {
+  	// invalid (size not 4 or 16)
+  	assert(!b.loadBuf(buf))
+  	
+  	assert(a.parse("192.168.0.1"))
+  	buf.bytes[0] = 0xC0
+  	buf.bytes[1] = 0xA8
+  	buf.bytes[2] = 0x00
+  	buf.bytes[3] = 0x01
+  	buf.size = 4
+  	b.loadBuf(buf)
+  	assert(a.equals(b))
+  	
+  	assert(a.parse("1234::ABCD"))
+  	Sys.setBytes(0, buf.bytes, 0, 16)
+  	buf.size = 16
+  	buf.bytes[0] = 0x12
+  	buf.bytes[1] = 0x34
+  	buf.bytes[14] = 0xAB
+  	buf.bytes[15] = 0xCD
+  	b.loadBuf(buf)
+  	assert(a.equals(b))
   }
 
   public static void verifyNotation(IpAddr a, Str notation)

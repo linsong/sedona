@@ -31,7 +31,9 @@ class IpAddr
       return parseIPv4(notation)
     else
       return parseIPv6(notation)
-  }            
+  }
+  
+	
 
   **  
   ** Parse dotted quad IPv4 "d.d.d.d"
@@ -145,7 +147,39 @@ class IpAddr
   void set(IpAddr addr)
   {
     Sys.copy(addr.addr, 0, this.addr, 0, 16)
-  }                   
+  }           
+  
+  **
+  ** Convenience for loadBytes(addr.bytes, addr.size)
+  **
+  bool loadBuf(Buf addr)
+  {
+  	return loadBytes(addr.bytes, addr.size)
+  }
+  
+  **
+  ** Set the IpAddr using a raw byte array.  Returns true if the length
+  ** of the addr is 4-bytes (IPv4) or 16 bytes (IPv6).  No validation
+  ** is done on the raw addr.
+  **
+  bool loadBytes(byte[] addr, int len)
+  {
+  	if (len == 16)
+  	{
+  		Sys.copy(addr, 0, this.addr, 0, 16)
+  		return true
+  	}
+  	else if (len == 4) 
+  	{
+  		Sys.setBytes(0, this.addr, 0, 10)
+  		this.addr[10] = 0xff
+  		this.addr[11] = 0xff
+  		Sys.copy(addr, 0, this.addr, 12, 4)
+  		return true
+  	}
+  	
+  	return false
+  }
   
   **
   ** Return if this address is equivalent to that address.
