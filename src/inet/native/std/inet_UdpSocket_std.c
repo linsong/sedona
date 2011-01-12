@@ -184,6 +184,10 @@ Cell inet_UdpSocket_send(SedonaVM* vm, Cell* params)
   if (datagram.buf == NULL) return falseCell;
   if (datagram.addr == 0) return falseCell;
 
+  // Issue 18436 - the inet natives currently only create ipv4 sockets,
+  // so we need to fail-fast if the addr is not ipv4.
+  if (!inet_isIPv4(datagram.addr)) return falseCell;
+
   inet_toSockaddr(&addr, datagram.addr, datagram.port);
   buf = datagram.buf + datagram.off;
   len = datagram.len;
