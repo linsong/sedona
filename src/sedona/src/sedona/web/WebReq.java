@@ -104,7 +104,8 @@ public class WebReq extends WebMsg
   public void readBinary(InputStream in)
     throws IOException
   {
-    WebUtil.readU2(in);   // magic
+    int magic = WebUtil.readU2(in);   // magic
+    if (magic != 0x6836) throw new IOException("Bad magic:0x"+Integer.toHexString(magic));
     method = WebUtil.decompressMethod(in.read());
     uri = WebUtil.readStr(in);
     readHeadersBinary(in);
