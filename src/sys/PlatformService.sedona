@@ -17,8 +17,8 @@ class PlatformService
 { 
 
   **
-  ** Lookup the platform service for this VM.  Return
-  ** null if the application hasn't boot yet or is missing
+  ** Lookup the platform service for this VM.  Return null 
+  ** if the application hasn't booted yet or is missing
   ** a platform service.
   **
   static PlatformService lookup()
@@ -53,17 +53,6 @@ class PlatformService
 // Service
 ////////////////////////////////////////////////////////////////
 
-	**
-	** By default, a Platform Service assumes that the platform does not
-	** support hibernation, so this method always returns false.  If your
-	** platform supports hibernation, you should override this method to return
-	** true.
-	**
-	override virtual bool canHibernate()
-	{
-		return false
-	}
-	
   override virtual void start()
   {
     super.start()
@@ -74,6 +63,19 @@ class PlatformService
   {
     refreshMemory()
   }
+
+
+  **
+  ** By default, a Platform Service assumes that the platform does not
+  ** support hibernation, so this method always returns false.  If your
+  ** platform supports hibernation, you should override this method to 
+  ** return true.
+  **
+  override virtual bool canHibernate()
+  {
+    return false
+  }
+
 
 ////////////////////////////////////////////////////////////////
 // PlatformService
