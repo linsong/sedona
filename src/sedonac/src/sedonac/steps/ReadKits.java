@@ -105,13 +105,9 @@ public class ReadKits
   {
     try
     {
-      long t1 = System.currentTimeMillis();
       XElem xml = XParser.make(loc.file, in).parse();
       KitManifest manifest = new KitManifest(kit.name);
       manifest.decodeXml(xml);
-      long t2 = System.currentTimeMillis();
-      //log.verbose("    Read manifest [" + (t2-t1) + "ms]");
-
       kit.manifest = manifest;
       kit.version = manifest.version;
     }

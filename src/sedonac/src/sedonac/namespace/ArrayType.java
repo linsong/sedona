@@ -53,6 +53,7 @@ public class ArrayType
   public Type base() { return null; }
   public boolean is(Type x) { return TypeUtil.is(this, x); }
   public boolean equals(Object o) { return TypeUtil.equals(this, o); }
+  public int hashCode() { return signature().hashCode(); }
   public String toString() { return signature(); }
 
   public String signature()
@@ -117,12 +118,15 @@ public class ArrayType
   {
     public final boolean equals(Object that)
     {
+      if (this == that) return true;
+      if (that == null) return false;
       if (getClass() == that.getClass())
         return eq((Len)that);
       else
         return false;
     }
-
+    public final int hashCode() { return toString().hashCode(); }
+    
     public abstract String toString();
     public abstract int val();
     protected abstract boolean eq(Len len);

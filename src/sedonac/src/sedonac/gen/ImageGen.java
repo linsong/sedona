@@ -10,15 +10,29 @@ package sedonac.gen;
 
 import java.util.*;
 import sedona.Buf;
-import sedona.manifest.*;
-import sedona.util.*;
-import sedona.xml.*;
-import sedonac.*;
+import sedona.manifest.TypeManifest;
+import sedona.util.TextUtil;
 import sedonac.Compiler;
-import sedonac.ast.*;
-import sedonac.ir.*;
-import sedonac.namespace.*;
-import sedonac.scode.*;
+import sedonac.CompilerException;
+import sedonac.CompilerSupport;
+import sedonac.Location;
+import sedonac.ast.Expr;
+import sedonac.ir.IrAddressable;
+import sedonac.ir.IrField;
+import sedonac.ir.IrKit;
+import sedonac.ir.IrMethod;
+import sedonac.ir.IrOp;
+import sedonac.ir.IrPrimitive;
+import sedonac.ir.IrSlot;
+import sedonac.ir.IrType;
+import sedonac.ir.IrVTable;
+import sedonac.namespace.Method;
+import sedonac.namespace.PrimitiveType;
+import sedonac.namespace.Slot;
+import sedonac.namespace.Type;
+import sedonac.namespace.TypeUtil;
+import sedonac.scode.SCode;
+import sedonac.scode.SCodeImage;
 
 /**
  * ImageGen

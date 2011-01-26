@@ -1204,8 +1204,6 @@ public class CodeAsm
   {
     Field field = expr.field;
     Type type = field.type();
-    String qname = expr.field.qname(); 
-    boolean wide = type.isWide();
 
     if (field.isDefine())
     {
@@ -1257,7 +1255,6 @@ public class CodeAsm
   {
     Field field = expr.field;
     Type type = field.type();
-    String qname = expr.field.qname();
 
     if (field.isDefine())
       throw err("Cannot store to a define field", expr.loc);
@@ -1379,7 +1376,6 @@ public class CodeAsm
   private void call(Expr.Call call)
   {
     Method m = call.method;
-    String qname = m.qname();         
     Type ret = m.returnType();
     boolean isVoid = ret.isVoid();
     Expr[] args = call.args; 

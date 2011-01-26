@@ -5,11 +5,16 @@
 
 package sedonac.analysis;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 
 import sedonac.Compiler;
-import sedonac.*;
-import sedonac.ast.*;
+import sedonac.CompilerStep;
+import sedonac.ast.Expr;
+import sedonac.ast.Stmt;
 
 /**
  * Checks for definite assignment of all local variables declared in
@@ -440,7 +445,7 @@ public class DefiniteAssignmentAnalysis extends CompilerStep
 // Inner Classes
 //////////////////////////////////////////////////////////////////////////
 
-  private class DefinedSets
+  private static class DefinedSets
   {
     public DefinedSets(){}
     

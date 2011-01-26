@@ -48,6 +48,7 @@ public class StubType
   public Type base() { return base; }
   public boolean is(Type x) { return TypeUtil.is(this, x); }
   public boolean equals(Object o) { return TypeUtil.equals(this, o); }
+  public int hashCode() { return signature().hashCode(); }
   public int sizeof() { return 0; }
   public String toString() { return signature(); }
 

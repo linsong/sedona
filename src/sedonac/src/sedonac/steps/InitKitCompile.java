@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 import sedona.Env;
-import sedona.util.FileUtil;
 import sedona.util.VendorUtil;
 import sedona.util.Version;
 import sedona.xml.XElem;
@@ -144,9 +143,15 @@ public class InitKitCompile
     
     // check depend on sys
     boolean onSys = kit.name.equals("sys");
-    for (int i=0; i<kit.depends.length; ++i)
-      if (kit.depends[i].depend.name().equals("sys")) { onSys = true; break; }
-    if (!onSys) err("Must declare dependency on 'sys'", new Location(xml != null ? xml : this.xml));
+    for (int i = 0; i < kit.depends.length; ++i)
+    {
+      if (kit.depends[i].depend.name().equals("sys"))
+      {
+        onSys = true;
+        break;
+      }
+    }
+    if (!onSys) err("Must declare dependency on 'sys'", new Location(xml));
   }
   
   private void parseIncludes(KitDef kit, XElem[] xincludes)

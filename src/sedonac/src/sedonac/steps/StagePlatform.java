@@ -7,18 +7,27 @@
 //
 package sedonac.steps;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Properties;
 
 import sedona.Env;
-import sedona.platform.*;
-import sedona.xml.*;
+import sedona.platform.NativeManifest;
+import sedona.platform.PlatformManifest;
+import sedona.xml.XWriter;
 import sedonac.Compiler;
-import sedonac.*;
-import sedonac.ir.*;
-import sedonac.namespace.*;
-import sedonac.platform.*;
-import sedonac.util.*;
+import sedonac.CompilerStep;
+import sedonac.Location;
+import sedonac.ir.IrKit;
+import sedonac.ir.IrMethod;
+import sedonac.namespace.NativeId;
+import sedonac.namespace.Slot;
+import sedonac.platform.PlatformDef;
+import sedonac.util.VarResolver;
 
 /**
  * Creates and stages the platform manifest and sedonaPlatform.h header file.
@@ -168,7 +177,7 @@ public class StagePlatform extends CompilerStep
     }
   }
   
-  private class NativeComparator implements Comparator
+  private static class NativeComparator implements Comparator
   {
     public int compare(Object o1, Object o2)
     {

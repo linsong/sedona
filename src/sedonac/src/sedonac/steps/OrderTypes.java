@@ -12,12 +12,16 @@
 
 package sedonac.steps;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
 
-import sedonac.*;
 import sedonac.Compiler;
-import sedonac.ast.*;
-import sedonac.namespace.*;
+import sedonac.CompilerStep;
+import sedonac.Location;
+import sedonac.ast.TypeDef;
+import sedonac.namespace.Type;
 
 /**
  * OrderTypes orders the list of Types from top to bottom such that any
@@ -107,7 +111,6 @@ public abstract class OrderTypes
     // in which case we have cyclic inheritance
     if (processing.containsKey(qname))
     {
-      Location loc = new Location(qname);
       err("Cyclic inheritance: " + qname, toLoc(t));
       return;
     }

@@ -8,8 +8,8 @@
 
 package sedonac.ast;
 
-import java.util.*;
-import sedona.Env;
+import java.util.ArrayList;
+
 import sedona.Value;
 import sedona.Bool;
 import sedona.Int;
@@ -18,11 +18,14 @@ import sedona.Float;
 import sedona.Double;
 import sedona.Str;
 import sedona.Buf;
-import sedona.util.*;
-import sedonac.*;
-import sedonac.parser.*;
-import sedonac.namespace.*;
-import sedonac.jasm.*;
+import sedonac.Location;
+import sedonac.jasm.JavaClassAsm;
+import sedonac.namespace.Method;
+import sedonac.namespace.Namespace;
+import sedonac.namespace.Slot;
+import sedonac.namespace.Type;
+import sedonac.namespace.TypeUtil;
+import sedonac.parser.Token;
 
 /**
  * Expr

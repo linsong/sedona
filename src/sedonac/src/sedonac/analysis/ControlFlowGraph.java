@@ -5,9 +5,16 @@
 
 package sedonac.analysis;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Stack;
 
-import sedonac.ast.*;
+import sedonac.ast.Block;
+import sedonac.ast.Expr;
+import sedonac.ast.MethodDef;
+import sedonac.ast.Stmt;
 
 /**
  * Builds a control flow graph (CFG) for a method definition.
@@ -466,7 +473,7 @@ public final class ControlFlowGraph
 // LoopItem
 //////////////////////////////////////////////////////////////////////////
   
-  private class LoopItem
+  private static class LoopItem
   {
     public LoopItem(BasicBlock breakTarget, BasicBlock contTarget)
     {

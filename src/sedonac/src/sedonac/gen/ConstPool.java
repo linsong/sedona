@@ -9,14 +9,14 @@
 package sedonac.gen;
 
 import java.util.*;
+
 import sedona.Buf;
-import sedona.manifest.*;
-import sedonac.*;
 import sedonac.Compiler;
-import sedonac.ast.*;
-import sedonac.ir.*;
-import sedonac.namespace.*;
-import sedonac.scode.*;
+import sedonac.CompilerSupport;
+import sedonac.ast.Expr;
+import sedonac.ir.IrAddressable;
+import sedonac.namespace.Slot;
+import sedonac.namespace.Type;
 
 /**
  * ConstPool manages the pool of addressable constants:
@@ -495,17 +495,23 @@ public class ConstPool
     }      
     
     public int hashCode()
-    {                     
-      return hash;
+    {
+     return hash;
     }             
     
     public boolean equals(Object that)
     {
+      if (this == that)
+        return true;
+      if (that == null)
+        return false;
+      if (!(that instanceof IrArray))
+        return false;
       IrArray x = (IrArray)that;
-      if (!of.equals(x.of)) return false;
-      if (array.length != x.array.length) return false;
-      for (int i=0; i<array.length; ++i)  
-        if (!array[i].equals(x.array[i])) return false;
+      if (!of.equals(x.of))
+        return false;
+      if (!Arrays.equals(array, x.array))
+        return false;
       return true;
     }
 

@@ -8,10 +8,16 @@
 
 package sedonac.ir;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import sedona.Facets;
-import sedonac.*;
-import sedonac.namespace.*;
+import sedonac.Location;
+import sedonac.namespace.ArrayType;
+import sedonac.namespace.Kit;
+import sedonac.namespace.Slot;
+import sedonac.namespace.Type;
+import sedonac.namespace.TypeUtil;
 
 /**
  * IrType
@@ -54,6 +60,7 @@ public class IrType
   public Type base() { return base; }
   public boolean is(Type x) { return TypeUtil.is(this, x); }
   public boolean equals(Object o) { return TypeUtil.equals(this, o); }
+  public int hashCode() { return signature().hashCode(); }
   public String toString() { return signature(); }
 
   public boolean isObj()        { return qname.equals("sys::Obj"); }

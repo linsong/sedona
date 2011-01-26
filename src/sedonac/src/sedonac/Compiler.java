@@ -8,19 +8,68 @@
 
 package sedonac;
 
-import java.io.*;
-import java.util.*;
-import sedona.manifest.*;
-import sedona.util.*;
-import sedona.xml.*;
-import sedonac.ast.*;
-import sedonac.ir.*;
-import sedonac.jasm.*;
-import sedonac.namespace.*;
-import sedonac.platform.*;
-import sedonac.steps.*;
-import sedonac.scode.*;
-import sedonac.translate.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+
+import sedona.manifest.KitManifest;
+import sedona.util.Version;
+import sedona.xml.XElem;
+import sedona.xml.XException;
+import sedona.xml.XParser;
+import sedonac.ast.KitDef;
+import sedonac.ir.IrFlat;
+import sedonac.ir.IrKit;
+import sedonac.ir.IrMethod;
+import sedonac.jasm.JavaClass;
+import sedonac.namespace.Namespace;
+import sedonac.platform.PlatformDef;
+import sedonac.scode.SCodeImage;
+import sedonac.steps.Assemble;
+import sedonac.steps.AssembleJava;
+import sedonac.steps.AssignSlotIds;
+import sedonac.steps.BuildManifest;
+import sedonac.steps.CheckErrors;
+import sedonac.steps.CheckHtmlLinks;
+import sedonac.steps.CompileDir;
+import sedonac.steps.ConstFolding;
+import sedonac.steps.ConvertAppFile;
+import sedonac.steps.FieldLayout;
+import sedonac.steps.FilterTestClasses;
+import sedonac.steps.FindTestCases;
+import sedonac.steps.GenNativeTable;
+import sedonac.steps.Generate;
+import sedonac.steps.Inherit;
+import sedonac.steps.InitImageCompile;
+import sedonac.steps.InitKitCompile;
+import sedonac.steps.InitStagePlatform;
+import sedonac.steps.InlineConsts;
+import sedonac.steps.InstanceInit;
+import sedonac.steps.MountAstIntoNamespace;
+import sedonac.steps.Normalize;
+import sedonac.steps.NormalizeExpr;
+import sedonac.steps.OptimizeIr;
+import sedonac.steps.OrderAstTypes;
+import sedonac.steps.OrderIrTypes;
+import sedonac.steps.OrderStaticInits;
+import sedonac.steps.Parse;
+import sedonac.steps.ReadKits;
+import sedonac.steps.ResolveDepends;
+import sedonac.steps.ResolveExpr;
+import sedonac.steps.ResolveFacets;
+import sedonac.steps.ResolveIR;
+import sedonac.steps.ResolveIncludes;
+import sedonac.steps.ResolveNatives;
+import sedonac.steps.ResolveTypes;
+import sedonac.steps.StageNatives;
+import sedonac.steps.StagePlatform;
+import sedonac.steps.StaticAnalysis;
+import sedonac.steps.TableOfContents;
+import sedonac.steps.VTableLayout;
+import sedonac.steps.WriteDoc;
+import sedonac.steps.WriteImage;
+import sedonac.steps.WriteKit;
+import sedonac.translate.Translation;
 
 /**
  * Main command line entry point for the Sedona compiler.
@@ -67,8 +116,14 @@ public class Compiler
     }
 
     // save to field and attempt to normalize
-    this.input = f;
-    try { this.input = f.getCanonicalFile(); } catch (IOException e) {}
+    try
+    {
+      this.input = f.getCanonicalFile();
+    }
+    catch (IOException e)
+    {
+      this.input = f;
+    }
 
     // if file ends with ".sab" then convert to XML .sax file
     if (f.getName().endsWith(".sab")) { appBinaryToXml(); return; }

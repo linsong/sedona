@@ -47,6 +47,7 @@ public class PrimitiveType
   public Type base() { return null; }
   public boolean is(Type x) { return TypeUtil.is(this, x); }
   public boolean equals(Object o) { return TypeUtil.equals(this, o); }
+  public int hashCode() { return signature().hashCode(); }
   public int sizeof() { return sizeof; }
   public String toString() { return signature(); }
 
