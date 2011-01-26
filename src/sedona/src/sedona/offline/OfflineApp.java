@@ -585,7 +585,7 @@ public class OfflineApp
 
       // decode component
       Decoded d = OfflineComponent.decodeBinary(app, in, id);
-      decoded.put(Integer.valueOf(d.comp.id), d);
+      decoded.put(new Integer(d.comp.id), d);
 
       // add to lookup table
       if (d.comp != app)
@@ -639,7 +639,7 @@ public class OfflineApp
         comp.kidsByName.put(kid.name, kid);
 
         // lookup sibling
-        Decoded dKid = (Decoded)decoded.get(Integer.valueOf(kid.id));
+        Decoded dKid = (Decoded)decoded.get(new Integer(kid.id));
         if (dKid.nextSiblingId == 0xffff) break;
 
         kid = lookup(dKid.nextSiblingId);

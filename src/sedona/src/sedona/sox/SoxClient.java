@@ -916,7 +916,7 @@ public class SoxClient
     for (int i=0; i<comp.children.length; ++i)
       match.put(new Integer(comp.children[i]), "x");
     for (int i=0; i<ids.length; ++i)
-      if (match.remove(Integer.valueOf(ids[i])) == null)
+      if (match.remove(new Integer(ids[i])) == null)
         throw new IllegalArgumentException("childrenIds don't match current");
     if (match.size() != 0)
       throw new IllegalArgumentException("childrenIds don't match current");
