@@ -8,10 +8,10 @@
 
 package sedona;
 
-import java.util.*;
-import sedona.manifest.*;
-import sedona.util.*;
-import sedona.xml.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import sedona.manifest.TypeManifest;
 
 /**
  * Type is used to represent a Sedona type during runtime
@@ -50,6 +50,21 @@ public class Type
   public int compareTo(Object that)
   {
     return toString().compareTo(that.toString());
+  }
+  
+  /**
+   * Equality based on string qname.
+   */
+  public boolean equals(Object obj)
+  {
+    if (obj instanceof Type)
+      return ((Type)obj).toString().equals(toString());
+    return false;
+  }
+  
+  public int hashCode()
+  {
+    return toString().hashCode();
   }
 
   /**

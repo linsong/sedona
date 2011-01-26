@@ -8,8 +8,7 @@
 
 package sedona;
 
-import java.io.*;
-import sedona.util.*;
+import java.io.IOException;
 
 /**
  * Double represents a 64-bit float value

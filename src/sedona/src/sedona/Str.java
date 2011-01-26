@@ -8,8 +8,9 @@
 
 package sedona;
 
-import java.io.*;
-import sedona.util.*;
+import java.io.IOException;
+
+import sedona.util.TextUtil;
 
 /**
  * Str represents a null terminated ASCII string.
@@ -46,6 +47,10 @@ public final class Str
     return false;
   }                 
 
+  public int hashCode()
+  {
+    return val.hashCode();
+  }
   
 ////////////////////////////////////////////////////////////////
 // Utils

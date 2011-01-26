@@ -8,11 +8,7 @@
 
 package sedona;
 
-import java.io.*;
-import java.util.*;
-import sedona.sox.*;
-import sedona.util.*;
-import sedona.xml.*;
+import java.util.ArrayList;
 
 /**
  * Component is the abstract base class of
@@ -87,7 +83,6 @@ public abstract class Component
     // now the names in temp are in reverse order, so we
     // need to order them so that my simple name is last
     StringBuffer s = new StringBuffer();
-    int count = acc.size();
     for(int i=acc.size()-2; i>=0; --i)
       s.append('/').append(acc.get(i));
 
@@ -108,6 +103,14 @@ public abstract class Component
   public final boolean equals(Object obj)
   {
     return this == obj;
+  }
+  
+  /**
+   * Return built-in <code>java.lang.Object.hashCode()</code>.
+   */
+  public final int hashCode()
+  {
+    return super.hashCode();
   }
 
 //////////////////////////////////////////////////////////////////////////

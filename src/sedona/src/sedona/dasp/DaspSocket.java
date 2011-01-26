@@ -171,7 +171,7 @@ public class DaspSocket
   {
     synchronized (sessions)
     {
-      return (DaspSession)sessions.get(new Integer(id));
+      return (DaspSession)sessions.get(Integer.valueOf(id)); 
     }
   }     
 
@@ -366,7 +366,7 @@ public class DaspSocket
       {
         int r = rand.nextInt() & 0xffff;
         if (r == 0xffff) continue;
-        if (sessions.get(id = new Integer(r)) == null) break;
+        if (sessions.get(id = Integer.valueOf(r)) == null) break;
       }       
       
       // create new session
@@ -392,7 +392,7 @@ public class DaspSocket
   {
     synchronized (sessions)
     {                     
-      sessions.remove(new Integer(s.id));
+      sessions.remove(Integer.valueOf(s.id)); 
     }
   }
 

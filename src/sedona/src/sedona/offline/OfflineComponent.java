@@ -8,11 +8,20 @@
 
 package sedona.offline;
 
-import java.io.*;
-import java.util.*;
-import sedona.*;
-import sedona.util.*;
-import sedona.xml.*;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import sedona.Buf;
+import sedona.Component;
+import sedona.Kit;
+import sedona.Link;
+import sedona.Slot;
+import sedona.Type;
+import sedona.Value;
+import sedona.xml.XElem;
+import sedona.xml.XException;
+import sedona.xml.XWriter;
 
 /**
  * OfflineComponent models a Sedona component within an
@@ -445,7 +454,6 @@ public class OfflineComponent
   int id = -1;
   String name;
   OfflineComponent parent;
-  boolean kidsLoaded;
   ArrayList kids;
   HashMap kidsByName;
 

@@ -8,9 +8,23 @@
 
 package sedona;
 
-import java.io.*;   
-import java.util.zip.*;
-import sedona.util.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.EOFException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.io.RandomAccessFile;
+import java.io.StringWriter;
+import java.util.zip.CRC32;
+
+import sedona.util.Base64;
+import sedona.util.TextUtil;
+
 
 /**
  * Buf is a dynamically growable byte array which is designed

@@ -8,8 +8,7 @@
 
 package sedona;
 
-import java.io.*;
-import sedona.util.*;
+import java.io.IOException;
 
 /**
  * Short represents an unsigned 16-bit byte value
@@ -58,6 +57,11 @@ public final class Short
     return false;
   }
 
+  public int hashCode()
+  {
+    return val;
+  }
+  
 //////////////////////////////////////////////////////////////////////////
 // IO
 //////////////////////////////////////////////////////////////////////////
@@ -88,5 +92,6 @@ public final class Short
 //////////////////////////////////////////////////////////////////////////
 
   public final int val;
+
 }
 

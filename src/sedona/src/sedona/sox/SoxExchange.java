@@ -8,10 +8,6 @@
 
 package sedona.sox;
 
-import java.io.*;
-import sedona.*;
-import sedona.util.*;
-
 /**
  * SoxExchange manages the connection requests and responses.
  */
@@ -49,8 +45,6 @@ class SoxExchange
     // if we have more than 255, break it up into chunks of 255
     if (req.length > 0xff) 
       return chunkRequests(req);
-    
-    char firstCmd = (char)req[0].command();
         
     synchronized (this)
     {
@@ -63,8 +57,6 @@ class SoxExchange
       // set req/res fields and init times
       this.requests = req;
       this.responses = new Msg[req.length];
-      long start = Env.ticks();
-      long lastRetry = 0; 
       
       // send them on their way; this call will block if we fill
       // up our send window, but that is ok because the SoxReceiver

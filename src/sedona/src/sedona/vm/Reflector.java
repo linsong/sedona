@@ -53,8 +53,6 @@ public class Reflector
   void initKitConsts()
     throws Exception
   {                            
-    long t1 = System.currentTimeMillis();  
-    
     // allocate Sys.kits
     Kit[] kits = schema.kits;
     Object[] rkits = (Object[])Array.newInstance(kitCls, schema.kits.length);
@@ -77,16 +75,11 @@ public class Reflector
     // components which were statically allocated and 
     // weren't ready for bootstrap
     finishCompTypes();
-      
-    long t2 = System.currentTimeMillis();  
-//    System.out.println("initKitConsts (" + (t2-t1) + "ms)");
   }  
   
   void initKitConst(Kit kit)               
     throws Exception
-  { 
-    long t1 = System.currentTimeMillis();         
-    
+  {     
     // map to KitConst class                      
     Class cls = toKitConstCls(kit);
     
@@ -158,16 +151,10 @@ public class Reflector
         set(rslot, "accessor", acc);
       }
     }                                             
-    
-    long t2 = System.currentTimeMillis();         
-    //System.out.println("initKitConst (" + kit.name + " " + (t2-t1) + "ms)");
   }                                 
 
-  void finishKitConst(Kit kit)               
-    throws Exception
-  {                           
-    long t1 = System.currentTimeMillis();         
-    
+  void finishKitConst(Kit kit) throws Exception
+  { 
     // map to KitConst class                      
     Class cls = toKitConstCls(kit);
     
@@ -191,9 +178,6 @@ public class Reflector
           rslots[j] = ((Object[])get(rtype(slot.parent), "slots"))[j];
       }
     }      
-
-    long t2 = System.currentTimeMillis();         
-    //System.out.println("finishKitConst (" + kit.name + " " + (t2-t1) + "ms)");
   }                
 
   void initLogs()

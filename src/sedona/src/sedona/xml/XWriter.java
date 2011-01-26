@@ -7,8 +7,15 @@
 
 package sedona.xml;
 
-import java.io.*;
-import java.util.zip.*;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 /**
  * XWriter is a specialized Writer that provides

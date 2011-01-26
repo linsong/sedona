@@ -254,6 +254,13 @@ public class Abstime
     else if (this.millis == t.millis) return 0;
     else return 1;
   }
+  
+  public boolean equals(Object that)
+  {
+    if (that instanceof Abstime)
+      return ((Abstime)that).millis == this.millis;
+    return false;
+  }
 
   /**
    * Return true if the specified time is before this time.

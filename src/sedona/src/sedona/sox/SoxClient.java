@@ -8,12 +8,29 @@
 
 package sedona.sox;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
-import sedona.*;
-import sedona.dasp.*;
-import sedona.util.*;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.InetAddress;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Properties;
+
+import sedona.Buf;
+import sedona.Component;
+import sedona.Env;
+import sedona.Kit;
+import sedona.KitPart;
+import sedona.Link;
+import sedona.Schema;
+import sedona.Slot;
+import sedona.Str;
+import sedona.Type;
+import sedona.Value;
+import sedona.dasp.DaspMsg;
+import sedona.dasp.DaspSession;
+import sedona.dasp.DaspSocket;
+import sedona.util.Version;
 
 /**
  * SoxClient implements the client side functionality
@@ -899,7 +916,7 @@ public class SoxClient
     for (int i=0; i<comp.children.length; ++i)
       match.put(new Integer(comp.children[i]), "x");
     for (int i=0; i<ids.length; ++i)
-      if (match.remove(new Integer(ids[i])) == null)
+      if (match.remove(Integer.valueOf(ids[i])) == null)
         throw new IllegalArgumentException("childrenIds don't match current");
     if (match.size() != 0)
       throw new IllegalArgumentException("childrenIds don't match current");
@@ -1348,7 +1365,6 @@ public class SoxClient
   SoxComponent[] cache = new SoxComponent[1024];
   SoxExchange exchange;
   SoxReceiver receiver;
-  Object sendLock = new Object();
   FileTransfer fileTransfer;
   volatile boolean closing;
 

@@ -8,8 +8,7 @@
 
 package sedona;
 
-import java.io.*;
-import sedona.util.*;
+import java.io.IOException;
 
 /**
  * Long represents an signed 64 bit integer value

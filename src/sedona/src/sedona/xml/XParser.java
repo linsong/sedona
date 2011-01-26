@@ -7,8 +7,13 @@
 
 package sedona.xml;
 
-import java.io.*;
-import java.util.zip.*;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.EOFException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * XParser is a very simple lightweight XML parser.  It

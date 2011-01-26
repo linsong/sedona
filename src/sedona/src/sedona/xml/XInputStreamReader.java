@@ -7,8 +7,12 @@
 
 package sedona.xml;
 
-import java.io.*;
-import java.util.zip.*;
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.io.UTFDataFormatException;
+import java.util.zip.ZipInputStream;
 
 /**
  * XInputStreamRead is used to read a XML byte stream into a stream
@@ -108,7 +112,6 @@ public class XInputStreamReader
     throws IOException
   {
     if (!autoDetected) autoDetect();
-    int last = off+len;
     for(int i=0; i<len; ++i)
     {
       int c = read();
@@ -162,7 +165,6 @@ public class XInputStreamReader
     if (match(sig, 0x50, 0x4b, 0x03, 0x04))
     {
       ZipInputStream unzip = new ZipInputStream(in);
-      ZipEntry entry = unzip.getNextEntry();
       this.zipped = true;
       this.in = new BufferedInputStream(unzip);
       autoDetect();

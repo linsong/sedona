@@ -8,12 +8,10 @@
 
 package sedona.kit;
 
-import java.io.*;
-import java.util.*;
-import java.util.zip.*;
-import sedona.*;
-import sedona.util.*;
-import sedona.xml.*;
+import java.io.File;
+
+import sedona.util.TextUtil;
+import sedona.util.Version;
 
 /**
  * KitFile models a file containing a specific kit version.
@@ -67,6 +65,21 @@ public class KitFile
     return toString().compareTo(obj.toString());
   }            
   
+  /**
+   * Equals based on string file name.
+   */
+  public boolean equals(Object obj)
+  {
+    if (obj instanceof KitFile)
+      return ((KitFile)obj).toString().equals(toString());
+    return false;
+  }
+  
+  public int hashCode()
+  {
+    return toString().hashCode();
+  }
+
   /**
    * Return the file name.
    */

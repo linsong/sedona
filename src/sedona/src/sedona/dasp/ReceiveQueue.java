@@ -135,9 +135,7 @@ final class ReceiveQueue
    */
   public String toString()
   {
-    String s = "MsgQueue size=" + size + " peak=" + peak + " max=" + max();
-    if (blocked != null) s += " blocked=" + blocked;
-    return s;
+    return "MsgQueue size=" + size + " peak=" + peak + " max=" + max();
   }
   
 ////////////////////////////////////////////////////////////////
@@ -156,7 +154,6 @@ final class ReceiveQueue
   private DaspMessage tail;
   private int size;
   private int peak;
-  private String blocked;
   private boolean isAlive = true;
   private int max;   
   

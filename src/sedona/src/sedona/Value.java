@@ -39,6 +39,11 @@ public abstract class Value
    * Return if two values are equal.
    */
   public abstract boolean equals(Object obj);
+  
+  /**
+   * Return the hash code.
+   */
+  public abstract int hashCode();
 
   /**
    * Is this the special value which represents null.

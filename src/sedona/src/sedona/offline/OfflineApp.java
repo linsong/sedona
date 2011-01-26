@@ -8,11 +8,26 @@
 
 package sedona.offline;
 
-import java.io.*;
-import java.util.*;
-import sedona.*;
-import sedona.util.*;
-import sedona.xml.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.StringTokenizer;
+
+import sedona.Buf;
+import sedona.Component;
+import sedona.Schema;
+import sedona.util.FileUtil;
+import sedona.xml.XElem;
+import sedona.xml.XException;
+import sedona.xml.XParser;
+import sedona.xml.XWriter;
 
 /**
  * OfflineApp models a complete Sedona application for working
@@ -238,15 +253,15 @@ public class OfflineApp
    */
   public void reorder(OfflineComponent parent, int[] childrenIds)  
   { 
-    // get safe copy
-    int[] ids = (int[])childrenIds.clone();
-    OfflineComponent[] kids = parent.children();
-    
     // error checking    
     if (parent == null)
       throw new IllegalStateException("Parent is null");
     if (parent.app != this || lookup(parent.id) != parent)
       throw new IllegalStateException("Not in this app: " + parent);
+    
+    // get safe copy
+    int[] ids = (int[])childrenIds.clone();
+    OfflineComponent[] kids = parent.children();
     if (kids.length != ids.length)
       throw new IllegalArgumentException("childrenIds.length wrong");
 
@@ -570,7 +585,7 @@ public class OfflineApp
 
       // decode component
       Decoded d = OfflineComponent.decodeBinary(app, in, id);
-      decoded.put(new Integer(d.comp.id), d);
+      decoded.put(Integer.valueOf(d.comp.id), d);
 
       // add to lookup table
       if (d.comp != app)
@@ -624,7 +639,7 @@ public class OfflineApp
         comp.kidsByName.put(kid.name, kid);
 
         // lookup sibling
-        Decoded dKid = (Decoded)decoded.get(new Integer(kid.id));
+        Decoded dKid = (Decoded)decoded.get(Integer.valueOf(kid.id));
         if (dKid.nextSiblingId == 0xffff) break;
 
         kid = lookup(dKid.nextSiblingId);

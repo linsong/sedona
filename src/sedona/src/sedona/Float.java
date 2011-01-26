@@ -8,8 +8,7 @@
 
 package sedona;
 
-import java.io.*;
-import sedona.util.*;
+import java.io.IOException;
 
 /**
  * Float represents a 32-bit float value

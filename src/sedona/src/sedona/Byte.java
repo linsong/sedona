@@ -8,8 +8,7 @@
 
 package sedona;
 
-import java.io.*;
-import sedona.util.*;
+import java.io.IOException;
 
 /**
  * Byte represents an unsigned 8-bit byte value
@@ -56,6 +55,11 @@ public final class Byte
     return false;
   }
 
+  public int hashCode()
+  {
+    return val;
+  }
+  
 //////////////////////////////////////////////////////////////////////////
 // IO
 //////////////////////////////////////////////////////////////////////////

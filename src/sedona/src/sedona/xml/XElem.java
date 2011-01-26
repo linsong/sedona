@@ -7,9 +7,11 @@
 
 package sedona.xml;
 
-import java.io.*;
+import java.io.File;
+
 import sedona.Depend;
-import sedona.util.*;
+import sedona.util.Abstime;
+import sedona.util.Version;
 
 /**
  * XElem models a XML Element construct.
@@ -251,7 +253,7 @@ public class XElem
    */
   public final XNs attrNs(int index)
   {
-    if (index >= attrSize) new ArrayIndexOutOfBoundsException(index);
+    if (index >= attrSize) throw new ArrayIndexOutOfBoundsException(index);
     return (XNs)attr[index*3+1];
   }
 
@@ -263,7 +265,7 @@ public class XElem
    */
   public final String attrName(int index)
   {
-    if (index >= attrSize) new ArrayIndexOutOfBoundsException(index);
+    if (index >= attrSize) throw new ArrayIndexOutOfBoundsException(index);
     return (String)attr[index*3];
   }
 
@@ -273,7 +275,7 @@ public class XElem
    */
   public final String attrValue(int index)
   {
-    if (index >= attrSize) new ArrayIndexOutOfBoundsException(index);
+    if (index >= attrSize) throw new ArrayIndexOutOfBoundsException(index);
     return (String)attr[index*3+2];
   }
 
@@ -672,7 +674,7 @@ public class XElem
     if (value == null)
       throw new NullPointerException();
 
-    if (index >= attrSize) new ArrayIndexOutOfBoundsException(index);
+    if (index >= attrSize) throw new ArrayIndexOutOfBoundsException(index);
     attr[index*3+2] = value;
   }
 
@@ -748,7 +750,7 @@ public class XElem
    */
   public final void removeAttr(int index)
   {
-    if (index >= attrSize) new ArrayIndexOutOfBoundsException(index);
+    if (index >= attrSize) throw new ArrayIndexOutOfBoundsException(index);
 
     int shift = attrSize-index-1;
     if (shift > 0)
@@ -782,7 +784,7 @@ public class XElem
    */
   public final XContent content(int index)
   {
-    if (index >= contentSize) new ArrayIndexOutOfBoundsException(index);
+    if (index >= contentSize) throw new ArrayIndexOutOfBoundsException(index);
     return content[index];
   }
 
@@ -821,7 +823,7 @@ public class XElem
    */
   public final XElem elem(int index)
   {
-    if (index >= contentSize) new ArrayIndexOutOfBoundsException(index);
+    if (index >= contentSize) throw new ArrayIndexOutOfBoundsException(index);
     return (XElem)content[index];
   }
 
@@ -1015,7 +1017,7 @@ public class XElem
    */
   public final XText text(int index)
   {
-    if (index >= contentSize) new ArrayIndexOutOfBoundsException(index);
+    if (index >= contentSize) throw new ArrayIndexOutOfBoundsException(index);
     return (XText)content[index];
   }
 
@@ -1085,7 +1087,7 @@ public class XElem
    */
   public final void replaceContent(int index, XContent child)
   {
-    if (index >= contentSize) new ArrayIndexOutOfBoundsException(index);
+    if (index >= contentSize) throw new ArrayIndexOutOfBoundsException(index);
     content[index].parent = null;
     content[index] = child;
     child.parent = this;
@@ -1106,7 +1108,7 @@ public class XElem
    */
   public final void removeContent(int index)
   {
-    if (index >= contentSize) new ArrayIndexOutOfBoundsException(index);
+    if (index >= contentSize) throw new ArrayIndexOutOfBoundsException(index);
 
     content[index].parent = null;
 

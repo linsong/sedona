@@ -8,8 +8,7 @@
 
 package sedona;
 
-import java.io.*;
-import sedona.util.*;
+import java.io.IOException;
 
 /**
  * Bool represents a true or false condition.
@@ -50,6 +49,11 @@ public final class Bool
   public boolean equals(Object obj)
   {
     return this == obj;
+  }
+  
+  public int hashCode()
+  {
+    return encodeString().hashCode();
   }
 
 //////////////////////////////////////////////////////////////////////////

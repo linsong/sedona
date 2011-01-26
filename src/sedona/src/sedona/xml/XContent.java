@@ -32,6 +32,14 @@ public abstract class XContent
   {
     return this == obj;
   }
+  
+  /**
+   * Return built-in <code>java.lang.Object.hashCode()</code>.
+   */
+  public final int hashCode()
+  {
+    return super.hashCode();
+  }
 
   /**
    * Write to the XWriter.

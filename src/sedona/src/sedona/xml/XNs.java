@@ -87,6 +87,11 @@ public final class XNs
     }
     return false;
   }
+  
+  public int hashCode()
+  {
+    return uri.hashCode();
+  }
 
   /**
    * Two instances of XNs are equal if they have the
