@@ -4,13 +4,21 @@
 //
 package sedona.util.sedonadev;
 
-import java.io.*;
-import java.net.*;
-import java.util.Iterator;
-import java.util.zip.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.zip.ZipInputStream;
 
-import sedona.*;
-import sedona.manifest.*;
+import sedona.Env;
+import sedona.KitPart;
+import sedona.manifest.KitManifest;
 import sedona.util.Log;
 import sedona.util.TextUtil;
 import sedona.xml.XParser;
@@ -78,17 +86,25 @@ public final class Download
   public static String fetchString(final String path) throws Exception
   {
     URLConnection conn = open(path);
-    if (conn == null) return null;
-    Reader in = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
-    char[] buf = new char[1024];
-    StringBuffer s = new StringBuffer();
-    while (true)
+    Reader in = null;
+    try
     {
-      int n = in.read(buf, 0, buf.length);    
-      if (n < 0) break;
-      s.append(buf, 0, n);
-    }                                   
-    return s.toString();
+      if (conn == null) return null;
+      in = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+      char[] buf = new char[1024];
+      StringBuffer s = new StringBuffer();
+      while (true)
+      {
+        int n = in.read(buf, 0, buf.length);    
+        if (n < 0) break;
+        s.append(buf, 0, n);
+      }                                   
+      return s.toString();
+    }
+    finally
+    {
+      if (in != null) in.close();
+    }
   }
   
   /**

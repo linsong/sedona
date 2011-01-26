@@ -8,10 +8,18 @@
 
 package sedona.util.sedonadev;
 
-import java.io.*;
-import java.net.*;
-import java.security.*;
-import sedona.util.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.security.MessageDigest;
+
+import sedona.util.FileUtil;
 import sedona.xml.XParser;
 
 /**
@@ -151,19 +159,27 @@ public final class Upload
     fin.close();
     
     byte[] buf = new byte[conn.getContentLength()];
-    DataInputStream in = new DataInputStream(conn.getInputStream());
-    in.readFully(buf);    
-    String resp = new String(buf);      
-    if (!resp.equals("Got it!"))
+    DataInputStream in = null;
+    try
     {
-      System.out.println("--- resp ---");
-      System.out.println(resp);
-      System.out.println("------------");
-      throw new Exception("Unexpected response");
-    }    
-
-    System.out.println("*** Success! ***");
-    System.out.println("");
+      in = new DataInputStream(conn.getInputStream());
+      in.readFully(buf);    
+      String resp = new String(buf);      
+      if (!resp.equals("Got it!"))
+      {
+        System.out.println("--- resp ---");
+        System.out.println(resp);
+        System.out.println("------------");
+        throw new Exception("Unexpected response");
+      }    
+  
+      System.out.println("*** Success! ***");
+      System.out.println("");
+    }
+    finally
+    {
+      if (in != null) in.close();
+    }
   }
   
   protected final String baseUri;
