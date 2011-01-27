@@ -1202,7 +1202,7 @@ public class SoxClient
   /**
    * Try to lookup a component in the cache by its id.
    */
-  private SoxComponent cache(int id)
+  SoxComponent cache(int id)
   {
     if (0 <= id && id < cache.length)
       return cache[id];
@@ -1213,7 +1213,7 @@ public class SoxClient
   /**
    * Add to the cache table.
    */
-  private void cacheAdd(SoxComponent c)
+  void cacheAdd(SoxComponent c)
   {
     if (c.id >= cache.length)
     {
@@ -1230,7 +1230,7 @@ public class SoxClient
    * cache in all cases, but it should nuke old entries in most
    * scenerios.
    */
-  private void cacheRemove(SoxComponent c)
+  void cacheRemove(SoxComponent c)
   {
     int[] children = c.childrenIds();
     for (int i=0; i<children.length; ++i)
@@ -1244,7 +1244,7 @@ public class SoxClient
   /**
    * Check that the SoxComponent.client is me.
    */
-  private void checkMine(SoxComponent c)
+  void checkMine(SoxComponent c)
   {
     if (c.client != this)
       throw new IllegalArgumentException("SoxComponent.client != this client");
@@ -1253,7 +1253,7 @@ public class SoxClient
   /**
    * Check that all the SoxComponent.clients are me.
    */
-  private void checkMine(SoxComponent[] c)
+  void checkMine(SoxComponent[] c)
   {
     for (int i=0; i<c.length; ++i)
       checkMine(c[i]);

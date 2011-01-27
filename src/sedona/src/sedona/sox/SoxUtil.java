@@ -111,7 +111,8 @@ public class SoxUtil
   void applyTree(Msg msg, SoxComponent c)
     throws Exception
   {
-    c.name = msg.str();
+    final String name = msg.str();
+    c.name = name;
     c.parent = msg.u2();
     c.permissions = msg.u1();
     int[] children = new int[msg.u1()];

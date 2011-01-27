@@ -10,6 +10,7 @@ package sedona.sox;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import sedona.*;
 import sedona.util.ArrayUtil;
@@ -186,9 +187,25 @@ public class SoxComponent
 // Internal Children Id Management
 ////////////////////////////////////////////////////////////////
 
-  synchronized void setChildren(int[] children)
+  synchronized void setChildren(int[] newChildren)
   {
-    this.children = children;
+    HashSet set = new HashSet(newChildren.length);
+    for (int i=0; i<newChildren.length; ++i)
+      set.add(new Integer(newChildren[i]));
+    
+    if (children != null)
+    {
+      for (int i=0; i<children.length; ++i)
+      {
+        if (!set.contains(new Integer(children[i])))
+        {
+          SoxComponent c = client.cache(children[i]);
+          if (c != null)
+            client.cacheRemove(c);
+        }
+      }
+    }
+    this.children = newChildren;
   }
 
   synchronized void addChild(int child)
@@ -271,7 +288,7 @@ public class SoxComponent
   int parent;
   int subscription;
   Link[] links = Link.none;
-  int[] children;
+  int[] children = new int[0];
   int permissions;
 
 }
