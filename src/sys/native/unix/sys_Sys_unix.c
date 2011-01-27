@@ -19,7 +19,7 @@ Cell sys_Sys_platformType(SedonaVM* vm, Cell* params)
 #ifdef PLATFORM_TYPE
   result.aval = PLATFORM_TYPE;
 #else
-  result.aval = "sys::Platform";
+  result.aval = "sys::PlatformService";
 #endif
 
   return result;

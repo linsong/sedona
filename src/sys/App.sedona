@@ -113,7 +113,9 @@ class App
     
     // verify platform service is correct type for this hw/os platform
     Type expected = Sys.findType(Sys.platformType());
-    if (expected != null && !platform.type.is(expected)) 
+    if (expected == null)
+    	log.error("missing platform type: ${Sys.platformType()}\n")
+    if (expected == null || !platform.type.is(expected)) 
       return Err.badPlatformService
     
     // given platform its initialization hook

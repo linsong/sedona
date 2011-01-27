@@ -158,9 +158,6 @@ public class Test extends Verifies
   {
     return System.getProperty("os.name").toLowerCase().indexOf("linux") > -1;
   }
-  {
-    
-  }
 
 //////////////////////////////////////////////////////////////////////////
 // Fields
