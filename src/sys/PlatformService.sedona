@@ -157,7 +157,7 @@ class PlatformService
   ** Sedona device should be provisioned.
   **
   @summary=false
-  @readonly @asStr property Buf(128) platformId
+  @readonly @asStr @config property Buf(128) platformId
   
   **
   ** The platform version.  This should be a Dewey Decimal style
@@ -166,7 +166,7 @@ class PlatformService
   ** for platform version.
   **
   @summary=false
-  @readonly @asStr property Buf(17) platformVer = "0"
+  @readonly @asStr @config property Buf(17) platformVer = "0"
   
   **
   ** The amount of available runtime memory, in bytes. This property
