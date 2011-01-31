@@ -27,6 +27,7 @@ import sedonac.ast.IncludeDef;
 import sedonac.ast.KitDef;
 import sedonac.ast.NativeDef;
 import sedonac.namespace.NativeId;
+import sedonac.util.VarResolver;
 
 /**
  * InitKitCompile initializes the compiler to run the pipeline
@@ -114,7 +115,22 @@ public class InitKitCompile
     //   2) if defined by kit.xml 
     //   3) sedona.properties "buildVersion"
     Version ver = compiler.kitVersion;
-    if (ver == null) ver = xml.getVersion("version", null);
+    if (ver == null && xml.get("version", null) != null)
+    {
+      final String verAttr = xml.get("version");
+      try
+      {
+        ver = new Version(new VarResolver().resolve(verAttr));
+      }
+      catch (IllegalArgumentException e)
+      {
+        throw new XException("Invalid attr version = '" + verAttr + "'", xml);
+      }
+      catch (Exception e)
+      {
+        throw new XException("Could not resolve variable version = '" + verAttr + "'", xml);
+      }
+    }
     if (ver == null) ver = Version.parse(Env.getProperty("buildVersion", null));
     if (ver == null) throw err("Kit version isn't defined", kit.loc);
     kit.version = ver;
