@@ -44,6 +44,9 @@ public class Version
   {
     try
     {
+      // version cannot be empty: ""
+      if (s.length() == 0) throw new IllegalArgumentException();
+      
       int[] buf = new int[16];
       int c = 0;
 
@@ -72,7 +75,9 @@ public class Version
    *    string is incorrectly formatted.
    */
   public Version(int[] segs, int n)
-  {                               
+  {
+    if (n == 0)
+      throw new IllegalArgumentException("Cannot create empty version: n = " + n);
     versions = new int[n];
     System.arraycopy(segs, 0, versions, 0, n);
   }                 
