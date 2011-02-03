@@ -22,6 +22,8 @@ class MathTest
   static inline Avg10 avg10
   static inline Reset reset
   static inline Cmpr cmpr
+  static inline Min min
+  static inline Max max
 
   static void test()
   {
@@ -164,6 +166,27 @@ class MathTest
     assert(cmpr.xgy == false)
     assert(cmpr.xey == false)
     assert(cmpr.xly == true)
+    
+    min.in1 = 10f
+    min.in2 = 9f
+    min.execute()
+    assert(min.out == 9f)
+
+    min.in1 = -8f
+    min.in2 = -9f
+    min.execute()
+    assert(min.out == -9f)
+
+    max.in1 = 10f
+    max.in2 = 9f
+    min.execute()
+    assert(max.out == 10f)
+
+    max.in1 = -8f
+    max.in2 = -9f
+    min.execute()
+    assert(max.out == -8f)
+
   }
 
    static void avg(float value)
