@@ -252,8 +252,11 @@ class SoxSession
     service.packet.bytes[4] |= 1  // header count    
     service.send(this)
     
+    // Copy hex string into local
+    errStr.copyFromStr( Sys.hexStr(errorCode), 8 )
+
     // free the session          
-    service.closeSession(this, Sys.hexStr(errorCode))
+    service.closeSession(this, errStr)
   }
   
 ////////////////////////////////////////////////////////////////
@@ -315,4 +318,6 @@ class SoxSession
   inline ReceiveWindow receiveWindow // Sliding window for incoming messages 
   inline SendWindow sendWindow       // Sliding window for outgoing messages 
   inline FileTransfer transfer       // File transfer state  
+
+  inline Str(8) errStr               // Storage for error code value in hex
 } 
