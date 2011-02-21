@@ -179,12 +179,12 @@ class MathTest
 
     max.in1 = 10f
     max.in2 = 9f
-    min.execute()
+    max.execute()
     assert(max.out == 10f)
 
     max.in1 = -8f
     max.in2 = -9f
-    min.execute()
+    max.execute()
     assert(max.out == -8f)
 
   }
