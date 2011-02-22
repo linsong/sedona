@@ -165,7 +165,6 @@ class App
     return resumeApp()
   }
 
-
   **
   ** Run this application - right now this is a
   ** simple round robin execution.
@@ -175,6 +174,13 @@ class App
     //  Are we returning from hibernate?
     if (runStatus == Err.hibernate)
     {
+    	// should we reset steady state?
+    	if (hibernationResetsSteadyState == true)
+    	{
+    		atSteadyState = false
+    		steadyAt = Sys.ticks() + (long)timeToSteadyState*1ms
+    	}
+    	
       // call Service.onUnhibernate for all the services
       for (Service s = services; s != null; s = s.nextService)
         s.onUnhibernate() 
@@ -185,7 +191,6 @@ class App
     long deadline = Sys.ticks()
     lastEndWork = deadline
     
-        
     while (running)
     {
       // update our cycle counter
@@ -1005,6 +1010,10 @@ class App
   @unit=Units.millisecond 
   @config property int timeToSteadyState = 0
   
+  ** If true, when the App returns from hibernation then the
+  ** steady state will be reset and the App will not return
+  ** to steady state until timeToSteadyState has elapsed.
+  @config property bool hibernationResetsSteadyState = false
 
 ////////////////////////////////////////////////////////////////
 // Fields
