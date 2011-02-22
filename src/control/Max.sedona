@@ -28,9 +28,6 @@ class Max
   **
   virtual override void execute()
   {
-    if(!Sys.app.isSteadyState())
-      return
-
     if(in1 > in2)
       out = in1
     else
