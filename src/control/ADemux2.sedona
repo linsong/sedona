@@ -1,0 +1,31 @@
+//
+// Copyright (c) 2010 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   18 May 2010  Clif Turman  Creation
+//
+
+**
+** ASW Analog Switch object
+**
+** out = s1 ? in2 : in1
+**
+@niagaraIcon="module://icons/x16/control/util/split.png"
+class ADemux2
+  extends Component
+{
+  @readonly property float out1
+  @readonly property float out2
+  property float in
+  property bool  s1
+
+  virtual override void execute()
+  {
+    if(s1)
+      out2 = in
+    else
+      out1 = in
+  }
+
+}

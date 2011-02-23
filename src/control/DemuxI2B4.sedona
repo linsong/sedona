@@ -1,0 +1,37 @@
+//
+// Copyright (c) 2010 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   20 Apr 2010  Clifton Turman  Creation
+//
+
+**
+** Demuxes an integer count input into 4 boolean outputs.
+** By setting "startsAt" appropriately, N objects
+** can demux to N*4 outputs (ie, you can create a 4x, 8x, 16x, etc demux)
+** if in == startsAt + 0, out1 is true, else false
+** if in == startsAt + 1, out2 is true, else false
+** if in == startsAt + 2, out3 is true, else false
+** if in == startsAt + 3, out4 is true, else false
+**
+@niagaraIcon="module://icons/x16/control/util/switch.png"
+class DemuxI2B4
+  extends Component
+{
+  property int in
+  @readonly property bool out1
+  @readonly property bool out2
+  @readonly property bool out3
+  @readonly property bool out4
+  @config property int startsAt = 0
+
+  virtual override void execute()
+  {  
+    out1= (in == startsAt)?true:false
+    out2= (in == startsAt + 1)?true:false
+    out3= (in == startsAt + 2)?true:false
+    out4= (in == startsAt + 3)?true:false
+  }
+
+}

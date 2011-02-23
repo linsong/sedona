@@ -1,0 +1,33 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   10 Jan 07  Andy Saunders  Creation
+//   27 Apr 07  Brian Frank    Port from Java to Sedona
+//
+
+**
+** Or4 4 input OR logic object
+** null inputs ignored.  If all inputs null, output is null
+** out = in1 || in2 || in3 || in4
+**
+class Or4
+  extends Or2
+{
+  property bool in3
+  property bool in4
+
+  virtual override void execute()
+  {
+     bool allNull = true;
+    out = false
+    if (in1 != null) { out |= in1; allNull = false; }
+    if (in2 != null) { out |= in2; allNull = false; }      
+    if (in3 != null) { out |= in3; allNull = false; }
+    if (in4 != null) { out |= in4; allNull = false; }      
+
+    if (allNull) out = null 
+  }
+
+}

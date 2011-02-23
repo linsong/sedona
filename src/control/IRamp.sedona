@@ -1,0 +1,41 @@
+//
+// Copyright (c) 2010 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   20 Apr 2010  Clifton Turman   Adapted from Ramp.sedona
+//
+
+**
+** Ramp
+**   Triangle wave between min & max
+**   Slope is fixed: 1 unit per "secs" seconds
+**
+@niagaraIcon="module://icons/x16/control/util/sine.png"
+class IRamp
+  extends Component
+{
+  @readonly property int out
+  @config property int min   = 0
+  @config property int max   = 100
+  @config property int delta = 1
+  @config property long secs = 1L
+
+  virtual override void execute()
+  {
+    // Don't update more than 4x/sec
+    long now = Sys.ticks()
+    if (now - lastUpdate < secs * 1sec) return
+    lastUpdate = now
+    if (firstHalf)
+      out = out + delta
+    else
+      out = out - delta
+
+    if (out < min) { out = min; firstHalf = true }
+    if (out > max) { out = max; firstHalf = false }
+  }
+
+  private bool firstHalf = true
+  private long lastUpdate
+}
