@@ -981,7 +981,7 @@ public class SoxClient
   {
     link(link, 'd');
   }
-
+  
   private synchronized void link(Link link, int cmd)
     throws Exception
   {
@@ -1000,6 +1000,61 @@ public class SoxClient
     res.checkResponse('L');
   }
 
+  /**
+   * Convenience for {@code links(comp.id)}
+   * 
+   * @see #links(int)
+   */
+  public synchronized Link[] links(SoxComponent comp) 
+    throws Exception
+  {
+    checkMine(comp);
+    return links(comp.id);
+  }
+
+  /**
+   * Get all the links going in to and out of the given component. This method
+   * simply returns a snapshot of the current link state for the component, it
+   * does not cause any subscription to take place.
+   * 
+   * @param compId
+   *          the id of the component to get links for
+   * @return a Link[] containing all links going in to and out from the
+   *         component.
+   */
+  public synchronized Link[] links(int compId) 
+    throws Exception
+  {
+    Msg req = Msg.prepareRequest('c');
+    req.u2(compId);
+    req.u1('l');
+    
+    Msg res = request(req);
+    
+    res.checkResponse('C');
+    int resCompId = res.u2();
+    if (resCompId != compId)
+      throw new SoxException("Response compId '" + resCompId + "' does not match request '" + compId + "'");
+    int l = res.u1();
+    if (l != 'l')
+      throw new SoxException("Response 'what' is not for links: '" + (char)l + "'");
+    
+    ArrayList links = new ArrayList();
+    while (true)
+    {
+      Link link = new Link();
+      if ((link.fromCompId = res.u2()) == 0xffff) break;
+      
+      link.fromSlotId = res.u1();
+      link.toCompId   = res.u2();
+      link.toSlotId   = res.u1();
+      
+      links.add(link);
+    }
+    
+    return links.size() == 0 ? Link.none : (Link[])links.toArray(new Link[links.size()]);
+  }
+  
 ////////////////////////////////////////////////////////////////
 // Query
 ////////////////////////////////////////////////////////////////
