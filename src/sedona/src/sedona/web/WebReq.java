@@ -12,6 +12,8 @@ import java.io.*;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
+import sedona.util.ArrayUtil;
+
 /**
  * WebReq models a web request.
  */
@@ -89,7 +91,7 @@ public class WebReq extends WebMsg
     writeLine(out, method + " " + uri + " HTTP/" + version);
     writeHeadersText(out);
     if (body != null)
-      out.write(body);
+      System.out.println(ArrayUtil.toHex(body, 0, body.length));
     out.flush();
   }
 
