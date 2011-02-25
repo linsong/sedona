@@ -10,6 +10,8 @@ package sedona.web;
 
 import java.io.*;
 
+import sedona.util.ArrayUtil;
+
 /**
  * WebRes models a web response.
  */
@@ -82,7 +84,7 @@ public class WebRes extends WebMsg
     writeLine(out, "HTTP/" + version + " " + code + " " + reason);
     writeHeadersText(out);
     if (body != null)
-      out.write(body);
+      System.out.println(ArrayUtil.toHex(body, 0, body.length));
     out.flush();
   }
 
