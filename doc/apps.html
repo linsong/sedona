@@ -258,7 +258,7 @@ It only affects behavior of Sedona components that use the <code>isSteadyState()
 It is the responsibility of each kit developer to call this method as needed to protect the 
 hardware.
 </p>
-<code>App.timeToSteadyState</code> applies only to the first time the VM is started.  Once steady time has elapsed, hibernate/yield will not affect it.
+By default, <code>App.timeToSteadyState</code> applies only to the first time the VM is started.  Once steady time has elapsed, hibernate/yield will not affect it.  If <code>App.hibernationResetsSteadyState</code> is set to true, then the steady state flag will be reset each time device exits hibernation.
 
 
 <!--/////////////////////////////////////////////////////////-->
@@ -285,7 +285,7 @@ sensor inputs through control logic to actuator outputs.
 <p>
 Services are special components that subclass from 
 <a href='sys/Service.html'>sys::Service</a>.  Services have
-two primary characteristics that set them apart from other
+three primary characteristics that set them apart from other
 types of components:
 </p>
 
@@ -297,6 +297,16 @@ type via the <code>App.lookupService</code> method.
 callback to do work during a scan cycle.  Services on the other
 hand get to handle background work during the time available at 
 the end of a given scan cycle.
+</li>   
+<li><b>Hibernation control</b>: Each time App finishes an execute
+  cycle, it calls <code>Service.canHibernate</code> on all services.
+  If a service is not in a state where it can hibernate, it should
+  return false.  
+  
+  For example, if the service is waiting for a network
+  reply, it would return false.  
+  
+  Platform services for devices that never need to hibernate should always return false. 
 </li>   
 </ul>
 
