@@ -24,12 +24,12 @@ class FileTransfer
 // Constructor
 //////////////////////////////////////////////////////////////
 
-  FileTransfer(SoxClient client, String uri, SoxFile file, 
+  FileTransfer(SoxClient client, String uri, SoxFile file,
                Properties reqHeaders, TransferListener listener)
   {
     if (reqHeaders == null) reqHeaders = new Properties();
-    
-    // default chunk size leaves 17 bytes of header 
+
+    // default chunk size leaves 17 bytes of header
     // within the ideal packet size:
     //   5 bytes dasp header
     //   3 bytes ack header field
@@ -39,19 +39,19 @@ class FileTransfer
     //   2 bytes chunkNum
     //   2 bytes chunkSize
     // Also see SoxCommands.sedona (openFileReq)
-    int defaultChunkSize = client.session().idealMax() - 18; 
-    
-    this.client      = client;    
+    int defaultChunkSize = client.session().idealMax() - 18;
+
+    this.client      = client;
     this.listener    = listener;
     this.uri         = uri;
     this.file        = file;
     this.reqHeaders  = reqHeaders;
     this.offset      = geti(reqHeaders, "offset", 0);
-    this.chunkSize   = geti(reqHeaders, "chunkSize", defaultChunkSize);    
+    this.chunkSize   = geti(reqHeaders, "chunkSize", defaultChunkSize);
     this.lock        = new Object();
-    this.startTicks  = Env.ticks();    
-  }                                                     
-  
+    this.startTicks  = Env.ticks();
+  }
+
 //////////////////////////////////////////////////////////////
 // Get
 //////////////////////////////////////////////////////////////
@@ -62,7 +62,7 @@ class FileTransfer
     file.open("w");
     try
     {
-      doGetFile();               
+      doGetFile();
       return resHeaders;
     }
     finally
@@ -78,37 +78,37 @@ class FileTransfer
     this.method = "g";
     this.fileSize = geti(reqHeaders, "fileSize", 0);
     start();
-    
-    // wait until we've received the entire file 
+
+    // wait until we've received the entire file
     lastReceiveTicks = Env.ticks();
     synchronized (lock)
-    {                 
+    {
       while (transferedChunks < numChunks)
-      { 
+      {
         // sanity check
-        if (client.session()==null) 
+        if (client.session()==null)
           throw new IOException("file transfer session disconnected");
 
         if (Env.ticks() - lastReceiveTicks > client.session().receiveTimeout())
           throw new IOException("file transfer timed out");
-        
+
         // wait to receive chunks
         try { lock.wait(1000); } catch(Exception e) {}
       }
-    }                      
+    }
 
     // send close message to free transfer
     Msg req = Msg.prepareRequest('z');
-    Msg res = client.request(req);  
+    Msg res = client.request(req);
     res.checkResponse('Z');
-    
+
     // update progress and report done
     progress();
     done();
   }
 
   void receiveChunk(Msg msg)
-  {       
+  {
     try
     {
       synchronized (lock)
@@ -116,7 +116,7 @@ class FileTransfer
         int cmd           = msg.u1();
         int replyNum      = msg.u1();
         int chunkNum      = msg.u2();
-        int thisChunkSize = msg.u2();     
+        int thisChunkSize = msg.u2();
         lastReceiveTicks  = Env.ticks();
 
 //        System.out.println("Received chunk# " + chunkNum + " of file");  // DIAG
@@ -127,31 +127,31 @@ class FileTransfer
           System.out.println("WARNING: This code is hosed up " + (char)cmd);
           return;
         }
-      
+
         // check that my chunkNum is within expected range
         if (chunkNum >= numChunks)
         {
           System.out.println("WARNING: Received received out of range chunk " +  chunkNum + " >= " + numChunks);
           return;
         }
-      
+
         // increment our transfer chunk count
         transferedChunks++;
-    
+
         // write this chunk to the file
-        file.write(chunkNum*chunkSize, msg, thisChunkSize);  
-        
+        file.write(chunkNum*chunkSize, msg, thisChunkSize);
+
         // notify the calling thread
         lock.notifyAll();
       }
-      
+
       // notify application
       progress();
     }
     catch (Exception e)
     {
       e.printStackTrace();
-    }                
+    }
   }
 
 //////////////////////////////////////////////////////////////
@@ -185,32 +185,32 @@ class FileTransfer
     // us automatically to provide flow control
     for (int i=0; i<numChunks || (i==0 && numChunks==0); ++i)
     {
-      sendChunk(i);  
-      transferedChunks++;            
+      sendChunk(i);
+      transferedChunks++;
       progress();
-    } 
-    
+    }
+
     // wait for close command
     long waitStart = Env.ticks();
     synchronized (lock)
-    {              
+    {
       while (!closeReceived)
       {
         // sanity check
-        if (client.session()==null) 
+        if (client.session()==null)
           throw new IOException("file transfer session disconnected");
 
         if (Env.ticks() - waitStart > client.session().receiveTimeout())
           throw new IOException("file transfer timed out waiting for put close");
-          
+
         // wait to receive close message
         try { lock.wait(1000); } catch(Exception e) {}
       }
     }
-    
+
     // update progress and report done
     progress();
-    done();      
+    done();
   }
 
   private void sendChunk(int chunkNum)
@@ -225,7 +225,7 @@ class FileTransfer
         thisChunkSize = fileSize % chunkSize;
       else if (fileSize == 0)
         thisChunkSize = 0;
-    }                               
+    }
 
     Msg req = Msg.prepareRequest('k', 0);
     req.u2(chunkNum);
@@ -233,10 +233,10 @@ class FileTransfer
     file.read(chunkNum*chunkSize, req, thisChunkSize);
 
     client.send(req);
-  }                 
+  }
 
   void receiveClose(Msg msg)
-  {       
+  {
     synchronized (lock) { closeReceived = true; }
   }
 
@@ -259,22 +259,22 @@ class FileTransfer
       req.str(uri);
       req.i4(fileSize);
       req.u2(chunkSize);
-      
+
       Iterator it = reqHeaders.keySet().iterator();
       while (it.hasNext())
       {
         String key = (String)it.next();
         if (key.equals("fileSize")) continue;
-        
+
         String val = (String)reqHeaders.get(key);
         req.str(key);
         req.str(val);
       }
       req.u1(0);  // end of headers
-  
+
       // send request
-      Msg res = client.request(req);  
-  
+      Msg res = client.request(req);
+
       // parse response
       res.checkResponse('F');
       this.fileSize   = res.i4();
@@ -289,22 +289,22 @@ class FileTransfer
       }
       resHeaders.put("fileSize",   ""+fileSize);
       resHeaders.put("chunkSize",  ""+chunkSize);
-  
+
       // compute how many chunks we're going to transfer,
       // take into account last remainder chunk
       this.numChunks = fileSize/chunkSize;
       if (fileSize % chunkSize > 0) this.numChunks++;
-  
+
       // if the file size is zero, then send at least one
       // chunk of zero bytes to keep the server side simple
       if (numChunks == 0 && method.equals("p"))
         numChunks = 1;
-  
+
       // initialize our transfer chunk count
       transferedChunks = 0;
     }
   }
-    
+
 //////////////////////////////////////////////////////////////
 // Utils
 //////////////////////////////////////////////////////////////
@@ -332,11 +332,11 @@ class FileTransfer
   /**
    * If we have a listener, fire a progress callback.
    */
-  private void progress()                            
-  {                                                  
+  private void progress()
+  {
     if (listener == null) return;
-    try    
-    {           
+    try
+    {
       listener.progress(transferedChunks*chunkSize, fileSize);
     }
     catch (Throwable e)
@@ -348,10 +348,11 @@ class FileTransfer
   /**
    * Called when transfer is complete.
    */
-  private void done()                            
-  {                        
-    long dur = Env.ticks() - startTicks;                          
-    
+  private void done()
+  {
+    long dur = Env.ticks() - startTicks;
+    if (!client.traceXferStats) return;
+
     System.out.println();
     System.out.println("Done [" + uri + "]");
     System.out.println("  duration:    " + dur + "ms");
@@ -381,6 +382,6 @@ class FileTransfer
   long lastReceiveTicks;  // last chunk received (get only)
   boolean closeReceived;  // have we received closed command (put only)
   Object lock;            // b/w caller and Receiver
-  
+
 }
 

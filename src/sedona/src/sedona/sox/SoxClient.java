@@ -188,7 +188,7 @@ public class SoxClient
     {
       e.printStackTrace();
     }
-    
+
     // done closing
     this.closing = false;
   }
@@ -341,7 +341,7 @@ public class SoxClient
   {
     return load(ids, true);
   }
-   
+
   /**
    * Load the component meta-data definitions of the specified ids.
    * If we've already loaded a given id return the cached SoxComponent,
@@ -378,7 +378,7 @@ public class SoxClient
     // parse responses and apply
     for (int i=0; i<responses.length; ++i)
     {
-      Msg res = responses[i]; 
+      Msg res = responses[i];
       if (!checked && res.isError()) continue;
       res.checkResponse('C');
       applyToCache(res);
@@ -494,7 +494,7 @@ public class SoxClient
     else
       doSubscribe(comps, mask);
   }
-  
+
   /**
    * Perform an asynchronous request to subscribe the components
    * with their current values.  The mask specifies which
@@ -513,9 +513,9 @@ public class SoxClient
     else
       doSubscribe(comps, mask);
   }
-  
+
   /**
-   * @return the Version of the sox protocol running on the Sox server, or 
+   * @return the Version of the sox protocol running on the Sox server, or
    * null if the remote server did not report a sox protocol version.
    */
   private Version getSoxVersion()
@@ -530,15 +530,15 @@ public class SoxClient
       return null;
     }
   }
-  
+
   private void batchSubscribe(SoxComponent[] comps, final int mask, final long timeout)
     throws Exception
   {
-    if (comps.length > 255) 
+    if (comps.length > 255)
       throw new SoxException("Cannot subscribe to more than 255 components: '" + comps.length + "'");
-    
+
     checkMine(comps);
-    
+
     // filter components that are already subscribed
     ArrayList arr = new ArrayList();
     for (int i=0; i<comps.length; ++i)
@@ -548,7 +548,7 @@ public class SoxClient
         arr.add(comps[i]);
     }
     if (arr.size() == 0) return;
-    
+
     // build request
     SoxComponent[] toSubscribe = (SoxComponent[])arr.toArray(new SoxComponent[arr.size()]);
     Msg req = Msg.prepareRequest('s');
@@ -556,17 +556,17 @@ public class SoxClient
     req.u1(toSubscribe.length);
     for (int i=0; i<toSubscribe.length; ++i)
       req.u2(toSubscribe[i].id);
-    
+
     Msg response = request(req);
     response.checkResponse('S');
     if (timeout < 0) return; // async
-    
+
     synchronized (subscribeSyncLock)
-    {  
+    {
       boolean[] syncState = new boolean[toSubscribe.length];
       long lastEvent = Env.ticks();
       int remaining = response.u1();
-      while ((remaining > 0) && 
+      while ((remaining > 0) &&
              (lastEvent + timeout > Env.ticks()))
       {
         subscribeSyncLock.wait(250);
@@ -586,7 +586,7 @@ public class SoxClient
       }
     }
   }
-    
+
   /**
    * Pre sox protocol implementation of subscribe.  It does not support batch
    * and is synchronous.  This method is only used if the remote server
@@ -596,7 +596,7 @@ public class SoxClient
     throws Exception
   {
     checkMine(comps);
-    
+
     // build requests
     ArrayList reqs = new ArrayList();
     for (int i=0; i<comps.length; ++i)
@@ -683,7 +683,7 @@ public class SoxClient
     // if we're always subscribed to tree events,
     // then don't bother to include that bit
     if (allTreeEvents) mask &= ~SoxComponent.TREE;
-    
+
     ArrayList arr = new ArrayList();
     for (int i=0; i<comps.length; ++i)
     {
@@ -691,7 +691,7 @@ public class SoxClient
         arr.add(comps[i]);
     }
     if (arr.size() == 0) return;
-    
+
     SoxComponent[] toUnsubscribe = (SoxComponent[])arr.toArray(new SoxComponent[arr.size()]);
     if (getSoxVersion() != null)
       batchUnsubscribe(toUnsubscribe, mask);
@@ -702,7 +702,7 @@ public class SoxClient
     for (int i=0; i<comps.length; ++i)
       comps[i].subscription &= ~mask;
   }
-  
+
   private void batchUnsubscribe(SoxComponent[] comps, int mask)
     throws Exception
   {
@@ -713,7 +713,7 @@ public class SoxClient
       req.u2(comps[i].id);
     request(req);
   }
-  
+
   private void doUnsubscribe(SoxComponent[] comps, int mask)
     throws Exception
   {
@@ -820,7 +820,7 @@ public class SoxClient
     {
       KitPart typePart = type.kit.manifest.part();
       Kit remoteKit = util.schema.kit(type.kit.name);
-      if (remoteKit == null) 
+      if (remoteKit == null)
         throw new IllegalArgumentException("Schema does not support type: " + type);
       KitPart remotePart = remoteKit.manifest.part();
       if (!typePart.toString().equals(remotePart.toString()))
@@ -981,7 +981,7 @@ public class SoxClient
   {
     link(link, 'd');
   }
-  
+
   private synchronized void link(Link link, int cmd)
     throws Exception
   {
@@ -1002,10 +1002,10 @@ public class SoxClient
 
   /**
    * Convenience for {@code links(comp.id)}
-   * 
+   *
    * @see #links(int)
    */
-  public synchronized Link[] links(SoxComponent comp) 
+  public synchronized Link[] links(SoxComponent comp)
     throws Exception
   {
     checkMine(comp);
@@ -1016,21 +1016,21 @@ public class SoxClient
    * Get all the links going in to and out of the given component. This method
    * simply returns a snapshot of the current link state for the component, it
    * does not cause any subscription to take place.
-   * 
+   *
    * @param compId
    *          the id of the component to get links for
    * @return a Link[] containing all links going in to and out from the
    *         component.
    */
-  public synchronized Link[] links(int compId) 
+  public synchronized Link[] links(int compId)
     throws Exception
   {
     Msg req = Msg.prepareRequest('c');
     req.u2(compId);
     req.u1('l');
-    
+
     Msg res = request(req);
-    
+
     res.checkResponse('C');
     int resCompId = res.u2();
     if (resCompId != compId)
@@ -1038,23 +1038,23 @@ public class SoxClient
     int l = res.u1();
     if (l != 'l')
       throw new SoxException("Response 'what' is not for links: '" + (char)l + "'");
-    
+
     ArrayList links = new ArrayList();
     while (true)
     {
       Link link = new Link();
       if ((link.fromCompId = res.u2()) == 0xffff) break;
-      
+
       link.fromSlotId = res.u1();
       link.toCompId   = res.u2();
       link.toSlotId   = res.u1();
-      
+
       links.add(link);
     }
-    
+
     return links.size() == 0 ? Link.none : (Link[])links.toArray(new Link[links.size()]);
   }
-  
+
 ////////////////////////////////////////////////////////////////
 // Query
 ////////////////////////////////////////////////////////////////
@@ -1205,12 +1205,12 @@ public class SoxClient
 //////////////////////////////////////////////////////////////////////////
 // Apply
 //////////////////////////////////////////////////////////////////////////
-  
+
   void applyToCache(Msg msg)
     throws Exception
   {
     final boolean isEvent = msg.command() == 'e';
-    
+
     int compId = msg.u2();
     int what = msg.u1();
     SoxComponent cached = cache(compId);
@@ -1221,14 +1221,14 @@ public class SoxClient
     if (isEvent)
       applyEvent(sc, what);
   }
-  
+
   private void applyEvent(SoxComponent sc, final int what)
   {
     if (sc ==  null) return;
     int mask = 0;
     switch (what)
     {
-      case 't': 
+      case 't':
         mask = SoxComponent.TREE; break;
       case 'c':
       case 'C':
@@ -1383,13 +1383,18 @@ public class SoxClient
 // Tuning Options
 ////////////////////////////////////////////////////////////////
 
-  public boolean traceMsg = false;   // dump sends/received
+  /** dump sends/receives */
+  public boolean traceMsg = false;
+
+  /** dump stats when file transfer completes */
+  public boolean traceXferStats = false;
 
   public void initOptions()
   {
     try
     {
-      traceMsg = Env.getProperty("sox.traceMsg",        traceMsg);
+      traceMsg       = Env.getProperty("sox.traceMsg", traceMsg);
+      traceXferStats = Env.getProperty("sox.xfer.traceStats", traceXferStats);
     }
     catch (Throwable e)
     {
@@ -1401,6 +1406,7 @@ public class SoxClient
   public void printOptions(PrintWriter out)
   {
     out.println("  traceMsg        = " + traceMsg);
+    out.println("  xfer.traceStats = " + traceXferStats);
     out.flush();
   }
 
