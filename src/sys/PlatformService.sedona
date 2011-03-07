@@ -130,6 +130,37 @@ class PlatformService
   }
 
   
+  ** Network state codes
+  ** -1 to -100 reserved for standard Sedona error status
+  ** 0 indicates network functional
+  ** 1 to 100 reserved for standard Sedona states
+  ** Other codes can be defined as needed by platforms
+  
+  ** Network interface is initializing
+  ** i.e. acquiring DHCP address or joining RF network
+  define int netInitializing  = 1
+  
+  ** Network interface is operational
+  define int netOk            =  0
+
+  ** Network interface has fatal error
+  define int netFatal          = -1
+
+  ** Network failed due to configuration error     
+  define int netConfigError   =   -2
+  
+  
+  **
+  ** Return the current state of the network interface.  For devices
+  ** that support multiple interfaces, return the state of the primary
+  ** network interface on the platform.
+  ** 
+  virtual int getNetworkState()
+  {
+    return netOk
+  }  
+  
+  
 ////////////////////////////////////////////////////////////////
 // Actions
 ////////////////////////////////////////////////////////////////
