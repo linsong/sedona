@@ -50,7 +50,7 @@ public class ImageGen
     super(compiler);
     this.image      = compiler.image;
     this.kits       = compiler.kits;
-    this.constPool  = new ConstPool(this);    
+    this.constPool  = new ConstPool(this);
   }
 
 //////////////////////////////////////////////////////////////////////////
@@ -80,7 +80,7 @@ public class ImageGen
     constPool.qnameTypes();
     constPool.qnameSlots();
     backpatch();
-    finish();             
+    finish();
   }
 
 //////////////////////////////////////////////////////////////////////////
@@ -88,7 +88,7 @@ public class ImageGen
 //////////////////////////////////////////////////////////////////////////
 
   private void header()
-  {      
+  {
     code.i4(SCode.vmMagic);      //  0 magic
     code.u1(SCode.vmMajorVer);   //  4 major version
     code.u1(SCode.vmMinorVer);   //  5 minor version
@@ -103,13 +103,13 @@ public class ImageGen
     code.u1(scodeFlags());       // 23 scode flags
     resumeBlockIndex();          // 24 resume method block index
     blockAlign();
-  }              
-  
+  }
+
   void resumeBlockIndex()
-  {                                  
+  {
     addBlockIndex(findMain(image.resume).codeAddr);
-  }           
-  
+  }
+
   int scodeFlags()
   {
     int flags = 0;
@@ -131,14 +131,14 @@ public class ImageGen
     code.u1(2);
     code.u1(0);
 
-    // if debug       
+    // if debug
     IrMethod main = findMain(image.main);
     if (image.debug)
     {
       padArg(2);
       code.u1(SCode.MetaSlot);
       addBlockIndex(qnameSlot(main));
-    }      
+    }
 
     // call the static initializer of all the types
     for (int i=0; i<flat.staticInits.length; ++i)
@@ -279,7 +279,7 @@ public class ImageGen
     // always align comp types on at least 4
     // byte boundaries regardless of block size
     code.align(4);
-    k.blockIndex = blockIndex();  
+    k.blockIndex = blockIndex();
 
     // sanity check number of types
     boolean isSys = k.name.equals("sys");
@@ -297,7 +297,7 @@ public class ImageGen
       TypeManifest mf = k.manifest.types[i];
       byQname.put(mf.qname, mf);
     }
-    
+
     // Assign IrType ids based on TypeManifest ids.
     for (int i=0; i<types.length; ++i)
     {
@@ -307,7 +307,7 @@ public class ImageGen
         throw err("IrType doesn't have manifest entry: " + ir.qname);
       ir.id = mf.id;
     }
-    
+
     // Now sort the types based on id
     Arrays.sort(types, new Comparator()
     {
@@ -501,27 +501,27 @@ public class ImageGen
     if (fid.offset    != 0 ||
         fqname.offset != 2)
       throw new IllegalStateException("Mismatch log field layout");
-    
+
     // get the complete list of logs
     IrField[] logs = flat.logDefines;
 
     // sanity check number of kits
     if (logs.length >= 0x7fff) throw err("Too many logs");
 
-    // sort by qname                 
+    // sort by qname
     Arrays.sort(logs, new Comparator()
-    {  
+    {
       public int compare(Object a, Object b)
         { return ((IrField)a).qname.compareTo(((IrField)b).qname); }
     });
-    
-    // write out all the log instances  
+
+    // write out all the log instances
     for (int i=0; i<logs.length; ++i)
     {
       IrField f = logs[i];
       f.id = i;
       log(f);
-    }                        
+    }
 
     // write Sys.logs list
     code.align(2);
@@ -530,11 +530,11 @@ public class ImageGen
     for (int i=0; i<logs.length; ++i)
       addBlockIndex(logs[i].storage);
     blockAlign();
-  }                        
-  
+  }
+
   private void log(IrField f)
   {
-    // always align logs types on 2 byte 
+    // always align logs types on 2 byte
     // boundaries regardless of block size
     code.align(2);
     f.storage.setBlockIndex(blockIndex());
@@ -545,7 +545,7 @@ public class ImageGen
 
     // align on start of next block
     blockAlign();
-  }            
+  }
 
 //////////////////////////////////////////////////////////////////////////
 // Methods
@@ -564,8 +564,8 @@ public class ImageGen
     int numParams = m.numParams();
 
     loc = new Location(m.qname);
-    m.codeAddr.setBlockIndex(blockIndex());       
-//if (m.qname.startsWith("sys::") && !m.qname.endsWith("Test"))    
+    m.codeAddr.setBlockIndex(blockIndex());
+//if (m.qname.startsWith("sys::") && !m.qname.endsWith("Test"))
 //System.out.println(" -- " + m.qname + " [" + m.codeAddr.getBlockIndex() + " 0x" + Integer.toHexString(m.codeAddr.getBlockIndex()) + "] -> " + m.codeAddr);
     code.u1(numParams);
     code.u1(m.maxLocals);
@@ -586,7 +586,7 @@ public class ImageGen
     // all our farjmps right (typically this should
     // be no more than twice unless we hit a really
     // weird boundary condition)
-    int start = code.size;
+    int start = code.pos;
     Backpatch origBackpatch = backpatch;
     while (true)
     {
@@ -603,7 +603,7 @@ public class ImageGen
 
       // either done or start over
       if (!redo) break;
-      code.size = start;
+      code.pos = code.size = start;
       backpatch = origBackpatch;
     }
 
@@ -695,8 +695,8 @@ public class ImageGen
     {
       callVirtual(op);
     }
-    else if (op.opcode == SCode.CallNative || 
-             op.opcode == SCode.CallNativeWide || 
+    else if (op.opcode == SCode.CallNative ||
+             op.opcode == SCode.CallNativeWide ||
              op.opcode == SCode.CallNativeVoid)
     {
       callNative(op);
@@ -704,16 +704,16 @@ public class ImageGen
     else if (op.opcode == SCode.Switch)
     {
       switchOp(op);
-    }           
+    }
     else if (op.opcode == SCode.LoadArrayLiteral)
-    {                        
+    {
       // array literals use an internal bytecode which actually
       // gets written as LoadBuf (to maintain compatibility with
       // older SVMs); but effectively all we are doing is loading
       // a pointer to the code section which is exactly what the
       // LoadBuf opcode does
       code.u1(SCode.LoadBuf);
-      opArg(op); 
+      opArg(op);
     }
     else
     {
@@ -863,11 +863,11 @@ public class ImageGen
       code.u2(offset);
     }
     else
-    {                        
+    {
       // there isn't a U4 version of LoadConst
-      if (op.opcode == SCode.LoadConstFieldU1)                  
+      if (op.opcode == SCode.LoadConstFieldU1)
         throw new IllegalStateException("Const field too wide: " + f.qname);
-        
+
       code.u1(op.opcode+2);
       if (code.size % 4 != 0) throw new IllegalStateException();
       code.i4(offset);
@@ -924,7 +924,7 @@ public class ImageGen
   }
 
   private ConstPool.IrQnameType qnameType(Type type)
-  {                                
+  {
     return constPool.qnameType(type);
   }
 
@@ -973,7 +973,7 @@ public class ImageGen
     {
       if (bp.ir.getBlockIndex() == 0)
         throw err("Attempt to back patch IR with no block index: " + bp.ir);
-        
+
       code.u2(bp.off, bp.ir.getBlockIndex(), bp.ir.alignBlockIndex());
     }
   }
