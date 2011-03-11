@@ -15,7 +15,7 @@ import sedona.vm.*;
  * sys::Sys native methods
  */
 public class Sys_n
-{                       
+{
 
 ////////////////////////////////////////////////////////////////
 // Arrays
@@ -26,7 +26,7 @@ public class Sys_n
    * array.  The arrays may be overlapping (like memmove, not memcpy).
    */
   public static void copy(byte[] src, int srcOff, byte[] dest, int destOff, int len, Context cx)
-  {     
+  {
     System.arraycopy(src, srcOff, dest, destOff, len);
   }
 
@@ -35,22 +35,22 @@ public class Sys_n
    * a is less than b return -1, if a greater than b return 1.
    */
   public static int compareBytes(byte[] a, int aOff, byte[] b, int bOff, int len, Context cx)
-  {             
+  {
     for (int i=0; i<len; ++i)
-    {                         
+    {
       int ax = a[aOff+i];
       int bx = b[bOff+i];
       if (ax != bx) return ax < bx ? -1 : +1;
     }
     return 0;
-  }            
+  }
 
   /**
    * Set all the bytes in the specified array to val.
    */
   public static void setBytes(int val, byte[] bytes, int off, int len, Context cx)
-  {   
-    for (int i=0; i<len; ++i) bytes[off+i] = (byte)val;      
+  {
+    for (int i=0; i<len; ++i) bytes[off+i] = (byte)val;
   }
 
   /**
@@ -59,16 +59,16 @@ public class Sys_n
    */
   public static void andBytes(int mask, byte[] bytes, int off, int len, Context cx)
   {
-    for (int i=0; i<len; ++i) bytes[off+i] &= mask;      
+    for (int i=0; i<len; ++i) bytes[off+i] &= mask;
   }
 
   /**
    * Perform a bitwise "or" using the specified mask on each
    * byte in the bytes array.
    */
-  public static void orBytes(int mask, byte[] bytes, int off, int len, Context cx)   
+  public static void orBytes(int mask, byte[] bytes, int off, int len, Context cx)
   {
-    for (int i=0; i<len; ++i) bytes[off+i] |= mask;      
+    for (int i=0; i<len; ++i) bytes[off+i] |= mask;
   }
 
 ////////////////////////////////////////////////////////////////
@@ -80,7 +80,7 @@ public class Sys_n
    * The string is stored in a static shared buffer.
    */
   public static StrRef intStr(int v, Context cx)
-  {                   
+  {
     // this is for debug, so don't worry about GC for now
     return str(Integer.toString(v));
   }
@@ -130,13 +130,13 @@ public class Sys_n
    * The string is stored in a static shared buffer.
    */
   public static StrRef doubleStr(double v, Context cx)
-  {                                 
+  {
     // this is for debug, so don't worry about GC for now
     return str(decimalFormat.format(v));
-  }                          
-        
-  static DecimalFormat decimalFormat = new DecimalFormat("0.000000");  
-  
+  }
+
+  static DecimalFormat decimalFormat = new DecimalFormat("0.000000");
+
   static StrRef str(String s) { return VmUtil.strConst(s); }
 
 ////////////////////////////////////////////////////////////////
@@ -162,7 +162,7 @@ public class Sys_n
   {
     return Double.doubleToLongBits(v);
   }
-                                         
+
   /**
    * Return a 32-bit floating point value according to the
    * IEEE 754 floating-point "single format" bit layout.
@@ -176,11 +176,11 @@ public class Sys_n
    * Return a 64-bit floating point value according to the
    * IEEE 754 floating-point "double format" bit layout.
    */
-  public static double bitsToDouble(long bits, Context cx)  
+  public static double bitsToDouble(long bits, Context cx)
   {
     return Double.longBitsToDouble(bits);
   }
-  
+
 ////////////////////////////////////////////////////////////////
 // Time
 ////////////////////////////////////////////////////////////////
@@ -192,7 +192,7 @@ public class Sys_n
 
   public static void sleep(long ns, Context cx)
     throws InterruptedException
-  {                        
+  {
     if (ns <= 0) return;
     long ms = ns / 1000000L;
     int rem = (int)(ns % 1000000L);
@@ -204,25 +204,25 @@ public class Sys_n
 // Utils
 ////////////////////////////////////////////////////////////////
 
-  public static StrRef platformType(Context cx)    
+  public static StrRef platformType(Context cx)
   {
-    return str("sys::Platform");
+    return str("sys::PlatformService");
   }
 
-  public static void free(Object obj, Context cx)    
+  public static void free(Object obj, Context cx)
   {
     // ignored for Java since we have GC
   }
 
-  public static int rand(Context cx)    
+  public static int rand(Context cx)
   {
     return random.nextInt();
-  }  
+  }
   static final java.util.Random random = new java.security.SecureRandom();
 
-  
+
   /**
-   * Provide a byte array to which looks like scode to access 
+   * Provide a byte array to which looks like scode to access
    * scode flags (which is the only reason this should be used)
    */
   public static byte[] scodeAddr(Context cx) { return scodeAddr; }
@@ -232,6 +232,6 @@ public class Sys_n
     // scode flags fixed at 23 byte offset
     scodeAddr[23] = 0x3; // debug|test
   }
-  
+
 }
 
