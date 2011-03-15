@@ -16,7 +16,6 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.RandomAccessFile;
 import java.io.StringWriter;
-import java.util.Arrays;
 import java.util.zip.CRC32;
 
 import sedona.util.Base64;
@@ -289,6 +288,15 @@ public class Buf extends Value
   public void flip()
   {
     pos = 0;
+  }
+
+  /**
+   * Obtain direct access to the internal byte array. The length of the array is
+   * not guaranteed to be equal to {@code size()}.
+   */
+  public byte[] bytes()
+  {
+    return bytes;
   }
 
   /**
@@ -1078,6 +1086,7 @@ public class Buf extends Value
    * <font color='red'>Direct manipulation of this field is strongly discouraged.
    * Public access may be removed in a future release. </font>
    *
+   * @see #bytes()
    * @see #trim()
    */
   public byte[] bytes;
