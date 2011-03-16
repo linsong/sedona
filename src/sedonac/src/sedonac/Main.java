@@ -8,13 +8,13 @@
 
 package sedonac;
 
-import java.io.*;
-import java.text.*;
-import java.lang.reflect.*;
-import java.util.*;
+import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+
 import sedona.Env;
-import sedona.util.*;
-import sedonac.test.*;
+import sedona.util.Log;
+import sedona.util.Version;
+import sedonac.test.Test;
 
 /**
  * Main command line entry point for the Sedona compiler.
@@ -43,6 +43,13 @@ public class Main
     println("  -kitVersion  force output kit to have specified version");
     println("  -noOptimize  skip const folding and optimization steps");
     println("  -noChecksum  exclude checksums from sax if input is sab file");
+  }
+
+  private static void errUsage(String err)
+  {
+    if (err != null) println("ERROR: " + err + '\n');
+    usage();
+    System.exit(1);
   }
 
   public static void println(String msg)
@@ -106,10 +113,10 @@ public class Main
       }
       else if (arg.equals("-outDir"))
       {
-        if (i+1 >= args.length) 
-          println("WARNING: Invalid outDir option");
+        if (i+1 >= args.length)
+          errUsage("Missing outDir option");
         else
-          compiler.outDir = new File(args[++i]);          
+          compiler.outDir = new File(args[++i]);
       }
       else if (arg.equals("-ver"))
       {
@@ -140,10 +147,10 @@ public class Main
       }
       else if (arg.equals("-kitVersion"))
       {
-        if (i+1 >= args.length) 
-          println("WARNING: Invalid kitVersion option");
+        if (i+1 >= args.length)
+          errUsage("Missing kitVersion option");
         else
-          compiler.kitVersion = new Version(args[++i]);          
+          compiler.kitVersion = new Version(args[++i]);
       }
       else if (arg.equals("-noChecksum"))
       {
@@ -151,7 +158,7 @@ public class Main
       }
       else if (arg.startsWith("-"))
       {
-        println("WARNING: Unknown option " + arg);
+        errUsage("Unrecognized option " + arg);
       }
       else
       {
@@ -164,7 +171,7 @@ public class Main
 
     if (input == null)
     {
-      System.out.println("ERROR: No input specified");
+      println("ERROR: No input specified");
       return 1;
     }
 
@@ -185,7 +192,7 @@ public class Main
       int numErr  = compiler.logErrors();
       if (numErr == 0)
         e.printStackTrace();
-      else 
+      else
       {
         System.out.println("*** FAILED with " + numErr + " error(s) and " + numWarn + " warning(s) ***");
       }
