@@ -8,26 +8,26 @@
 //
 
 **
-** PlatformService is a service designed for a 
-** specific hardware/OS platform.  
+** PlatformService is a service designed for a
+** specific hardware/OS platform.
 **
 @niagaraIcon="module://icons/x16/platform.png"
 class PlatformService
   extends Service
-{ 
+{
 
   **
-  ** Lookup the platform service for this VM.  Return null 
+  ** Lookup the platform service for this VM.  Return null
   ** if the application hasn't booted yet or is missing
   ** a platform service.
   **
   static PlatformService lookup()
-  {                                         
-    return (PlatformService)Sys.app.lookupService(PlatformService.type)   
+  {
+    return (PlatformService)Sys.app.lookupService(PlatformService.type)
   }
 
   **
-  ** Initialize the platform with the command line arguments. 
+  ** Initialize the platform with the command line arguments.
   ** Return 0 on success.  Return  non-zero on failure, which will
   ** terminate the process.
   **
@@ -38,7 +38,7 @@ class PlatformService
   ** or state change.
   **
   virtual void notify(Str key, Str val) {}
-  
+
   **
   ** Convenience to set the platformId property, and call changed()
   **
@@ -58,7 +58,7 @@ class PlatformService
     super.start()
     updatePlatformId("unknown")
   }
-  
+
   override virtual void execute()
   {
     refreshMemory()
@@ -68,7 +68,7 @@ class PlatformService
   **
   ** By default, a Platform Service assumes that the platform does not
   ** support hibernation, so this method always returns false.  If your
-  ** platform supports hibernation, you should override this method to 
+  ** platform supports hibernation, you should override this method to
   ** return true.
   **
   override virtual bool canHibernate()
@@ -81,27 +81,27 @@ class PlatformService
 // PlatformService
 ////////////////////////////////////////////////////////////////
 
-  **  
+  **
   ** Map a filename to its FileStore implementation.  This
-  ** method must return a non-null reference.  Default is 
+  ** method must return a non-null reference.  Default is
   ** to return 'FileStore.sys'.
   **
-  virtual FileStore fileStore(Str name) 
+  virtual FileStore fileStore(Str name)
   {
     return FileStore.sys
   }
 
-  **  
-  ** Update the memAvailable property to reflect the current 
+  **
+  ** Update the memAvailable property to reflect the current
   ** amount of available memory.
   **
-  virtual void refreshMemory() 
-  { 
+  virtual void refreshMemory()
+  {
   }
 
-  **  
+  **
   ** Return true if App must yield CPU by exiting VM each cycle.
-  ** 
+  **
   ** Platforms that support pre-emptive multitasking should return false
   ** since App can sleep to yield CPU.
   **
@@ -110,75 +110,75 @@ class PlatformService
   **
   ** See also the Apps chapter in Sedona docs
   **
-  virtual bool yieldRequired()   
-  { 
+  virtual bool yieldRequired()
+  {
     return false
   }
 
-  ** 
-  ** Inform platform that SVM will be exiting with Err.yield and needs 
+  **
+  ** Inform platform that SVM will be exiting with Err.yield and needs
   ** to be scheduled to run again (via resume in vm.c) in ns nanoseconds to meet
   ** the desired App.scanPeriod value.
   **
-  ** If the application overruns its scan period, yieldTime will be negative. 
+  ** If the application overruns its scan period, yieldTime will be negative.
   ** In this case the VM should be scheduled to run again as soon as possible.
   **
   ** See also the Apps chapter in Sedona docs
   **
   virtual void yield(long yieldTime)
-  {    
+  {
   }
 
-  
+
   ** Network state codes
   ** -1 to -100 reserved for standard Sedona error status
   ** 0 indicates network functional
   ** 1 to 100 reserved for standard Sedona states
   ** Other codes can be defined as needed by platforms
-  
+
   ** Network interface is initializing
   ** i.e. acquiring DHCP address or joining RF network
   define int netInitializing  = 1
-  
+
   ** Network interface is operational
   define int netOk            =  0
 
   ** Network interface has fatal error
   define int netFatal          = -1
 
-  ** Network failed due to configuration error     
+  ** Network failed due to configuration error
   define int netConfigError   =   -2
-  
-  
+
+
   **
   ** Return the current state of the network interface.  For devices
   ** that support multiple interfaces, return the state of the primary
   ** network interface on the platform.
-  ** 
+  **
   virtual int getNetworkState()
   {
     return netOk
-  }  
-  
-  
+  }
+
+
 ////////////////////////////////////////////////////////////////
 // Actions
 ////////////////////////////////////////////////////////////////
 
   **
-  ** Action to restart the Sedona application on the host platform.  
+  ** Action to restart the Sedona application on the host platform.
   ** This typically means restart just the Sedona process.
   **
   @confirmRequired
   action void restart() { }
 
   **
-  ** Action to reboot the entire host platform.  This typically 
+  ** Action to reboot the entire host platform.  This typically
   ** means to reboot the entire operating system.
   **
   @confirmRequired
   action void reboot() { }
-  
+
 ////////////////////////////////////////////////////////////////
 // Properties
 ////////////////////////////////////////////////////////////////
@@ -188,8 +188,8 @@ class PlatformService
   ** Sedona device should be provisioned.
   **
   @summary=false
-  @readonly @asStr @config property Buf(128) platformId
-  
+  @readonly @asStr property Buf(128) platformId
+
   **
   ** The platform version.  This should be a Dewey Decimal style
   ** version (x.y.z).  The default value is "0" and should be used
@@ -197,14 +197,14 @@ class PlatformService
   ** for platform version.
   **
   @summary=false
-  @readonly @asStr @config property Buf(17) platformVer = "0"
-  
+  @readonly @asStr property Buf(17) platformVer = "0"
+
   **
   ** The amount of available runtime memory, in bytes. This property
-  ** must be updated during execute()  
+  ** must be updated during execute()
   **
   @readonly property long memAvailable = 0L
-     
+
 
 ////////////////////////////////////////////////////////////////
 // Natives
