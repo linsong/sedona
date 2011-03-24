@@ -19,10 +19,10 @@ public class ArrayUtil
    * Return the concatentation of the two arrays.
    */
   public static Object[] concat(Object[] a, Object[] b)
-  {                                              
+  {
     if (a == null || a.length == 0) return b;
     if (b == null || b.length == 0) return a;
-    
+
     Class cls = a.getClass().getComponentType();
     Object[] temp = (Object[])Array.newInstance(cls, a.length+b.length);
     System.arraycopy(a, 0, temp, 0, a.length);
@@ -49,8 +49,9 @@ public class ArrayUtil
    */
   public static int[] removeOne(int[] array, int elem)
   {
-    int[] temp = new int[array.length-1];
+    if (array.length == 0) return array;
 
+    int[] temp = new int[array.length-1];
     int len = array.length;
     for(int i=0; i<len; ++i)
     {
@@ -61,14 +62,14 @@ public class ArrayUtil
         return temp;
       }
     }
-    
+
     return array;
   }
 
   /**
    * Swap the integers at indices a and b.  Return array.
    */
-  public static int[] swap(int[] array, int a, int b)    
+  public static int[] swap(int[] array, int a, int b)
   {
     int temp = array[a];
     array[a] = array[b];
@@ -79,8 +80,8 @@ public class ArrayUtil
   /**
    * Return string format.
    */
-  public static String toString(int[] array) 
-  {                       
+  public static String toString(int[] array)
+  {
     StringBuffer s = new StringBuffer();
     for (int i=0; i<array.length; ++i)
     {
@@ -93,16 +94,16 @@ public class ArrayUtil
   /**
    * Return hex string.
    */
-  public static String toHex(byte[] buf, int off, int len) 
-  {                       
+  public static String toHex(byte[] buf, int off, int len)
+  {
     StringBuffer s = new StringBuffer();
     for (int i=0; i<len; ++i)
-    {             
+    {
       int c = buf[i+off] & 0xff;
       s.append("0123456789abcdef".charAt(c>>4));
       s.append("0123456789abcdef".charAt(c&0xf));
     }
     return s.toString();
   }
-  
+
 }
