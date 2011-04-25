@@ -104,7 +104,8 @@ static int runInPlatformMode()
     checkStaged(scode);
     checkStaged(app);
 
-    commonVmSetup(&vm, scode);
+    if ((result = commonVmSetup(&vm, scode)) != 0)
+      return result;
     vm.args     = (const char**)&app;
     vm.argsLen  = 1;
 
