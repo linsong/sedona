@@ -8,10 +8,12 @@
 
 package sedona.sox;
 
-import java.io.*;
-import java.util.*;
-import sedona.*;
-import sedona.util.*;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Properties;
+
+import sedona.Env;
 import sedona.sox.SoxClient.TransferListener;
 
 /**
@@ -83,6 +85,9 @@ class FileTransfer
     lastReceiveTicks = Env.ticks();
     synchronized (lock)
     {
+      // force a flush of all queued chunks
+      receiveChunk(null);
+
       while (transferedChunks < numChunks)
       {
         // sanity check
@@ -111,35 +116,45 @@ class FileTransfer
   {
     try
     {
+      if (msg != null)
+        chunkQueue.add(msg);
+
+      if (!opened)
+        return;
+
       synchronized (lock)
       {
-        int cmd           = msg.u1();
-        int replyNum      = msg.u1();
-        int chunkNum      = msg.u2();
-        int thisChunkSize = msg.u2();
-        lastReceiveTicks  = Env.ticks();
-
-//        System.out.println("Received chunk# " + chunkNum + " of file");  // DIAG
-
-        // sanity check - should never receive this if not 'k'
-        if (cmd != 'k')
+        while (!chunkQueue.isEmpty())
         {
-          System.out.println("WARNING: This code is hosed up " + (char)cmd);
-          return;
+          msg = (Msg)chunkQueue.remove(0);
+          int cmd           = msg.u1();
+          int replyNum      = msg.u1();
+          int chunkNum      = msg.u2();
+          int thisChunkSize = msg.u2();
+          lastReceiveTicks  = Env.ticks();
+
+  //        System.out.println("Received chunk# " + chunkNum + " of file");  // DIAG
+
+          // sanity check - should never receive this if not 'k'
+          if (cmd != 'k')
+          {
+            System.out.println("WARNING: This code is hosed up " + (char)cmd);
+            return;
+          }
+
+          // check that my chunkNum is within expected range
+          if (chunkNum >= numChunks)
+          {
+            System.out.println("WARNING: Received received out of range chunk " +  chunkNum + " >= " + numChunks);
+            return;
+          }
+
+          // increment our transfer chunk count
+          transferedChunks++;
+
+          // write this chunk to the file
+          file.write(chunkNum*chunkSize, msg, thisChunkSize);
         }
-
-        // check that my chunkNum is within expected range
-        if (chunkNum >= numChunks)
-        {
-          System.out.println("WARNING: Received received out of range chunk " +  chunkNum + " >= " + numChunks);
-          return;
-        }
-
-        // increment our transfer chunk count
-        transferedChunks++;
-
-        // write this chunk to the file
-        file.write(chunkNum*chunkSize, msg, thisChunkSize);
 
         // notify the calling thread
         lock.notifyAll();
@@ -253,6 +268,9 @@ class FileTransfer
   {
     synchronized (lock)
     {
+      opened = false;
+      chunkQueue.clear();
+
       // build request
       Msg req = Msg.prepareRequest('f');
       req.str(method);
@@ -302,6 +320,8 @@ class FileTransfer
 
       // initialize our transfer chunk count
       transferedChunks = 0;
+
+      opened = true;
     }
   }
 
@@ -382,6 +402,7 @@ class FileTransfer
   long lastReceiveTicks;  // last chunk received (get only)
   boolean closeReceived;  // have we received closed command (put only)
   Object lock;            // b/w caller and Receiver
-
+  volatile boolean opened;
+  final LinkedList chunkQueue = new LinkedList();
 }
 
