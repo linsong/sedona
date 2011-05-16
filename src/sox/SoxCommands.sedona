@@ -9,7 +9,7 @@
 //
 
 **
-** SoxCommands processes all the sox command request/response. 
+** SoxCommands processes all the sox command request/response.
 **
 class SoxCommands
 {
@@ -22,27 +22,27 @@ class SoxCommands
   ** Process the current message just received
   **
   static void process(SoxService service, SoxSession session)
-  {                            
+  {
     // read sox request header
     BufInStream in = service.in
     int cmd        = in.read()
     int replyNum   = in.read()
-    SoxService.log.trace("$cmd $replyNum ${service.packet.size}bytes")    
-    
+    SoxService.log.trace("$cmd $replyNum ${service.packet.size}bytes")
+
     // receving a chunk doesn't necessarily need a response packet
-    if (cmd == 'k')                           
+    if (cmd == 'k')
     {
       fileReceiveChunk(service, session)
       return
     }
 
     // allocate response packet
-    SendPacket res = session.sendWindow.nextPacket()    
+    SendPacket res = session.sendWindow.nextPacket()
     res.replyNum = replyNum
-    
+
     // route
     switch (cmd)
-    {              
+    {
       // used:  a b c d f i k l n o q r s u v w y z
       // avail: e g h j m p t x
       case 'r': readPropReq(service, session, res);      break
@@ -72,7 +72,7 @@ class SoxCommands
   }
 
   static void send(SoxService service, SoxSession session, SendPacket res)
-  {                                                                    
+  {
     switch (res.cmd)
     {
       case 'R': readPropRes(service, session, res);    break
@@ -84,32 +84,34 @@ class SoxCommands
       case 'Q': queryRes(service, session, res);       break
       case 'F': fileOpenRes(service, session, res);    break
       case 'Z': fileCloseRes(service, session, res);   break
-      
+
       // these responses don't carry payload
       case 'B':
       case 'D':
-      case 'I': 
+      case 'I':
       case 'L':
       case 'N':
       case 'O':
-      case 'W': 
-      case 'U': 
-        prepareRes(service, session, res);     
+      case 'W':
+      case 'U':
+        prepareRes(service, session, res);
         break
-      
+
       // break these out into default to keep tight switch range
       default:
-        if (res.cmd == '!') errorRes(service, session, res)
-        else if (res.cmd == 'e') eventRes(service, session, res)
+        //if (res.cmd == '!') errorRes(service, session, res)
+        if (res.cmd == 'e') eventRes(service, session, res)
         else if (res.cmd == 'k') fileSendChunk(service, session, res)
         else if (res.cmd == 'z') prepareRes(service, session, res)
-        else                
+        else if (res.cmd != '!')
         {
           SoxService.log.error("Unknown response $res.cmd")
           return
         }
-    }        
-    service.send(session)                        
+    }
+    if (res.cmd == '!')
+    	errorRes(service, session, res)
+    service.send(session)
   }
 
 
@@ -117,21 +119,21 @@ class SoxCommands
 // Version
 ////////////////////////////////////////////////////////////////
 
-  **   
+  **
   ** versionReq
   ** {
   **   u1  'v'
   **   u1  replyNum
   ** }
-  **                       
+  **
   /*
-  static void versionReq(SoxService service, SoxSession session, SendPacket res) 
-  {                         
+  static void versionReq(SoxService service, SoxSession session, SendPacket res)
+  {
     res.cmd = 'V'
   }
   */
 
-  **  
+  **
   ** versionRes
   ** {
   **   u1   'V'
@@ -144,7 +146,7 @@ class SoxCommands
   **   }
   ** }
   **
-  static void versionRes(SoxService service, SoxSession session, SendPacket res) 
+  static void versionRes(SoxService service, SoxSession session, SendPacket res)
   {
     OutStream out = prepareRes(service, session, res)
     out.write(Sys.kitsLen)
@@ -153,7 +155,7 @@ class SoxCommands
       out.writeStr(kit.name)
       out.writeI4(kit.checksum)
     }
-  }          
+  }
 
 ////////////////////////////////////////////////////////////////
 // Version More
@@ -167,18 +169,18 @@ class SoxCommands
   ** }
   **
   /*
-  static void versionMoreReq(SoxService service, SoxSession session, SendPacket res) 
-  {                         
+  static void versionMoreReq(SoxService service, SoxSession session, SendPacket res)
+  {
     res.cmd = 'Y'
   }
   */
-  
+
   **
   ** res
   ** {
   **   u1   'Y'
   **   u1   replyNum
-  **   str  platformId    
+  **   str  platformId
   **   u1   scodeFlags
   **   kitVersions[kitCount]
   **   {
@@ -192,7 +194,7 @@ class SoxCommands
   **   }
   ** }
   **
-  static void versionMoreRes(SoxService service, SoxSession session, SendPacket res) 
+  static void versionMoreRes(SoxService service, SoxSession session, SendPacket res)
   {
     OutStream out = prepareRes(service, session, res)
     out.writeStr(Sys.app.platform.platformId.toStr())
@@ -216,14 +218,14 @@ class SoxCommands
   **   u1  propId
   ** }
   **
-  static void readPropReq(SoxService service, SoxSession session, SendPacket res) 
-  {      
-    BufInStream in = service.in         
+  static void readPropReq(SoxService service, SoxSession session, SendPacket res)
+  {
+    BufInStream in = service.in
     res.cmd = 'R'
     res.u2Data1 = in.readU2()  // compId
     res.u2Data2 = in.read()    // propId
-  }                              
-  
+  }
+
   **
   ** res
   ** {
@@ -233,17 +235,17 @@ class SoxCommands
   **   var  propValue
   ** }
   **
-  static void readPropRes(SoxService service, SoxSession session, SendPacket res) 
-  {                
+  static void readPropRes(SoxService service, SoxSession session, SendPacket res)
+  {
     // lookup component
     Component comp = Sys.app.lookup(res.u2Data1)
     if (comp == null) { res.error("bad compId"); return }
-    
+
     // lookup slot
     Slot prop = comp.type.slot(res.u2Data2)
     if (prop == null || !prop.isProp()) { res.error("bad slotId"); return }
 
-    // permission check           
+    // permission check
     int perm = prop.isOperator() ? User.or : User.ar
     if (!session.user.has(comp, perm)) { res.error("denied"); return }
 
@@ -253,8 +255,8 @@ class SoxCommands
     out.write(prop.id)
     out.write(prop.type.id)
     comp.saveProp(out, prop)
-  }               
-  
+  }
+
 ////////////////////////////////////////////////////////////////
 // Read Comp: tree structure, config props, runtime props, or links.
 ////////////////////////////////////////////////////////////////
@@ -268,7 +270,7 @@ class SoxCommands
   **   u1   what: 't', 'c', 'r', 'l' (tree, config, runtime, links)
   ** }
   **
-  static void readCompReq(SoxService service, SoxSession session, SendPacket res) 
+  static void readCompReq(SoxService service, SoxSession session, SendPacket res)
   {
     // parse req
     BufInStream in = service.in
@@ -286,7 +288,7 @@ class SoxCommands
   **   compTree | compProps | compLinks
   ** }
   **
-  static void readCompRes(SoxService service, SoxSession session, SendPacket res) 
+  static void readCompRes(SoxService service, SoxSession session, SendPacket res)
   {
     // lookup component
     Component c = Sys.app.lookup(res.u2Data1)
@@ -298,7 +300,7 @@ class SoxCommands
     out.writeI2(c.id)
     writeComp(service, session, c, res.u2Data2)
   }
-  
+
 ////////////////////////////////////////////////////////////////
 // Subscribe
 ////////////////////////////////////////////////////////////////
@@ -316,15 +318,15 @@ class SoxCommands
   static void subscribeReq(SoxService service, SoxSession session, SendPacket res)
   {
     res.cmd = 'S'
-    
+
     // parse req
     BufInStream in = service.in
     int whatMask = in.read()
     int num = in.read()
-    
+
     // handle all tree events
     if (num == 0 &&  whatMask == 0xff) { session.allTreeEvents = true; return }
-    
+
     // subscribe
     whatMask &= 0x0f
     int numSubscribed = 0
@@ -332,7 +334,7 @@ class SoxCommands
     {
       Component c = Sys.app.lookup(in.readU2())
       if (c == null || !session.user.has(c, User.or)) continue
-      
+
       // turn on subscription and event bits
       c.watchFlags[session.index] |= (whatMask << 4)
       c.watchFlags[session.index] |= whatMask
@@ -340,7 +342,7 @@ class SoxCommands
     }
     res.u2Data1 = numSubscribed
   }
-  
+
   **
   ** res
   ** {
@@ -349,7 +351,7 @@ class SoxCommands
   **   u1     numSubscribed
   ** }
   **
-  static void subscribeRes(SoxService service, SoxSession session, SendPacket res) 
+  static void subscribeRes(SoxService service, SoxSession session, SendPacket res)
   {
     OutStream out = prepareRes(service, session, res)
     out.write(res.u2Data1)
@@ -368,30 +370,30 @@ class SoxCommands
   **   u1   whatMask: tree=0x1 config=0x2 rt=0x4 links=0x8 0xff all tree
   ** }
   **
-  static void unsubscribeReq(SoxService service, SoxSession session, SendPacket res) 
+  static void unsubscribeReq(SoxService service, SoxSession session, SendPacket res)
   {
     res.cmd = 'U'
-    
+
     // parse req
     BufInStream in = service.in
     int whatMask = in.read()
     int num = in.read()
-    
+
     // handle all tree
     if (num == 0 &&  whatMask == 0xff) { session.allTreeEvents = false; return }
-    
+
     // unsubscribe - silently ignore errors
     whatMask &= 0x0f;
     for (int i=0; i<num; ++i)
     {
       Component c = Sys.app.lookup(in.readU2())
       if (c == null || !session.user.has(c, User.or)) continue
-      
+
       // clear subscription bits (we define the sox protocol
       // mask to match the top nibble of the watch mask)
-      c.watchFlags[session.index] &= ~(whatMask << 4)      
+      c.watchFlags[session.index] &= ~(whatMask << 4)
     }
-  }       
+  }
 
   **
   ** res
@@ -399,9 +401,9 @@ class SoxCommands
   **   u1  'U'
   **   u1  replyNum
   ** }
-  **       
+  **
   /*
-  static void unsubscribeRes(SoxService service, SoxSession session, SendPacket res) 
+  static void unsubscribeRes(SoxService service, SoxSession session, SendPacket res)
   {
     prepareRes(service, session, res)
   }
@@ -410,7 +412,7 @@ class SoxCommands
 ////////////////////////////////////////////////////////////////
 // Invoke
 ////////////////////////////////////////////////////////////////
-  
+
   **
   ** req
   ** {
@@ -421,10 +423,10 @@ class SoxCommands
   **   val  argument
   ** }
   **
-  static void invokeReq(SoxService service, SoxSession session, SendPacket res) 
+  static void invokeReq(SoxService service, SoxSession session, SendPacket res)
   {
     res.cmd = 'I'
-    
+
     // parse
     BufInStream in = service.in
     int compId = in.readU2()
@@ -438,18 +440,18 @@ class SoxCommands
     Slot slot = comp.type.slot(slotId)
     if (slot == null || !slot.isAction()) { res.error("bad slotId"); return }
 
-    // permission check           
+    // permission check
     int perm = slot.isOperator() ? User.oi : User.ai
     if (!session.user.has(comp, perm)) { res.error("denied"); return }
-    
-    // if a Buf action, then we reuse the packet 
+
+    // if a Buf action, then we reuse the packet
     // buffer as the argument and shift memory down
     if (slot.type.id == Type.bufId)
     {
-      int size = in.readU2()      
+      int size = in.readU2()
       Buf buf = service.packet
       Sys.copy(buf.bytes, in.pos, buf.bytes, 0, size)
-      buf.size = size    
+      buf.size = size
       comp.invokeBuf(slot, buf)
     }
 
@@ -466,14 +468,14 @@ class SoxCommands
   **   u1   'I'
   **   u1   replyNum
   ** }
-  **         
+  **
   /*
-  static void invokeRes(SoxService service, SoxSession session, SendPacket res) 
+  static void invokeRes(SoxService service, SoxSession session, SendPacket res)
   {
     prepareRes(service, session, res)
-  }                   
+  }
   */
-  
+
 ////////////////////////////////////////////////////////////////
 // Write
 ////////////////////////////////////////////////////////////////
@@ -488,14 +490,14 @@ class SoxCommands
   **   val  value
   ** }
   **
-  static void writeReq(SoxService service, SoxSession session, SendPacket res) 
+  static void writeReq(SoxService service, SoxSession session, SendPacket res)
   {
     res.cmd = 'W'
-    
+
     // parse req
     BufInStream in = service.in
     int compId = in.readU2()
-    int slotId = in.read()    
+    int slotId = in.read()
 
     // lookup component
     Component comp = Sys.app.lookup(compId)
@@ -504,8 +506,8 @@ class SoxCommands
     // lookup slot
     Slot slot = comp.type.slot(slotId)
     if (slot == null || !slot.isProp()) { res.error("bad slotId"); return }
-    
-    // permission check                                  
+
+    // permission check
     int perm = slot.isOperator() ? User.ow : User.aw
     if (!session.user.has(comp, perm)) { res.error("denied"); return }
 
@@ -519,10 +521,10 @@ class SoxCommands
   **   u1   'W'
   **   u1   replyNum
   ** }
-  **        
+  **
   /*
-  static void writeRes(SoxService service, SoxSession session, SendPacket res) 
-  {    
+  static void writeRes(SoxService service, SoxSession session, SendPacket res)
+  {
     prepareRes(service, session, res)
   }
   */
@@ -543,8 +545,8 @@ class SoxCommands
   **   val[] configProps
   ** }
   **
-  static void addReq(SoxService service, SoxSession session, SendPacket res) 
-  {                      
+  static void addReq(SoxService service, SoxSession session, SendPacket res)
+  {
     // parse req
     BufInStream in = service.in
     int parentId = in.readU2()
@@ -556,7 +558,7 @@ class SoxCommands
     Component parent = Sys.app.lookup(parentId)
     if (parent == null) { res.error("bad compId"); return }
 
-    // permission check           
+    // permission check
     if (!session.user.has(parent, User.aw)) { res.error("denied"); return }
 
     // lookup type
@@ -574,9 +576,9 @@ class SoxCommands
 
     // decode props
     comp.loadProps(in, 'c')
-    
+
     // save response info
-    res.cmd = 'A'    
+    res.cmd = 'A'
     res.u2Data1 = comp.id
   }
 
@@ -588,8 +590,8 @@ class SoxCommands
   **   u2    compId
   ** }
   **
-  static void addRes(SoxService service, SoxSession session, SendPacket res) 
-  {                    
+  static void addRes(SoxService service, SoxSession session, SendPacket res)
+  {
     OutStream out = prepareRes(service, session, res)
     out.writeI2(res.u2Data1)
   }
@@ -607,7 +609,7 @@ class SoxCommands
   **   str   newName
   ** }
   **
-  static void renameReq(SoxService service, SoxSession session, SendPacket res) 
+  static void renameReq(SoxService service, SoxSession session, SendPacket res)
   {
     // parse req
     BufInStream in = service.in
@@ -618,13 +620,13 @@ class SoxCommands
     Component comp = Sys.app.lookup(compId)
     if (comp == null) { res.error("bad compId"); return }
 
-    // permission check           
+    // permission check
     if (!session.user.has(comp, User.aw)) { res.error("denied"); return }
 
     // rename
     comp.name.copyFromStr(name, Component.nameLen)
     comp.fireTreeChanged()
-    
+
     res.cmd = 'N'
   }
 
@@ -634,12 +636,12 @@ class SoxCommands
   **   u1    'N'
   **   u1    replyNum
   ** }
-  **      
+  **
   /*
-  static void renameRes(SoxService service, SoxSession session, SendPacket res) 
-  {                    
+  static void renameRes(SoxService service, SoxSession session, SendPacket res)
+  {
     prepareRes(service, session, res)
-  } 
+  }
   */
 
 ////////////////////////////////////////////////////////////////
@@ -656,7 +658,7 @@ class SoxCommands
   **   u2[]  childrenIds
   ** }
   **
-  static void reorderReq(SoxService service, SoxSession session, SendPacket res) 
+  static void reorderReq(SoxService service, SoxSession session, SendPacket res)
   {
     // parse req
     BufInStream in = service.in
@@ -667,33 +669,33 @@ class SoxCommands
     Component parent = Sys.app.lookup(compId)
     if (parent == null) { res.error("bad compId"); return }
 
-    // permission check           
+    // permission check
     if (!session.user.has(parent, User.aw)) { res.error("denied"); return }
 
     // verify the children first
     int pos = in.pos
-    for (int i=0; i<num; ++i)        
+    for (int i=0; i<num; ++i)
     {
       Component x = Sys.app.lookup(in.readU2())
-      if (x == null || x.parent != parent.id) 
-      { 
-        res.error("bad childId"); 
-        return                                         
-      }                                        
+      if (x == null || x.parent != parent.id)
+      {
+        res.error("bad childId");
+        return
+      }
     }
-    
+
     // we've verified, now reorder the children linked list
     in.pos = pos
     Component last = null
     for (int i=0; i<num; ++i)
-    {                    
+    {
       Component x = Sys.app.lookup(in.readU2())
-      if (last == null)        
+      if (last == null)
         parent.children = x.id
       else
         last.nextSibling = x.id
       last = x
-    }                       
+    }
     if (last != null) last.nextSibling = Component.nullId
 
     parent.fireTreeChanged()
@@ -707,12 +709,12 @@ class SoxCommands
   **   u1   'O'
   **   u1   replyNum
   ** }
-  **      
+  **
   /*
-  static void reorderRes(SoxService service, SoxSession session, SendPacket res) 
-  {                    
+  static void reorderRes(SoxService service, SoxSession session, SendPacket res)
+  {
     prepareRes(service, session, res)
-  } 
+  }
   */
 
 ////////////////////////////////////////////////////////////////
@@ -727,7 +729,7 @@ class SoxCommands
   **   u2    compId
   ** }
   **
-  static void deleteReq(SoxService service, SoxSession session, SendPacket res) 
+  static void deleteReq(SoxService service, SoxSession session, SendPacket res)
   {
     // parse req
     BufInStream in = service.in
@@ -737,12 +739,12 @@ class SoxCommands
     Component comp = Sys.app.lookup(compId)
     if (comp == null) { res.error("bad compId"); return }
 
-    // permission check           
+    // permission check
     if (!session.user.has(comp, User.aw)) { res.error("denied"); return }
 
     // nuke it from app
     if (!Sys.app.remove(comp)) { res.error("app.remove"); return }
-    
+
     res.cmd = 'D'
   }
 
@@ -752,12 +754,12 @@ class SoxCommands
   **   u1    'D'
   **   u1    replyNum
   ** }
-  **               
+  **
   /*
-  static void deleteRes(SoxService service, SoxSession session, SendPacket res) 
+  static void deleteRes(SoxService service, SoxSession session, SendPacket res)
   {
     prepareRes(service, session, res)
-  } 
+  }
   */
 
 ////////////////////////////////////////////////////////////////
@@ -776,7 +778,7 @@ class SoxCommands
   **   u1   toSlotId
   ** }
   **
-  static void linkReq(SoxService service, SoxSession session, SendPacket res) 
+  static void linkReq(SoxService service, SoxSession session, SendPacket res)
   {
     // parse req
     BufInStream in = service.in
@@ -784,26 +786,26 @@ class SoxCommands
     int fromCompId = in.readU2()
     int fromSlotId = in.read()
     int toCompId   = in.readU2()
-    int toSlotId   = in.read()  
+    int toSlotId   = in.read()
     App app = Sys.app
     User user = session.user
 
-    // lookup to component and verify admin-write 
+    // lookup to component and verify admin-write
     // permission (for both add and delete)
     Component toComp = app.lookup(toCompId)
     if (toComp == null) { res.error("bad compId"); return }
     if (!user.has(toComp, User.aw)) { res.error("denied"); return }
 
-    // add                     
+    // add
     bool success = false
     if (command == 'a')
     {
       Component fromComp = app.lookup(fromCompId)
       if (fromComp != null)
-      {                                                                 
+      {
         // check adminRead on from component
         if (!user.has(fromComp, User.ar)) { res.error("denied"); return }
-        
+
         Slot fromSlot = fromComp.type.slot(fromSlotId)
         Slot toSlot   = toComp.type.slot(toSlotId)
         success = app.addLink(fromComp, fromSlot, toComp, toSlot) != null // handles null slots
@@ -821,10 +823,10 @@ class SoxCommands
       else { res.error("could not find link"); return }
 
       if (!success) { res.error("could not delete link"); return }
-    }                
-    
+    }
+
     res.cmd = 'L'
-  }       
+  }
 
   **
   ** res
@@ -832,12 +834,12 @@ class SoxCommands
   **   u1   'L'
   **   u1   replyNum
   ** }
-  **                 
+  **
   /*
-  static void linkRes(SoxService service, SoxSession session, SendPacket res) 
+  static void linkRes(SoxService service, SoxSession session, SendPacket res)
   {
     prepareRes(service, session, res)
-  } 
+  }
   */
 
 //////////////////////////////////////////////////////////////////////////
@@ -869,7 +871,7 @@ class SoxCommands
   **     u1    kitId
   **     u1    typeId
   **     str   name
-  **     u2    parent  
+  **     u2    parent
   **     u1    permissions
   **     u1    numKids
   **     u2[numKids] kidIds
@@ -882,18 +884,18 @@ class SoxCommands
     out.write(c.type.kit.id)
     out.write(c.type.id)
     out.writeStr(c.name)
-    out.writeI2(c.parent) 
+    out.writeI2(c.parent)
     out.write(session.user.permFor(c))
 
     int backpatch = service.packet.size
     out.write(0xff) // spacer for numKids
-    int numKids = 0                      
+    int numKids = 0
     Component x = Sys.app.lookup(c.children)
-    User user = session.user   
+    User user = session.user
     while (x != null)
-    {        
+    {
       if (user.has(x, User.or))
-      {           
+      {
         numKids++
         out.writeI2(x.id)
       }
@@ -913,10 +915,10 @@ class SoxCommands
   **   }
   **
   static bool writeCompProps(SoxService service, SoxSession session, Component c, int what)
-  {                       
+  {
     // if no admin read permission, then capitalize what
-    if (!session.user.has(c, User.ar)) what &= ~0x20    
-    
+    if (!session.user.has(c, User.ar)) what &= ~0x20
+
     OutStream out = service.out
     out.write(what)
     c.saveProps(out, what)
@@ -937,10 +939,10 @@ class SoxCommands
   {
     OutStream out = service.out
     out.write('l')
-    
+
     // if missing admin-read permission, don't send links
     if (!session.user.has(c, User.ar)) { out.writeI2(0xffff); return true }
-    
+
     for (Link link = c.linksTo; link != null; link = link.nextTo)
       link.save(out)
     for (Link link = c.linksFrom; link != null; link = link.nextFrom)
@@ -961,7 +963,7 @@ class SoxCommands
   **   u1   queryType
   **   u1[] queryReq
   ** }
-  **                 
+  **
   ** queryType 's': query service
   ** req-service
   ** {
@@ -969,19 +971,19 @@ class SoxCommands
   **   u1  typeId
   ** }
   **
-  static void queryReq(SoxService service, SoxSession session, SendPacket res) 
-  {      
-    BufInStream in = service.in         
-    
+  static void queryReq(SoxService service, SoxSession session, SendPacket res)
+  {
+    BufInStream in = service.in
+
     // only support 's' query service
-    int queryType =  in.read()          
+    int queryType =  in.read()
     if (queryType != 's') { res.error("bad query"); return }
-    
+
     res.cmd = 'Q'
     res.u2Data1 = in.read()   // kitId
     res.u2Data2 = in.read()   // typeId
-  }                              
-  
+  }
+
   **
   ** res
   ** {
@@ -997,11 +999,11 @@ class SoxCommands
   **   u2       0xffff end marker
   ** }
   **
-  static void queryRes(SoxService service, SoxSession session, SendPacket res) 
+  static void queryRes(SoxService service, SoxSession session, SendPacket res)
   {
     // only support 's' query service
-    
-    // lookup service type               
+
+    // lookup service type
     Kit kit = Sys.kit(res.u2Data1)
     Type serviceType = null
     if (kit != null)
@@ -1009,7 +1011,7 @@ class SoxCommands
       serviceType = kit.type(res.u2Data2)
     }
     if (serviceType == null) { res.error("bad type"); return }
-    
+
     // prepare res
     OutStream out = prepareRes(service, session, res)
     Service s = Sys.app.services
@@ -1017,9 +1019,9 @@ class SoxCommands
     {
       if (s.type.is(serviceType)) out.writeI2(s.id)
       s = s.nextService
-    }    
+    }
     out.writeI2(0xffff)
-  }               
+  }
 
 ////////////////////////////////////////////////////////////////
 // File Open
@@ -1041,10 +1043,10 @@ class SoxCommands
   **   }
   **   u1 end of headers '\0'
   ** }
-  ** 
+  **
   ** On a put, the fileSize is the number of bytes that will be written. On a
   ** get, the fileSize is the maximum number of bytes to read. You can read the
-  ** whole file on a get by specifying fileSize as 0. The actual 
+  ** whole file on a get by specifying fileSize as 0. The actual
   ** number of bytes read might be less if there are not fileSize bytes
   ** available (taking into account the size of the actual file, and the
   ** potential offset).
@@ -1055,25 +1057,25 @@ class SoxCommands
   **   offset    int           get, put    0         Byte offset to use when reading/writing the uri
   **   mode      "w", "m"      put         "w"       File mode to use (see sys::File)
   **
-  static void fileOpenReq(SoxService service, SoxSession session, SendPacket res) 
-  { 
+  static void fileOpenReq(SoxService service, SoxSession session, SendPacket res)
+  {
     FileTransfer tx = session.transfer
     File file = tx.file
-    
+
     // parse req
     BufInStream in = service.in
     Str method     = in.readStrInPlace(tempStr1)
     Str uri        = in.readStrInPlace(tempStr2)
     int fileSize   = in.readS4()
-    int chunkSize  = in.readU2()          
-    
+    int chunkSize  = in.readU2()
+
     // check permissions
     if (!session.user.canProv(uri)) { res.error("denied"); return }
 
     // open a watch as a file transaction
     if (tx.mode != FileTransfer.unused) { res.error("busy"); return }
-    file.name = uri                                                     
-    
+    file.name = uri
+
     // check chunkSize - since we have a fixed size buffer
     // we have to leave room for 17 bytes of header:
     //   5 bytes dasp header
@@ -1091,7 +1093,7 @@ class SoxCommands
     if (fileSize >= chunkSize * 0xffff) { res.error("too big"); return }
 
     // read supported headers - ignore anything we don't recognize
-    Str openMode = "w" // Default for a put. Always 'r' for a get 
+    Str openMode = "w" // Default for a put. Always 'r' for a get
     int offset = 0
     Str key
     Str val
@@ -1101,14 +1103,14 @@ class SoxCommands
       if (key == null) { res.error("invalid headers"); return }
       if (key.length() == 0) break
       if ((val = in.readStrInPlace(tempVal)) == null) { res.error("bad value"); return }
-      
+
       if (key.equals("mode")) openMode = val
       else if (key.equals("offset") && ((offset = val.parseInt()) < 0)) { res.error("bad offset"); return }
     }
-    
+
     // handle get or put:
     //   - define fileSize (for get)
- 
+
     int txMode
     switch (method.get(0))
     {
@@ -1118,27 +1120,27 @@ class SoxCommands
         txMode   = FileTransfer.get
         // Make sure we don't read more than there is
         int maxBytes = Sys.max(0, file.size() - offset)
-        if (fileSize == 0) 
+        if (fileSize == 0)
           fileSize = maxBytes
-        else 
+        else
           fileSize = Sys.min(fileSize, maxBytes)
         break
       case 'p':
         if (!(openMode.get(0) == 'w' || openMode.get(0) == 'm')) { res.error("bad mode"); return }
         txMode = FileTransfer.put
-        // notify platform - Jennic uses this to auto-tune the network 
-        // since we expect a burst of incoming messages on put        
+        // notify platform - Jennic uses this to auto-tune the network
+        // since we expect a burst of incoming messages on put
         Sys.app.platform.notify("sox.put", "o")
         break
       default:
         res.error("bad method")
         return
-    }              
+    }
 
     // open the file
     if (!file.open(openMode)) { res.error("cannot open"); return }
-        
-    // setup the transaction   
+
+    // setup the transaction
     tx.mode      = txMode
     tx.fileSize  = fileSize
     tx.offset    = offset
@@ -1166,8 +1168,8 @@ class SoxCommands
   **   u1 end of headers '\0'
   ** }
   **
-  static void fileOpenRes(SoxService service, SoxSession session, SendPacket res) 
-  {             
+  static void fileOpenRes(SoxService service, SoxSession session, SendPacket res)
+  {
     FileTransfer tx = session.transfer
     OutStream out = prepareRes(service, session, res)
     out.writeI4(tx.fileSize)
@@ -1186,12 +1188,12 @@ class SoxCommands
   **   u1  replyNum
   ** }
   **
-  static void fileCloseReq(SoxService service, SoxSession session, SendPacket res) 
-  {            
+  static void fileCloseReq(SoxService service, SoxSession session, SendPacket res)
+  {
     FileTransfer tx = session.transfer
     tx.mode = FileTransfer.unused
     tx.file.close()
-    
+
     res.cmd = 'Z'
   }
 
@@ -1202,8 +1204,8 @@ class SoxCommands
   **   u1  replyNum
   ** }
   **
-  static void fileCloseRes(SoxService service, SoxSession session, SendPacket res) 
-  {             
+  static void fileCloseRes(SoxService service, SoxSession session, SendPacket res)
+  {
     prepareRes(service, session, res)
   }
 
@@ -1224,15 +1226,15 @@ class SoxCommands
   **     u2   chunkSize
   **     u1[chunkSize] chunk
   **   }
-  **                        
-  static void fileReceiveChunk(SoxService service, SoxSession session) 
+  **
+  static void fileReceiveChunk(SoxService service, SoxSession session)
   {
     FileTransfer tx = session.transfer
-    
-    // check to make sure file is still open for 
+
+    // check to make sure file is still open for
     // writing before we attempt to do any IO
     if (tx.mode != FileTransfer.put) return
-    
+
     // parse req
     BufInStream in = service.in
     int chunkNum   = in.readU2()
@@ -1242,11 +1244,11 @@ class SoxCommands
     tx.file.seek(tx.offset + (chunkNum * tx.chunkSize))
     if (!tx.file.out.writeBytes(service.packet.bytes, in.pos, chunkSize))
       SoxService.log.error("write failed")
-    
+
     // decrement chunks received, the FileTransfer.checkSet
     // will handle wrapping up once we've received all the chunks
     tx.numChunks -= 1
-  }                
+  }
 
   **
   ** Send the client the next chunk of the file.
@@ -1261,9 +1263,9 @@ class SoxCommands
   **     u2   chunkSize
   **     u1[chunkSize] chunk
   **   }
-  **                   
-  static void fileSendChunk(SoxService service, SoxSession session, SendPacket res) 
-  {                           
+  **
+  static void fileSendChunk(SoxService service, SoxSession session, SendPacket res)
+  {
     FileTransfer tx = session.transfer
     Buf packet = service.packet
     int thisChunkNum  = res.u2Data1
@@ -1290,15 +1292,15 @@ class SoxCommands
   **   str  to
   ** }
   **
-  static void fileRenameReq(SoxService service, SoxSession session, SendPacket res) 
-  {                   
+  static void fileRenameReq(SoxService service, SoxSession session, SendPacket res)
+  {
     // parse request
     BufInStream in = service.in
     Str from = in.readStrInPlace(tempStr1)
     Str to   = in.readStrInPlace(tempStr2)
 
     if (!FileStore.rename(from, to)) { res.error(""); return }
-    
+
     res.cmd = 'B'
   }
 
@@ -1308,12 +1310,12 @@ class SoxCommands
   **   u1  'B'
   **   u1  replyNum
   ** }
-  **                    
+  **
   /*
-  static void fileRenameRes(SoxService service, SoxSession session, SendPacket res) 
-  {        
-    prepareRes(service, session, res)           
-  } 
+  static void fileRenameRes(SoxService service, SoxSession session, SendPacket res)
+  {
+    prepareRes(service, session, res)
+  }
   */
 
 ////////////////////////////////////////////////////////////////
@@ -1333,10 +1335,10 @@ class SoxCommands
   {
     Component c = Sys.app.lookup(p.u2Data1)
     int what = p.u2Data2
-    
+
     // if component has since been removed
     if (c == null)
-    {       
+    {
       p.error("removed")
       errorRes(service, session, p)
       return
@@ -1372,25 +1374,25 @@ class SoxCommands
   ** Prepare an outgoing dasp datagram packet.
   **
   private static OutStream prepareRes(SoxService service, SoxSession session, SendPacket p)
-  { 
+  {
     // prepare dasp message with dasp header
     service.packet.clear()
     OutStream out = service.out
     out.writeI2(session.remoteId)
-    out.writeI2(p.seqNum)                            
+    out.writeI2(p.seqNum)
     out.write(Dasp.DATAGRAM << 4)
-    
+
     // add ack/ackMore dasp headers
-    session.receiveWindow.setAckHeaders(service)           
-    
+    session.receiveWindow.setAckHeaders(service)
+
     // sox header
     out.write(p.cmd)
     out.write(p.replyNum)
     return out
   }
-  
+
   static Str tempStr1
   static Str tempStr2
   static Str tempKey
   static Str tempVal
-} 
+}
