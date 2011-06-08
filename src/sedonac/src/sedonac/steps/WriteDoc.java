@@ -139,10 +139,15 @@ public class WriteDoc
   private void footer(XWriter out)
   {
     nav(out);
-    out.w("<div class='copyright'>Copyright &#169; 2009, Tridium, Inc.</div>\n");
+    out.w("<div class='copyright'><script type='text/javascript'>document.write(\"Copyright &#169; \" + new Date().getFullYear() + \" Tridium, Inc.\")</script></div>\n");
     out.w("</body>\n");
     out.w("</html>\n");
-  }                         
+  }
+
+  public static void writeCopyright(XWriter out)
+  {
+    out.w("<div class='copyright'><script type='text/javascript'>document.write(\"Copyright &#169; \" + new Date().getFullYear() + \" Tridium, Inc.\")</script></div>\n");
+  }
 
   private void nav(XWriter out)
   {

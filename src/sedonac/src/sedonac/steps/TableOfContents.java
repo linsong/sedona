@@ -428,7 +428,7 @@ public class TableOfContents
   
   private void writeCopyright(XWriter out)
   {
-    out.w("<div class='copyright'>Copyright &#169; 2009, Tridium, Inc.</div>\n");
+    WriteDoc.writeCopyright(out);
   }
 
 ////////////////////////////////////////////////////////////////
