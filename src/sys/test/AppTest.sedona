@@ -26,7 +26,7 @@ class AppTest
   */
 
   static void test()
-  {                         
+  {
     // init original app
     App a = appA
     a.initApp(10)
@@ -50,6 +50,9 @@ class AppTest
     x.i1 = 1972
     x.f1 = 0.0002467
     x.str.copyFromStr("bar")
+
+    // Issue 19880: don't allow siblings with duplicate names
+    assert(a.add(a, "x", TestComp.type) == null)
 
     // Component y (child of app)
     TestComp y = (TestComp)a.add(a, "y", TestComp.type)
@@ -79,13 +82,13 @@ class AppTest
     assert(a.addLink(y, i2, z, i2) != null)
     // link:  z.i1 -> y.i1
     assert(a.addLink(z, i1, y, i1) != null)
-    
+
     // duplicate links should fail
     assert(a.addLink(x, i1, y, i2) == null)
     assert(a.addLink(x, i1, z, i1) == null)
     assert(a.addLink(y, i2, z, i2) == null)
     assert(a.addLink(z, i1, y, i1) == null)
-    
+
     // we do not allow multiple links into the same slot
     assert(a.addLink(x, i1, z, i2) == null)
     assert(a.addLink(y, i2, z, i1) == null)
@@ -98,9 +101,9 @@ class AppTest
     BufOutStream out = BufTest.out
     BufInStream in = BufTest.in
     buf.clear()
-    
+
     // The schema for an App could be arbitrarily large, but our buf is
-    // fixed size. Save off the schema size in case serialization fails. 
+    // fixed size. Save off the schema size in case serialization fails.
     a.saveSchema(out)
     int schemaSize = buf.size
   	buf.clear()
@@ -112,7 +115,7 @@ class AppTest
   	}
   	else
   		assert(true)
-  	
+
   	// deserialize
   	in.rewind()
   	App b = appB

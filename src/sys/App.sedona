@@ -51,7 +51,7 @@ class App
   ** this application.
   **
   void cleanupApp()
-  {                   
+  {
     // free all the components and links
     foreach (Component c : comps, compsLen)
     {
@@ -67,61 +67,61 @@ class App
     }
 
     // cleanup misc
-    services = null   
+    services = null
     children = nullId
 
-    // free comps array    
+    // free comps array
     compsLen = 0
-    delete comps          
+    delete comps
     comps = null
   }
 
 ////////////////////////////////////////////////////////////////
 // Run
-//////////////////////////////////////////////////////////////// 
-   
+////////////////////////////////////////////////////////////////
+
   **
   ** Is the application currently running
-  ** 
+  **
   bool isRunning()
-  {                     
+  {
     return running
-  }   
-  
+  }
+
   **
   ** Has the application reached steady state (as defined by timeToSteadyState)
-  ** 
+  **
   bool isSteadyState()
-  {                     
+  {
     // See whether we have reached steady state yet
     if (!atSteadyState)
       atSteadyState = running && (Sys.ticks() > steadyAt)
 
     return atSteadyState
-  }   
-  
+  }
+
 
   **
-  ** Start all the components.  Return 0 on success, 
+  ** Start all the components.  Return 0 on success,
   ** error code on failure.
   **
   int startApp(Str[] args, int argsLen)
-  {                       
+  {
     // find platform service in this app
     platform = (PlatformService)lookupService(PlatformService.type)
     if (platform == null) return Err.noPlatformService
-    
+
     // verify platform service is correct type for this hw/os platform
     Type expected = Sys.findType(Sys.platformType());
     if (expected == null)
     	log.error("missing platform type: ${Sys.platformType()}\n")
-    if (expected == null || !platform.type.is(expected)) 
+    if (expected == null || !platform.type.is(expected))
       return Err.badPlatformService
-    
+
     // given platform its initialization hook
     int r = platform.init(args, argsLen)
     if (r != 0) return r
-  
+
     // log/notify starting
     log.message("starting")
     platform.notify("app", "starting")
@@ -133,7 +133,7 @@ class App
     // start() callback for every component
     foreach (Component c : comps, compsLen)
       if (c != null) c.start()
-        
+
     // success
     return 0
   }
@@ -145,7 +145,7 @@ class App
   {
     log.message("stopping")
     platform.notify("app", "stopping")
-    
+
     foreach (Component c : comps, compsLen)
       if (c != null) c.stop()
   }
@@ -158,10 +158,10 @@ class App
   {
     log.message("running")
     platform.notify("app", "running")
-    
+
     // Start counting time to steady state
     steadyAt = Sys.ticks() + (long)timeToSteadyState*1ms
-    
+
     return resumeApp()
   }
 
@@ -170,7 +170,7 @@ class App
   ** simple round robin execution.
   **
   int resumeApp()
-  {       
+  {
     //  Are we returning from hibernate?
     if (runStatus == Err.hibernate)
     {
@@ -180,17 +180,17 @@ class App
     		atSteadyState = false
     		steadyAt = Sys.ticks() + (long)timeToSteadyState*1ms
     	}
-    	
+
       // call Service.onUnhibernate for all the services
       for (Service s = services; s != null; s = s.nextService)
-        s.onUnhibernate() 
-    }     
-    
+        s.onUnhibernate()
+    }
+
     running = true
-    runStatus = 0 
+    runStatus = 0
     long deadline = Sys.ticks()
     lastEndWork = deadline
-    
+
     while (running)
     {
       // update our cycle counter
@@ -198,11 +198,11 @@ class App
 
       // get start ticks and compute cycle deadline
       lastStartExec = newStartExec
-      
+
       newStartExec = Sys.ticks()
 
       deadline = deadline + (long)scanPeriod*1ms
-      
+
       // execute every component in the tree
       executeTree(this)
 
@@ -214,7 +214,7 @@ class App
       bool more = true
       bool canHibernate = true
       while (more && running)
-      {                                 
+      {
         // give each service a chance to do a chunk of work and override any requests
         // for hibernation
         more = false
@@ -223,10 +223,10 @@ class App
           more |= s.work()
           canHibernate &= s.canHibernate()
         }
-        if(canHibernate) runStatus = Err.hibernate        
+        if(canHibernate) runStatus = Err.hibernate
         if (Sys.ticks() >= deadline - ((long)guardTime*1ms)) break
       }
-      
+
       lastEndWork = Sys.ticks()
       long nsUntilDeadline = deadline - lastEndWork
 
@@ -235,39 +235,39 @@ class App
       //  hibernation is higher priority then yielding
       if (runStatus == Err.hibernate)
       {
-        //  Hibernation has been requested     
+        //  Hibernation has been requested
         for (Service s = services; s != null; s = s.nextService)
-          s.onHibernate()                     
-        
+          s.onHibernate()
+
         return runStatus
-      }            
+      }
       else if (platform.yieldRequired())
-      { 
+      {
         platform.yield(nsUntilDeadline);
         runStatus = Err.yield
         return runStatus;
-      }  
+      }
       else
-      {  
-        // sleep until next cycle if we have time remaining      
-  
+      {
+        // sleep until next cycle if we have time remaining
+
         //debug output in 1/100's ms
         //Sys.out.printLong((lastStartWork-newStartExec)/10000L).print(" ").printLong((lastEndWork-lastStartWork)/10000L).nl()
-  
+
         // note that if we have overrun our deadline, sleep time will be
         // negative and Sys.sleep will return immediately.
         Sys.sleep(nsUntilDeadline)
-      }                  
-    }           
-    
+      }
+    }
+
     return runStatus
-  }  
-    
+  }
+
   **
   ** Recursively execute the component and its children.
   **
   private void executeTree(Component c)
-  {                                   
+  {
     // recurse children first
     if (c.children != nullId)
     {
@@ -275,10 +275,10 @@ class App
       while (kid != null)
       {
         executeTree(kid)
-        kid = lookup(kid.nextSibling)       
+        kid = lookup(kid.nextSibling)
       }
     }
-    
+
     // execute component (after children)
     c.propagateLinksTo()
     c.execute()
@@ -295,13 +295,13 @@ class App
   {
     if (id < 0 || id >= compsLen) return null
     return comps[id]
-  }             
-  
+  }
+
   **
   ** Get the maximum component id used by the application.
   **
   int maxId()
-  {                                
+  {
     for (int i=compsLen-1; i>=0; --i)
       if (comps[i] != null) return i
     return 0
@@ -333,6 +333,14 @@ class App
     if (parent == null || name == null || t == null)
       return null
 
+    // don't add if sibiling with same name exists
+    Component sibling = lookup(parent.children)
+    while (sibling != null)
+   	{
+   		if (sibling.name.equals(name)) return null
+   		sibling = lookup(sibling.nextSibling)
+   	}
+
     // allocate component id
     int id = allocCompId()
     if (id < 0) return null
@@ -355,11 +363,11 @@ class App
         x = lookup(x.nextSibling)
       if (x == null) { delete c; return null }
       x.nextSibling = id
-    }                         
-    
+    }
+
     // start child is app is running
     if (running) { c.loaded(); c.start() }
- 
+
     // fire tree changed on parent
     parent.fireTreeChanged()
 
@@ -386,7 +394,7 @@ class App
     if (!ensureCompsCapacity(len+8)) return -1
     return len
   }
-  
+
   **
   ** Grow the comps array if too small.  Return true on success.
   **
@@ -538,7 +546,7 @@ class App
 
     for (Component c = lookup(component.nextSibling); c != null; c = lookup(c.nextSibling))
       if (c.type.is(t)) return c
-      
+
     return null
   }
 
@@ -576,11 +584,11 @@ class App
   {
     if (from == null || fromSlot == null || to == null || toSlot == null)
       return null
-    
+
     // no duplicate links
     if (lookupLink(from.id, fromSlot.id, to.id, toSlot.id) != null)
       return null
-      
+
     // toSlot must not already be linked to (no "fan-in")
     for (Link x = to.linksTo; x != null; x = x.nextTo)
     {
@@ -620,7 +628,7 @@ class App
     link.nextTo = to.linksTo
     to.linksTo = link
 
-    // add into "from" component's linked list (unless 
+    // add into "from" component's linked list (unless
     // this is a link between the same component)
     if (to != from)
     {
@@ -636,7 +644,7 @@ class App
   ** true on success, false on failure.
   **
   bool removeLink(Link link)
-  {     
+  {
     if (link == null) return false
 
     // remove it on "from"
@@ -710,8 +718,8 @@ class App
     for (int i=0; i<Watch.max; ++i)
     {
       // if non-null this slot is used
-      if (watches[i] != null) continue    
-      
+      if (watches[i] != null) continue
+
       // we found our watch, mark it open
       Watch w = subclasses[i]
       watches[i] = w
@@ -759,7 +767,7 @@ class App
   **     Link[]       links
   **     u2           0xffff end of links marker
   **     u1           '.' end of app marker
-  **   }    
+  **   }
   **
   ** Return 0 on success, non-zero on failure.
   **
@@ -769,7 +777,7 @@ class App
     // header
     out.writeI4(0x73617070)  // "sapp"
     out.writeI4(0x0003)      // version 0.3
-    saveSchema(out)          // schema    
+    saveSchema(out)          // schema
     out.writeI2(maxId())     // maxId
 
     // components
@@ -801,7 +809,7 @@ class App
     if (in.readS4() != 0x0003) return Err.invalidVersion
     if (!loadSchema(in)) return Err.invalidSchema
     int maxId = in.readU2()
-    
+
     // resize comps array if needed
     initApp(maxId+1)
 
@@ -926,7 +934,7 @@ class App
     // Read app from file and create objects
     if (!file.open("r")) return Err.cannotOpenFile
     int r = loadApp(file.in)
-    file.close()  
+    file.close()
     return r
   }
 
@@ -936,7 +944,7 @@ class App
   action void save()
   {
     if (file.open("w"))
-    {            
+    {
       int r = saveApp(file.out)
       file.close()
       if (r == 0)
@@ -962,7 +970,7 @@ class App
   **
   @confirmRequired
   action void quit()
-  {                
+  {
     save()
     running = false
   }
@@ -975,7 +983,7 @@ class App
   {
     platform.restart()
     running = false
-    runStatus = Err.restart                  
+    runStatus = Err.restart
   }
 
   **
@@ -995,9 +1003,9 @@ class App
 
   ** Logical name for the device, up to 15 ASCII chars long
   @config @asStr property Buf(16) appName
-  
-  ** Scan cycle period in milliseconds.  
-  @unit=Units.millisecond 
+
+  ** Scan cycle period in milliseconds.
+  @unit=Units.millisecond
   @config property int scanPeriod = 50
 
   ** Time before the end of the scan period in which no new services work
@@ -1007,9 +1015,9 @@ class App
   @config property int guardTime = 5
 
   ** Time from app start to steady state, in milliseconds.
-  @unit=Units.millisecond 
+  @unit=Units.millisecond
   @config property int timeToSteadyState = 0
-  
+
   ** If true, when the App returns from hibernation then the
   ** steady state will be reset and the App will not return
   ** to steady state until timeToSteadyState has elapsed.
@@ -1019,7 +1027,7 @@ class App
 // Fields
 ////////////////////////////////////////////////////////////////
 
-  ** Application level logging 
+  ** Application level logging
   define Log log
 
   ** List of application component indexed by
@@ -1058,28 +1066,28 @@ class App
   internal long steadyAt      = 0L
 
   //following 4 fields added 2/2/2010 to support AppDbg object
-  
+
   ** End of previous scan sleep time is also the start of a new component tree execution
   ** This marks start of he CURRENT scan, such that:
   **     newStartExec - lastStartExec = scan time of PREVIOUS scan
   long newStartExec = 0L
-  
+
   ** Cache of the timestamp of the start of the component tree execution of
   ** the PREVIOUS scan.  It is intended that that timing statistics to be computed
-  ** within the execute method of a component dropped into the component tree, so 
+  ** within the execute method of a component dropped into the component tree, so
   ** we need to cache the start of the last component tree execution.  Also marks
   ** the time that sleep ends on previous scan.
-  **     lastStartWork - lastStartExec = execution time of previous scan 
+  **     lastStartWork - lastStartExec = execution time of previous scan
   long lastStartExec = 0L
-  
+
   ** Timestamp of start of service work (also marks the end of component tree execution). If
   ** timing statistics computed during component tree execution, this timestamp
   ** corresponds to the PREVIOUS scan.
   **     lastEndWork - lastStartWork = work time of previous scan
   long lastStartWork = 0L
-  
+
   ** Timestamp of end of service's work (also start of sleep time).  This timestamp
-  ** corresponds to the PREVIOUS scan. 
+  ** corresponds to the PREVIOUS scan.
   **     lastEndWork - lastStartWork = work time of previous scan
   long lastEndWork   = 0L
 }
