@@ -6,8 +6,10 @@
 //   10 Jan 07  Andy Saunders  Creation
 //   27 Apr 07  Brian Frank    Port from Java to Sedona
 //   22 Apr 09  Elizabeth McKenney   Updated
-//   29 Jul 09  Refactored to add computeConstants private method to fix scaledMin/scaledMax
+//   29 Jul 09  Clif Turman     Refactored to add computeConstants private method to fix scaledMin/scaledMax
 //              not being recomputed whenever ki or kp changed.
+//   07 Jul 11  Clif Turman     Added maxDelta property, kp/ki changes cause errorSum to be recomputed to prevent
+//              jumps in output value, changed precision to 6 for all k's 
 //
 
 **
@@ -17,28 +19,53 @@
 class LP
   extends Component
 {
+  ** loop enable.  If false, output is held constant at previous value
   @config property bool enable = true
+
+  ** setpoint
   @config @summary property float sp    = 0.0f
 
-  @precision=4 property float cv    = 0.0f
+  ** process feedback
+  @precision=3 property float cv    = 0.0f
+ 
+  ** out value, constrained to be between min and max
   @readonly property float out
 
-  @config @precision=4 property float kp = 1.0f
-  @config @precision=4 property float ki = 0.0f  // units repeats / minute
-  @config @precision=4 property float kd = 0.0f
+  ** proportional constant
+  @config @precision=6 @min=0f property float kp = 1.0f
+  
+  ** integral constant
+  @config @precision=6 @min=0f property float ki = 0.0f  // units repeats / minute
 
-  @config @precision=4 property float max   = 10.0f
-  @config @precision=4 property float min   = 0.0f
-  @config @precision=4 property float bias  = 0.0f
+  ** derivative constant
+  @config @precision=6 @min=0f property float kd = 0.0f
+
+  ** max out value
+  @config @precision=6 property float max   = 100.0f
+
+  ** min out value
+  @config @precision=6 property float min   = 0.0f
+  
+  ** bias is applied directly to output if ki equals 0
+  @config @precision=6 property float bias  = 0.0f
+
+  ** the max amount out is allowed to change in exTime ms
+  ** A setting of 0 disables this function
+  @config @precision=6 @min=0f property float maxDelta = 0f
+  
+  ** direct acting or reverse acting process
   @config property bool direct = true 
 
-  @config @unit=Units.millisecond property int exTime  = 10
+  ** loop is executed every exTime ms
+  @config @min=0 @unit=Units.millisecond property int exTime  = 1000
 
   **
   ** Callback when component is first started in an app.
   **
   virtual override void start()
   {
+    kiOld = ki
+    kpOld = kp
   	computeConstants()
   }
 
@@ -125,7 +152,28 @@ class LP
     else if (pv < min)
       pv = min
 
-    out = pv
+    //maxDelta = 0 disables max change check
+    if(maxDelta != 0f)
+    {
+      if(out > pv)
+      {
+        //we need to adjust out down
+        if(out - pv > maxDelta)
+          out -= maxDelta
+        else
+          out = pv
+      }
+      else
+      {
+        //we need to adjust out up
+        if(pv - out > maxDelta)
+          out += maxDelta
+        else
+          out = pv
+      }
+    }
+    else
+      out = pv
   }
 
 
@@ -143,12 +191,29 @@ class LP
     {
       computeConstants()
     }
+    
+    //prevent output jump if kp is changed
+    if(slot == LP.kp)
+    {
+      if(kp != 0f && kpOld != 0f)
+        errorSum = errorSum*kpOld/kp
+      kpOld = kp
+    }
+
+    //prevent output jump if ki is changed
+    if(slot == LP.ki)
+    {
+      if(ki != 0f && kiOld != 0f)
+        errorSum = errorSum*kiOld/ki
+      kiOld = ki
+    }
+      
     super.changed(slot)    
   }
 
   private void computeConstants()
   {
-    executeTime = (long)exTime * 1ms
+    executeTime = (long)exTime * 1ms  //convert exTime into ticks
     kPkIconst   = kp * ki / 60.0f
     if (kPkIconst==0.0f)
     {
@@ -162,9 +227,10 @@ class LP
     }
   }
 
-  // Precalc seldom-changed values for better performance
   private long  executeTime
   private float kPkIconst
+  private float kpOld
+  private float kiOld
   private float scaledMax
   private float scaledMin
 
