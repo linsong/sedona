@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2007 Tridium, Inc
+// Copyright (c) 2009 Tridium, Inc
 // Licensed under the Academic Free License version 3.0
 //
 // History:
@@ -17,10 +17,17 @@
 class DlyOff
   extends Component
 {
+  ** Output signal
   @readonly property bool out
+
+  ** Input signal
   property bool in
-  @config @summary property float delayTime  // specified hold time in sec
-  @readonly property int hold                // remaining hold time in ms
+
+  ** Specified hold time in sec
+  @config @summary property float delayTime  
+
+  ** Remaining hold time in msec
+  @readonly property int hold                
 
 
   **
@@ -43,7 +50,7 @@ class DlyOff
     // On negative edge transition, start delay
     if (!in && lastIn)
     {
-      delayEnd = now + (long)delayTime * 1sec
+      delayEnd = now + (long)( (double)delayTime * (double)1sec )
     }
         
     // If input is true, cancel any delay and set output true
@@ -66,7 +73,7 @@ class DlyOff
     if (delayEnd == 0L)
       hold = 0
     else
-      hold = (int)(delayEnd - now)
+      hold = (int)((delayEnd - now)/1000000L)  // convert to msec
 
     lastIn = in
   }

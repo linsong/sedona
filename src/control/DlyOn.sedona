@@ -17,10 +17,16 @@
 class DlyOn
   extends Component
 {
-
+  ** Output signal
   @readonly property bool out
+
+  ** Input signal
   property bool in
+
+  ** Specified hold time in sec
   @config @summary property float delayTime  // specified hold time in sec
+
+  ** Remaining hold time in msec
   @readonly property int hold                // remaining hold time in ms
 
   **
@@ -43,7 +49,7 @@ class DlyOn
     // On positive edge transition, start delay
     if (in && !lastIn)
     {
-      delayEnd = now + (long)delayTime * 1sec
+      delayEnd = now + (long)( (double)delayTime * (double)1sec )
     }
         
     // If input is false, cancel any delay and set output false
@@ -66,7 +72,7 @@ class DlyOn
     if (delayEnd == 0L)
       hold = 0
     else
-      hold = (int)(delayEnd - now)
+      hold = (int)((delayEnd - now)/1000000L)  // convert to msec
 
     lastIn = in
   }

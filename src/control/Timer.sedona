@@ -32,14 +32,14 @@ class Timer
   property bool run
 
   **
-  ** desired duration of the output pulse
+  ** Desired duration of the output pulse, in seconds
   **
   @unit=Units.second
   @summary
   @config property int time
 
   **
-  ** Time left on the timer if running
+  ** Time left on the timer if running, in seconds
   ** If not running, this value is 0
   **
   @unit=Units.second
