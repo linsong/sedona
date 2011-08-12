@@ -1,14 +1,14 @@
 //
-// Copyright (c) 2007 Tridium, Inc
+// Copyright (c) 2007-2011 Tridium, Inc
 // Licensed under the Academic Free License version 3.0
 //
 // History:
-//   10 Jan 07  Andy Saunders  Creation
-//   27 Apr 07  Brian Frank    Port from Java to Sedona
+//   27 Apr 2007  Brian Frank    Creation
+//   04 Aug 2011  Clif Turman    Add comments
 //
 
 **
-** Add2 Two Input Add object
+** Add2 adds two float inputs and writes the results to a float output
 **
 ** out = in1 + in2
 **             
@@ -16,10 +16,19 @@
 class Add2
   extends Component
 {
+
+  ** out is the sum of all inputs
   @readonly property float out
+  
+  ** input 1
   property float in1
+  
+  ** input 2
   property float in2
 
+  **
+  ** Execute is called once every scan.
+  **
   virtual override void execute()
   {
     out = in1 + in2
