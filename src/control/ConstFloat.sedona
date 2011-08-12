@@ -1,9 +1,10 @@
 //
-// Copyright (c) 2007 Tridium, Inc
+// Copyright (c) 2007-2011 Tridium, Inc
 // Licensed under the Academic Free License version 3.0
 //
 // History:
-//   31 Aug 07  Andy Saunders    Creation
+//   31 Aug 2007  Andy Saunders    Creation
+//   04 Aug 2011  Clif Turman      Add setNull action, add comments
 //
 
 **
@@ -14,11 +15,24 @@
 class ConstFloat
   extends Component
 {
+
+  ** out value is set by actions
   @config @summary property float out
   
+
+  **
+  ** action to set out value
+  **
   action void set(float x)
   {           
     out = x
   }
   
+  **
+  ** action to set out to null
+  **
+  action void setNull()
+  {           
+    out = null
+  }
 }
