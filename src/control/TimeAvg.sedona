@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2010 Tridium, Inc
+// Copyright (c) 2010-2011 Tridium, Inc
 // Licensed under the Academic Free License version 3.0
 //
 // History:
@@ -11,10 +11,10 @@
 ** The actual time is marked in a resolution of scan period (see App.scanPeriod)
 ** such that number of samples averaged = time/Sys.app.scanPeriod
 **
-** Note that this is NOT a running average - this object caches the average over
+** Note that this is NOT a running or moving average - this object caches the average over
 ** the previous time as the out value, and updates out every "time" ms.
 **
-** Unil a full time cycle has elapsed, the out is set to the average off all samples
+** Until a full time cycle has elapsed, the out is set to the average off all samples
 ** collected up until that point.
 **
 ** The average may be reset/restarted at any time using the "reset" action.
