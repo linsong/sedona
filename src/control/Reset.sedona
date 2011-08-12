@@ -1,15 +1,16 @@
 //
-// Copyright (c) 2007 Tridium, Inc
+// Copyright (c) 2007-2011 Tridium, Inc
 // Licensed under the Academic Free License version 3.0
 //
 // History:
-//   10 Jan 07  Andy Saunders  Creation
-//   27 Apr 07  Brian Frank    Port from Java to Sedona
-//   22 Apr 09  Elizabeth McKenney   Updated
+//   10 Jan 2007  Andy Saunders  Creation
+//   27 Apr 2007  Brian Frank    Port from Java to Sedona
+//   22 Apr 2009  Elizabeth McKenney   Updated
+//   04 Aug 2011  Clif Turman    Add comments
 //
 
 **
-** Reset rescale in value to out value object
+** Reset re-scales in value to out value object
 **
 **
 ** This function performs a "reset" on the input value.
@@ -35,12 +36,22 @@ class Reset
   extends Component
 {
 
+  ** re-scaled output
   @readonly property float out
+
+  ** input
   property float in
 
+  ** scaling constant inMin
   @config property float inMin = 0.0
+
+  ** scaling constant inMax
   @config property float inMax = 4095.0
+
+  ** scaling constant outMin
   @config property float outMin = 0.0
+
+  ** scaling constant outMax
   @config property float outMax = 100.0
 
   **
