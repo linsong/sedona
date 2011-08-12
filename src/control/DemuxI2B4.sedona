@@ -1,9 +1,10 @@
 //
-// Copyright (c) 2010 Tridium, Inc
+// Copyright (c) 2010-2011 Tridium, Inc
 // Licensed under the Academic Free License version 3.0
 //
 // History:
-//   20 Apr 2010  Clifton Turman  Creation
+//   20 Apr 2010  Clif Turman    Creation
+//   04 Aug 2011  Clif Turman    Add comments
 //
 
 **
@@ -19,13 +20,27 @@
 class DemuxI2B4
   extends Component
 {
+  ** input
   property int in
+  
+  ** if in == startsAt + 0, out1 is true, else false
   @readonly property bool out1
+
+  ** if in == startsAt + 1, out2 is true, else false
   @readonly property bool out2
+
+  ** if in == startsAt + 2, out3 is true, else false
   @readonly property bool out3
+
+  ** if in == startsAt + 3, out4 is true, else false
   @readonly property bool out4
+
+  ** starting value for in
   @config property int startsAt = 0
 
+  **
+  ** Execute is called once every scan.
+  **
   virtual override void execute()
   {  
     out1= (in == startsAt)?true:false
