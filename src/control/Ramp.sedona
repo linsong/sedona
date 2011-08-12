@@ -1,10 +1,11 @@
 //
-// Copyright (c) 2007 Tridium, Inc
+// Copyright (c) 2007-2011 Tridium, Inc
 // Licensed under the Academic Free License version 3.0
 //
 // History:
-//   26 Oct 07  Brian Frank    Creation
-//   27 Apr 07  Brian Frank    Port from Java to Sedona
+//   26 Oct 2007  Brian Frank    Creation
+//   27 Apr 2007  Brian Frank    Port from Java to Sedona
+//   04 Aug 2011  Clif Turman    Add comments
 //
 
 **
@@ -16,26 +17,98 @@
 class Ramp
   extends Component
 {
+  ** ramp triangle wave output
   @readonly property float out
+  
+  ** minimum value
   @config property float min   = 0.0
+  
+  ** maximum value
   @config property float max   = 100.0
-  @config property float delta = 1.0
 
-  virtual override void execute()
+  //** amount to be added 4x per second
+  //@config property float delta = 1.0
+
+  ** Ramp period
+  ** If rampType is true (up and down) then this is the time it 
+  ** takes to complete up/down cycle.
+  ** a value of 0 gives a 0 output
+  ** If rampType is false (up only) then this is the time it 
+  ** takes to complete up cycle.
+  @unit = Units.second
+  @precision = 0
+  @min=0
+  @config property float period = 10f
+
+  ** Specifies whether ramp is up only (min to max and repeat), or
+  ** ramp is min to max/max to min and repeat
+  ** Defaults to up only.
+  @trueText="up and down"
+  @falseText="up only"
+  @config property bool rampType = true
+  
+  float delta
+  bool firstHalf
+  //float engineCyclesPerRampCycle
+
+  **
+  ** compute internal constants at startup
+  **
+  virtual override void start()
   {
-    // Don't update more than 4x/sec
-    long now = Sys.ticks()
-    if (now - lastUpdate < 250ms) return
-
-    if (firstHalf)
-      out = out + delta
-    else
-      out = out - delta
-
-    if (out < min) { out = min; firstHalf = true }
-    if (out > max) { out = max; firstHalf = false }
+    computeConstants()
+  }
+ 
+  **
+  ** recompute internal constants if ramp parameters change
+  **
+  virtual override void changed(Slot slot)
+  {
+    if(slot == Ramp.period    ||
+       slot == Ramp.min       ||
+       slot == Ramp.max       ||
+       slot == Ramp.rampType  )
+    computeConstants()
+    super.changed(slot)
   }
 
-  private bool firstHalf = true
-  private long lastUpdate
+
+  private void computeConstants()
+  {
+    if(period == 0f) return
+    float engineCyclesPerRampCycle = (1000f * period) / (float)Sys.app.scanPeriod
+    delta = (max-min)/engineCyclesPerRampCycle
+    if(rampType) delta = delta * 2f
+    firstHalf = true
+  }
+  
+  **
+  ** Execute is called once every scan.
+  **
+  virtual override void execute()
+  {
+    //disable if period is 0
+    if(period == 0f)
+    {
+      out = 0f
+      return
+    }
+
+    if(rampType)
+    {
+      if (firstHalf)
+        out = out + delta
+      else
+        out = out - delta
+
+      if (out < min) { out = min; firstHalf = true }
+      if (out > max) { out = max; firstHalf = false }
+    }
+    else
+    {
+      out = out+delta
+      if(out > max) out = min
+    }
+  }
+
 }
