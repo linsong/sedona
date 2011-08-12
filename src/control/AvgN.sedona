@@ -1,9 +1,10 @@
 //
-// Copyright (c) 2010 Tridium, Inc
+// Copyright (c) 2010-2011 Tridium, Inc
 // Licensed under the Academic Free License version 3.0
 //
 // History:
 //   07 Jun 2010  Clif Turman  Creation
+//   04 Aug 2011  Clif Turman  Add comments
 //
 
 **
@@ -33,12 +34,17 @@
 class AvgN
   extends Component
 {
+  ** the average value updated every execute cycle
   @readonly property float out
+
+  ** value of in is added to average computation every execute cycle
   property float in
   
+  ** number of samples to average. One new sample is read every execute cycle.
   @min=1
   @config property int numSamplesToAvg = 5
 
+  ** reset is invoked to re-initialize the averaging
   @readonly property bool reset = false
 
   **
@@ -64,12 +70,18 @@ class AvgN
     super.changed(slot)
   }
 
+  **
+  ** Execute is called once every scan.
+  **
   virtual override void execute()
   {
     computeAverage()
     out = avg
   }
 
+  **
+  ** average in a new sample
+  **
   void computeAverage()
   {
     if(first)
@@ -83,7 +95,6 @@ class AvgN
       total = total + in - avg
       avg   = total/(float)numSamplesToAvg
     }
-    //Sys.out.print("$in,$avg")
   }
 
 
