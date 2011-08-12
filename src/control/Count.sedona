@@ -1,9 +1,10 @@
 //
-// Copyright (c) 2010 Tridium, Inc
+// Copyright (c) 2010-2011 Tridium, Inc
 // Licensed under the Academic Free License version 3.0
 //
 // History:
-//   12 Feb 10  Clif Turman    Creation
+//   12 Feb 2010  Clif Turman    Creation
+//   04 Aug 2011  Clif Turman    Add comments
 //
 
 **
@@ -68,6 +69,7 @@ class Count
   }
 
   **
+  ** Execute is called once every scan.
   ** increment/decrement the count on rising edge of "in" if "enable" is true 
   **
   virtual override void execute()
