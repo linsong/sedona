@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2010 Tridium, Inc
+// Copyright (c) 2010-2011 Tridium, Inc
 // Licensed under the Academic Free License version 3.0
 //
 // History:
@@ -11,7 +11,7 @@
 ** "in" is used to fire the timer:
 **    - if low, out is forced to false
 **    - if high, out = 1 until timer reaches "time" seconds
-**  Alternatively, the pulse can be fired from the "Start Timer" action if in is not linked.
+**  Alternatively, the pulse can be fired from the "Start Timer" action if run is not linked.
 **
 @niagaraIcon="module://icons/x16/clock.png"
 class Timer
