@@ -1,9 +1,10 @@
 //
-// Copyright (c) 2007 Tridium, Inc
+// Copyright (c) 2007-2011 Tridium, Inc
 // Licensed under the Academic Free License version 3.0
 //
 // History:
-//   31 Aug 07  Andy Saunders    Creation
+//   31 Aug 2007  Andy Saunders    Creation
+//   04 Aug 2011  Clif Turman      Add comments
 //
 
 **
@@ -14,16 +15,32 @@
 class ConstBool
   extends Component
 {
+ 
+  ** out value is set by actions
   @config @summary property bool out
-  
+
+  **
+  ** action to set out to true
+  **
   action void setTrue()
   {           
     out = true
   }
-  
+
+  **  
+  ** action to set out to false
+  **
   action void setFalse()
   {           
     out = false
   }
   
+  **  
+  ** action to set out to null
+  **
+  action void setNull()
+  {           
+    out = null
+  }
+
 }
