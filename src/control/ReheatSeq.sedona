@@ -1,12 +1,13 @@
 //
-// Copyright (c) 2007 Tridium, Inc
+// Copyright (c) 2007-2011 Tridium, Inc
 // Licensed under the Academic Free License version 3.0
 //
 // History:
-//   18 Jan 07  Andy Saunders  Creation
-//   27 Apr 07  Brian Frank    Port from Java to Sedona
-//   22 Apr 09  Elizabeth McKenney   Updated
-//   22 Jul 09  Adapted from ReheatSeq from LSeq class
+//   18 Jan 2007  Andy Saunders  Creation
+//   27 Apr 2007  Brian Frank    Port from Java to Sedona
+//   22 Apr 2009  Elizabeth McKenney   Updated
+//   22 Jul 2009  Adapted from LSeq class
+//   04 Aug 2011  Clif Turman    Add comments
 //
 
 **
@@ -24,17 +25,40 @@ class ReheatSeq
   extends Component
 
 {
+  **output 1
   @readonly property bool out1
+
+  **output 2
   @readonly property bool out2
+
+  **output 3
   @readonly property bool out3
+
+  **output 4
   @readonly property bool out4
-  property float in                               // cv input
-  @config property bool enable           // all outputs are false if enable == false
-  @readonly property byte dOn  = 0                // number of outputs currently turned on
+
+  ** cv input
+  property float in
+
+  **all outputs are false if enable == false
+  @config property bool enable
+  
+  **number of outputs currently turned on
+  @readonly property byte dOn  = 0
+
+  **hysteresis value - in < threshold - hysteresis is required to turn an output off 
   @config property float hysteresis
+
+  ** threshold to turn out1 on
   @config property float threshold1
+
+  ** threshold to turn out2 on
   @config property float threshold2
+
+  ** threshold to turn out3 on
   @config property float threshold3
+
+  ** threshold to turn out4 on
   @config property float threshold4
 
 
@@ -54,17 +78,20 @@ class ReheatSeq
       return
     }
 
-    // Loop through out1 - out16 setting desired state for each
+    // Loop through out1 - out4 setting desired state for each
     //  (Note assumption that output slot ids are consecutive)
     for(int i = 0; i < 4; i++)
     {
+      //if an output is already on
       if(getBool(type.slots[ReheatSeq.out1.id+i]))
       {
+        //check to see if it is still above (threshold - hysteresis) value
         if((in + hysteresis) >= getFloat(type.slots[ReheatSeq.threshold1.id+i]))
           numStagesOn++
         else
-          setBool(type.slots[ReheatSeq.out1.id+i],false)
+          setBool(type.slots[ReheatSeq.out1.id+i],false) //turn off if below threshold - hysteresis
       }
+      //if an output is currently off
       else
       {
         if(in >= getFloat(type.slots[ReheatSeq.threshold1.id+i]))
