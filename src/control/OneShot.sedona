@@ -1,9 +1,11 @@
 //
-// Copyright (c) 2009 Tridium, Inc
+// Copyright (c) 2009-2011 Tridium, Inc
 // Licensed under the Academic Free License version 3.0
 //
 // History:
-//   22 Apr 09  Elizabeth McKenney  Creation
+//   22 Apr 2009  Elizabeth McKenney  Creation
+//   09 Aug 2011  Added @min and @units facets to pulseWidth property
+//
 
 **
 ** OneShot:  Boolean one-shot pulse generator
@@ -19,14 +21,15 @@ class OneShot
 
   ** Input signal
   property bool in
-
+  
   ** Width of desired output pulse, in seconds
+  @unit = Units.second
+  @min = 0
   @config property float pulseWidth
 
   ** If true, subsequent edges on input will restart pulse width measurement
   **    (resulting in wider overall output pulse)
   @config property bool  canRetrig 
-
 
   **
   ** Clears the output immediately, cancelling any pulse in progress
