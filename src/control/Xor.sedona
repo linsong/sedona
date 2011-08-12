@@ -1,10 +1,11 @@
 //
-// Copyright (c) 2007 Tridium, Inc
+// Copyright (c) 2007-2011 Tridium, Inc
 // Licensed under the Academic Free License version 3.0
 //
 // History:
-//   10 Jan 07  Andy Saunders  Creation
-//   27 Apr 07  Brian Frank    Port from Java to Sedona
+//   10 Jan 2007  Andy Saunders  Creation
+//   27 Apr 2007  Brian Frank    Port from Java to Sedona
+//   04 Aug 2011  Clif Turman    Add comments
 //
 
 **
@@ -17,10 +18,18 @@
 class Xor
   extends Component
 {
+  ** output value
   @readonly property bool out
+
+  ** input 1
   property bool in1
+
+  ** input 2
   property bool in2
 
+  **
+  ** Execute is called once every scan.
+  **
   virtual override void execute()
   {
     if ((in1 == null) || (in2 == null)) 
