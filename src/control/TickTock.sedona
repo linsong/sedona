@@ -1,12 +1,13 @@
 //
-// Copyright (c) 2007 Tridium, Inc
+// Copyright (c) 2007-2011 Tridium, Inc
 // Licensed under the Academic Free License version 3.0
 //
 // History:
-//   21 Aug 06  Andy Saunders  Creation
-//   27 Apr 07  Brian Frank    Port from Java to Sedona
-//   16 May 07  Andy Saunders  completed required time processing
-//   22 Apr 09  Elizabeth McKenney   Simplified logic
+//   21 Aug 2006  Andy Saunders  Creation
+//   27 Apr 2007  Brian Frank    Port from Java to Sedona
+//   16 May 2007  Andy Saunders  completed required time processing
+//   22 Apr 2009  Elizabeth McKenney   Simplified logic
+//   04 Aug 2011  Clif Turman    Add comments
 //
 
 **
@@ -17,8 +18,12 @@
 class TickTock
   extends Component
 {
+  ** output pulses
   @readonly property bool out
-  @config @min=1 @max=10 property int ticksPerSec = 1 
+
+  ** can configure 1 to 10 pulses per second
+  @min=1 @max=10 
+  @config property int ticksPerSec = 1 
 
   **
   ** Callback when component is first started in an app.
