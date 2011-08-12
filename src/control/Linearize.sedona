@@ -1,11 +1,12 @@
 //
-// Copyright (c) 2009 Tridium, Inc
+// Copyright (c) 2009-2011 Tridium, Inc
 // Licensed under the Academic Free License version 3.0
 //
 // History:
 //   10 Aug 2009  Clif Turman    Creation
 //   02 Feb 2011  Clif Turman    Added ability to handle negative slopes
 //   02 Feb 2011  Clif Turman    output set to 'nan' if input not in conversion range x0 to x9
+//   04 Aug 2011  Clif Turman    Add comments
 //
 
 **
@@ -22,27 +23,51 @@
 class Linearize
   extends Component
 {
+  ** linearized output
   @readonly property float out
+
+  ** input
   property float in
+
+  ** linear interpolation x0 point
   @config property float x0
+  ** linear interpolation y0 point
   @config property float y0
+  ** linear interpolation x1 point
   @config property float x1
+  ** linear interpolation y1 point
   @config property float y1
+  ** linear interpolation x2 point
   @config property float x2
+  ** linear interpolation y2 point
   @config property float y2
+  ** linear interpolation x3 point
   @config property float x3
+  ** linear interpolation y3 point
   @config property float y3
+  ** linear interpolation x4 point
   @config property float x4
+  ** linear interpolation y4 point
   @config property float y4
+  ** linear interpolation x5 point
   @config property float x5
+  ** linear interpolation Y5 point
   @config property float y5
+  ** linear interpolation x6 point
   @config property float x6
+  ** linear interpolation Y6 point
   @config property float y6
+  ** linear interpolation x7 point
   @config property float x7
+  ** linear interpolation Y7 point
   @config property float y7
+  ** linear interpolation x8 point
   @config property float x8
+  ** linear interpolation Y8 point
   @config property float y8
+  ** linear interpolation x9 point
   @config property float x9
+  ** linear interpolation Y9 point
   @config property float y9
 
   **
@@ -105,8 +130,6 @@ class Linearize
         convert(y1,y0,x1,x0)
     }
 
-
-    super.execute()
   }
 
 
