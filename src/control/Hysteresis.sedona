@@ -1,17 +1,18 @@
 //
-// Copyright (c) 2009 Tridium, Inc
+// Copyright (c) 2009-2011 Tridium, Inc
 // Licensed under the Academic Free License version 3.0
 //
 // History:
-//   15 Jul 09  Clif Turman    Creation
-//   24 Jul 09  Added inverted behavior
+//   15 Jul 2009  Clif Turman    Creation
+//   24 Jul 2009  Added inverted behavior
+//   04 Aug 2011  Clif Turman    Add comments
 //
 
 **
 ** Applies hysteresis to an input value to set a boolean out.
 **
 ** NOTE: If "Rising Edge" > "Falling Edge", then out behaves "normally", ie
-**   out switchs to "true" when in rises above "Rising Edge", and switches back
+**   out switches to "true" when in rises above "Rising Edge", and switches back
 **   to "false" when in falls below "Falling Edge"
 **                   Falling    Rising
 **                    Edge       Edge
@@ -20,7 +21,7 @@
 **              --------|----------|
 **
 ** NOTE: If "Rising Edge" < "Falling Edge", then out behaves "inverted", ie
-**   out switchs to "false" when in rises above "Falling Edge", and switches back
+**   out switches to "false" when in rises above "Falling Edge", and switches back
 **   to "true" when in falls below "Rising Edge"
 **                   Rising     Falling
 **                    Edge        Edge
@@ -39,16 +40,23 @@
 class Hysteresis
   extends Component
 {
+  ** input value to which hysteresis is to be applied 
   property float in
 
+  ** boolean output
   @readonly property bool out = false
 
+  ** threshold for rising edge
   @defaultOnClone
   @config property float risingEdge = 50.0
 
+  ** threshold for falling edge
   @defaultOnClone
   @config property float fallingEdge = 50.0
 
+  **
+  ** Execute is called once every scan.
+  **
   virtual override void execute()
   {
     if(risingEdge < fallingEdge)
