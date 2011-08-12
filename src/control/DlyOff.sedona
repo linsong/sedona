@@ -1,11 +1,11 @@
 //
-// Copyright (c) 2009 Tridium, Inc
+// Copyright (c) 2009-2011 Tridium, Inc
 // Licensed under the Academic Free License version 3.0
 //
 // History:
-//   10 Jan 07  Andy Saunders      Creation
-//   27 Apr 07  Brian Frank        Port from Java to Sedona
-//   22 Apr 09  Elizabeth McKenney Simplified logic
+//   10 Jan 2007  Andy Saunders    Creation
+//   27 Apr 2007  Brian Frank      Port from Java to Sedona
+//   22 Apr 2009  Elizabeth McKenney Simplified logic
 //
 
 **
@@ -19,13 +19,10 @@ class DlyOff
 {
   ** Output signal
   @readonly property bool out
-
   ** Input signal
   property bool in
-
   ** Specified hold time in sec
   @config @summary property float delayTime  
-
   ** Remaining hold time in msec
   @readonly property int hold                
 
