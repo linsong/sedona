@@ -1,15 +1,15 @@
 //
-// Copyright (c) 2007 Tridium, Inc
+// Copyright (c) 2007-2011 Tridium, Inc
 // Licensed under the Academic Free License version 3.0
 //
 // History:
-//   10 Jan 07  Andy Saunders  Creation
-//   27 Apr 07  Brian Frank    Port from Java to Sedona
-//   22 Apr 09  Elizabeth McKenney   Updated
-//   29 Jul 09  Clif Turman     Refactored to add computeConstants private method to fix scaledMin/scaledMax
-//              not being recomputed whenever ki or kp changed.
-//   07 Jul 11  Clif Turman     Added maxDelta property, kp/ki changes cause errorSum to be recomputed to prevent
-//              jumps in output value, changed precision to 6 for all k's 
+//   10 Jan 2007  Andy Saunders  Creation
+//   27 Apr 2007  Brian Frank    Port from Java to Sedona
+//   22 Apr 2009  Elizabeth McKenney   Updated
+//   29 Jul 2009  Clif Turman     Refactored to add computeConstants private method to fix scaledMin/scaledMax
+//                not being recomputed whenever ki or kp changed.
+//   07 Jul 2011  Clif Turman     Added maxDelta property, kp/ki changes cause errorSum to be recomputed to prevent
+//                jumps in output value, changed precision to 6 for all k's 
 //
 
 **
