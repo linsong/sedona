@@ -10,9 +10,9 @@ package sedonac.steps;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Properties;
 
 import sedona.Env;
@@ -47,7 +47,7 @@ public class StagePlatform extends CompilerStep
     writeManifest();
     quitIfErrors();
   }
-  
+
   private void makePlatformManifest(PlatformDef platDef)
   {
     // platformManifest root attributes
@@ -60,27 +60,26 @@ public class StagePlatform extends CompilerStep
     manifest.armDouble  = platDef.armDouble;
     manifest.debug      = platDef.debug;
     manifest.test       = platDef.test;
-    
+
     // native kits
     manifest.nativeKits = platDef.nativeKits;
-    
+
     // native methods
     Slot[] nativeMethods = findNativeMethods();
     manifest.nativeMethods = new NativeManifest[nativeMethods.length];
     for (int i=0; i<nativeMethods.length; ++i)
       manifest.nativeMethods[i] = toNativeManifest(manifest, nativeMethods[i]);
     Arrays.sort(manifest.nativeMethods, new NativeComparator());
-    
+
     // manifest includes
     for (int i=0; i<platDef.manifestIncludes.length; ++i)
       manifest.manifestIncludes.addContent(platDef.manifestIncludes[i]);
-    
+
     resolvePlatformId();
   }
-  
+
   private Slot[] findNativeMethods()
   {
-    ArrayList natives = new ArrayList();
     for (int i=0; i<compiler.kits.length; ++i)
     {
       IrKit kit = compiler.kits[i];
@@ -90,23 +89,24 @@ public class StagePlatform extends CompilerStep
         Slot[] slots = kit.types[j].slots();
         for (int k=0; k<slots.length; ++k)
         {
-          if (slots[k].isNative()) natives.add(slots[k]);
+          if (slots[k].isNative())
+            natives.put(slots[k].qname(), slots[k]);
         }
       }
     }
-    return (Slot[])natives.toArray(new Slot[natives.size()]);
+    return (Slot[])natives.values().toArray(new Slot[natives.size()]);
   }
-  
+
   private NativeManifest toNativeManifest(PlatformManifest manifest, Slot nativeSlot)
   {
     IrMethod method = (IrMethod)nativeSlot;
     return new NativeManifest(manifest, method.qname(), method.nativeId.string);
   }
-  
+
   private void resolvePlatformId()
   {
     if (manifest.id == null) return;
-    
+
     Properties vars = new Properties();
     vars.put("stage.nativeChecksum", calcNativeCksum());
     try
@@ -118,7 +118,7 @@ public class StagePlatform extends CompilerStep
       throw err(e.getMessage(), "id attribute");
     }
   }
-  
+
   private String calcNativeCksum()
   {
     // Assumes natives have already been ordered.
@@ -127,15 +127,30 @@ public class StagePlatform extends CompilerStep
     {
       NativeManifest nm = manifest.nativeMethods[i];
       crc.update(nm.qname.getBytes());
+      crc.update(toParamsString((IrMethod)natives.get(nm.qname)).getBytes());
       crc.update(nm.nativeId.getBytes());
     }
     return Integer.toHexString((int)crc.getValue());
   }
-  
+
+  /**
+   * Get a String of the native params for calculating the native checksum.
+   */
+  private String toParamsString(IrMethod nm)
+  {
+    StringBuffer sb = new StringBuffer();
+    for (int i=0; i<nm.params.length; ++i)
+    {
+      if (i>0) sb.append(',');
+      sb.append(nm.params[i]);
+    }
+    return sb.append(':').append(nm.returnType()).toString();
+  }
+
   private void writeCHeaders()
   {
     if (manifest.id == null) return;
-    
+
     File file = new File(compiler.outDir, "sedonaPlatform.h");
     log.debug("    Writing [ " + file + " ]");
     try
@@ -159,7 +174,7 @@ public class StagePlatform extends CompilerStep
       throw err("Cannot write sedonaPlatform.h", new Location(file), e);
     }
   }
-  
+
   private void writeManifest()
   {
     File parDir = new File(compiler.outDir, ".par");
@@ -176,7 +191,7 @@ public class StagePlatform extends CompilerStep
       throw err("Cannot write platformManifest.xml", new Location(file), e);
     }
   }
-  
+
   private static class NativeComparator implements Comparator
   {
     public int compare(Object o1, Object o2)
@@ -188,7 +203,9 @@ public class StagePlatform extends CompilerStep
       return (kitCompare == 0) ? id1.methodId - id2.methodId : kitCompare;
     }
   }
-  
+
   PlatformManifest manifest;
+  /** qname -> IrMethod */
+  HashMap natives = new HashMap();
 
 }
