@@ -5,6 +5,7 @@
 // History:
 //   12 Feb 2010  Clif Turman    Creation
 //   04 Aug 2011  Clif Turman    Add comments
+//   16 Aug 2011  Clif Turman    Fix issue 20487: Default should be to count up
 //
 
 **
@@ -39,7 +40,7 @@ class Count
 	@trueText = "up"
   @falseText = "down"
   @defaultOnClone
-	@config property bool dir = false
+	@config property bool dir = true
 
   **
   ** enable input
