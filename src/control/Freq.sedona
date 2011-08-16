@@ -7,25 +7,30 @@
 //   27 Apr 2007  Brian Frank    Port from Java to Sedona
 //   22 Apr 2009  Elizabeth McKenney   Updated
 //   04 Aug 2011  Clif Turman    Add comments.  Add units to pps and ppm.
+//   15 Aug 2011  Clif Turman    Fix issue 20486, freq output new value on every app cycle
 //
 
 **
 ** Freq object calculates a pulse input frequency
 **
 ** out is in pulses per second or pulses per minute
-** Note: frequency is limited by execute scan frequency 
+** Note: frequency is limited to 1/2 execute scan frequency 
 **
 @niagaraIcon="module://icons/x16/control/control.png"
 class Freq
   extends Component
 {
   ** frequency in pulses per second
+  @precision=3
   @unit=Units.per_second
   @readonly property float pps
   
   ** frequency in pulse per minute
+  @precision=3
   @unit=Units.per_minute
   @readonly property float ppm
+
+  ** input
   property bool in
 
   **
@@ -42,22 +47,33 @@ class Freq
   **
   virtual override void execute()
   {
-    long now = Sys.ticks()
-
-    float period = (float)(now - lastEdge)
-
-    if (period != 0.0f)
-    {
-      pps = float1sec / period
-      ppm = pps * 60.0
-    }
 
     if (in && !lastIn)  // rising edge detected
+    {
+
+      long now = Sys.ticks()
+
+      if(!completeCycle)  //startup boundary condition: we need 2 rising edges to compute
+      {
+        completeCycle = true
+      }
+      else // compute the period
+      {
+        float period = (float)(now - lastEdge)
+
+        if (period != 0.0f)
+        {
+          pps = float1sec / period
+          ppm = pps * 60.0
+        }
+      }
       lastEdge = now
+    }
 
     lastIn = in
   }
 
+  private bool completeCycle
   private bool lastIn
   private long lastEdge = 0L
 
