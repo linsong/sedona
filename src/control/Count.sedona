@@ -6,6 +6,7 @@
 //   12 Feb 2010  Clif Turman    Creation
 //   04 Aug 2011  Clif Turman    Add comments
 //   16 Aug 2011  Clif Turman    Fix issue 20487: Default should be to count up
+//   17 Aug 2011  Clif Turman    Added @min=0 facet to preset property
 //
 
 **
@@ -32,6 +33,7 @@ class Count
 	** Presets the counter to a specific value, defaults to 0
 	**
   @defaultOnClone
+  @min = 0
 	@config property int preset = 0
 	
 	**
