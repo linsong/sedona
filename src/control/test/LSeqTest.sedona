@@ -1,9 +1,11 @@
 //
-// Copyright (c) 2007 Tridium, Inc
+// Copyright (c) 2007-2011 Tridium, Inc
 // Licensed under the Academic Free License version 3.0
 //
 // History:
 //   17 May 07  Andy Sunders  Creation
+//   18 Aug 2011  Clif Turman    Fix functionality.  See issue 20422.
+//   18 Aug 2011  Clif Turman    Test for all possibilities of numOuts
 //
 
 **
@@ -17,64 +19,75 @@ class LSeqTest
 
   static void test()
   {
-    // not in an app, so call this explicitly
-    seq.start()
+    seq.inMin = 0.0
+    seq.inMax = 100.0
+    seq.numOuts = 2
 
-    // test 16 outputs
-    for(int i = 0; i <=100; i++)
+    for(int numberOfOuts = 1; numberOfOuts < 17; numberOfOuts++)
     {
-      seq.in = (float)i
-      seq.execute()
-      validateOutputs()
-    }
+      // not in an app, so call this explicitly
+      seq.numOuts = numberOfOuts
+      seq.start()
 
-    for(int i = 100; i >= 0; i--)
-    {
-      seq.in = (float)i
-      seq.execute()
-      validateOutputs()
-    }
-
-    // test 10 outputs
-    seq.numOuts = 10
-    for(int i = 0; i <=100; i++)
-    {
-      seq.in = (float)i
-      seq.execute()
-      validateOutputs()
-    }
-    
-    for(int i = 100; i >= 0; i--)
-    {
-      seq.in = (float)i
-      seq.execute()
-      validateOutputs()
+      //Sys.out.print("testing ${seq.numOuts} outputs\n")
+  
+      // test 16 outputs
+      for(int i = 0; i <=100; i++)
+      {
+        seq.in = (float)i
+        seq.execute()
+        validateOutputs(true)
+      }
+  
+      for(int i = 100; i >= 0; i--)
+      {
+        seq.in = (float)i
+        seq.execute()
+        validateOutputs(false)
+      }
     }
   }
 
-  static void validateOutputs()
-  {
-    float cIn = seq.in
-    float stepSize = (seq.inMax - seq.inMin) / (float)seq.numOuts
-    int desiredOn = (int)( (cIn - seq.inMin  ) / stepSize )
-    //Sys.out.print("   seq.in = ${seq.in} stepSize = ${stepSize}  desiredOn = ${desiredOn}\n")
 
-    assert(seq.out1 == (desiredOn >= 1))
-    assert(seq.out2 == (desiredOn >= 2))
-    assert(seq.out3 == (desiredOn >= 3))
-    assert(seq.out4 == (desiredOn >= 4))
-    assert(seq.out5 == (desiredOn >= 5))
-    assert(seq.out6 == (desiredOn >= 6))
-    assert(seq.out7 == (desiredOn >= 7))
-    assert(seq.out8 == (desiredOn >= 8))
-    assert(seq.out9 == (desiredOn >= 9))
-    assert(seq.out10 == (desiredOn >= 10))
-    assert(seq.out11 == (desiredOn >= 11))
-    assert(seq.out12 == (desiredOn >= 12))
-    assert(seq.out13 == (desiredOn >= 13))
-    assert(seq.out14 == (desiredOn >= 14))
-    assert(seq.out15 == (desiredOn >= 15))
-    assert(seq.out16 == (desiredOn >= 16))
+  **
+  ** test outputs.  Arg "rising" allows applying hysteresis check to decreasing in's
+  ** 
+  static void validateOutputs(bool rising)
+  {
+    float in = seq.in
+    float delta = (seq.max - seq.min) / (float)(seq.numOuts + 1)
+    int requiredStages = 0
+    
+    requiredStages = (int)((in-seq.min)/delta)
+    //if we currently have more stages on than required, first
+    //apply hysteresis before turning a stage off
+    if(!rising)  //apply hysteresis on decreasing input only
+    {
+      if(in > seq.min + (((float)requiredStages + 0.5) * delta))
+        requiredStages++
+    }
+  
+    if(requiredStages > seq.numOuts) requiredStages = seq.numOuts
+
+    //Sys.out.print("seq.in:${seq.in} delta:${delta} requiredStages:${requiredStages} rising:${rising}\n")
+
+    assert(seq.out1 == (requiredStages >= 1))
+    assert(seq.out2 == (requiredStages >= 2))
+    assert(seq.out3 == (requiredStages >= 3))
+    assert(seq.out4 == (requiredStages >= 4))
+    assert(seq.out5 == (requiredStages >= 5))
+    assert(seq.out6 == (requiredStages >= 6))
+    assert(seq.out7 == (requiredStages >= 7))
+    assert(seq.out8 == (requiredStages >= 8))
+    assert(seq.out9 == (requiredStages >= 9))
+    assert(seq.out10 == (requiredStages >= 10))
+    assert(seq.out11 == (requiredStages >= 11))
+    assert(seq.out12 == (requiredStages >= 12))
+    assert(seq.out13 == (requiredStages >= 13))
+    assert(seq.out14 == (requiredStages >= 14))
+    assert(seq.out15 == (requiredStages >= 15))
+    assert(seq.out16 == (requiredStages >= 16))
+
 
     b2f.in1  = seq.out1
     b2f.in2  = seq.out2
@@ -96,16 +109,14 @@ class LSeqTest
 
     float b2fValue = 0.0
     int mask = 1
-    for(int i = 0; i < desiredOn; i++)
+    for(int i = 0; i < requiredStages; i++)
     {
       b2fValue = b2fValue + (float)mask
       mask = mask * 2
     }
-    assert(b2f.count == (float)desiredOn)
-    assert(b2f.out == b2fValue)
+    //Sys.out.print("b2f.count=${b2f.count}\n")
+    assert(b2f.count == (float)requiredStages)
 
-    //Sys.out.print(" c= ${desiredOn} d= ${b2fValue} a= ${b2f.out}\n")
   }
-
 
 }
