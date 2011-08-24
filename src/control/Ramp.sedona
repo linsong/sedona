@@ -6,6 +6,9 @@
 //   26 Oct 2007  Brian Frank    Creation
 //   27 Apr 2007  Brian Frank    Port from Java to Sedona
 //   04 Aug 2011  Clif Turman    Add comments
+//   13 Aug 2011  Clif Turman    Rework logic to remove delta property and replace with period property, added rampType
+//   24 Aug 2011  Clif Turman    Old: If period is 0, out = 0. New: If period is 0, out = min  
+//   24 Aug 2011  Clif Turman    If min/max/period is changed, restart ramp function, bumpless if possible
 //
 
 **
@@ -68,7 +71,7 @@ class Ramp
        slot == Ramp.min       ||
        slot == Ramp.max       ||
        slot == Ramp.rampType  )
-    computeConstants()
+      computeConstants()
     super.changed(slot)
   }
 
@@ -80,6 +83,10 @@ class Ramp
     delta = (max-min)/engineCyclesPerRampCycle
     if(rampType) delta = delta * 2f
     firstHalf = true
+    if(out < min)
+      out = min
+    else if(out > max)
+      out = max
   }
   
   **
@@ -90,7 +97,7 @@ class Ramp
     //disable if period is 0
     if(period == 0f)
     {
-      out = 0f
+      out = min
       return
     }
 
