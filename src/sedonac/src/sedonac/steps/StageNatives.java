@@ -40,7 +40,7 @@ public class StageNatives
     try
     {
       log.info("  StageVM [" + stageDir + "]");
-      copySourceDirs();
+      copySourceFiles();
     }
     catch (XException e)
     {
@@ -56,6 +56,49 @@ public class StageNatives
     }
   }
 
+
+//////////////////////////////////////////////////////////////////////////
+// Copy Source Files
+//////////////////////////////////////////////////////////////////////////
+
+  public void copySourceFiles()
+  { 
+    if (compiler.platform.nativeFiles==null)
+      throw err("Must have at least one <nativeSource> element", new Location(xml));
+
+    String[] files = compiler.platform.nativeFiles;
+    for (int i=0; i<files.length; ++i)
+      copySourceFile(files[i]);
+  }
+
+  public void copySourceFile(String nativeFile)
+  {                                                                    
+    Location loc = new Location(xml);
+
+    if (nativeFile==null) return;
+
+    File file = new File(nativeFile);
+    if (!file.exists())
+    {
+      warn("Source file not found '" + file + "'");
+      return;
+    }
+
+    if (file.isDirectory()) return;    // skip directories
+
+    try
+    {
+      FileUtil.copyFile(file, new File(stageDir, file.getName()));
+    }
+    catch (IOException e)
+    {
+      throw err("Cannot copy file", new Location(file), e);
+    }
+
+  }
+
+
+  /*
 //////////////////////////////////////////////////////////////////////////
 // Copy Source Dirs
 //////////////////////////////////////////////////////////////////////////
@@ -63,7 +106,6 @@ public class StageNatives
   public void copySourceDirs()
   { 
     String[] paths = compiler.platform.nativePaths;
-    if (paths.length == 0) throw err("Must have at least one <nativeSource> element", new Location(xml));
     for (int i=0; i<paths.length; ++i)
       copySourceDir(paths[i]);
   }
@@ -72,6 +114,8 @@ public class StageNatives
   {                                                                    
     Location loc = new Location(xml);
     
+    if (path==null) return;
+
     if (!path.startsWith("/"))
       throw err("Paths must start with / and be relative to sedona home: " + path, loc);
     File dir = new File(Env.home, path.substring(1));
@@ -97,6 +141,8 @@ public class StageNatives
       }
     }
   }
+
+  */
 
 //////////////////////////////////////////////////////////////////////////
 // Fields

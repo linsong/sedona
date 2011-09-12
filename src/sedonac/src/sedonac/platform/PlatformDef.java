@@ -35,7 +35,7 @@ public class PlatformDef
   public boolean debug;          // include debug meta-data
   public boolean test;           // include tests
   public Depend[] nativeKits;    // kits which supply native implementations
-  public String[] nativePaths;   // source paths for staging native code
+  public String[] nativeFiles;   // source files for staging native code
   public String[] nativePatches; // list of native method qnames to patch
   public XElem[]  manifestIncludes; // resolved manifest include elements
   
