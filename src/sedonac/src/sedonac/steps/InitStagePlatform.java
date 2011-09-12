@@ -141,13 +141,27 @@ public class InitStagePlatform
       kits[i] = x[i].getDepend("depend");
     plat.nativeKits = kits;
       
+
     x = xml.elems("nativeSource");
-    ArrayList paths = new ArrayList(x.length);
+
     ArrayList files = new ArrayList(x.length);
+
     try
     {
       for (int i=0; i<x.length; ++i)
       {
+        // Optional flag attributes apply to individual file or all files in directory
+        // Note both flags default to "true" if omitted (for backwards compat.)
+        boolean simAttr  = vars.resolve(x[i].get("sim",  "true")).equalsIgnoreCase("true");
+        boolean platAttr = vars.resolve(x[i].get("plat", "true")).equalsIgnoreCase("true");
+
+        // If building simulator SVM, and no 'sim' flag for this file, skip it
+        if (compiler.sim && !simAttr) 
+          continue;
+        // If building normal SVM, and no 'plat' flag for this file, skip it
+        else if (!compiler.sim && !platAttr) 
+          continue;
+
         // MUST have either 'path' or 'file' attribute
         try
         {
@@ -171,7 +185,6 @@ public class InitStagePlatform
             File ff = dfiles[j];
             if (ff.isDirectory()) continue;
             files.add(ff.getPath());
-            //System.out.println("   got file: " + ff.getPath());
           }
 
         }
@@ -193,7 +206,6 @@ public class InitStagePlatform
           }
 
           files.add(ff.getPath());
-          //System.out.println("   got file: " + ff.getPath());
         }
       }
 

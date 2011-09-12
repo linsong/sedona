@@ -67,14 +67,13 @@ public class StageNatives
       throw err("Must have at least one <nativeSource> element", new Location(xml));
 
     String[] files = compiler.platform.nativeFiles;
+
     for (int i=0; i<files.length; ++i)
       copySourceFile(files[i]);
   }
 
   public void copySourceFile(String nativeFile)
   {                                                                    
-    Location loc = new Location(xml);
-
     if (nativeFile==null) return;
 
     File file = new File(nativeFile);

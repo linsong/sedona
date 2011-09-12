@@ -43,6 +43,7 @@ public class Main
     println("  -kitVersion  force output kit to have specified version");
     println("  -noOptimize  skip const folding and optimization steps");
     println("  -noChecksum  exclude checksums from sax if input is sab file");
+    println("  -stageSim    stage platform for simulated SVM build");
   }
 
   private static void errUsage(String err)
@@ -155,6 +156,10 @@ public class Main
       else if (arg.equals("-noChecksum"))
       {
         compiler.nochk = true;
+      }
+      else if (arg.equals("-stageSim"))
+      {
+        compiler.sim = true;
       }
       else if (arg.startsWith("-"))
       {
