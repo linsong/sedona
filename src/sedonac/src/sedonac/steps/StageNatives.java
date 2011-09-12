@@ -94,56 +94,10 @@ public class StageNatives
     {
       throw err("Cannot copy file", new Location(file), e);
     }
-
   }
 
 
-  /*
-//////////////////////////////////////////////////////////////////////////
-// Copy Source Dirs
-//////////////////////////////////////////////////////////////////////////
-
-  public void copySourceDirs()
-  { 
-    String[] paths = compiler.platform.nativePaths;
-    for (int i=0; i<paths.length; ++i)
-      copySourceDir(paths[i]);
-  }
-
-  public void copySourceDir(String path)
-  {                                                                    
-    Location loc = new Location(xml);
-    
-    if (path==null) return;
-
-    if (!path.startsWith("/"))
-      throw err("Paths must start with / and be relative to sedona home: " + path, loc);
-    File dir = new File(Env.home, path.substring(1));
-    if (!dir.exists() || !dir.isDirectory())
-    {
-      warn("Source path not found '" + dir + "'");
-      return;
-    }
-
-    File[] files = dir.listFiles();
-    log.debug("    Copy '" + dir + "' [" + files.length + " files]");
-    for (int i=0; i<files.length; ++i)
-    {
-      File f = files[i];
-      if (f.isDirectory()) continue;
-      try
-      {
-        FileUtil.copyFile(f, new File(stageDir, f.getName()));
-      }
-      catch (IOException e)
-      {
-        throw err("Cannot copy file", new Location(f), e);
-      }
-    }
-  }
-
-  */
-
+ 
 //////////////////////////////////////////////////////////////////////////
 // Fields
 //////////////////////////////////////////////////////////////////////////

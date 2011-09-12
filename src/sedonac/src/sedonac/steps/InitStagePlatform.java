@@ -197,10 +197,13 @@ public class InitStagePlatform
         }
       }
 
-      //plat.nativePaths = (String[])paths.toArray(new String[0]);
       plat.nativeFiles = (String[])files.toArray(new String[0]);
+
     }
-    catch (Exception e) { throw err(e.getMessage()); }
+    catch (Exception e) 
+    { 
+      throw err(e.getMessage()); 
+    }
     
     x = xml.elems("nativePatch");
     String[] slots  = new String[x.length];
