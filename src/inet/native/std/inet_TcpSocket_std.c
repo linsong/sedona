@@ -146,7 +146,6 @@ Cell inet_TcpSocket_close(SedonaVM* vm, Cell* params)
 {
   void* self    = params[0].aval;
   socket_t sock = getSocket(self);
-  bool closed   = getClosed(self);
 
   closesocket(sock);
   setClosed(self, 1);
@@ -171,7 +170,7 @@ Cell inet_TcpSocket_write(SedonaVM* vm, Cell* params)
   int32_t  len  = params[3].ival;
   socket_t sock = getSocket(self);
   Cell result;
-  
+
   buf = buf + off;
 
   result.ival = send(sock, buf, len, 0);
@@ -197,7 +196,7 @@ Cell inet_TcpSocket_read(SedonaVM* vm, Cell* params)
   int32_t  len  = params[3].ival;
   socket_t sock = getSocket(self);
   Cell result;
-  
+
   buf = buf + off;
 
   result.ival = recv(sock, buf, len, 0);
