@@ -89,6 +89,7 @@
 // includes
 #include <stdio.h>
 #include <string.h>
+#include <sys/stat.h>
 
 // stdint.h C99 Exact-width integer types
 typedef unsigned __int8   bool;

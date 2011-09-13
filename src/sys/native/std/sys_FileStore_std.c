@@ -52,27 +52,27 @@ Cell sys_FileStore_doOpen(SedonaVM* vm, Cell* params)
   const char* mode = params[1].aval;
   const char* fopenMode;
   Cell result;
-  FILE* fp;          
-  
+  FILE* fp;
+
   // sanity check arguments
   if (name == NULL || mode == NULL) return nullCell;
 
-  // sanity check mode                 
+  // sanity check mode
   if (mode[1] != '\0') return nullCell;
   switch (mode[0])
   {
-    case 'm': 
+    case 'm':
       // create file in case it doesn't exist yet
       fp = fopen(name, "a+b");
       if (fp == NULL) return nullCell;
       fclose(fp);
-      fopenMode = "r+b"; 
+      fopenMode = "r+b";
       break;
-    case 'r': 
-      fopenMode = "rb"; 
+    case 'r':
+      fopenMode = "rb";
       break;
-    case 'w': 
-      fopenMode = "wb"; 
+    case 'w':
+      fopenMode = "wb";
       break;
     default:  return nullCell;
   }
@@ -105,7 +105,7 @@ Cell sys_FileStore_doReadBytes(SedonaVM* vm, Cell* params)
 
   // sanity check arguments. FileStream requires -1 on eof/error.
   if ((fp == NULL) || feof(fp) || ferror(fp)) return negOneCell;
-  
+
   buf = buf + off;
 
   result.ival = fread(buf, 1, len, fp);
@@ -156,7 +156,7 @@ Cell sys_FileStore_doTell(SedonaVM* vm, Cell* params)
   if (fp == NULL) return negOneCell;
 
   r.ival = ftell(fp);
-  
+
   return r;
 }
 
@@ -208,13 +208,16 @@ Cell sys_FileStore_doClose(SedonaVM* vm, Cell* params)
 
 // static bool FileStore.rename(Str from, Str to)
 Cell sys_FileStore_rename(SedonaVM* vm, Cell* params)
-{                                          
+{
   const char* from = params[0].aval;
   const char* to   = params[1].aval;
   int r;
-  
+  struct stat statBuf;
+
+  if ((stat(to, &statBuf) == 0) && (remove(to) != 0))
+    return falseCell;
+
   r = rename(from, to);
-  
   return r == 0 ? trueCell : falseCell;
 }
 
