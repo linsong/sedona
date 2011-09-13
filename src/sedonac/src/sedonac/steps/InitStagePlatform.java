@@ -219,8 +219,30 @@ public class InitStagePlatform
     
     x = xml.elems("nativePatch");
     String[] slots  = new String[x.length];
-    for (int i=0; i<x.length; ++i)
-      slots[i] = x[i].get("qname");
+    try
+    {
+      for (int i=0; i<x.length; ++i)
+      {
+        // Optional flag attributes indicate whether patch is reqd for sim SVM and/or regular one
+        // Note both flags default to "true" if omitted (for backwards compat.)
+        boolean simAttr  = vars.resolve(x[i].get("sim",  "true")).equalsIgnoreCase("true");
+        boolean platAttr = vars.resolve(x[i].get("plat", "true")).equalsIgnoreCase("true");
+
+        // If building simulator SVM, and no 'sim' flag for this file, skip it
+        if (compiler.sim && !simAttr) 
+          continue;
+        // If building normal SVM, and no 'plat' flag for this file, skip it
+        else if (!compiler.sim && !platAttr) 
+          continue;
+
+        slots[i] = x[i].get("qname");
+      }
+    }
+    catch(Exception e)
+    {
+      throw err(e.getMessage()); 
+    }
+
     plat.nativePatches = slots;
     
     // Sanity checks.

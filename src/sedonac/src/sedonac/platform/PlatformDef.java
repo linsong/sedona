@@ -38,7 +38,6 @@ public class PlatformDef
 
   public Depend[]  nativeKits;       // kits which supply native implementations
   public String[]  nativeFiles;      // source files for staging native code
-  public String[]  nativeFlags;      // native source file flags
   public String[]  nativePatches;    // list of native method qnames to patch
   public XElem[]   manifestIncludes; // resolved manifest include elements
   
