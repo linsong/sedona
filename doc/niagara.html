@@ -289,20 +289,27 @@ module-include.xml for your module.</p>
 </pre>
 
 <p>
-When your view loads, a BSedonaComponent will be passed to the
-<code>doLoadValue</code> method of your view.
+When your view loads, a BISedonaComponent will be passed to the
+<code>doLoadValue</code> method of your view. 
 </p>
 
 <pre>
 protected void doLoadValue(BObject value, Context cx) throws Exception
 {
-  BSedonaComponent myService = (BSedonaComponent)value;
-  // Use myService like a normal BComponent. It has all the slots and
-  // actions that were defined on your foo::MyService component.
-  ...
+  BISedonaComponent myService = (BISedonaComponent)value;
+  // See the javax.baja.sedona.sys.BISedonaComponent interface
+  // for more details.
 }
 </pre>
 
+<p>
+<font color='red'>Note, the
+concrete class BSedonaComponent is deprecated in the TXS 1.1 release.</font>
+You should migrate your views to use the new BISedonaComponent interface instead.
+If you have questions about writing views for Sedona components, ask them on
+one of the Sedona Framework forums on <a href='http://niagara-central.com/ord?portal:/discussion'>
+Niagara Central</a>.
+</p>
 
 <!--/////////////////////////////////////////////////////////-->
 <h1 id="prov"> Provisioning Sedona platforms from Niagara </h1>
