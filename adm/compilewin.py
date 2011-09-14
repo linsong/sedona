@@ -20,7 +20,7 @@ import fileutil
 #   libs:     list of filenames
 #   defs:     list of name/value tuples
 #
-def compile(exeFile, srcFiles, includes, libs, defs):  
+def compile(exeFile, srcFiles, includes, libs, defs, opts=[]):  
   print "Compile [" + os.path.basename(exeFile) + "]"
 
   # get environment variables
@@ -62,6 +62,10 @@ def compile(exeFile, srcFiles, includes, libs, defs):
   # remaining options  
   cmd += " /nologo"
   cmd += " /Fe" + exeFile
+
+  # Add any other options supplied by caller
+  for o in opts:
+    cmd += " " + o
 
   # compile away
   status = os.system(cmd)
