@@ -10,7 +10,6 @@ package sedonac.steps;
 
 import java.io.*;
 import java.util.*;
-import java.util.regex.*;
 import sedona.Env;
 import sedona.util.*;
 import sedonac.*;
@@ -18,7 +17,8 @@ import sedonac.Compiler;
 import sedonac.ir.*;
 import sedonac.namespace.*;
 
-import javax.imageio.stream.*;
+//import java.util.regex.*;
+//import javax.imageio.stream.*;
 
 /**
  * GenNativeTable generates nativetable.c which contains
@@ -320,6 +320,117 @@ public class GenNativeTable
 
   private void findNativeImpls()
   {
+    // Create native method impl list
+    suppliedNatives = new ArrayList();
+
+    // Scan all the files in outDir for implemented native methods
+    File outDir = compiler.outDir;
+    File[] ofiles = outDir.listFiles();
+
+    for (int j=0; j<ofiles.length; j++)
+    {
+      File ff = ofiles[j];
+      String fileContents;
+
+      //System.out.println("\n\nSearching file: " + ff.getName());
+      
+      try
+      {
+        int blockLevel = 0;
+
+        StreamTokenizer stoker = new StreamTokenizer( new FileReader(ff) );
+
+        stoker.resetSyntax(); 
+        stoker.whitespaceChars(0x0, ' '); 
+        stoker.wordChars('0', '9'); 
+        stoker.whitespaceChars(':', '?'); 
+        stoker.wordChars('A', 'Z'); 
+        stoker.whitespaceChars('[', '^'); 
+        stoker.wordChars('_', '_'); 
+        stoker.whitespaceChars('`', '`'); 
+        stoker.wordChars('a', 'z'); 
+        stoker.ordinaryChar('{'); 
+        stoker.wordChars('|', '|'); 
+        stoker.ordinaryChar('}'); 
+        stoker.wordChars('~', '~'); 
+        stoker.quoteChar('\'');
+        stoker.quoteChar('\"');
+        stoker.slashSlashComments(true);
+        stoker.slashStarComments(true);
+        stoker.eolIsSignificant(false);
+
+        int nxt = stoker.nextToken();
+
+        while (nxt!=StreamTokenizer.TT_EOF)
+        {
+          //if (stoker.sval!=null)
+            //System.out.print("\n--- Got token: [" + stoker.sval + "]");
+          //else
+            //System.out.print("\n--- Got token: [" + (char)nxt + "]");
+
+          if (nxt!=StreamTokenizer.TT_WORD)
+          {
+            // Skip code inside {} blocks - single char token
+            if (nxt=='{') blockLevel++;  
+            if (nxt=='}') blockLevel--; 
+
+            nxt = stoker.nextToken(); 
+            continue;
+          }
+
+          if (blockLevel>0) 
+          {
+            nxt = stoker.nextToken(); 
+            continue;
+          }
+
+          if ( (stoker.sval.indexOf("Cell")>=0) || (stoker.sval.indexOf("int64_t")>=0) )
+          {
+            nxt = stoker.nextToken(); 
+
+            if (nxt!=StreamTokenizer.TT_WORD) continue;
+
+            // Look for exactly 2 underscores in following token
+            int usloc = stoker.sval.indexOf('_');
+            if (usloc<0) continue;
+
+            usloc = stoker.sval.indexOf('_', usloc+1);
+            if (usloc<0) continue;
+              
+            usloc = stoker.sval.indexOf('_', usloc+1);
+            if (usloc>=0) continue;
+              
+            suppliedNatives.add(stoker.sval);
+            //System.out.println("   -- Added method: [" + stoker.sval + "]");
+          }
+
+          nxt = stoker.nextToken(); 
+        }
+
+      }
+      catch (FileNotFoundException e)
+      {
+        String errStr = "File " + ff.getPath() + " not found";
+        System.out.println(errStr);
+        continue;
+      }
+      catch (IOException e)
+      {
+        String errStr = "Exception reading file " + ff.getPath();
+        System.out.println(errStr);
+        continue;
+      }
+    }
+  }
+
+
+
+/*
+
+  // Pattern/Matcher strategy - reqs higher Java version!
+ 
+  private void findNativeImpls()
+  {
     suppliedNatives = new ArrayList();
 
     // Scan all the files in outDir for implemented native methods
@@ -359,10 +470,10 @@ public class GenNativeTable
       }
 
       //
-      // Scan the contents of the file looking for valid native method impl prototypes
+      // Scan file contents looking for valid native method impl prototypes
       //
 
-      //System.out.println("Searching file: " + ff.getName());
+      System.out.println("Searching file: " + ff.getName());
 
       String fREGEXP = "(?:Cell|int64|int64_t)\\s+(([a-zA-Z0-9]+)_([a-zA-Z0-9]+)_([a-zA-Z0-9]+))";
 
@@ -383,13 +494,13 @@ public class GenNativeTable
 
         suppliedNatives.add(whole);
 
-        //System.out.println("  Found native method impl:\t[" + whole + "]");
+        System.out.println("  Found native method impl:\t[" + whole + "]");
       }
     }
 
   }
 
-
+*/
 
 ////////////////////////////////////////////////////////////////
 // Create source file with native method stubs
