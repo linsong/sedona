@@ -165,9 +165,22 @@ public class GenNativeTable
   {
     if (m == null) return;
 
+    System.out.println(" Processing method " + m.qname() + "  (" + m.name() + ")" );
+
+
+    //
+    // NOTE: This is kind of hackish, can't necessarily assume method has this name!
+    //
+    boolean isPlatformIdNative = ( m.name().compareTo("doPlatformId")==0 );
+
+    // Need to include sedonaPlatform.h to get defn of PLATFORM_ID
+    if ( isPlatformIdNative )
+      out.nl().w("#include \"sedonaPlatform.h\"").nl().nl();
+
+
+
     // comment
-    out.nl().w("// ").w(m.ret).w(" ")
-       .w(m.parent.name).w(".").w(m.name).w("(");
+    out.nl().w("// ").w(m.ret).w(" ").w(m.parent.name).w(".").w(m.name).w("(");
     for (int i=0; i<m.params.length; ++i)
     {
       Type p = m.params[i];
@@ -177,22 +190,34 @@ public class GenNativeTable
     out.w(")").nl();
 
     // Stub method always returns 0 for now...
-    //  TODO: match default return value to method's actual return type (m.ret?)
+    //  TODO: match return value to method's actual return type (m.ret?)
     String ntype = "Cell ";
-    String retv  = "zeroCell";
+    String retv  = "  Cell ret;\n  ret.ival = 0;\n  return ret;";
 
     // If return type is actually two words, adjust the prototype & return stmt
     if ( m.ret.isWide() )
     {
       ntype = "int64_t ";
-      retv  = "0LL";
+      retv  = "  return 0LL;";
+    }
+    else if ( m.ret.qname().compareTo("sys::Str")==0 )
+    {
+      // If this native returns the platform ID, supply the required code
+      if ( isPlatformIdNative )
+        retv  = "  Cell ret;\n  ret.aval = PLATFORM_ID;\n  return ret;";
+
+      // All other string natives return generic string
+      else   
+        retv  = "  Cell ret;\n  ret.aval = \"STRINGVAL\";\n  return ret;";
     }
 
     out.w(ntype).w(toFuncName(m)).w("(SedonaVM* vm, Cell* params)").nl();
+    out.w("{").nl();
 
-    out.w("{").nl().w("  return ");
-    out.w(retv);                     // this is the string that changes w/ret type
-    out.w(";").nl().w("}").nl().nl().nl();
+    // retv is the string that changes w/ret type
+    out.w(retv).nl();
+
+    out.w("}").nl().nl().nl();
   }
 
 
