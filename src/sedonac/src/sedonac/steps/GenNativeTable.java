@@ -70,6 +70,9 @@ public class GenNativeTable
     out.w("#include \"sedona.h\"").nl();
     out.nl();
 
+    // If building sim SVM, keep track of whether we created a platform ID method stub
+    boolean foundPlatformIdNative = false;    
+
     // process each kit
     for (int i=0; i<nativeKits.length; ++i)
     {
@@ -80,7 +83,7 @@ public class GenNativeTable
       // If building sim SVM, create file containing stubs for all natives 
       //  not supplied in source
       if (compiler.sim)
-        genNativeStubFile(kit);
+        foundPlatformIdNative = genNativeStubFile(kit) || foundPlatformIdNative;
 
 
       // header comment
@@ -107,6 +110,10 @@ public class GenNativeTable
       out.w("};").nl();
       out.nl();
     }
+
+    // If building sim SVM, warn if we never created a platform ID method stub
+    if (compiler.sim && !foundPlatformIdNative)
+      log.warn(" No stub created that returns PLATFORM_ID."); 
 
 
     // native method table
@@ -165,7 +172,7 @@ public class GenNativeTable
   //
   private boolean stub(Printer out, IrMethod m)
   {
-    if (m == null) return;
+    if (m == null) return false;
 
     //
     // NOTE: If native method returning platform ID has different name, this code 
@@ -174,6 +181,7 @@ public class GenNativeTable
     //       calling function can issue warning if no "doPlatformId" method was created.
     //
     boolean isPlatformIdNative = ( m.name().compareTo("doPlatformId")==0 );
+
 
     // Need to include sedonaPlatform.h to get defn of PLATFORM_ID
     if ( isPlatformIdNative )
@@ -450,7 +458,7 @@ public class GenNativeTable
 // Create source file with native method stubs
 ////////////////////////////////////////////////////////////////
 
-  private void genNativeStubFile(NativeKit kit)
+  private boolean genNativeStubFile(NativeKit kit)
     throws IOException
   {
     // Create a new file to put native method stubs into
@@ -468,7 +476,7 @@ public class GenNativeTable
 
     // If no stubs, then don't create file
     if (stubs.size()==0) 
-      return;
+      return false;
 
     // Create the file and write the header
     String nativeFile = kit.kitName + "_native_stubs.c";
@@ -491,17 +499,17 @@ public class GenNativeTable
     nout.w("#include \"sedona.h\"").nl();
     nout.nl();
 
-    boolean foundPlatformIdNative = false;
+    // Generate stub methods, noting whether any of them was PLATFORM_ID method
+    boolean gotPlatformIdNative = false;
 
     // Create stub functions
     for (int j=0; j<stubs.size(); ++j)
-      foundPlatformIdNative = stub(nout, stubs[j]);
+      gotPlatformIdNative = stub( nout, (IrMethod)stubs.get(j) ) || gotPlatformIdNative;
 
     // Close the file stream
     nout.close();
 
-    if (!foundPlatformIdNative)
-      log.warning(" No stub created that returns PLATFORM_ID."); 
+    return gotPlatformIdNative;
   }
 
 
