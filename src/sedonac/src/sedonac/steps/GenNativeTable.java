@@ -17,8 +17,6 @@ import sedonac.Compiler;
 import sedonac.ir.*;
 import sedonac.namespace.*;
 
-//import java.util.regex.*;
-//import javax.imageio.stream.*;
 
 /**
  * GenNativeTable generates nativetable.c which contains
@@ -161,15 +159,19 @@ public class GenNativeTable
   }
 
 
-  private void stub(Printer out, IrMethod m)
+  //
+  // Returns true if stub was created for the native that returns platform ID;
+  // o/w returns false.
+  //
+  private boolean stub(Printer out, IrMethod m)
   {
     if (m == null) return;
 
-    System.out.println(" Processing method " + m.qname() + "  (" + m.name() + ")" );
-
-
     //
-    // NOTE: This is kind of hackish, can't necessarily assume method has this name!
+    // NOTE: If native method returning platform ID has different name, this code 
+    //       won't catch it; source code file with actual implementation will need to 
+    //       be provided by creator of sim SVM.  stub() returns this boolean so that 
+    //       calling function can issue warning if no "doPlatformId" method was created.
     //
     boolean isPlatformIdNative = ( m.name().compareTo("doPlatformId")==0 );
 
@@ -177,9 +179,7 @@ public class GenNativeTable
     if ( isPlatformIdNative )
       out.nl().w("#include \"sedonaPlatform.h\"").nl().nl();
 
-
-
-    // comment
+    // Comment with method signature
     out.nl().w("// ").w(m.ret).w(" ").w(m.parent.name).w(".").w(m.name).w("(");
     for (int i=0; i<m.params.length; ++i)
     {
@@ -189,12 +189,12 @@ public class GenNativeTable
     }
     out.w(")").nl();
 
-    // Stub method always returns 0 for now...
-    //  TODO: match return value to method's actual return type (m.ret?)
+    // Stub method always returns 0 for now...  (unless Str)
+    //   TODO: consider matching return type to method's actual (m.ret?)
     String ntype = "Cell ";
     String retv  = "  Cell ret;\n  ret.ival = 0;\n  return ret;";
 
-    // If return type is actually two words, adjust the prototype & return stmt
+    // If return type is wide, adjust prototype & return stmt
     if ( m.ret.isWide() )
     {
       ntype = "int64_t ";
@@ -206,9 +206,9 @@ public class GenNativeTable
       if ( isPlatformIdNative )
         retv  = "  Cell ret;\n  ret.aval = PLATFORM_ID;\n  return ret;";
 
-      // All other string natives return generic string
+      // All other string natives return empty string
       else   
-        retv  = "  Cell ret;\n  ret.aval = \"STRINGVAL\";\n  return ret;";
+        retv  = "  Cell ret;\n  ret.aval = \"\";\n  return ret;";
     }
 
     out.w(ntype).w(toFuncName(m)).w("(SedonaVM* vm, Cell* params)").nl();
@@ -218,6 +218,10 @@ public class GenNativeTable
     out.w(retv).nl();
 
     out.w("}").nl().nl().nl();
+
+
+    // Return true if we just stubbed doPlatformId()
+    return isPlatformIdNative;
   }
 
 
@@ -226,7 +230,7 @@ public class GenNativeTable
   {
     if (m == null) return;
 
-    // comment
+    // Comment with method signature
     out.w("// ").w(m.ret).w(" ")
        .w(m.parent.name).w(".").w(m.name).w("(");
     for (int i=0; i<m.params.length; ++i)
@@ -341,6 +345,7 @@ public class GenNativeTable
 
 ////////////////////////////////////////////////////////////////
 // Scan source files for native method implementations
+//   (can't use regex/pattern with this Java version)
 ////////////////////////////////////////////////////////////////
 
   private void findNativeImpls()
@@ -357,8 +362,6 @@ public class GenNativeTable
       File ff = ofiles[j];
       String fileContents;
 
-      //System.out.println("\n\nSearching file: " + ff.getName());
-      
       try
       {
         int blockLevel = 0;
@@ -388,11 +391,6 @@ public class GenNativeTable
 
         while (nxt!=StreamTokenizer.TT_EOF)
         {
-          //if (stoker.sval!=null)
-            //System.out.print("\n--- Got token: [" + stoker.sval + "]");
-          //else
-            //System.out.print("\n--- Got token: [" + (char)nxt + "]");
-
           if (nxt!=StreamTokenizer.TT_WORD)
           {
             // Skip code inside {} blocks - single char token
@@ -426,7 +424,6 @@ public class GenNativeTable
             if (usloc>=0) continue;
               
             suppliedNatives.add(stoker.sval);
-            //System.out.println("   -- Added method: [" + stoker.sval + "]");
           }
 
           nxt = stoker.nextToken(); 
@@ -449,84 +446,6 @@ public class GenNativeTable
   }
 
 
-
-/*
-
-  // Pattern/Matcher strategy - reqs higher Java version!
- 
-  private void findNativeImpls()
-  {
-    suppliedNatives = new ArrayList();
-
-    // Scan all the files in outDir for implemented native methods
-    File outDir = compiler.outDir;
-    File[] ofiles = outDir.listFiles();
-    for (int j=0; j<ofiles.length; j++)
-    {
-      File ff = ofiles[j];
-      String fileContents;
-
-      //
-      // Extract contents of file as a String
-      //
-      try
-      {
-        FileImageInputStream fileIn = new FileImageInputStream(ff);
-        int fsize = (int)fileIn.length();
-        if (fsize<0) continue;
-
-        byte[] fdata = new byte[ fsize ];
-        fileIn.read( fdata, 0, fsize );
-        fileIn.close();
-        
-        fileContents = new String( fdata );
-      }
-      catch (FileNotFoundException e)
-      {
-        String errStr = "File " + ff.getPath() + " not found";
-        System.out.println(errStr);
-        continue;
-      }
-      catch (IOException e)
-      {
-        String errStr = "Exception reading file " + ff.getPath();
-        System.out.println(errStr);
-        continue;
-      }
-
-      //
-      // Scan file contents looking for valid native method impl prototypes
-      //
-
-      System.out.println("Searching file: " + ff.getName());
-
-      String fREGEXP = "(?:Cell|int64|int64_t)\\s+(([a-zA-Z0-9]+)_([a-zA-Z0-9]+)_([a-zA-Z0-9]+))";
-
-      Pattern pat = Pattern.compile(fREGEXP);
-      Matcher mat = pat.matcher( fileContents );
-
-      while (mat.find())
-      {
-        String match = mat.group(0);  // entire match
-        //System.out.println("  Found match:\t[" + match + "]");
-
-        String whole = mat.group(1);  // whole native method name
-        //String kn    = mat.group(2);  // just the kit name
-        //String cn    = mat.group(3);  // just the class name
-        //String mn    = mat.group(4);  // just the method name
-
-        //System.out.println("  Found native method impl:\t" + kn + "::" + cn + "." + mn);
-
-        suppliedNatives.add(whole);
-
-        System.out.println("  Found native method impl:\t[" + whole + "]");
-      }
-    }
-
-  }
-
-*/
-
 ////////////////////////////////////////////////////////////////
 // Create source file with native method stubs
 ////////////////////////////////////////////////////////////////
@@ -535,8 +454,23 @@ public class GenNativeTable
     throws IOException
   {
     // Create a new file to put native method stubs into
-    //   TODO: Would be nice to NOT create a file if there are no stubs
+    //     (do not create file if no stubs to write)
     
+    ArrayList stubs = new ArrayList();
+
+    // Create list of methods that need to be stubbed
+    for (int j=0; j<kit.methods.length; ++j)
+    {
+      String mname = toFuncName(kit.methods[j]);
+      if ( !suppliedNatives.contains((Object)mname) )
+        stubs.add(kit.methods[j]);
+    }
+
+    // If no stubs, then don't create file
+    if (stubs.size()==0) 
+      return;
+
+    // Create the file and write the header
     String nativeFile = kit.kitName + "_native_stubs.c";
     File nfile = new File(compiler.outDir, nativeFile);
     log.info("    GenNativeTable [" + nfile + "]");
@@ -548,7 +482,7 @@ public class GenNativeTable
     nout.w("////////////////////////////////////////////////////////////////").nl();
     nout.nl().nl();
 
-    // header
+    // Header
     nout.w("//").nl();
     nout.w("// Generated by sedonac ").w(Env.version).nl();
     nout.w("// ").w(Env.timestamp()).nl();
@@ -557,22 +491,17 @@ public class GenNativeTable
     nout.w("#include \"sedona.h\"").nl();
     nout.nl();
 
-    // Create stubs, if any
-    for (int j=0; j<kit.methods.length; ++j)
-    {
-      // First check to see if method implementation is already supplied
-      String mname = toFuncName(kit.methods[j]);
+    boolean foundPlatformIdNative = false;
 
-      // If not, then create stub for it
-      if ( !suppliedNatives.contains((Object)mname) )
-      {
-        //System.out.println("> Generating stub impl for: " + mname);
-        stub(nout, kit.methods[j]);
-      }
-    }
+    // Create stub functions
+    for (int j=0; j<stubs.size(); ++j)
+      foundPlatformIdNative = stub(nout, stubs[j]);
 
     // Close the file stream
     nout.close();
+
+    if (!foundPlatformIdNative)
+      log.warning(" No stub created that returns PLATFORM_ID."); 
   }
 
 
