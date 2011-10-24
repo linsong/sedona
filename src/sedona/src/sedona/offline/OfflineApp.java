@@ -222,7 +222,7 @@ public class OfflineApp
       throw new IllegalStateException("Can't delete app itself!");
     if (kid.app != this || lookup(kid.id) != kid)
       throw new IllegalStateException("Not in this app: " + kid);
-    
+
     // remove component tree - from the bottom-up
     OfflineComponent[] kidKids = kid.children();
     for (int i=0; i<kidKids.length; ++i)
@@ -251,14 +251,14 @@ public class OfflineApp
   /**
    * Reorder component children.
    */
-  public void reorder(OfflineComponent parent, int[] childrenIds)  
-  { 
-    // error checking    
+  public void reorder(OfflineComponent parent, int[] childrenIds)
+  {
+    // error checking
     if (parent == null)
       throw new IllegalStateException("Parent is null");
     if (parent.app != this || lookup(parent.id) != parent)
       throw new IllegalStateException("Not in this app: " + parent);
-    
+
     // get safe copy
     int[] ids = (int[])childrenIds.clone();
     OfflineComponent[] kids = parent.children();
@@ -276,20 +276,20 @@ public class OfflineApp
         {
           kid = kids[j];
           break;
-        }        
-      
+        }
+
       // make sure id exists
       if (kid == null)
         throw new IllegalArgumentException("childrenId not found: " + ids[i]);
-      
-      // add new child  
-      newList.add(kid);  
+
+      // add new child
+      newList.add(kid);
     }
-    
-    // commit new list to comp    
+
+    // commit new list to comp
     parent.kids = newList;
   }
-  
+
 //////////////////////////////////////////////////////////////////////////
 // Link Management
 //////////////////////////////////////////////////////////////////////////
@@ -327,46 +327,46 @@ public class OfflineApp
 ////////////////////////////////////////////////////////////////
 
   /**
-   * Estimate the number of bytes in RAM required for this app.  
+   * Estimate the number of bytes in RAM required for this app.
    * This number is based upon the following assumptions:
    *   - pointer size of 32-bits
    *   - heap alignment on 4 bytes boundaries
    *   - manifests sizeof is accurate (things were
    *     compiled together)
-   */   
+   */
   public int ramSize()
-  {                
+  {
     int mem = 0;
 
     // components
     for (int i=0; i<lookup.length; ++i)
     {
-      if (lookup[i] != null)                 
+      if (lookup[i] != null)
         mem += align(lookup[i].type.manifest.sizeof);
     }
-    
+
     // links
     mem += links.size() * 16;
-    
+
     return mem;
-  }             
-  
+  }
+
   static int align(int size)
   {
     int rem = size % 4;
     if (rem == 0) return size;
-    return size + (4-rem);    
-  } 
-  
+    return size + (4-rem);
+  }
+
   /**
    * Estimate the number of bytes required to persist this
    * application to FLASH.
    */
   public int flashSize()
-  {            
+  {
     return encodeAppBinary().size;
-  }                                                         
-  
+  }
+
 //////////////////////////////////////////////////////////////////////////
 // XML Encode
 //////////////////////////////////////////////////////////////////////////
@@ -376,7 +376,7 @@ public class OfflineApp
   {
     encodeAppXml(file, false);
   }
-  
+
   public void encodeAppXml(File file, boolean nochk)
     throws Exception
   {
@@ -396,7 +396,7 @@ public class OfflineApp
   {
     encodeAppXml(out,false);
   }
-  
+
   public void encodeAppXml(OutputStream out,boolean nochk)
     throws Exception
   {
@@ -407,7 +407,7 @@ public class OfflineApp
   {
     encodeAppXml(out,false);
   }
-  
+
   public void encodeAppXml(XWriter out,boolean nochk)
   {
     out.w("<?xml version='1.0'?>\n");
@@ -422,6 +422,7 @@ public class OfflineApp
       ((OfflineLink)links.get(i)).encodeXml(out);
     out.w("</links>\n");
     out.w("</sedonaApp>\n");
+    out.flush();
   }
 
   public void dump()
@@ -434,14 +435,14 @@ public class OfflineApp
 //////////////////////////////////////////////////////////////////////////
 // Decode
 //////////////////////////////////////////////////////////////////////////
-  
+
   /**
-   * If the file extension ends with '.sax' route to 
+   * If the file extension ends with '.sax' route to
    * decodeAppXml(), otherwise route to decodeAppBinary().
-   */  
+   */
   public static OfflineApp decodeApp(File file)
     throws Exception
-  {  
+  {
     if (file.getName().endsWith(".sax"))
       return decodeAppXml(file);
     else
@@ -559,12 +560,12 @@ public class OfflineApp
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     FileUtil.pipe(in, out);
     return decodeAppBinary(new Buf(out.toByteArray()));
-  }  
+  }
 
   public static OfflineApp decodeAppBinary(Buf in)
     throws Exception
   {
-    // header        
+    // header
     int magic = in.i4();
     int version = in.i4();
     if (magic != 0x73617070) throw new IOException("Invalid magic 0x" + Integer.toHexString(magic));
