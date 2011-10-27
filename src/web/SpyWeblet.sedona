@@ -507,13 +507,13 @@ class SpyWeblet
     res.writeContentType("text/plain")
     res.finishHeaders()
 
-    res.w("<sedonApp>\n")
+    res.w("<sedonaApp>\n")
     res.w("  <schema>\n")
     foreach (Kit kit : Sys.kits, Sys.kitsLen)
       res.w("    <kit name='").w(kit.name).w("' checksum='").printHex(kit.checksum).print("'/>\n")
     res.w("  </schema>\n")
     res.w("  <!-- TODO -->\n")
-    res.w("</sedonApp>\n")
+    res.w("</sedonaApp>\n")
   }
 
 /*

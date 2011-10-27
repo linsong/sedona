@@ -408,6 +408,7 @@ public class Compiler
   public boolean optimize = true;  // env -noOptimize
   public boolean www = false;      // env -www
   public boolean nochk = false;    // env -noChecksum
+  public boolean sim = false;      // env -stageSim
   public Namespace ns;             // ctor
   public XElem xml;                // compile(String)
   ArrayList errors;                // err()

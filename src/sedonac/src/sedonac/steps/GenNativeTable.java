@@ -17,6 +17,7 @@ import sedonac.Compiler;
 import sedonac.ir.*;
 import sedonac.namespace.*;
 
+
 /**
  * GenNativeTable generates nativetable.c which contains
  * the native lookup tables for a VM stage.
@@ -51,10 +52,14 @@ public class GenNativeTable
   }
 
   private void generate(Printer out)
+    throws IOException
   {
     findNativeMethods();
     orderKits();
     orderMethods();
+
+    if (compiler.sim)
+      findNativeImpls();       // only need to do this if building sim SVM...
 
     // header
     out.w("//").nl();
@@ -65,11 +70,21 @@ public class GenNativeTable
     out.w("#include \"sedona.h\"").nl();
     out.nl();
 
+    // If building sim SVM, keep track of whether we created a platform ID method stub
+    boolean foundPlatformIdNative = false;    
+
     // process each kit
     for (int i=0; i<nativeKits.length; ++i)
     {
       NativeKit kit = nativeKits[i];
       if (kit == null) continue;
+
+
+      // If building sim SVM, create file containing stubs for all natives 
+      //  not supplied in source
+      if (compiler.sim)
+        foundPlatformIdNative = genNativeStubFile(kit) || foundPlatformIdNative;
+
 
       // header comment
       out.w("////////////////////////////////////////////////////////////////").nl();
@@ -80,6 +95,7 @@ public class GenNativeTable
       // forwards
       for (int j=0; j<kit.methods.length; ++j)
         forward(out, kit.methods[j]);
+
 
       // table for kit
       out.w("// native table for kit ").w(i).nl();
@@ -94,6 +110,10 @@ public class GenNativeTable
       out.w("};").nl();
       out.nl();
     }
+
+    // If building sim SVM, warn if we never created a platform ID method stub
+    if (compiler.sim && !foundPlatformIdNative)
+      log.warn(" No stub created that returns PLATFORM_ID."); 
 
 
     // native method table
@@ -145,11 +165,80 @@ public class GenNativeTable
     out.nl().nl();
   }
 
+
+  //
+  // Returns true if stub was created for the native that returns platform ID;
+  // o/w returns false.
+  //
+  private boolean stub(Printer out, IrMethod m)
+  {
+    if (m == null) return false;
+
+    //
+    // NOTE: If native method returning platform ID has different name, this code 
+    //       won't catch it; source code file with actual implementation will need to 
+    //       be provided by creator of sim SVM.  stub() returns this boolean so that 
+    //       calling function can issue warning if no "doPlatformId" method was created.
+    //
+    boolean isPlatformIdNative = ( m.name().compareTo("doPlatformId")==0 );
+
+
+    // Need to include sedonaPlatform.h to get defn of PLATFORM_ID
+    if ( isPlatformIdNative )
+      out.nl().w("#include \"sedonaPlatform.h\"").nl().nl();
+
+    // Comment with method signature
+    out.nl().w("// ").w(m.ret).w(" ").w(m.parent.name).w(".").w(m.name).w("(");
+    for (int i=0; i<m.params.length; ++i)
+    {
+      Type p = m.params[i];
+      if (i > 0) out.w(", ");
+      out.w(p);
+    }
+    out.w(")").nl();
+
+    // Stub method always returns 0 for now...  (unless Str)
+    //   TODO: consider matching return type to method's actual (m.ret?)
+    String ntype = "Cell ";
+    String retv  = "  Cell ret;\n  ret.ival = 0;\n  return ret;";
+
+    // If return type is wide, adjust prototype & return stmt
+    if ( m.ret.isWide() )
+    {
+      ntype = "int64_t ";
+      retv  = "  return 0LL;";
+    }
+    else if ( m.ret.qname().compareTo("sys::Str")==0 )
+    {
+      // If this native returns the platform ID, supply the required code
+      if ( isPlatformIdNative )
+        retv  = "  Cell ret;\n  ret.aval = PLATFORM_ID;\n  return ret;";
+
+      // All other string natives return empty string
+      else   
+        retv  = "  Cell ret;\n  ret.aval = \"\";\n  return ret;";
+    }
+
+    out.w(ntype).w(toFuncName(m)).w("(SedonaVM* vm, Cell* params)").nl();
+    out.w("{").nl();
+
+    // retv is the string that changes w/ret type
+    out.w(retv).nl();
+
+    out.w("}").nl().nl().nl();
+
+
+    // Return true if we just stubbed doPlatformId()
+    return isPlatformIdNative;
+  }
+
+
+
   private void forward(Printer out, IrMethod m)
   {
     if (m == null) return;
 
-    // comment
+    // Comment with method signature
     out.w("// ").w(m.ret).w(" ")
        .w(m.parent.name).w(".").w(m.name).w("(");
     for (int i=0; i<m.params.length; ++i)
@@ -261,6 +350,170 @@ public class GenNativeTable
     kit.methods = ordered;
   }
 
+
+////////////////////////////////////////////////////////////////
+// Scan source files for native method implementations
+//   (can't use regex/pattern with this Java version)
+////////////////////////////////////////////////////////////////
+
+  private void findNativeImpls()
+  {
+    // Create native method impl list
+    suppliedNatives = new ArrayList();
+
+    // Scan all the files in outDir for implemented native methods
+    File outDir = compiler.outDir;
+    File[] ofiles = outDir.listFiles();
+
+    for (int j=0; j<ofiles.length; j++)
+    {
+      File ff = ofiles[j];
+      String fileContents;
+
+      try
+      {
+        int blockLevel = 0;
+
+        StreamTokenizer stoker = new StreamTokenizer( new FileReader(ff) );
+
+        stoker.resetSyntax(); 
+        stoker.whitespaceChars(0x0, ' '); 
+        stoker.wordChars('0', '9'); 
+        stoker.whitespaceChars(':', '?'); 
+        stoker.wordChars('A', 'Z'); 
+        stoker.whitespaceChars('[', '^'); 
+        stoker.wordChars('_', '_'); 
+        stoker.whitespaceChars('`', '`'); 
+        stoker.wordChars('a', 'z'); 
+        stoker.ordinaryChar('{'); 
+        stoker.wordChars('|', '|'); 
+        stoker.ordinaryChar('}'); 
+        stoker.wordChars('~', '~'); 
+        stoker.quoteChar('\'');
+        stoker.quoteChar('\"');
+        stoker.slashSlashComments(true);
+        stoker.slashStarComments(true);
+        stoker.eolIsSignificant(false);
+
+        int nxt = stoker.nextToken();
+
+        while (nxt!=StreamTokenizer.TT_EOF)
+        {
+          if (nxt!=StreamTokenizer.TT_WORD)
+          {
+            // Skip code inside {} blocks - single char token
+            if (nxt=='{') blockLevel++;  
+            if (nxt=='}') blockLevel--; 
+
+            nxt = stoker.nextToken(); 
+            continue;
+          }
+
+          if (blockLevel>0) 
+          {
+            nxt = stoker.nextToken(); 
+            continue;
+          }
+
+          if ( (stoker.sval.indexOf("Cell")>=0) || (stoker.sval.indexOf("int64_t")>=0) )
+          {
+            nxt = stoker.nextToken(); 
+
+            if (nxt!=StreamTokenizer.TT_WORD) continue;
+
+            // Look for exactly 2 underscores in following token
+            int usloc = stoker.sval.indexOf('_');
+            if (usloc<0) continue;
+
+            usloc = stoker.sval.indexOf('_', usloc+1);
+            if (usloc<0) continue;
+              
+            usloc = stoker.sval.indexOf('_', usloc+1);
+            if (usloc>=0) continue;
+              
+            suppliedNatives.add(stoker.sval);
+          }
+
+          nxt = stoker.nextToken(); 
+        }
+
+      }
+      catch (FileNotFoundException e)
+      {
+        String errStr = "File " + ff.getPath() + " not found";
+        System.out.println(errStr);
+        continue;
+      }
+      catch (IOException e)
+      {
+        String errStr = "Exception reading file " + ff.getPath();
+        System.out.println(errStr);
+        continue;
+      }
+    }
+  }
+
+
+////////////////////////////////////////////////////////////////
+// Create source file with native method stubs
+////////////////////////////////////////////////////////////////
+
+  private boolean genNativeStubFile(NativeKit kit)
+    throws IOException
+  {
+    // Create a new file to put native method stubs into
+    //     (do not create file if no stubs to write)
+    
+    ArrayList stubs = new ArrayList();
+
+    // Create list of methods that need to be stubbed
+    for (int j=0; j<kit.methods.length; ++j)
+    {
+      String mname = toFuncName(kit.methods[j]);
+      if ( !suppliedNatives.contains((Object)mname) )
+        stubs.add(kit.methods[j]);
+    }
+
+    // If no stubs, then don't create file
+    if (stubs.size()==0) 
+      return false;
+
+    // Create the file and write the header
+    String nativeFile = kit.kitName + "_native_stubs.c";
+    File nfile = new File(compiler.outDir, nativeFile);
+    log.info("    GenNativeTable [" + nfile + "]");
+    Printer nout = new Printer(new PrintWriter(new FileWriter(nfile)));
+
+    // Native stub file header comment
+    nout.w("////////////////////////////////////////////////////////////////").nl();
+    nout.w("// ").w(kit.kitName).w(" (kitId=").w(kit.kitId).w(")").nl();
+    nout.w("////////////////////////////////////////////////////////////////").nl();
+    nout.nl().nl();
+
+    // Header
+    nout.w("//").nl();
+    nout.w("// Generated by sedonac ").w(Env.version).nl();
+    nout.w("// ").w(Env.timestamp()).nl();
+    nout.w("//").nl();
+    nout.nl();
+    nout.w("#include \"sedona.h\"").nl();
+    nout.nl();
+
+    // Generate stub methods, noting whether any of them was PLATFORM_ID method
+    boolean gotPlatformIdNative = false;
+
+    // Create stub functions
+    for (int j=0; j<stubs.size(); ++j)
+      gotPlatformIdNative = stub( nout, (IrMethod)stubs.get(j) ) || gotPlatformIdNative;
+
+    // Close the file stream
+    nout.close();
+
+    return gotPlatformIdNative;
+  }
+
+
+
 //////////////////////////////////////////////////////////////////////////
 // NativeKit
 //////////////////////////////////////////////////////////////////////////
@@ -300,4 +553,8 @@ public class GenNativeTable
 
   NativeKit[] nativeKits;          
   HashMap patches = new HashMap();
+
+  ArrayList suppliedNatives;    // list of native method impls found in source
+
+
 }

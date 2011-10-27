@@ -100,7 +100,22 @@ public class SCodeValidator
     
     int callBix;
     int nextByte = buf.u1();
-    if (nextByte==0) nextByte = buf.u1();    // skip pad byte if any
+
+    // If debug is true, next bytes are MetaSlot and qname
+    if (hdr.debugFlag)
+    {
+      while (nextByte==0) nextByte = buf.u1();    // skip pad byte(s) if any
+
+      if (nextByte!=SCode.MetaSlot)
+        throw new IOException("Found " + nextByte + " not MetaSlot at offset " + tHS(buf.pos));
+
+      callBix = u2aligned(buf);
+      System.out.println("Main bix = 0x" + tHS(callBix));
+
+      nextByte = buf.u1();
+    }
+
+    while (nextByte==0) nextByte = buf.u1();    // skip pad byte(s) if any
 
     // If there are static inits they come next, as list of 
     // 1-byte Call opcode followed by 2-byte bix
@@ -109,7 +124,7 @@ public class SCodeValidator
       callBix = u2aligned(buf);
       System.out.println("Static init call to bix = 0x" + tHS(callBix));
       nextByte = buf.u1();
-      if (nextByte==0) nextByte = buf.u1();    // skip pad byte if any
+      while (nextByte==0) nextByte = buf.u1();    // skip pad byte(s) if any
     }
 
     // Past loop, next opcode is LoadParam0
@@ -672,7 +687,7 @@ public class SCodeValidator
     throws IOException
   {
     if (b.pos%2 != 0)
-      throw new IOException("Alignment exception at scode offset 0x" + tHS(b.pos));
+      throw new IOException("Alignment exception (2) at scode offset 0x" + tHS(b.pos));
     return b.u2();
   }
 
@@ -681,7 +696,7 @@ public class SCodeValidator
     throws IOException
   {
     if (b.pos%4 != 0)
-      throw new IOException("Alignment exception at scode offset 0x" + tHS(b.pos));
+      throw new IOException("Alignment exception (4) at scode offset 0x" + tHS(b.pos));
     return b.i4();
   }
 
@@ -690,7 +705,7 @@ public class SCodeValidator
     throws IOException
   {
     if (b.pos%8 != 0)
-      throw new IOException("Alignment exception at scode offset 0x" + tHS(b.pos));
+      throw new IOException("Alignment exception (8) at scode offset 0x" + tHS(b.pos));
     return b.i8();
   }
 
@@ -699,7 +714,7 @@ public class SCodeValidator
     throws IOException
   {
     if (b.pos%4 != 0)
-      throw new IOException("Alignment exception at scode offset 0x" + tHS(b.pos));
+      throw new IOException("Alignment exception (4) at scode offset 0x" + tHS(b.pos));
     return b.f4();
   }
 
@@ -708,7 +723,7 @@ public class SCodeValidator
     throws IOException
   {
     if (b.pos%8 != 0)
-      throw new IOException("Alignment exception at scode offset 0x" + tHS(b.pos));
+      throw new IOException("Alignment exception (8) at scode offset 0x" + tHS(b.pos));
     return b.f8();
   }
 
@@ -809,6 +824,10 @@ public class SCodeValidator
     public int kitTabBix;
     public int numKits;
 
+    public int scodeFlags;
+    public boolean debugFlag;
+    public boolean testFlag;
+
 
     public void parse(Buf buf)
       throws IOException
@@ -847,6 +866,11 @@ public class SCodeValidator
       // block index to kits is at offset 20, num at 22
       kitTabBix  = u2aligned(buf);
       numKits = buf.u1();      
+  
+      // scode flags
+      scodeFlags  = buf.u1();
+      debugFlag = (scodeFlags & SCode.scodeDebug)!=0;
+      testFlag  = (scodeFlags & SCode.scodeTest)!=0;
     }
 
     public void print()
@@ -863,6 +887,12 @@ public class SCodeValidator
       System.out.println("  test tab bix = 0x" + tHS(testTabBix));
       System.out.println("  kit tab bix  = 0x" + tHS(kitTabBix));
       System.out.println("  num kits     = " + numKits);
+
+      System.out.print("  scode flags  = 0x" + tHS(scodeFlags));
+      System.out.print("  (test=" + (testFlag ? "true" : "false"));
+      System.out.print(", debug=" + (debugFlag ? "true" : "false"));
+      System.out.println(")");
+
     }
 
   }

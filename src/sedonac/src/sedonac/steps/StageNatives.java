@@ -40,7 +40,7 @@ public class StageNatives
     try
     {
       log.info("  StageVM [" + stageDir + "]");
-      copySourceDirs();
+      copySourceFiles();
     }
     catch (XException e)
     {
@@ -56,48 +56,47 @@ public class StageNatives
     }
   }
 
+
 //////////////////////////////////////////////////////////////////////////
-// Copy Source Dirs
+// Copy Source Files
 //////////////////////////////////////////////////////////////////////////
 
-  public void copySourceDirs()
+  public void copySourceFiles()
   { 
-    String[] paths = compiler.platform.nativePaths;
-    if (paths.length == 0) throw err("Must have at least one <nativeSource> element", new Location(xml));
-    for (int i=0; i<paths.length; ++i)
-      copySourceDir(paths[i]);
+    if (compiler.platform.nativeFiles==null)
+      throw err("Must have at least one <nativeSource> element", new Location(xml));
+
+    String[] files = compiler.platform.nativeFiles;
+
+    for (int i=0; i<files.length; ++i)
+      copySourceFile(files[i]);
   }
 
-  public void copySourceDir(String path)
+  public void copySourceFile(String nativeFile)
   {                                                                    
-    Location loc = new Location(xml);
-    
-    if (!path.startsWith("/"))
-      throw err("Paths must start with / and be relative to sedona home: " + path, loc);
-    File dir = new File(Env.home, path.substring(1));
-    if (!dir.exists() || !dir.isDirectory())
+    if (nativeFile==null) return;
+
+    File file = new File(nativeFile);
+    if (!file.exists())
     {
-      warn("Source path not found '" + dir + "'");
+      warn("Source file not found '" + file + "'");
       return;
     }
 
-    File[] files = dir.listFiles();
-    log.debug("    Copy '" + dir + "' [" + files.length + " files]");
-    for (int i=0; i<files.length; ++i)
+    if (file.isDirectory()) return;    // skip directories
+
+    try
     {
-      File f = files[i];
-      if (f.isDirectory()) continue;
-      try
-      {
-        FileUtil.copyFile(f, new File(stageDir, f.getName()));
-      }
-      catch (IOException e)
-      {
-        throw err("Cannot copy file", new Location(f), e);
-      }
+      FileUtil.copyFile(file, new File(stageDir, file.getName()));
+    }
+    catch (IOException e)
+    {
+      throw err("Cannot copy file", new Location(file), e);
     }
   }
 
+
+ 
 //////////////////////////////////////////////////////////////////////////
 // Fields
 //////////////////////////////////////////////////////////////////////////
