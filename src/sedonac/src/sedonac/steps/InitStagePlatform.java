@@ -141,20 +141,82 @@ public class InitStagePlatform
       kits[i] = x[i].getDepend("depend");
     plat.nativeKits = kits;
       
+
     x = xml.elems("nativeSource");
-    String[] paths = new String[x.length];
+
+    ArrayList files = new ArrayList(x.length);
+
     try
     {
       for (int i=0; i<x.length; ++i)
-        paths[i] = vars.resolve(x[i].get("path"));
-      plat.nativePaths = paths;
+      {
+        // MUST have either 'path' or 'file' attribute
+        try
+        {
+          String dpath = vars.resolve(x[i].get("path"));
+    
+          if (!dpath.startsWith("/"))
+            throw err("Paths must start with / and be relative to sedona home: " + dpath);
+
+          File dir = new File(Env.home, dpath.substring(1));
+          if (!dir.exists() || !dir.isDirectory())
+          {
+            warn("Source path not found '" + dir.getPath() + "'");
+            return;
+          }
+
+          File[] dfiles = dir.listFiles();
+          log.debug("    Copy '" + dir + "' [" + dfiles.length + " files]");
+      
+          for (int j=0; j<dfiles.length; ++j)
+          {
+            File ff = dfiles[j];
+            if (ff.isDirectory()) continue;
+            files.add(ff.getPath());
+          }
+
+        }
+        catch (XException e)
+        {
+          String fpath = vars.resolve(x[i].get("file"));
+
+          if (fpath==null) 
+            throw err("Could not read file attribute", new Location(xml));
+
+          if (!fpath.startsWith("/"))
+            throw err("Paths must start with / and be relative to sedona home: " + fpath);
+
+          File ff = new File(Env.home, fpath.substring(1));
+          if (!ff.exists())
+          {
+            warn("Source path not found '" + ff.getPath() + "'");
+            return;
+          }
+
+          files.add(ff.getPath());
+        }
+      }
+
+      plat.nativeFiles = (String[])files.toArray(new String[0]);
+
     }
-    catch (Exception e) { throw err(e.getMessage()); }
+    catch (Exception e) 
+    { 
+      throw err(e.getMessage()); 
+    }
     
     x = xml.elems("nativePatch");
     String[] slots  = new String[x.length];
-    for (int i=0; i<x.length; ++i)
-      slots[i] = x[i].get("qname");
+    try
+    {
+      for (int i=0; i<x.length; ++i)
+        slots[i] = x[i].get("qname");
+    }
+    catch(Exception e)
+    {
+      throw err(e.getMessage()); 
+    }
+
     plat.nativePatches = slots;
     
     // Sanity checks.

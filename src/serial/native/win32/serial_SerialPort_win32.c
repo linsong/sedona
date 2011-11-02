@@ -159,10 +159,12 @@ Cell serial_SerialPort_doReadBytes(SedonaVM* vm, Cell* params)
   uint8_t* pu8Buf  = params[2].aval;
   int32_t  off     = params[3].ival;
   int32_t  nbytes  = params[4].ival;
+
+  int32_t  bytesRead;
   
   pu8Buf = pu8Buf + off;
 
-  int bytesRead = read(pSd[portNum], pu8Buf, nbytes);
+  bytesRead = read(pSd[portNum], pu8Buf, nbytes);
   ret.ival = bytesRead;
   return ret;
 
@@ -179,11 +181,13 @@ Cell serial_SerialPort_doWriteBytes(SedonaVM* vm, Cell* params)
   int32_t  off     = params[3].ival;
   int32_t  nbytes  = params[4].ival;
 
+  int32_t  bytesWritten;
+
   pu8Buf = pu8Buf + off;
 
 //printf("serial_SerialPort_doWriteBytes portNum=%d\n", portNum);
 
-  int32_t bytesWritten = write(pSd[portNum], pu8Buf, nbytes);
+  bytesWritten = write(pSd[portNum], pu8Buf, nbytes);
   if(bytesWritten==-1) return negOneCell;
   ret.ival = bytesWritten;
   return ret;

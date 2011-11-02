@@ -122,7 +122,7 @@ class WebRes
   **
   ** Print the component's current value of the specified property.
   **
-  internal WebRes printProp(Component c, Slot prop)
+  WebRes printProp(Component c, Slot prop)
   {
     switch (prop.type.id)
     {
