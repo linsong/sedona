@@ -1,0 +1,223 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   16 May 07  Andy Sunders  Creation
+//
+
+**
+** MathTest
+**
+class MathTest
+  extends Test
+{
+  static inline Add2 add2
+  static inline Add4 add4
+  static inline Sub2 sub2
+  static inline Sub4 sub4
+  static inline Mul2 mul2
+  static inline Mul4 mul4
+  static inline Div2 div2
+  static inline Avg10 avg10
+  static inline Reset reset
+  static inline Cmpr cmpr
+  static inline Min min
+  static inline Max max
+
+  static void test()
+  {
+    add2.in1 = 1.0f
+    add2.in2 = 2.0f
+    add2.execute()
+    assert(add2.out == 3.0f)
+    add2.in2 = -1.0f
+    add2.execute()
+    assert(add2.out == 0.0f)
+
+    add4.in1 = 1.0f
+    add4.in2 = 2.0f
+    add4.in3 = 3.0f
+    add4.in4 = 4.0f
+    add4.execute()
+    assert(add4.out == 10.0f)
+    add4.in4 = -6.0f
+    add4.execute()
+    assert(add4.out == 0.0f)
+
+    sub2.in1 = 2.0f
+    sub2.in2 = 1.0f
+    sub2.execute()
+    assert(sub2.out == 1.0f)
+    sub2.in2 = 2.0f
+    sub2.execute()
+    assert(sub2.out == 0.0f)
+
+    sub4.in1 = 100.0f
+    sub4.in2 = 25.0f
+    sub4.in3 = 25.0f
+    sub4.in4 = 25.0f
+    sub4.execute()
+    assert(sub4.out == 25.0f)
+    sub4.in4 = 50.0f
+    sub4.execute()
+    assert(sub4.out == 0.0f)
+
+    mul2.in1 = 2.0f
+    mul2.in2 = 2.0f
+    mul2.execute()
+    assert(mul2.out == 4.0f)
+    mul2.in2 = -2.0f
+    mul2.execute()
+    assert(mul2.out == -4.0f)
+
+    mul4.in1 = 0.1f
+    mul4.in2 = 10.0f
+    mul4.in3 = 0.01f
+    mul4.in4 = 100.0f
+    mul4.execute()
+    assert(mul4.out == 1.0f)
+    mul4.in4 = 200.0f
+    mul4.execute()
+    assert(mul4.out == 2.0f)
+
+    div2.in1 = 1.0f
+    div2.in2 = 2.0f
+    div2.execute()
+    assert(div2.out == 0.5f)
+    div2.in2 = -2.0f
+    div2.execute()
+    assert(div2.out == -0.5f)
+
+
+    avg10.start()     // not in an app, so call this explicitly
+
+    avg10.maxTime=40
+    avg(1.0)
+    assert(avg10.out == 1.0)
+    avg(2.0)
+    avg(3.0)
+    avg(4.0)
+    avg(5.0)
+    avg(6.0)
+    avg(7.0)
+    avg(8.0)
+    avg(9.0)
+    avg(10.0)
+    assert(avg10.out == 5.5)
+    avg(11.0)
+    assert(avg10.out == 6.5)
+    long startTime = Sys.ticks()
+    while( (Sys.ticks() - startTime) < 500ms )
+    {
+      avg10.execute()
+    }
+    assert(avg10.out == 11.0)
+
+    avg10.maxTime = 0
+    avg(1.0)
+    float value = avg10.out
+    startTime = Sys.ticks()
+    while( (Sys.ticks() - startTime) < 500ms )
+    {
+      avg10.execute()
+    }
+    assert(avg10.out == value)
+
+
+    validateReset( 100.0);
+    validateReset( 4000.0);
+    reset.inMax = 2000.0
+    reset.inMin = 100.0
+    validateReset( 0.0);
+    validateReset( 1000.0);
+    validateReset( 1900.0);
+
+    cmpr.y = 10.0
+    cmpr.x = 9.0
+    cmpr.execute()
+    assert(cmpr.xgy == false)
+    assert(cmpr.xey == false)
+    assert(cmpr.xly == true)
+    cmpr.x = 10.0
+    cmpr.execute()
+    assert(cmpr.xgy == false)
+    assert(cmpr.xey == true)
+    assert(cmpr.xly == false)
+    cmpr.x = 11.0
+    cmpr.execute()
+    assert(cmpr.xgy == true)
+    assert(cmpr.xey == false)
+    assert(cmpr.xly == false)
+
+    cmpr.y = -10.0
+    cmpr.x = -9.0
+    cmpr.execute()
+    assert(cmpr.xgy == true)
+    assert(cmpr.xey == false)
+    assert(cmpr.xly == false)
+    cmpr.x = -10.0
+    cmpr.execute()
+    assert(cmpr.xgy == false)
+    assert(cmpr.xey == true)
+    assert(cmpr.xly == false)
+    cmpr.x = -11.0
+    cmpr.execute()
+    assert(cmpr.xgy == false)
+    assert(cmpr.xey == false)
+    assert(cmpr.xly == true)
+    
+    min.in1 = 10f
+    min.in2 = 9f
+    min.execute()
+    assert(min.out == 9f)
+
+    min.in1 = -8f
+    min.in2 = -9f
+    min.execute()
+    assert(min.out == -9f)
+
+    max.in1 = 10f
+    max.in2 = 9f
+    max.execute()
+    assert(max.out == 10f)
+
+    max.in1 = -8f
+    max.in2 = -9f
+    max.execute()
+    assert(max.out == -8f)
+
+  }
+
+   static void avg(float value)
+   {
+     avg10.in = value
+     avg10.execute()
+   }
+
+   static void validateReset(float value)
+   {
+     reset.start()     // not in an app, so call this explicitly
+
+     float inMax = reset.inMax
+     float inMin = reset.inMin
+     float outMax = reset.outMax
+     float outMin = reset.outMin
+     if(value > inMax)
+       value = inMax
+     if(value < inMin)
+       value = inMin
+     reset.in = value
+     reset.execute()
+     float cValue = (value - inMin)/(inMax - inMin)
+     cValue = outMin + cValue * (outMax - outMin)
+     //Sys.out.print("d=").printFloat(cValue).print(" a=").printFloat(reset.out).nl()
+     float diff = 0.0
+     if(cValue >= reset.out)
+       diff = cValue - reset.out
+     else
+       diff = reset.out - cValue
+     assert(diff < 0.00001 )
+   }
+
+}
