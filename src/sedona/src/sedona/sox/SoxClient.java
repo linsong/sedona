@@ -30,7 +30,10 @@ import sedona.Value;
 import sedona.dasp.DaspMsg;
 import sedona.dasp.DaspSession;
 import sedona.dasp.DaspSocket;
+import sedona.manifest.KitManifest;
+import sedona.manifest.ManifestDb;
 import sedona.util.Version;
+import sedona.xml.XParser;
 
 /**
  * SoxClient implements the client side functionality
@@ -225,8 +228,40 @@ public class SoxClient
     // against the local manifest database, then you can't proceed;
     // TODO: eventually we should lazy load the kit/type/slot
     // definitions over the network
-    util.schema = Schema.load(parts);
+    util.schema = loadSchema(parts);
     return util.schema;
+  }
+
+  private Schema loadSchema(KitPart[] parts) throws Exception
+  {
+    try
+    {
+      return Schema.load(parts);
+    }
+    catch (Schema.MissingKitManifestException missing)
+    {
+      // Use m: scheme to try and get missing manifests from the remote device
+      for (int i=0; i<missing.parts.length; ++i)
+      {
+        final String uri = "m:" + missing.parts[i] + ".xml";
+        try
+        {
+          Buf b = new Buf();
+          getFile(uri, SoxFile.make(b), null, null);
+          if (b.size() > 0)
+          {
+            b.seek(0);
+            ManifestDb.save(KitManifest.fromXml(XParser.make("manifest", b.getInputStream()).parse()));
+          }
+        }
+        catch (Exception e1)
+        {
+        }
+      }
+
+      // retry
+      return Schema.load(parts);
+    }
   }
 
   /**
