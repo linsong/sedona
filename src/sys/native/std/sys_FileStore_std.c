@@ -25,9 +25,9 @@ char  schemestr[32];   // buf to hold scheme string
 #define SCHEME_DELIM (':')
 
 
-#define MAX_NUM_SCHEMES 3
-const char* schemes[MAX_NUM_SCHEMES]     = { "m", "k", "sedona" };
-const char* schemePaths[MAX_NUM_SCHEMES] = { "/manifests/", "/kits/", "/", };
+#define MAX_NUM_SCHEMES 2
+const char* schemes[MAX_NUM_SCHEMES]     = { "m", "k", };
+const char* schemePaths[MAX_NUM_SCHEMES] = { "manifests/", "kits/", };
 
 
 // --------------------------------------------------------------------------- //
@@ -69,17 +69,9 @@ char* expandFilePath( const char* ord )
   // If we found our scheme...
   if (s<MAX_NUM_SCHEMES)
   {
-    // Begin with sedona_home env var
-    sedHome = getenv("sedona_home");
-    if (sedHome!=NULL)
-    {
-      strcpy(pathptr, sedHome);          // strcpy copies null term. too
-      pathptr += strlen(sedHome);        // ptr moves to char after path ends
-    }
-
     // Copy the path for this scheme
-    strcpy(pathptr, schemePaths[s]);     // strcpy copies null term. too
-    pathptr += strlen(schemePaths[s]);   // ptr moves to char after path ends
+    strcpy(pathptr, schemePaths[s]);     // strcpy copies null char too
+    pathptr += strlen(schemePaths[s]);   // ptr moves to char after path ends (i.e. null)
 
     // Next add the kit name (i.e. filename up to dash)
     dash = strchr(rem, '-');
@@ -96,7 +88,7 @@ char* expandFilePath( const char* ord )
   strcpy(pathptr, rem);   
 
   // DIAG
-  //printf("\t** Serving file: %s\n", fullpath);
+  printf("\t** Serving file: %s\n", fullpath);
   // DIAG
 
   return fullpath;
