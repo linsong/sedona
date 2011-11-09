@@ -17,7 +17,7 @@
 >
 
   <!-- Dependencies -->
-  <depend on="sys 1.0" />
+  <depend on="sys 1.0+" />
 
   <!-- Source Directories -->
   <source dir="."/>

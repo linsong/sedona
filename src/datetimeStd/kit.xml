@@ -15,8 +15,8 @@
   <source dir="." />
 	
   <!-- Dependencies -->
-  <depend on="sys 1.0" />
-  <depend on="datetime 1.0" />
+  <depend on="sys 1.0+" />
+  <depend on="datetime 1.0+" />
   
   <!-- Natives -->
   <native qname="datetimeStd::DateTimeServiceStd.doNow"          id="9::0"  />

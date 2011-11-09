@@ -16,7 +16,7 @@
   <source dir="test" testonly="true" />
 	
   <!-- Dependencies -->
-  <depend on="sys 1.0" />
-  <depend on="datetime 1.0" />
+  <depend on="sys 1.0+" />
+  <depend on="datetime 1.0+" />
   	
 </sedonaKit>
