@@ -1,0 +1,63 @@
+//
+// Copyright (c) 2009 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   13 Oct 11  Elizabeth McKenney  Creation
+//
+
+**
+** SchemeFileStore handles files whose names contains a scheme to
+** represent their full paths in the native file system.
+**                 
+final class SchemeFileStore 
+  extends FileStore
+{                      
+  **
+  ** Implementation for 'File.size'.  
+  ** Must work without opening the file.
+  **
+  override virtual int size(File f) 
+  {
+    return doSchemeSize(this.name, f.name)
+  }
+
+  **
+  ** Implementation for 'File.open'.
+  **
+  override virtual bool open(File f, Str mode) 
+  { 
+    f.fp = doSchemeOpen(this.name, f.name, mode)
+    return f.fp != null
+  }
+
+
+  internal native static int doSchemeSize(Str scheme, Str name)
+  internal native static Obj doSchemeOpen(Str scheme, Str name, Str mode)
+
+
+//////////////////////////////////////////////////////////////////////////
+// Constructor
+//////////////////////////////////////////////////////////////////////////
+
+  **
+  ** Constructor sets name field and inserts self into FileStore list
+  **
+  SchemeFileStore(Str scheme)
+  {
+    this.name.copyFromStr(scheme, FileStore.nameStrlen)
+    insert(this)
+  }
+
+  
+  
+  // Static singleton instance(s) defined here; added to JennicFileStore list
+  // automatically in constructor
+  static inline SchemeFileStore("m") mfStore
+  //static inline SchemeFileStore("k") kitStore    // uncomment to support kits also
+
+
+  
+}
+
+

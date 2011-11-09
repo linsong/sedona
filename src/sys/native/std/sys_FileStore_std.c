@@ -10,7 +10,7 @@
 
 
 // Define this to implement "scheme" convention for specifying kit/manifest DB locations
-#define IMPL_SCHEME_CONVENTION
+//#define IMPL_SCHEME_CONVENTION
 
 // =========================================================================== //
 #ifdef IMPL_SCHEME_CONVENTION
@@ -26,28 +26,28 @@ char  schemestr[32];   // buf to hold scheme string
 
 
 #define MAX_NUM_SCHEMES 2
-const char* schemes[MAX_NUM_SCHEMES]     = { "m", "k", };
-const char* schemePaths[MAX_NUM_SCHEMES] = { "manifests/", "kits/", };
+const char* FSschemes[MAX_NUM_SCHEMES]     = { "m", "k", };
+const char* FSschemePaths[MAX_NUM_SCHEMES] = { "manifests/", "kits/", };
 
 
 // --------------------------------------------------------------------------- //
-// expandFilePath
+// FSexpandFilePath
 //     - captures scheme name, if any, in ord & constructs full local path
 // --------------------------------------------------------------------------- //
-char* expandFilePath( const char* ord )
+char* FSexpandFilePath( const char* ord )
 {
-  char *delim, *rem, *pathptr, *sedHome, *dash;
+  char *delim, *rem, *pathptr, *dash;
   int s;
 
   if (ord==NULL) return NULL;
 
   delim = strchr(ord, SCHEME_DELIM);
-  rem = delim+1;
 
   // If no scheme, assume whole ord is file path
   if (delim==NULL) return (char*)ord;
 
   // Scheme found!
+  rem = delim+1;
 
   // Copy scheme string into separate buf - should check for string length overrun eventually
   strncpy(schemestr, ord, delim-ord);
@@ -59,7 +59,7 @@ char* expandFilePath( const char* ord )
   //
   for (s=0; s<MAX_NUM_SCHEMES; s++)
   {
-    if (strcmp(schemes[s], schemestr)==0)
+    if (strcmp(FSschemes[s], schemestr)==0)
       break;
   }
 
@@ -70,8 +70,8 @@ char* expandFilePath( const char* ord )
   if (s<MAX_NUM_SCHEMES)
   {
     // Copy the path for this scheme
-    strcpy(pathptr, schemePaths[s]);     // strcpy copies null char too
-    pathptr += strlen(schemePaths[s]);   // ptr moves to char after path ends (i.e. null)
+    strcpy(pathptr, FSschemePaths[s]);     // strcpy copies null char too
+    pathptr += strlen(FSschemePaths[s]);   // ptr moves to char after path ends (i.e. null)
 
     // Next add the kit name (i.e. filename up to dash)
     dash = strchr(rem, '-');
@@ -88,7 +88,7 @@ char* expandFilePath( const char* ord )
   strcpy(pathptr, rem);   
 
   // DIAG
-  printf("\t** Serving file: %s\n", fullpath);
+  printf("\t** FS serving file: %s\n", fullpath);
   // DIAG
 
   return fullpath;
@@ -108,7 +108,7 @@ Cell sys_FileStore_doSize(SedonaVM* vm, Cell* params)
   // The FileStore API indicates that this native call should not
   // cause the file to be opened. We'll do our best.
  #ifdef IMPL_SCHEME_CONVENTION
-  const char* name = expandFilePath(params[0].aval);
+  const char* name = FSexpandFilePath(params[0].aval);
  #else
   const char* name = params[0].aval;
  #endif
@@ -145,7 +145,7 @@ Cell sys_FileStore_doSize(SedonaVM* vm, Cell* params)
 Cell sys_FileStore_doOpen(SedonaVM* vm, Cell* params)
 {
  #ifdef IMPL_SCHEME_CONVENTION
-  const char* name = expandFilePath(params[0].aval);
+  const char* name = FSexpandFilePath(params[0].aval);
  #else
   const char* name = params[0].aval;
  #endif
@@ -311,8 +311,8 @@ Cell sys_FileStore_doClose(SedonaVM* vm, Cell* params)
 Cell sys_FileStore_rename(SedonaVM* vm, Cell* params)
 {
  #ifdef IMPL_SCHEME_CONVENTION
-  const char* from = expandFilePath(params[0].aval);
-  const char* to   = expandFilePath(params[1].aval);
+  const char* from = FSexpandFilePath(params[0].aval);
+  const char* to   = FSexpandFilePath(params[1].aval);
  #else 
   const char* from = params[0].aval;
   const char* to   = params[1].aval;
