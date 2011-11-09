@@ -9,10 +9,10 @@
   <compile endian="little" blockSize="4" refSize="4" debug="true" test="true">
 
     <!-- Native Kits -->
-    <nativeKit depend="sys 1.0"    />
-    <nativeKit depend="inet 1.0"   />
-    <nativeKit depend="datetimeStd 1.0" />
-    <nativeKit depend="platUnix 1.0" />
+    <nativeKit depend="sys 1.0+"    />
+    <nativeKit depend="inet 1.0+"   />
+    <nativeKit depend="datetimeStd 1.0+" />
+    <nativeKit depend="platUnix 1.0+" />
  
     <!-- Sources -->
     <nativeSource path="/src/vm" />
