@@ -3,7 +3,8 @@
 // Licensed under the Academic Free License version 3.0
 //
 // History:
-//   19 May 09  Brian Frank   Creation
+//   19 May 09  Brian Frank         Creation
+//   13 Oct 11  Elizabeth McKenney  Enhanced to include linked list of FileStore objects
 //
 
 **
@@ -11,15 +12,10 @@
 ** based I/O.  Typically each storage device such as static 
 ** RAM or EEPROM implements a subclass of FileStore and declares
 ** a singleton called "instance".  Files are mapped to a FileStore
-** instance by 'PlatformServcie.fileStore'.
+** instance by 'PlatformService.fileStore'.
 **                 
 class FileStore extends Virtual
 {                      
-
-  **
-  ** Built-in system file storage implementation.
-  **
-  static inline FileStore sys
 
   **
   ** Implementation for 'File.size'.  
@@ -114,16 +110,85 @@ class FileStore extends Virtual
   native static bool rename(Str from, Str to)
   
 
-  internal native static int doSize(Str name)
-  internal native static Obj doOpen(Str name, Str mode)
-  internal native static int doRead(Obj fp)
-  internal native static int doReadBytes(Obj fp, byte[] b, int off, int len)
-  internal native static bool doWrite(Obj fp, int b)
-  internal native static bool doWriteBytes(Obj fp, byte[] b, int off, int len)
-  internal native static bool doSeek(Obj fp, int pos)
-  internal native static int  doTell(Obj fp)
-  internal native static void doFlush(Obj fp)
-  internal native static bool doClose(Obj fp)
+  native static int doSize(Str name)
+  native static Obj doOpen(Str name, Str mode)
+  native static int doRead(Obj fp)
+  native static int doReadBytes(Obj fp, byte[] b, int off, int len)
+  native static bool doWrite(Obj fp, int b)
+  native static bool doWriteBytes(Obj fp, byte[] b, int off, int len)
+  native static bool doSeek(Obj fp, int pos)
+  native static int  doTell(Obj fp)
+  native static void doFlush(Obj fp)
+  native static bool doClose(Obj fp)
+
+
+////////////////////////////////////////////////////////////////
+// Static methods 
+////////////////////////////////////////////////////////////////
+
+  **
+  ** Insert sets name field and inserts obj at end of FileStore list
+  **
+  ** This function would normally be called by the constructor of a
+  ** subclass of FileStore, which would also set the name of the object.
+  **
+  **   Returns false if object with same name is already in list, 
+  **   o/w returns true indicating success.
+  **
+  static bool insert(FileStore fsObj)
+  {
+    // List is never empty, since static 'sys' is always the head.
+    // So look for last object in list and insert fsObj after it
+    FileStore fs = sys
+    while (fs.next!=null) 
+    {
+      if (fs.name.equals(fsObj.name)) return false   // name already exists
+      fs = fs.next
+    }
+
+    fs.next   = fsObj
+    fsObj.next = null
+    return true
+  }
+
+
+  **
+  ** Lookup returns FileStore obj from list whose name matches.
+  ** Returns null if name not found.
+  **
+  static FileStore lookup(Str fsName)
+  {
+    FileStore fs = sys
+    while (fs!=null) 
+    {
+      if (fs.name.equals(fsName)) return fs
+      fs = fs.next
+    }
+    return null
+  }
+
+
+
+  **
+  ** Built-in system file storage implementation.
+  **   Also head of linked list containing any other FileStores
+  **
+  static inline FileStore sys
+
+  **
+  ** Consts
+  **
+  define int Delimiter  = ':'
+  define int nameStrlen = 8
+
+  **
+  ** Instance fields, with defaults so we don't have to set them in sys instance
+  **
+  inline Str(nameStrlen) name = ""
+  FileStore              next = null
+
+
+
 }
 
 
