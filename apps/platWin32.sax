@@ -12,6 +12,7 @@
   <kit name='datetimeStd'/>
   <kit name='basicSchedule' />
   <kit name='platWin32' />
+  <kit name='scheme' />
 </schema>
 <app>               
   <prop name="appName" val="demo"/>
