@@ -8,6 +8,7 @@
 
 #include "sedona.h"
 
+#include "string.h"   // for errno, strerror
 
 // Define this to implement "scheme" convention for specifying kit/manifest DB locations
 //#define IMPL_SCHEME_CONVENTION
@@ -178,9 +179,48 @@ Cell sys_FileStore_doOpen(SedonaVM* vm, Cell* params)
     default:  return nullCell;
   }
 
+
+  //
+  // If opening for writing: Create directories if they don't exist
+  //
+  if ( (mode[0]=='m') || (mode[0]=='w') )
+  {  
+    char *nxtdir, sepch, *sep;
+
+    // Find first path sep (either type) skipping leading sep if any
+    sep = strchr(name, '/');
+    if (sep==NULL) sep = strchr(name, '\\');
+
+    // If so, step through dir string and try to create dir(s) 
+    while (sep!=NULL) 
+    {
+      sepch = *sep;          // cache sep char
+      *sep = '\0';           // replace sep with null term
+
+      // create dir (should be NOP if dir exists)
+      _mkdir((const char*)name);
+
+      *sep = sepch;          // restore sep char
+      nxtdir = sep+1;        // starting point for next search
+
+      // find next path sep
+      sep = strchr(nxtdir, '/');
+      if (sep==NULL) sep = strchr(nxtdir, '\\');
+    }
+  }
+
   result.aval = fopen(name, fopenMode);
+
+  // DIAG
+  if (result.aval==NULL)
+    printf("fopen('%s', '%s') failed, errno=%d (%s)\n", name, fopenMode, errno, strerror(errno));
+  // DIAG
+
   return result;
 }
+
+
+
 
 // int FileStore.doRead(Obj)
 Cell sys_FileStore_doRead(SedonaVM* vm, Cell* params)
