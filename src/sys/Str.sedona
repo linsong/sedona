@@ -188,6 +188,21 @@ final class Str
     return Str.fromBytes(buf, off)
   }
 
+
+  **
+  ** Perform an in-place trim on the string pointer by
+  ** removing leading characters up to index 'newStart'.
+  ** Note this method will return a different reference,
+  ** the starting position of the new string, but the
+  ** underlying memory does not change.
+  **
+  Str suffix(int newStart)
+  {
+    return Str.fromBytes(buf, newStart)
+  }
+
+
+
   **
   ** Parse this string into an integer or return -1.
   **
