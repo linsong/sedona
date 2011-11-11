@@ -12,16 +12,18 @@
 >
 
   <!-- Kits -->
-  <depend on="sys 1.0" />
-  <depend on="sox 1.0" />
-  <depend on="inet 1.0" />
-  <depend on="web 1.0" />
-  <depend on="control 1.0" />
-  <depend on="pstore 1.0" />
-  <depend on="datetime 1.0" />
-  <depend on="datetimeStd 1.0" />
-  <depend on="basicSchedule 1.0" />
-  <depend on="platWin32 1.0" />
+  <depend on="sys 1.0+" />
+  <depend on="sox 1.0+" />
+  <depend on="inet 1.0+" />
+  <depend on="web 1.0+" />
+  <depend on="control 1.0+" />
+  <depend on="pstore 1.0+" />
+  <depend on="datetime 1.0+" />
+  <depend on="datetimeStd 1.0+" />
+  <depend on="basicSchedule 1.0+" />
+  <depend on="platWin32 1.0+" />
+
+  <depend on="scheme 1.0+" />
 
 </sedonaCode>
 
