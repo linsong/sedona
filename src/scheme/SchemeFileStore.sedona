@@ -19,7 +19,7 @@ final class SchemeFileStore
   **
   override virtual int size(File f) 
   {
-    return doSchemeSize(this.name, f.name)
+    return doSchemeSize(this.name, stripScheme(f.name))
   }
 
   **
@@ -27,14 +27,33 @@ final class SchemeFileStore
   **
   override virtual bool open(File f, Str mode) 
   { 
-    f.fp = doSchemeOpen(this.name, f.name, mode)
+    f.fp = doSchemeOpen(this.name, stripScheme(f.name), mode)
     return f.fp != null
   }
 
 
+//////////////////////////////////////////////////////////////////////////
+// Natives
+//////////////////////////////////////////////////////////////////////////
+
   internal native static int doSchemeSize(Str scheme, Str name)
   internal native static Obj doSchemeOpen(Str scheme, Str name, Str mode)
 
+
+//////////////////////////////////////////////////////////////////////////
+// Utilities
+//////////////////////////////////////////////////////////////////////////
+
+  Str stripScheme(Str fullname)
+  {
+    // Find the delimiter
+    int dlim = fullname?.index(FileStore.Delimiter)
+
+    // If no delimiter (or no filename) then return fullname
+    if (dlim <= 0) return fullname
+
+    return fullname.suffix(dlim+1)
+  }
 
 //////////////////////////////////////////////////////////////////////////
 // Constructor
@@ -52,11 +71,15 @@ final class SchemeFileStore
   
   
   // Static singleton instance(s) defined here; added to JennicFileStore list
-  // automatically in constructor
+  // automatically by constructor.
+
   static inline SchemeFileStore("m") mfStore
   //static inline SchemeFileStore("k") kitStore    // uncomment to support kits also
 
 
+  //
+  // To support a new scheme, add it here AND implement in native source also.
+  //
   
 }
 
