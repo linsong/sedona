@@ -83,31 +83,16 @@ class PlatformService
   **
   ** Map a filename to its FileStore implementation.  This
   ** method must return a non-null reference.  Default is
-  ** to return 'FileStore.sys'.  If a FileStore.Delimiter
-  ** character is found, the chars before the delimiter
-  ** are assumed to be a scheme name and the FileStore
-  ** object corresponding to that scheme name is returned.
+  ** to return 'FileStore.sys'.  
   **
   virtual FileStore fileStore(Str name)
   {
-    // Find the delimiter
-    int dlim = name?.index(FileStore.Delimiter)
-
-    // If no delimiter (or no filename) then return FileStore.sys
-    if (dlim <= 0) return FileStore.sys
-
-    // Portion before dlim is scheme name (2nd arg is max bytes, must include null)
-    scheme.copyFromStr(name, dlim+1) 
-
-    // Look for a FileStore with scheme name;
+    // Request FileStore instance for this filename;
     //  return it if found, o/w return FileStore.sys
-    FileStore fs = FileStore.lookup(scheme)
+    FileStore fs = FileStore.lookup(name)
 
     return fs ?: FileStore.sys
   }
-
-  define int schemelen = 8       // MUST match FileStore.nameStrlen
-  inline Str(schemelen) scheme   // temp storage for scheme name
 
 
   **

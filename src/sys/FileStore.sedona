@@ -148,16 +148,32 @@ class FileStore extends Virtual
 
     fs.next   = fsObj
     fsObj.next = null
+
+    // DIAG
+    Sys.out.print("Inserted FileStore with name='${fsObj.name}'\n")
+    // DIAG
+
     return true
   }
 
 
   **
-  ** Lookup returns FileStore obj from list whose name matches.
-  ** Returns null if name not found.
+  ** Lookup returns FileStore obj from list whose name matches
+  ** portion of filename up to the Delimiter char.
+  ** Returns null if no matching name is found.  
   **
-  static FileStore lookup(Str fsName)
+  static FileStore lookup(Str filename)
   {
+    // Find the delimiter
+    int dlim = filename?.index(FileStore.Delimiter)
+
+    // If no delimiter (or no filename) then return FileStore.sys
+    if (dlim <= 0) return FileStore.sys
+
+    // Portion before dlim is FileStore name (2nd arg is max bytes, must include null)
+    fsName.copyFromStr(filename, dlim+1) 
+
+    // Look for a FileStore with scheme name
     FileStore fs = sys
     while (fs!=null) 
     {
@@ -175,6 +191,9 @@ class FileStore extends Virtual
   **
   static inline FileStore sys
 
+  static inline Str(nameStrlen)  fsName = ""   // temp storage for lookup
+
+
   **
   ** Consts
   **
@@ -186,8 +205,6 @@ class FileStore extends Virtual
   **
   inline Str(nameStrlen) name = ""
   FileStore              next = null
-
-
 
 }
 
