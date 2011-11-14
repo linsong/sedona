@@ -23,7 +23,5 @@
   <depend on="basicSchedule 1.0+" />
   <depend on="platWin32 1.0+" />
 
-  <depend on="scheme 1.0+" />
-
 </sedonaCode>
 

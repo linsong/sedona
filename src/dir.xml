@@ -23,7 +23,5 @@
   <target name="../platforms/src/generic/win32" />
   <target name="../platforms/src/generic/unix" />
 
-  <target name="scheme" />
-
 </sedonaDir>
 
