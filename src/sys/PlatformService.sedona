@@ -81,21 +81,6 @@ class PlatformService
 ////////////////////////////////////////////////////////////////
 
   **
-  ** Map a filename to its FileStore implementation.  This
-  ** method must return a non-null reference.  Default is
-  ** to return 'FileStore.sys'.  
-  **
-  virtual FileStore fileStore(Str name)
-  {
-    // Request FileStore instance for this filename;
-    //  return it if found, o/w return FileStore.sys
-    FileStore fs = FileStore.lookup(name)
-
-    return fs ?: FileStore.sys
-  }
-
-
-  **
   ** Update the memAvailable property to reflect the current
   ** amount of available memory.
   **

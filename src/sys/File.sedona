@@ -103,17 +103,20 @@ final class File
     return store.seek(this, pos)
   }             
   
+
+//////////////////////////////////////////////////////////////////////////
+// toStore
+//////////////////////////////////////////////////////////////////////////
+
   **
   ** Map the current file name to a FileStore reference.
   **
   static internal FileStore toStore(Str name)
   {
-    PlatformService plat = PlatformService.lookup()
-    if (plat == null)             
-      return FileStore.sys
-    else
-      return plat.fileStore(name)
+    FileStore fs = FileStore.lookup(name)
+    return fs?:FileStore.sys
   }
+
 
 //////////////////////////////////////////////////////////////////////////
 // Fields
@@ -123,8 +126,7 @@ final class File
   FileStore store           // backing store implementation
   inline FileOutStream out  // stream to write file (buffered)
   inline FileInStream in    // stream to read file
-  Obj fp                    // FileStore only - native handle for open file
-  int storeUserData         // FileStore only - opaque user data for FileStore
+  Obj fp                    // from FileStore - native handle for open file
 }
 
 ****************************************************************

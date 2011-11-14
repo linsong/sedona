@@ -8,15 +8,17 @@
 //
 
 **
-** FileStore is used to implement the backing storage of File 
-** based I/O.  Typically each storage device such as static 
-** RAM or EEPROM implements a subclass of FileStore and declares
-** a singleton called "instance".  Files are mapped to a FileStore
-** instance by 'PlatformService.fileStore'.
+** FileStore is used to implement the backing storage of File based I/O.  
+** Typically each storage device such as static RAM or EEPROM implements 
+** a subclass of FileStore and declares a singleton instance, inserting 
+** it into the FileStore static linked list at runtime.  Filenames are 
+** mapped to a FileStore instance via 'FileStore.lookup', which steps 
+** through the static linked list and calls accept() on each one, returning 
+** the first instance that returns true.
 **                 
-class FileStore extends Virtual
+class FileStore 
+  extends Virtual
 {                      
-
   **
   ** Implementation for 'File.size'.  
   ** Must work without opening the file.
@@ -123,88 +125,79 @@ class FileStore extends Virtual
 
 
 ////////////////////////////////////////////////////////////////
+// accept
+////////////////////////////////////////////////////////////////
+
+  **
+  ** Parse the given filename, and return true if this is the appropriate
+  ** FileStore instance to handle it.  Default is to return false.
+  **
+  virtual bool accept(Str filename)
+  {
+    return false
+  }
+
+
+////////////////////////////////////////////////////////////////
 // Static methods 
 ////////////////////////////////////////////////////////////////
 
   **
-  ** Insert sets name field and inserts obj at end of FileStore list
+  ** Insert fsObj at end of FileStore list.
   **
-  ** This function would normally be called by the constructor of a
-  ** subclass of FileStore, which would also set the name of the object.
+  ** This function should be called by the constructor of an instance 
+  ** of a FileStore subclass, to insert itself into the list.
   **
-  **   Returns false if object with same name is already in list, 
-  **   o/w returns true indicating success.
+  ** Always returns true.
+  ** No protection against adding an instance multiple times.
   **
   static bool insert(FileStore fsObj)
   {
     // List is never empty, since static 'sys' is always the head.
     // So look for last object in list and insert fsObj after it
     FileStore fs = sys
-    while (fs.next!=null) 
-    {
-      if (fs.name.equals(fsObj.name)) return false   // name already exists
-      fs = fs.next
-    }
+    while (fs.next!=null) fs = fs.next
 
     fs.next   = fsObj
     fsObj.next = null
-
-    // DIAG
-    Sys.out.print("Inserted FileStore with name='${fsObj.name}'\n")
-    // DIAG
 
     return true
   }
 
 
   **
-  ** Lookup returns FileStore obj from list whose name matches
-  ** portion of filename up to the Delimiter char.
-  ** Returns null if no matching name is found.  
+  ** Return first FileStore instance from list that returns true from accept().
+  ** Returns FileStore.sys if no instance returns true.
   **
   static FileStore lookup(Str filename)
   {
-    // Find the delimiter
-    int dlim = filename?.index(FileStore.Delimiter)
-
-    // If no delimiter (or no filename) then return FileStore.sys
-    if (dlim <= 0) return FileStore.sys
-
-    // Portion before dlim is FileStore name (2nd arg is max bytes, must include null)
-    fsName.copyFromStr(filename, dlim+1) 
-
-    // Look for a FileStore with scheme name
     FileStore fs = sys
     while (fs!=null) 
     {
-      if (fs.name.equals(fsName)) return fs
+      if (fs.accept(filename)) return fs
       fs = fs.next
     }
-    return null
+    return sys
   }
 
 
 
+
+////////////////////////////////////////////////////////////////
+// Fields
+////////////////////////////////////////////////////////////////
+
   **
   ** Built-in system file storage implementation.
-  **   Also head of linked list containing any other FileStores
+  **   Also head of linked list of other FileStores, if any
   **
   static inline FileStore sys
 
-  static inline Str(nameStrlen)  fsName = ""   // temp storage for lookup
-
 
   **
-  ** Consts
+  ** Pointer to next FileStore object in linked list.
   **
-  define int Delimiter  = ':'
-  define int nameStrlen = 8
-
-  **
-  ** Instance fields, with defaults so we don't have to set them in sys instance
-  **
-  inline Str(nameStrlen) name = ""
-  FileStore              next = null
+  FileStore next = null
 
 }
 
