@@ -13,7 +13,6 @@
     <nativeKit depend="inet 1.0+" />
     <nativeKit depend="datetimeStd 1.0+" />
     <nativeKit depend="platWin32 1.0+" />
-    <nativeKit depend="scheme 1.0+" />
 
     <!-- Native Sources -->
     <nativeSource path="/src/vm" />
