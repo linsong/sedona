@@ -73,7 +73,7 @@ final class UnixDbFileStore
     if (dash>=0)
     {
       fullpath.writeBytes(nameStr.toBytes(), 0, dash)
-      fullpath.write('\\')
+      fullpath.write('/')
     }
 
     // Write filename
