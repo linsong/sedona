@@ -7,9 +7,9 @@
 //
 
 **
-** UnixDbFileStore converts filenames for the Manifest (or Kit) Database.
+** UnixProvDbFileStore converts filenames for the Manifest (or Kit) Database.
 **                 
-final class UnixDbFileStore 
+final class UnixProvDbFileStore 
   extends FileStore
 {                      
   **
@@ -92,7 +92,7 @@ final class UnixDbFileStore
   ** Constructor sets instance fields and inserts self into FileStore list.
   ** Note: assume args are (const) string literals, no need to copy.
   **
-  UnixDbFileStore(Str pre, Str path)
+  UnixProvDbFileStore(Str pre, Str path)
   {
     this.prefix  = pre
     this.pathStr = path
@@ -112,7 +112,7 @@ final class UnixDbFileStore
   define int maxPathLen = 256
 
 
-  // Cache buffer for full path - shared by all UnixDbFileStore instances
+  // Cache buffer for full path - shared by all UnixProvDbFileStore instances
   //  (assumes full path only needed when calling doSize or doOpen, not after file is open)
   static inline Buf(maxPathLen)        pathBuf
   static inline BufOutStream(pathBuf)  fullpath
@@ -123,9 +123,9 @@ final class UnixDbFileStore
   //   to support a new scheme, add singleton instance for it 
   //
   
-  static inline UnixDbFileStore("m:", "manifests/") mfStore
+  static inline UnixProvDbFileStore("m:", "manifests/") mfStore
 
-  //static inline UnixDbFileStore("k:", "kits/") kitStore    // uncomment to support kits also
+  //static inline UnixProvDbFileStore("k:", "kits/") kitStore    // uncomment to support kits also
 
 }
 

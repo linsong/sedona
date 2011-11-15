@@ -7,9 +7,9 @@
 //
 
 **
-** Win32DbFileStore converts filenames for the Manifest (or Kit) Database.
+** Win32ProvDbFileStore converts filenames for the Manifest (or Kit) Database.
 **                 
-final class Win32DbFileStore 
+final class Win32ProvDbFileStore 
   extends FileStore
 {                      
   **
@@ -92,7 +92,7 @@ final class Win32DbFileStore
   ** Constructor sets instance fields and inserts self into FileStore list.
   ** Note: assume args are (const) string literals, no need to copy.
   **
-  Win32DbFileStore(Str pre, Str path)
+  Win32ProvDbFileStore(Str pre, Str path)
   {
     this.prefix  = pre
     this.pathStr = path
@@ -112,7 +112,7 @@ final class Win32DbFileStore
   define int maxPathLen = 256
 
 
-  // Cache buffer for full path - shared by all Win32DbFileStore instances
+  // Cache buffer for full path - shared by all Win32ProvDbFileStore instances
   //  (assumes full path only needed when calling doSize or doOpen, not after file is open)
   static inline Buf(maxPathLen)        pathBuf
   static inline BufOutStream(pathBuf)  fullpath
@@ -123,9 +123,9 @@ final class Win32DbFileStore
   //   to support a new scheme, add singleton instance for it 
   //
   
-  static inline Win32DbFileStore("m:", "manifests\\") mfStore
+  static inline Win32ProvDbFileStore("m:", "manifests\\") mfStore
 
-  //static inline Win32DbFileStore("k:", "kits\\") kitStore    // uncomment to support kits also
+  //static inline Win32ProvDbFileStore("k:", "kits\\") kitStore    // uncomment to support kits also
 
 }
 
