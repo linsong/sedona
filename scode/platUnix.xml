@@ -1,0 +1,27 @@
+<!--
+  -  Sedona SCode manifest for a generic unix platform
+  -->
+
+<sedonaCode
+   endian="little"
+   blockSize="4"
+   refSize="4"
+   main="sys::Sys.main"
+   debug="true"
+   test="true"
+>
+
+  <!-- Kits -->
+  <depend on="sys 1.0" />
+  <depend on="sox 1.0" />
+  <depend on="inet 1.0" />
+  <depend on="web 1.0" />
+  <depend on="control 1.0" />
+  <depend on="pstore 1.0" />
+  <depend on="datetime 1.0" />
+  <depend on="datetimeStd 1.0" />
+  <depend on="basicSchedule 1.0" />
+  <depend on="platUnix 1.0" />
+
+</sedonaCode>
+

@@ -1,0 +1,59 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   26 Apr 07  Brian Frank  Creation
+//
+
+**
+** Errors codes are assigned as follows:
+**
+**   Non-recoverable:
+**     [C code: 1-39]
+**     [Sedona: 40-99]
+**     - don't attempt to auto-restart application because 
+**       the vm, scode, or app itself is invalid
+**
+**   Recoverable: 
+**     [C code: 100-139]
+**     [Sedona: 140-249]
+**     - something went wrong at runtime, but if we auto-restart 
+**       the app things will probably start working again (at 
+**       least for a little while)
+**
+**   Special: 
+**     [250-255]
+**     - special codes shared b/w C and Sedona code
+**
+class Err
+{        
+
+  // non-recoverable: Sys
+  define int invalidArgs          = 40
+  define int cannotInitApp        = 41
+
+  // non-recoverable: App
+  define int cannotOpenFile       = 42
+  define int invalidMagic         = 43
+  define int invalidVersion       = 44
+  define int invalidSchema        = 45
+  define int unexpectedEOF        = 46
+  define int invalidKitId         = 47
+  define int invalidTypeId        = 48
+  define int cannotMalloc         = 49
+  define int cannotInsert         = 50
+  define int cannotLoadLink       = 51
+  define int invalidAppEndMarker  = 52
+  define int noPlatformService    = 53
+  define int badPlatformService   = 54
+
+  // non-recoverable: Component
+  define int invalidCompEndMarker = 60
+  define int nameTooLong          = 61
+
+  // special codes
+  define int yield                = 253
+  define int restart              = 254
+  define int hibernate            = 255
+}
