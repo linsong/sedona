@@ -16,7 +16,6 @@
 class Mul4
   extends Mul2
 {
-
   ** input 3
   property float in3
   

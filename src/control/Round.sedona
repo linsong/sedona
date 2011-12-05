@@ -55,7 +55,6 @@ class Round
   ** 
   virtual override void start()
   {
-
     factor = 1.0D
     if(decimalPlaces > 0)
       for(int i = 0; i < decimalPlaces; i++)

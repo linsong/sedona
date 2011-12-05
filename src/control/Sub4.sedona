@@ -17,7 +17,6 @@
 class Sub4
   extends Sub2
 {
-
   ** in3
   property float in3
   

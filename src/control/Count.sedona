@@ -29,20 +29,20 @@ class Count
   **
   property bool in
 
-	**
-	** Presets the counter to a specific value, defaults to 0
-	**
+  **
+  ** Presets the counter to a specific value, defaults to 0
+  **
   @defaultOnClone
   @min = 0
-	@config property int preset = 0
+  @config property int preset = 0
 	
-	**
-	** Configures direction.  True = "up", False = "down"
-	**
-	@trueText = "up"
+  **
+  ** Configures direction.  True = "up", False = "down"
+  **
+  @trueText = "up"
   @falseText = "down"
   @defaultOnClone
-	@config property bool dir = true
+  @config property bool dir = true
 
   **
   ** enable input
@@ -59,8 +59,8 @@ class Count
   **
   action void reset()
   {
-  	out = preset
-  	lastIn = in
+    out = preset
+    lastIn = in
   }
 
   **
@@ -68,7 +68,7 @@ class Count
   **
   virtual override void start()
   {
-  	reset()
+    reset()
   }
 
   **
@@ -77,14 +77,14 @@ class Count
   **
   virtual override void execute()
   {
-  	if(!enable) return
+    if(!enable) return
   	
-  	if(!lastIn & in)
-  	{
-  		if(dir) out++
-  		else    out--
+    if(!lastIn & in)
+    {
+      if(dir) out++
+      else    out--
       if (out < 0) out = 0  		
-  	}
+    }
     if(r) out = preset
 
     lastIn = in

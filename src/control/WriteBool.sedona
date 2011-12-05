@@ -19,12 +19,12 @@ class WriteBool
   ** input property, persisted as config property
   @summary
   @config
-   property bool in
+  property bool in
   
   ** output property = in, runtime property
   @summary
   @readonly
-   property bool out
+  property bool out
   
   **  
   ** action to set in to true

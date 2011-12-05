@@ -13,7 +13,7 @@
 class Min
   extends Component
 {
-	** the minimum of in1 and in2
+  ** the minimum of in1 and in2
   @readonly property float out
 
   ** first value for comparison

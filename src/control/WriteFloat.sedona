@@ -15,19 +15,18 @@
 class WriteFloat
   extends Component
 {
-
   ** input property, persisted as config property
   @summary
   @config
-   property float in
+  property float in
   
   ** output property = in, runtime property
   @summary
   @readonly
-   property float out
+  property float out
   
   **  
-  ** action to in to a value
+  ** action sets in to a value
   **
   action void set(float x)
   {           
@@ -35,7 +34,7 @@ class WriteFloat
   }
   
   **  
-  ** action to set in to null
+  ** action sets in to null
   **
   action void setNull()
   {           

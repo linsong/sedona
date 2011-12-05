@@ -17,8 +17,6 @@
 class Timer
   extends Component
 {
-	
-
   **
   ** The timed output pulse
   **
@@ -52,10 +50,10 @@ class Timer
   **
   action void resetTimer()
   {
-  	out = false
-  	lastRun = false
-  	run = false
-  	left = 0
+    out = false
+    lastRun = false
+    run = false
+    left = 0
   }
   
   **
@@ -64,8 +62,8 @@ class Timer
   **
   action void startTimer()
   {
-  	run = true
-  	lastRun = false
+    run = true
+    lastRun = false
   }
   
   **
@@ -73,7 +71,7 @@ class Timer
   **
   virtual override void start()
   {
-  	timems = (long)time * 1sec
+    timems = (long)time * 1sec
   }
 
   **
@@ -81,9 +79,9 @@ class Timer
   **
   virtual override void changed(Slot slot)
   {
-  	super.changed(slot)
-  	if(slot == Timer.time)
-  	  timems = (long)time * 1sec
+    super.changed(slot)
+    if(slot == Timer.time)
+      timems = (long)time * 1sec
   }
 
   **
@@ -91,31 +89,31 @@ class Timer
   **
   virtual override void execute()
   {
-  	if(run)
-  	{
+    if(run)
+    {
       long now = Sys.ticks()
-  		if(!lastRun)
-  		{
-  			deadline = now + timems
-  			out = true
+      if(!lastRun)
+      {
+        deadline = now + timems
+        out = true
         lastRun = run
         left = time
-  		}
-  		else
-  		{
-  			left = (deadline - now > 0L) ? (int)((deadline - now)/1sec) : 0
-  			if(now > deadline)
-  			{
-  				out = false
-  			}
-  		}
-  	}
-  	else
-  	{
-  		out = false
-  		lastRun = false
-  		left = 0
-  	}
+      }
+      else
+      {
+        left = (deadline - now > 0L) ? (int)((deadline - now)/1sec) : 0
+        if(now > deadline)
+        {
+          out = false
+        }
+      }
+    }
+    else
+    {
+      out = false
+      lastRun = false
+      left = 0
+    }
   }
 
   private bool lastRun  = false

@@ -14,7 +14,7 @@
 class MinMax
   extends Component
 {
-	** the computed min of all in's
+  ** the computed min of all in's
   @readonly property float minOut
 
   ** the computed max of all in's
@@ -31,7 +31,7 @@ class MinMax
   **
   action void reset()
   {
-  	first = true
+    first = true
   }
 
   **
@@ -39,7 +39,7 @@ class MinMax
   **
   virtual override void start()
   {
-  	reset()
+    reset()
   }
 
   **
@@ -47,21 +47,21 @@ class MinMax
   **
   virtual override void execute()
   {
-  	if(!Sys.app.isSteadyState())
-  	  return
-  	if(r)
-  	  first = true
-  	if(first)
-  	{
-  		minOut = in
-  		maxOut = in
-  		first = false
-  	}
-  	else
-  	{
-  		minOut = in < minOut ? in : minOut
+    if(!Sys.app.isSteadyState())
+      return
+    if(r)
+      first = true
+    if(first)
+    {
+      minOut = in
+      maxOut = in
+      first = false
+    }
+    else
+    {
+      minOut = in < minOut ? in : minOut
       maxOut = in > maxOut ? in : maxOut
-  	}
+    }
   }
   
   private bool first

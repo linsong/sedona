@@ -19,13 +19,15 @@ class DlyOff
 {
   ** Output signal
   @readonly property bool out
+
   ** Input signal
   property bool in
+
   ** Specified hold time in sec
   @config @summary property float delayTime  
+
   ** Remaining hold time in msec
   @readonly property int hold                
-
 
   **
   ** Callback when component is first started in an app.
@@ -35,7 +37,6 @@ class DlyOff
     // Must initialize lastIn before first call to execute()
     lastIn = in    
   }
-
 
   **
   ** Execute is called once every scan.

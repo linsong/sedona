@@ -18,12 +18,12 @@ class WriteInt
   ** input property, persisted as config property
   @summary
   @config
-   property int in
+  property int in
   
   ** output property = in, runtime property
   @summary
   @readonly
-   property int out
+  property int out
   
   **  
   ** action to in to a value
