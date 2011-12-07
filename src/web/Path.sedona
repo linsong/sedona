@@ -1,0 +1,35 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   11 Sep 06  Brian Frank  Creation
+//   06 Jun 07  Brian Frank  Port from Java to Sedona
+//
+
+**
+** Path models the parsed segments of the URI path
+**
+class Path
+{
+
+////////////////////////////////////////////////////////////////
+// Methods
+////////////////////////////////////////////////////////////////
+
+  void dump(OutStream out)
+  {
+    foreach (Str name : names, size)
+      out.print("'").print(name).print("' ");
+  }
+
+////////////////////////////////////////////////////////////////
+// Fields
+////////////////////////////////////////////////////////////////
+
+  define int max = 32
+
+  int size
+  inline Str[max] names
+
+}
