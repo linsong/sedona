@@ -34,6 +34,17 @@ class IRamp
   @unit=Units.second
   @config property long secs = 1L
 
+
+  **
+  ** Start initializes the output
+  **
+  virtual override void start()
+  {
+    out = min
+    lastUpdate = 0L
+  }
+  
+
   **
   ** Execute is called once every scan.
   **
