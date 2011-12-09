@@ -50,7 +50,6 @@ class Freq
 
     if (in && !lastIn)  // rising edge detected
     {
-
       long now = Sys.ticks()
 
       if(!completeCycle)  //startup boundary condition: we need 2 rising edges to compute

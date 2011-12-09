@@ -20,7 +20,7 @@ class SwTest
 
   static void test()
   {
-  	//ASW test
+    //ASW test
     asw.in1 = 1.0
     asw.in2 = 2.0
     asw.s1 = true
@@ -74,7 +74,7 @@ class SwTest
     //ASW4 test
     for(int i = -4; i < 5; i++)
     {
-    	float in1 = (float)i * 3.0
+      float in1 = (float)i * 3.0
       float in2 = (float)i + 2000.0
       float in3 = (float)i * -3.0
       float in4 = (float)i - 4000.0

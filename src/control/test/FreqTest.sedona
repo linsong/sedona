@@ -1,0 +1,51 @@
+//
+// Copyright (c) 2011 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   07 Dec 11  Elizabeth McKenney  Creation
+//
+
+**
+** FreqTest
+**
+class FreqTest
+  extends Test
+{
+  static inline Freq f
+
+ 
+  static void test()
+  {
+    f.start()
+    doBurst(30, 5ms)
+    assert(f.pps == 62.5)
+    assert(f.ppm == 3750.0)
+    doBurst(100, 5ms)
+    assert(f.pps == 62.5)
+    assert(f.ppm == 3750.0)
+  }
+
+  static void inTrue()
+  {
+    f.in = true
+    f.execute()
+  }
+
+  static void inFalse()
+  {
+    f.in = false
+    f.execute()
+  }
+
+  static void doBurst(int n, long p)
+  {
+    for (int t=0; t<n; t++)
+    {
+      inTrue()
+      inFalse()
+      Sys.sleep(p)
+    }
+  }
+
+}

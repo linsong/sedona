@@ -1,0 +1,81 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   06 Dec 11  Elizabeth McKenney   Lifted from MathTest
+//
+
+**
+** AvgNTest
+**
+class AvgNTest
+  extends Test
+{
+  static inline AvgN avgN
+
+
+  static void doAvgN(float value)
+  {
+    avgN.in = value
+    avgN.execute()
+  }
+
+
+  static void checkVal(float v, float epsilon)
+  {
+    assert( (avgN.out>v-epsilon) && (avgN.out<v+epsilon) )
+  }
+
+
+  static void test()
+  {
+    avgN.start()     // not in an app, so call this explicitly
+
+    avgN.numSamplesToAvg = 4
+
+    doAvgN(6.0)
+    Sys.out.print("avgN.out = ${avgN.out} (6.0)\n")
+    assert(avgN.out == 6.0)
+    for (int i=0; i<3; i++)
+    {
+      doAvgN(5.0)
+      Sys.out.print("avgN.out == ${avgN.out} (not 5.0)\n")
+      assert(avgN.out != 5.0)
+    }
+    doAvgN(5.0)
+    Sys.out.print("avgN.out == ${avgN.out} (still not exactly 5.0)\n")
+    assert(avgN.out != 5.0)
+
+    /*
+    int c = 0
+    while (avgN.out!=5.0)
+    {
+      c++
+      doAvgN(5.0)
+      Str done = avgN.out==5.0?"is":"not"
+      Sys.out.print("avgN.out == ${avgN.out} ($done 5.0)\n")
+    }
+    Sys.out.print("Took $c samples to get output to ${avgN.out}\n")
+    */
+    
+    avgN.reset = true
+    doAvgN(10.0)
+    Sys.out.print("avgN.out = ${avgN.out} (10.0)\n")
+    assert(avgN.out == 10.0)
+
+    avgN.reset = false
+    avgN.reset = true
+    doAvgN(1.0)
+    Sys.out.print("avgN.out = ${avgN.out} (1.0)\n")
+    assert(avgN.out == 1.0)
+
+    avgN.reset = false
+    doAvgN(4.0)
+    Sys.out.print("avgN.out = ${avgN.out} (not 1.0)\n")
+    assert(avgN.out != 1.0)
+
+    Sys.out.print(" *** TODO: Create more precise AvgN test case? *** \n\n")
+  }
+
+}
