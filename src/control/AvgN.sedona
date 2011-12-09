@@ -8,17 +8,17 @@
 //
 
 **
-** Avg Running Average math object
+** Modified Moving Average math object
 **
-**   out = (total + in - avg)/n
+**   out = [(n-1)*out + in]/n = (total + in - avg)/n
 ** 
-**   where total = running total of last n samples
+**   where total = approx. running total of last n samples
 **         avg   = last computed average = total/n 
 **
 **   Note: 1) the "avg" value is "seeded" with the "in" 
-**         value at startup or whenever "n" changes
+**            value at startup or whenever "n" changes
 **         2) the "total" value is "seeded" with (in * n)
-**         at startup or whenever "n" changes
+**            at startup or whenever "n" changes
 **         3) boolean input "reset" resets the object to 
 **            return to first execute cycle state, and avg
 **            and total are re "seeded".  This may be useful

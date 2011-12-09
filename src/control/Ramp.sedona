@@ -29,9 +29,6 @@ class Ramp
   ** maximum value
   @config property float max   = 100.0
 
-  //** amount to be added 4x per second
-  //@config property float delta = 1.0
-
   ** Ramp period
   ** If rampType is true (up and down) then this is the time it 
   ** takes to complete up/down cycle.
@@ -50,9 +47,6 @@ class Ramp
   @falseText="up only"
   @config property bool rampType = true
   
-  float delta
-  bool firstHalf
-  //float engineCyclesPerRampCycle
 
   **
   ** compute internal constants at startup
@@ -118,4 +112,9 @@ class Ramp
     }
   }
 
+  //**
+  //**  Internal constants
+  //**
+  float delta
+  bool firstHalf
 }
