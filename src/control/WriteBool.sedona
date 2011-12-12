@@ -47,7 +47,7 @@ class WriteBool
   **
   action void setNull()
   {           
-    out = null
+    in = null
   }
 
   **
