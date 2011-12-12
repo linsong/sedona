@@ -10,7 +10,7 @@
 ** MathTest
 **
 class MathTest
-  extends Test
+  extends SSTest
 {
   static inline Add2 add2
   static inline Add4 add4
@@ -258,13 +258,7 @@ class MathTest
 
   static void validateMinMax()
   {
-    // Need to get app to steady state before MinMax.execute() will work
-    Sys.app.platform = testplat             // need platform instance to avoid null ref
-    Sys.app.runApp()                        // get app to steady state somehow
-
-    Sys.out.print("  >> Waiting for app to reach steady state")
-    while (!Sys.app.isSteadyState()) Sys.out.print(".")
-    Sys.out.nl()
+    waitForSteadyState()
 
     minmax.reset()
     doMinMax(10f)
@@ -310,12 +304,5 @@ class MathTest
     rnd.execute()
     assert(rnd.out == checkVal)
   }
-
-
-  **
-  ** A generic platform service instance for the app
-  **
-  static inline PlatformService testplat
-
 
 }
