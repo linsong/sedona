@@ -51,34 +51,38 @@ class UpDn
   **
   virtual override void execute()
   {
-    if ( in && !lastIn )      // detect positive edge
-    {
-      // Adjust count by one
-      if (cDwn)
-        out--
-      else
-        out++
-
-      // Don't allow count to go negative
-      if (out < 0.0f) out = 0.0f
-
-      // If enabled, hold count at given max value
-      if (holdAtLimit && (out > limit))
-         out = limit
-
-      // Flag overflow
-      ovr = ( out >= limit )
-    }
-
-    lastIn = in
-
     // Clear count & overflow if reset input is true
     if (rst)
     {
       ovr = false
       out = 0.0
+      return
     }
 
+    float tmp = out
+
+    if ( in && !lastIn )      // detect positive edge
+    {
+      // Adjust count by one
+      if (cDwn)
+        tmp--
+      else
+        tmp++
+
+      // Don't allow count to go negative
+      if (tmp < 0.0f) tmp = 0.0f
+
+      // If enabled, hold count at given max value
+      if (holdAtLimit && (tmp > limit))
+         tmp = limit
+
+      // Flag overflow
+      ovr = ( tmp >= limit )
+    }
+
+    lastIn = in
+
+    out = tmp
   }
 
   private bool lastIn

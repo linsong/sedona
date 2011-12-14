@@ -53,13 +53,17 @@ class IRamp
     long now = Sys.ticks()
     if (now - lastUpdate < secs * 1sec) return
     lastUpdate = now
-    if (firstHalf)
-      out = out + delta
-    else
-      out = out - delta
 
-    if (out < min) { out = min; firstHalf = true }
-    if (out > max) { out = max; firstHalf = false }
+    int tmp = out
+    if (firstHalf)
+      tmp += delta
+    else
+      tmp -= delta
+
+    if (tmp < min) { tmp = min; firstHalf = true }
+    if (tmp > max) { tmp = max; firstHalf = false }
+
+    out = tmp
   }
 
   private bool firstHalf = true

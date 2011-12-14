@@ -46,8 +46,8 @@ class ASW4
   **
   virtual override void execute()
   {
-  	if(sel <= startsAt)
-  	  out = in1
+    if(sel <= startsAt)
+      out = in1
     else if(sel == startsAt + 1)
       out = in2
     else if(sel == startsAt + 2)

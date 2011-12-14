@@ -73,13 +73,13 @@ class TimeAvg
     execCount++
     sum += in
 
-    if(first)
+    if( first || (execCount >= scansPerCalc) )
     {
       out = sum/(float)execCount
     }
+
     if(execCount >= scansPerCalc)
     {
-      out = sum/(float)execCount
       sum = 0.0
       execCount = 0
       first = false

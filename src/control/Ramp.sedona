@@ -30,21 +30,21 @@ class Ramp
   @config property float max   = 100.0
 
   ** Ramp period
-  ** If rampType is true (up and down) then this is the time it 
+  ** If rampType is true (triangle) then this is the time it 
   ** takes to complete up/down cycle.
   ** a value of 0 gives a 0 output
-  ** If rampType is false (up only) then this is the time it 
+  ** If rampType is false (sawtooth) then this is the time it 
   ** takes to complete up cycle.
   @unit = Units.second
   @precision = 0
   @min=0
   @config property float period = 10f
 
-  ** Specifies whether ramp is up only (min to max and repeat), or
+  ** Specifies whether ramp is sawtooth (min to max and repeat), or
   ** ramp is min to max/max to min and repeat
-  ** Defaults to up only.
-  @trueText="up and down"
-  @falseText="up only"
+  ** Defaults to sawtooth.
+  @trueText="triangle"
+  @falseText="sawtooth"
   @config property bool rampType = true
   
 
@@ -95,21 +95,25 @@ class Ramp
       return
     }
 
+    float tmp = out
+
     if(rampType)
     {
       if (firstHalf)
-        out = out + delta
+        tmp += delta
       else
-        out = out - delta
+        tmp -= delta
 
-      if (out < min) { out = min; firstHalf = true }
-      if (out > max) { out = max; firstHalf = false }
+      if (tmp < min) { tmp = min; firstHalf = true }
+      if (tmp > max) { tmp = max; firstHalf = false }
     }
     else
     {
-      out = out+delta
-      if(out > max) out = min
+      tmp += delta
+      if(tmp > max) tmp = min
     }
+
+    out = tmp
   }
 
   //**

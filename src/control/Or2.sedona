@@ -32,11 +32,12 @@ class Or2
   virtual override void execute()
   {    
     bool allNull = true;
-    out = false
-    if (in1 != null) { out |= in1; allNull = false; }
-    if (in2 != null) { out |= in2; allNull = false; }      
-    if (allNull) out = null 
+    bool tmp = false
+    if (in1 != null) { tmp |= in1; allNull = false; }
+    if (in2 != null) { tmp |= in2; allNull = false; }      
+    if (allNull) tmp = null 
 
+    out = tmp
   }
 
 }

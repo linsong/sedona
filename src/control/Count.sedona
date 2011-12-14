@@ -79,13 +79,17 @@ class Count
   {
     if(!enable) return
   	
+    int tcnt = out
+
     if(!lastIn & in)
     {
-      if(dir) out++
-      else    out--
-      if (out < 0) out = 0  		
+      if(dir) tcnt++
+      else    tcnt--
+      if (tcnt < 0) tcnt = 0  		
     }
-    if(r) out = preset
+    if(r) tcnt = preset
+
+    out = tcnt
 
     lastIn = in
   }

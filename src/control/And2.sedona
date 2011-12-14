@@ -34,10 +34,11 @@ class And2
   virtual override void execute()
   {
     bool allNull = true;
-    out = true
-    if (in1 != null) { out &= in1; allNull = false; }
-    if (in2 != null) { out &= in2; allNull = false; }      
-    if (allNull) out = null 
+    bool tmp = true;
+    if (in1 != null) { tmp &= in1; allNull = false; }
+    if (in2 != null) { tmp &= in2; allNull = false; }      
+    if (allNull) tmp = null 
+    out = tmp
   }
 
 }

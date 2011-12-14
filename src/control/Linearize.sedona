@@ -77,16 +77,11 @@ class Linearize
   **
   virtual override void execute()
   {
-    
-    out = Sys.bitsToFloat(0x7FFFFFFF) // IEEE-754 +NaN
+    tmp = Sys.bitsToFloat(0x7FFFFFFF) // IEEE-754 +NaN
   
-    if(x1 == x0)
-      return
- 
     if(x1 > x0)
     {
       //positive slope
-      //Sys.out.print("+")
       if((in >= x0) && (in <= x1))
         convert(y1,y0,x1,x0)
       if((in > x1) && (in <= x2))
@@ -106,10 +101,9 @@ class Linearize
       if((in > x8) && (in <= x9))
         convert(y9,y8,x9,x8)
     }
-    else
+    else if(x1 < x0)
     {
       //negative slope
-      //Sys.out.print("-")
       if((in > x9) && (in <= x8))
         convert(y9,y8,x9,x8)
       if((in > x8) && (in <= x7))
@@ -130,6 +124,8 @@ class Linearize
         convert(y1,y0,x1,x0)
     }
 
+    // update output 
+    out = tmp
   }
 
 
@@ -141,7 +137,8 @@ class Linearize
   {
     float m = (Y2 - Y1) / (X2- X1)
     float b = Y1 - (m * X1)
-    out = (m * in) + b
+    tmp = (m * in) + b
   }
   
+  float tmp    // use this to avoid setting 'out' more than once
 }
