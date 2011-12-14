@@ -49,7 +49,7 @@ class TimerTest
   //
   static void checkPulse(int which, long duration)
   {
-    Sys.out.print("\n  #####\tTest #$which\t#####\n")
+    Sys.out.print("  Test #$which.....\n")
 
     switch (which)
     {
