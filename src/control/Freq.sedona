@@ -11,10 +11,11 @@
 //
 
 **
-** Freq object calculates a pulse input frequency
+** Freq calculates instantaneous input pulse frequency (based on rising edges).
+** Result is output in pulses per second and pulses per minute.
 **
-** out is in pulses per second or pulses per minute
-** Note: frequency is limited to 1/2 execute scan frequency 
+** Note: since input is checked only once per app cycle, result cannot exceed 
+**       1/2 execute scan frequency.
 **
 @niagaraIcon="module://icons/x16/control/control.png"
 class Freq
@@ -39,6 +40,7 @@ class Freq
   virtual override void start()
   {
     lastIn = in 
+    completeCycle = false
   }
 
 
