@@ -86,7 +86,7 @@ class CompTest
     assert(sys.name.equals("sys"))
     assert(sys.version.get(0) == '1')
     assert(sys.version.get(1) == '.')
-    assert(sys.version.get(2) == '0')
+    assert(sys.version.get(2) == '2')        // open source minor version - may change!
     
     // assert Sys.findType
     assert(Sys.findType("sys::TestComp") == TestComp.type)
