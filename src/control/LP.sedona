@@ -90,7 +90,7 @@ class LP
     if (kp == 0.0f)
       return;
 
-    // TODO check for valid setpoint and cv
+    // Note this does not check for valid setpoint and cv
 
     // calculate execution time as a float in seconds
     float deltaSecs = (float)deltaTime / float1sec
