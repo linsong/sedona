@@ -1,3 +1,4 @@
+<?xml version='1.0'?>
 <!-- This SAX file contains a platWin32::Win32PlatformService -->
 
 <sedonaApp>
@@ -5,13 +6,20 @@
   <kit name='sys'/>
   <kit name='sox'/>
   <kit name='inet'/>
-  <kit name='control'/>
   <kit name='web'/>
   <kit name='pstore'/>
   <kit name='datetime'/>
   <kit name='datetimeStd'/>
   <kit name='basicSchedule' />
   <kit name='platWin32' />
+
+  <!-- These replace control kit as of 1.2 -->
+  <kit name='func' />
+  <kit name='hvac' />
+  <kit name='logic' />
+  <kit name='math' />
+  <kit name='timing' />
+  <kit name='types' />
 </schema>
 <app>               
   <prop name="appName" val="demo"/>
@@ -52,17 +60,17 @@
   <comp name="play" id="10" type="sys::Folder">
     <prop name="meta" val="34013185"/>
     <!-- /play/rampA -->
-    <comp name="rampA" id="7" type="control::Ramp">
+    <comp name="rampA" id="7" type="func::Ramp">
       <prop name="meta" val="67371009"/>
       <prop name="min" val="20.00000"/>
       <prop name="max" val="80.00000"/>
     </comp>
     <!-- /play/rampB -->
-    <comp name="rampB" id="8" type="control::Ramp">
+    <comp name="rampB" id="8" type="func::Ramp">
       <prop name="meta" val="68288513"/>
     </comp>
     <!-- /play/adder -->
-    <comp name="adder" id="2" type="control::Add2">
+    <comp name="adder" id="2" type="math::Add2">
       <prop name="meta" val="386662401"/>
     </comp>
     <!-- /play/test -->
