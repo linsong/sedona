@@ -23,5 +23,12 @@
   <target name="../platforms/src/generic/win32" />
   <target name="../platforms/src/generic/unix" />
 
+  <target name="func" />
+  <target name="hvac" />
+  <target name="logic" />
+  <target name="math" />
+  <target name="timing" />
+  <target name="types" />
+
 </sedonaDir>
 
