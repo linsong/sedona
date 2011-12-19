@@ -1,0 +1,37 @@
+//
+// Copyright (c) 2011 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   12 Dec 11  Elizabeth McKenney  Creation
+//
+
+**
+** SSTest
+**    Convenience class that adds ability to wait for app to reach steady state.
+**    (Only needed for certain test classes.)
+**    
+**
+class SSTest
+  extends Test
+{
+
+  static void waitForSteadyState()
+  {
+    // Need to get app to steady state before MinMax.execute() will work
+    Sys.app.platform = testplat             // need platform instance to avoid null ref
+    Sys.app.runApp()                        // get app to steady state somehow
+
+    Sys.out.print("  >> Waiting for app to reach steady state")
+    while (!Sys.app.isSteadyState()) Sys.out.print(".")
+    Sys.out.nl()
+  }
+
+
+
+  **
+  ** A generic platform service instance for the app
+  **
+  static inline PlatformService testplat
+
+}
