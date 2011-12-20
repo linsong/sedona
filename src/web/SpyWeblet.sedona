@@ -38,7 +38,7 @@ class SpyWeblet
     // route to non-html pages
     Str p = ""
     if (req.path.size > 1) p = req.path.names[1]
-    if (p.equals("backup")) { backup(req, res); return }
+    if (p.equals("backup")) { backupApp(req, res); return }
 
     // start header
     res.html()
@@ -501,93 +501,135 @@ class SpyWeblet
 // Backup
 ////////////////////////////////////////////////////////////////
 
-  public void backup(WebReq req, WebRes res)
+  public void backupApp(WebReq req, WebRes res)
   {
     res.writeStatus(200)
     res.writeContentType("text/plain")
     res.finishHeaders()
 
+    res.w("<?xml version='1.0'?>\n")
     res.w("<sedonaApp>\n")
+    res.nl()
     res.w("  <schema>\n")
     foreach (Kit kit : Sys.kits, Sys.kitsLen)
       res.w("    <kit name='").w(kit.name).w("' checksum='").printHex(kit.checksum).print("'/>\n")
     res.w("  </schema>\n")
-    res.w("  <!-- TODO -->\n")
+    res.nl()
+
+    res.w("   <!-- TODO: Can't decode app fully without 64-bit decoder for User.cred slot -->\n")
+
+    /*
+    backupComp(res, Sys.app, 0)
+    */
+
+    res.nl()
+
+    // links (walk linksTo on each component)
+    res.w("<links>\n")
+    foreach (Component c : Sys.app.comps, Sys.app.compsLen)
+    {
+      if (c == null) continue
+      for (Link link = c.linksTo; link != null; link = link.nextTo)
+        backupLink(Sys.app, res, link)
+    }
+    res.w("</links>\n")
+
+    res.nl()
     res.w("</sedonaApp>\n")
   }
 
-/*
-
-    backup(res, req.app, 0)
-
-    res.nl()
-    List links = req.app.links
-    int len = links.size()
-    for (int i=0; i<len; ++i)
-      backup(req.app, res, (Link)links.get(i))
-  }
-
-  private void backup(WebRes res, Component c, int indent)
+  private void backupComp(WebRes res, Component c, int indent)
   {
-    // open component
-    res.spaces(indent).w(c.name).w(" = ").w(c.type().name()).nl();
-    res.spaces(indent).w("{").nl();
+    Str tag = "comp"
+    if (c.name.equals("app"))
+    {
+      tag = "app"
+      res.spaces(indent).w("<").w(tag).w(">").nl()
+    }
+    else
+    {
+      res.spaces(indent).w("<").w(tag)
+      res.w(" name=\"").w(c.name).w("\" id=\"").w("${c.id}")
+      res.w("\" type=\"").w(c.type.kit.name).w("::").w(c.type.name)
+      res.w("\">").nl();
+    }
 
     // config properties
-    Slot[] slots = c.type().slots;
-    int len = slots.length;
-    for (int i=0; i<len; ++i)
+    foreach (Slot slot : c.type.slots, c.type.slotsLen)
     {
-      Slot slot = slots[i];
-      if (slot.isProp() && ((slot.flags & Flags.CONFIG) != 0))
+      if (slot.isProp() && slot.isConfig())
       {
-        res.spaces(indent+2).w(slot.name()).w(" = ");
-        switch (slot.type())
+        Sys.out.print("  getting value for ${c.name}.${slot.name}\n")
+
+        res.spaces(indent+2).w("<prop name=\"").w(slot.name).w("\" val=\"")
+        switch (slot.type.id)
         {
-          case Val.BOOL:   res.print(c.getb(slot)); break;
-          case Val.BYTE:   res.print(c.get1(slot)); break;
-          case Val.SHORT:  res.print(c.get2(slot)); break;
-          case Val.INT:    res.print(c.get4(slot)); break;
-          case Val.LONG:   res.print(c.get8(slot)); break;
-          case Val.FLOAT:  res.print(c.getf(slot)); break;
-          case Val.DOUBLE: res.print(c.getd(slot)); break;
+          case Type.boolId:   res.print("${c.getBool(slot)}"); break;
+          case Type.byteId:   res.print("${c.getInt(slot)}"); break;
+          case Type.shortId:  res.print("${c.getInt(slot)}"); break;
+          case Type.intId:    res.print("${c.getInt(slot)}"); break;
+          case Type.longId:   res.print("${c.getLong(slot)}"); break;
+          case Type.floatId:  res.print("${c.getFloat(slot)}"); break;
+          case Type.doubleId: res.print("${c.getDouble(slot)}"); break;
+          case Type.bufId:
+            Buf b = c.getBuf(slot)
+
+            Sys.out.print("{buf(").print("${b.bytesLen}:${b.size}").print(")=")
+            Sys.out.print(b.toStr())
+            Sys.out.print("}").nl()
+
+            res.print(b.toStr())   // TODO:  This only works if Buf prop is @asStr !!!
+            break
           default: res.w("???"); break;
         }
-        res.nl();
+        res.w("\" />").nl();
       }
     }
 
     // children
-    len = 0;
-    if (c.children != null)
-      len = c.children.length;
-    for (int i=0; i<len; ++i)
+    int nextKid = c.children
+    while (nextKid != nullId)
     {
       res.nl();
-      Component kid = c.app.lookup(c.children[i]);
+      Component kid = Sys.app.lookup(nextKid);
       if (kid == null) continue;
-      backup(res, kid, indent+2);
+      backupComp(res, kid, indent+2);
+      nextKid = kid.nextSibling
     }
 
     // close component
-    res.spaces(indent).w("}").nl();
+    //res.spaces(indent).w("</").w(tag).w(">").nl()
+    res.spaces(indent).w("</").w(tag).w(">")
   }
 
-  private void backup(App app, WebRes res, Link link)
+  private void backupLink(App app, WebRes res, Link link)
   {
     // TODO: path based links not really supported correctly
-    Component from = app.lookup(link.fromComponent);
-    Component to   = app.lookup(link.toComponent);
+    Component from = app.lookup(link.fromComp);
+    Component to   = app.lookup(link.toComp);
     if (from == null || to == null) return;
 
-    Slot fromSlot = from.type().slot(link.fromSlot);
-    Slot toSlot   = to.type().slot(link.toSlot);
+    Slot fromSlot = from.type.slot(link.fromSlot);
+    Slot toSlot   = to.type.slot(link.toSlot);
     if (fromSlot == null || toSlot == null) return;
 
-    res.w(from.name).w(".").w(fromSlot.name()).w(" -> ")
-       .w(to.name).w(".").w(toSlot.name()).nl();
+    res.spaces(2).w("<link from=\"")
+    recurPrint(res, from, "/")
+    res.w(".").w(fromSlot.name).w("\" to=\"")
+    recurPrint(res, to, "/")
+    res.w(".").w(toSlot.name).w("\" />").nl();
   }
-*/
+
+
+  // Print component names with given delimiter d
+  private void recurPrint(WebRes res, Component c, Str d)
+  {
+    if (c==null) return
+    if ((c.parent!=nullId) && (c.parent!=0))
+      recurPrint(res, Sys.app.lookup(c.parent), d)
+    res.w(d).w(c.name)
+  }
+
 
 ////////////////////////////////////////////////////////////////
 // Echo
