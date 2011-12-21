@@ -136,8 +136,11 @@ class WebRes
       case Type.bufId:     
         Buf buf = c.getBuf(prop);
         if (prop.isAsStr()) w(buf.toStr())
-        else                
+        else  // if not a string
         {                 
+          /* Print contents of buf using base64 encoding */
+          encode64(buf)
+          /* Print contents of buf as hex bytes
           w("0x")
           for (int i=0; i<buf.size; ++i)
           {
@@ -145,11 +148,21 @@ class WebRes
             if (x < 0x10) w("0")
             w(Sys.hexStr(x))
           }
+          */
         }
         break
       default: 
         w("????")
     }
+    return this
+  }
+
+  **
+  ** Print the buf contents using base64 encoding and return this.
+  **
+  WebRes encode64(Buf b)
+  {
+    Base64.encode(this, b.bytes, b.size)
     return this
   }
 

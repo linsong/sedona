@@ -497,12 +497,14 @@ class SpyWeblet
       res.w("<td><a href='/spy/logs/").wi(log.id).w("/").wi(level).w("'>O</a></td>")
   }
 
+
 ////////////////////////////////////////////////////////////////
 // Backup
 ////////////////////////////////////////////////////////////////
 
   public void backupApp(WebReq req, WebRes res)
   {
+    // Write app contents as XML text to web page
     res.writeStatus(200)
     res.writeContentType("text/plain")
     res.finishHeaders()
@@ -510,21 +512,20 @@ class SpyWeblet
     res.w("<?xml version='1.0'?>\n")
     res.w("<sedonaApp>\n")
     res.nl()
+
+    // List kits in schema
     res.w("  <schema>\n")
     foreach (Kit kit : Sys.kits, Sys.kitsLen)
       res.w("    <kit name='").w(kit.name).w("' checksum='").printHex(kit.checksum).print("'/>\n")
     res.w("  </schema>\n")
     res.nl()
 
-    res.w("   <!-- TODO: Can't decode app fully without 64-bit decoder for User.cred slot -->\n")
-
-    /*
+    // Recursive backup starting with app
     backupComp(res, Sys.app, 0)
-    */
 
     res.nl()
 
-    // links (walk linksTo on each component)
+    // Backup links (walk linksTo on each component)
     res.w("<links>\n")
     foreach (Component c : Sys.app.comps, Sys.app.compsLen)
     {
@@ -533,8 +534,8 @@ class SpyWeblet
         backupLink(Sys.app, res, link)
     }
     res.w("</links>\n")
-
     res.nl()
+
     res.w("</sedonaApp>\n")
   }
 
@@ -559,29 +560,8 @@ class SpyWeblet
     {
       if (slot.isProp() && slot.isConfig())
       {
-        Sys.out.print("  getting value for ${c.name}.${slot.name}\n")
-
         res.spaces(indent+2).w("<prop name=\"").w(slot.name).w("\" val=\"")
-        switch (slot.type.id)
-        {
-          case Type.boolId:   res.print("${c.getBool(slot)}"); break;
-          case Type.byteId:   res.print("${c.getInt(slot)}"); break;
-          case Type.shortId:  res.print("${c.getInt(slot)}"); break;
-          case Type.intId:    res.print("${c.getInt(slot)}"); break;
-          case Type.longId:   res.print("${c.getLong(slot)}"); break;
-          case Type.floatId:  res.print("${c.getFloat(slot)}"); break;
-          case Type.doubleId: res.print("${c.getDouble(slot)}"); break;
-          case Type.bufId:
-            Buf b = c.getBuf(slot)
-
-            Sys.out.print("{buf(").print("${b.bytesLen}:${b.size}").print(")=")
-            Sys.out.print(b.toStr())
-            Sys.out.print("}").nl()
-
-            res.print(b.toStr())   // TODO:  This only works if Buf prop is @asStr !!!
-            break
-          default: res.w("???"); break;
-        }
+        res.printProp(c, slot)
         res.w("\" />").nl();
       }
     }
@@ -598,9 +578,10 @@ class SpyWeblet
     }
 
     // close component
-    //res.spaces(indent).w("</").w(tag).w(">").nl()
     res.spaces(indent).w("</").w(tag).w(">")
   }
+
+
 
   private void backupLink(App app, WebRes res, Link link)
   {
@@ -619,6 +600,7 @@ class SpyWeblet
     recurPrint(res, to, "/")
     res.w(".").w(toSlot.name).w("\" />").nl();
   }
+
 
 
   // Print component names with given delimiter d
