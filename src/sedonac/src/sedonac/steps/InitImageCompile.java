@@ -89,7 +89,8 @@ public class InitImageCompile
     if (elems.length == 0)
       throw err("Must specify at least one <depend> element", new Location(xml));
 
-    boolean testDefault = compiler.image != null ? compiler.image.test : false;
+    boolean scodeTest = compiler.image != null ? compiler.image.test : false;
+
     IrKit[] kits = new IrKit[elems.length];
     for (int i=0; i<kits.length; ++i)
     {   
@@ -108,11 +109,18 @@ public class InitImageCompile
       IrKit kit = kits[i] = new IrKit(loc, kitFile);
       if (kit.name.equals("sys")) sysKit = kitFile;
       
-      String t = elem.get("test", null);
-      if (t != null)
-        kit.test = t.equals("true");   
+      // If scodeTest==false, then kit.test=false
+      if (!scodeTest)
+        kit.test = false;
       else
-        kit.test = testDefault;
+      {
+        // If test attrib exists, use it; o/w use scodeTest
+        String t = elem.get("test", null);
+        if (t != null)
+          kit.test = t.equals("true");   
+        else
+          kit.test = scodeTest;
+      }
     }
     compiler.kits = kits;
     quitIfErrors();

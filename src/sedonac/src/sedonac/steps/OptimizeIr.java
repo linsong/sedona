@@ -123,6 +123,7 @@ public class OptimizeIr
   void optimize(IrMethod m)
   {
     if (m.code == null || m.code.length < 2) return;
+    noPeephole.clear();
     while (doOptimize(m));
   }
 
@@ -195,8 +196,27 @@ public class OptimizeIr
         {
           // this originally always threw an ISE, and I'm not sure what the
           // thinking was there.  This case can legitimately happen when
-          // optimizing a Cast opcode, so we will explicitily check that case.
-          if (!isCast) throw new IllegalStateException(x.toString());
+          // optimizing a Cast opcode, so we will explicitly check that case.
+          if (!isCast)
+          {
+            // Instead of failing with ISE, let's revert back to state of
+            // opcodes when we entered this method and mark the offending
+            // opcode to be excluded from peephole optimization.
+            for (int z=0; z<o.length; ++z)
+            {
+              IrOp revert = o[z];
+              revert.index = z;
+              if (revert.isJump())
+              {
+                label = Integer.parseInt(revert.arg);
+                if (label >= at)
+                  revert.arg = String.valueOf(label+1);
+              }
+            }
+            m.code = o;
+            noPeephole.add(o[at]);
+            return;
+          }
           op.arg = String.valueOf(label-1);
         }
         if (label > at) op.arg = String.valueOf(label-1);
@@ -253,6 +273,8 @@ public class OptimizeIr
    */
   IrOp peephole(IrMethod m, IrOp a, IrOp b)
   {                  
+    if (noPeephole.contains(a))  return null;
+
     // cast is never used in the SVM (only used for JVM bytecode)
     if (a.opcode == SCode.Cast) return b;
              
@@ -379,4 +401,11 @@ public class OptimizeIr
   }       
   */
 
+//////////////////////////////////////////////////////////////////////////
+// Fields
+//////////////////////////////////////////////////////////////////////////
+  
+  private final Set noPeephole = new HashSet();
+
 }
+

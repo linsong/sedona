@@ -21,6 +21,9 @@ bin/svm
 *.project
 *.settings
 
+# Ignore IntelliJ metafiles
+*.iml
+
 syntax: regexp
 
 ^manifests/

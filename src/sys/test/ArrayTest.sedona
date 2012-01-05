@@ -294,7 +294,6 @@ class ArrayTest
 //////////////////////////////////////////////////////////////////////////
 
   define byte[] bd = {7, 200}
-  define byte[] bdEmpty = {,}
   define byte[] bdDup = {7, 200}  // verify same arrays interned
   define byte[] bdTwo = {7, 255}
 
@@ -314,7 +313,6 @@ class ArrayTest
   @javaSkip
   static void testArraysInterned()
   {
-    assert(bd != bdEmpty)
     assert(bd == bdDup)
     assert(bd != bdTwo)
     assert(id == idDup)
