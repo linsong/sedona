@@ -1,0 +1,124 @@
+//
+// Copyright (c) 2007-2011 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   26 Oct 2007  Brian Frank    Creation
+//   27 Apr 2007  Brian Frank    Port from Java to Sedona
+//   04 Aug 2011  Clif Turman    Add comments
+//   13 Aug 2011  Clif Turman    Rework logic to remove delta property and replace with period property, added rampType
+//   24 Aug 2011  Clif Turman    Old: If period is 0, out = 0. New: If period is 0, out = min  
+//   24 Aug 2011  Clif Turman    If min/max/period is changed, restart ramp function, bumpless if possible
+//
+
+**
+** Ramp
+**   Triangle wave between min & max
+**   Slope is fixed: 1.0 unit per App cycle
+**
+@niagaraIcon="module://icons/x16/control/util/sine.png"
+class Ramp
+  extends Component
+{
+  ** ramp triangle wave output
+  @readonly property float out
+  
+  ** minimum value
+  @config property float min   = 0.0
+  
+  ** maximum value
+  @config property float max   = 100.0
+
+  ** Ramp period
+  ** If rampType is true (triangle) then this is the time it 
+  ** takes to complete up/down cycle.
+  ** a value of 0 gives a 0 output
+  ** If rampType is false (sawtooth) then this is the time it 
+  ** takes to complete up cycle.
+  @unit = Units.second
+  @precision = 0
+  @min=0
+  @config property float period = 10f
+
+  ** Specifies whether ramp is sawtooth (min to max and repeat), or
+  ** ramp is min to max/max to min and repeat
+  ** Defaults to sawtooth.
+  @trueText="triangle"
+  @falseText="sawtooth"
+  @config property bool rampType = true
+  
+
+  **
+  ** compute internal constants at startup
+  **
+  virtual override void start()
+  {
+    computeConstants()
+  }
+ 
+  **
+  ** recompute internal constants if ramp parameters change
+  **
+  virtual override void changed(Slot slot)
+  {
+    if(slot == Ramp.period    ||
+       slot == Ramp.min       ||
+       slot == Ramp.max       ||
+       slot == Ramp.rampType  )
+      computeConstants()
+    super.changed(slot)
+  }
+
+
+  private void computeConstants()
+  {
+    if(period == 0f) return
+    float engineCyclesPerRampCycle = (1000f * period) / (float)Sys.app.scanPeriod
+    delta = (max-min)/engineCyclesPerRampCycle
+    if(rampType) delta = delta * 2f
+    firstHalf = true
+    if(out < min)
+      out = min
+    else if(out > max)
+      out = max
+  }
+  
+  **
+  ** Execute is called once every scan.
+  **
+  virtual override void execute()
+  {
+    //disable if period is 0
+    if(period == 0f)
+    {
+      out = min
+      return
+    }
+
+    float tmp = out
+
+    if(rampType)
+    {
+      if (firstHalf)
+        tmp += delta
+      else
+        tmp -= delta
+
+      if (tmp < min) { tmp = min; firstHalf = true }
+      if (tmp > max) { tmp = max; firstHalf = false }
+    }
+    else
+    {
+      tmp += delta
+      if(tmp > max) tmp = min
+    }
+
+    out = tmp
+  }
+
+  //**
+  //**  Internal constants
+  //**
+  float delta
+  bool firstHalf
+}

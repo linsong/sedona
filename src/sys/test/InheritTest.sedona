@@ -1,0 +1,130 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   28 Mar 07  Brian Frank  Creation
+//
+
+**
+** InheritTest
+**
+class InheritTest
+  extends Test
+{
+
+  static inline TestSubFoo a
+  static inline TestComp testComp
+  static inline SubTestComp subTestComp
+
+//////////////////////////////////////////////////////////////////////////
+// Fields
+//////////////////////////////////////////////////////////////////////////
+
+  /* LOOPTEST
+  static void testReset()
+  {
+    a.subReset()
+  }
+  */
+
+  static void testFieldInit()
+  {
+    a.verifyInit()
+    a.verifySubInit()
+  }
+
+  static void testFieldAccess()
+  {
+    a.change()
+    a.subChange()
+
+    a.verifyChange()
+    a.verifySubChange()
+
+    assert(a.b1 == 208)
+    assert(a.i1 == 0xcafe_babe)
+    assert(a.subs == 9001)
+  }
+
+//////////////////////////////////////////////////////////////////////////
+// Virtual Methods
+//////////////////////////////////////////////////////////////////////////
+
+  static void testVirtualMethods()
+  {
+    TestComp x = testComp
+    AbstractTestComp a = x
+
+    assert(a.m1() == 101)
+    assert(a.m2() == 2 )
+    assert(a.m3() == 103 )
+    assert(a.m4() == 104 )
+
+    assert(x.m1() == 101)
+    assert(x.m2() == 2 )
+    assert(x.m3() == 103 )
+    assert(x.m4() == 104 )
+    assert(x.m5() == 105 )
+    assert(x.m6() == 106 )
+    assert(x.m7() == 107L )
+    assert(x.m8(5L, 100L) == 105L)
+
+    x = subTestComp
+    assert(x.m1() == 101 )
+    assert(x.m2() == 202 )
+    assert(x.m3() == 103 )
+    assert(x.m4() == 204 )
+    assert(x.m5() == 105 )
+    assert(x.m6() == 206 )
+    assert(x.m7() == 207L )
+    assert(x.m8(0x01234_abcd_eeffL, 0x01234_0000_0000L) == 0xabcd_eeffL)
+
+    // this/super
+    assert(x.m3this() == 103)
+    assert(x.m3super() == 3)
+  }                          
+
+}
+
+//////////////////////////////////////////////////////////////////////////
+// TestSubFoo
+//////////////////////////////////////////////////////////////////////////
+
+class TestSubFoo extends TestFoo
+{                     
+  /* LOOPTEST
+  void subReset()
+  {            
+    reset()
+    subz = false
+    subs = 8000
+    subi = 0
+  }
+  */
+  
+  void verifySubInit()
+  {
+    assert(!subz)
+    assert(subs == 8000)
+    assert(subi == 0)
+  }
+
+  void subChange()
+  {
+    subz = true
+    subs = 9001
+    subi = 0xa000_000b
+  }
+
+  void verifySubChange()
+  {
+    assert(subz)
+    assert(subs == 9001)
+    assert(subi == 0xa000_000b)
+  }
+
+  bool  subz
+  short subs = 8000
+  int   subi
+}
