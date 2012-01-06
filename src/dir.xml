@@ -32,6 +32,7 @@
   <target name="logic" />
   <target name="math" />
   <target name="timing" />
+  <target name="pricomp" />
 
 </sedonaDir>
 
