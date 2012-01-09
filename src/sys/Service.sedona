@@ -1,0 +1,80 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//    6 Sep 06  Brian Frank  Creation
+//   22 May 07  Brian Frank  Port from Java to Sedona
+//
+
+**
+** Service is a component which gets to execute background
+** work between execution cycles.  Services are also designed
+** to be looked up by type within an application.
+**
+@niagaraIcon="module://icons/x16/gears.png"
+abstract class Service
+  extends Component
+{
+
+////////////////////////////////////////////////////////////////
+// Service
+////////////////////////////////////////////////////////////////
+
+  **
+  ** Perform a chunk of background work.  Return true
+  ** if there is pending work or false if the service is
+  ** done working this cycle.
+  **
+  ** A service should be designed to function correctly no
+  ** matter how many times work is called per execution cycle.
+  ** Returning false is not a guarantee that work will not be
+  ** called again in a given execution cycle; rather, it is
+  ** a hint to the App execution engine that this service does
+  ** not have any more work to do.
+  **
+  ** If you only want to do work once per execution cycle, you should consider:
+  **
+  ** 1) Moving your work into the execute() callback. execute() will only be
+  ** called once per execution cycle.
+  **
+  ** 2) Set a "newCycle" flag in your execute() method and unset it after
+  ** doing one work cycle.  Only do your work if the newCycle flag is set.
+  **
+  virtual bool work()
+  {
+    return false
+  }
+
+  **
+  ** Return true if this Service will allow hibernation.
+  ** Default is to return true, subclass must override
+  ** if it has a need to prevent hibernation.
+  **
+  virtual bool canHibernate()
+  {
+    return true
+  }
+
+  **
+  ** Callback when device is entering low-power sleep mode.
+  **
+  virtual void onHibernate()
+  {
+  }
+
+  **
+  ** Callback when device is exiting low-power sleep mode.
+  **
+  virtual void onUnhibernate()
+  {
+  }
+
+////////////////////////////////////////////////////////////////
+// Fields
+////////////////////////////////////////////////////////////////
+
+  ** Used for App's linked list of services
+  Service nextService
+
+}

@@ -1,0 +1,26 @@
+<!--
+  -  Sedona Kit
+  -  Copyright (c) 2007 Tridium, Inc.
+  -  Licensed under the Academic Free License version 3.0
+  -->
+
+<sedonaKit
+ name = "scheme"
+ vendor = "Tridium"
+ description = "Scheme mapping for file paths"
+ includeSource = "true"
+ doc = "true"
+>
+
+  <!-- Dependencies -->
+  <depend on="sys 1.0+" />
+
+  <!-- Source Directories -->
+  <source dir="."/>
+
+  <!-- Natives -->
+  <native qname="scheme::SchemeFileStore.doSchemeSize"         id="11::0"  />
+  <native qname="scheme::SchemeFileStore.doSchemeOpen"         id="11::1"  />
+
+</sedonaKit>
+

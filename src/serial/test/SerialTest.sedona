@@ -1,0 +1,238 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   02 Jul 07  Elizabeth McKenney   creation
+//
+
+**
+** SerialPort models a serial I/O port
+**
+class SerialTest
+  extends Test
+{
+  static inline SerialPort thePort
+
+  static inline Str(8)     testStr1
+  static inline Str(8)     testStr2
+  static inline byte[8]    testArray1
+  static inline byte[8]    testArray2
+
+  // Rx timeout values - set < 0 to never time out
+  static long timeToWait
+  static long respTime
+  static long byteTime
+  static long rxTimeout
+  static long rxNow
+
+
+  // Virtual port defns
+  define int VIRTUAL_PORT = -1       // i.e. use "virtual" hardware for testing
+  define int SWAPPED_PORT = -2       // swap Rx & Tx FIFOs to simulate other end
+
+
+  static void testOpenClose()
+  {
+    Sys.out.print("SerialTest.testOpenClose()\n");
+    thePort.portNum = VIRTUAL_PORT     
+
+    int rc = thePort.open()
+    assert( rc==0 )
+
+    rc = thePort.open()
+    assert( rc==0 )
+
+    thePort.close()
+
+    rc = thePort.open()
+    assert( rc==0 )
+
+    thePort.close()
+  }
+
+  static void testPutGetChar()
+  {
+    Sys.out.print("SerialTest.testPutGetChar()\n");
+
+    thePort.portNum = VIRTUAL_PORT
+
+    thePort.open()
+
+    thePort.out.write('a');
+
+    thePort.portNum = SWAPPED_PORT
+
+    int ch = thePort.in.read()
+    assert(ch == 'a');
+
+    thePort.close()
+  }
+
+  static void testPutGetStr()
+  {
+    Sys.out.print("SerialTest.testPutGetStr()\n");
+
+    thePort.portNum = VIRTUAL_PORT
+
+    thePort.open()
+
+    testStr1.copyFromStr("1234567",8);
+    assert( testStr1.equals("1234567") )
+
+    thePort.out.writeStr( testStr1 )   // Note: does NOT put null terminator char on port
+
+    thePort.portNum = SWAPPED_PORT
+
+    bool rc = thePort.in.readStr( testStr2, 8 )
+
+    assert( testStr2.equals("1234567") )
+    assert( testStr1.equals(testStr2) )
+
+    thePort.close()
+  }
+
+
+  static void testPutGetBytes()
+  {
+    Sys.out.print("SerialTest.testPutGetBytes()\n");
+
+    thePort.portNum = VIRTUAL_PORT
+
+    thePort.open()
+
+    testStr1.copyFromStr("1234567", 8)
+
+    thePort.out.writeBytes(testStr1.toBytes(), 1, 5)   
+
+    thePort.portNum = SWAPPED_PORT
+
+    int rc = thePort.in.readBytes(testArray2, 0, 8)  // rc is #bytes read, not incl null term if any
+    assert(rc==5)
+
+    for (int k=0; k<rc; k++)
+      testStr2.set(k, testArray2[k])
+    testStr2.set(rc, 0)
+
+    assert( testStr2.equals("23456") )
+    assert( !testStr1.equals(testStr2) )
+
+    thePort.close()
+  }
+
+
+  static void testOneWayStream()
+  {
+    Sys.out.print("SerialTest.testOneWayStream()\n");
+
+    thePort.portNum = 1               // use real port #1
+
+    thePort.open()
+
+    thePort.out.write('t')
+    thePort.out.write('e')
+    thePort.out.write('s')
+    thePort.out.write('t')
+    thePort.out.write('\n')
+
+    testStr1.copyFromStr("Hello!\n", 8)
+    thePort.out.writeStr( testStr1 )
+
+    thePort.out.writeStr( "Hello, world\n" )
+
+    thePort.close()
+  }
+
+  static void testTwoWayStream()
+  {
+    Sys.out.print("SerialTest.testTwoWayComm()\n");
+
+    thePort.portNum = 1               // use real port #1
+
+    thePort.open()
+
+    thePort.out.writeStr("Enter your name:  ")
+
+    // Read user's input (up to 7 chars)
+    respTime = 30sec              // wait up to 30 sec for 1st char
+    byteTime = 3sec               // wait up to 3 sec ea for following chars
+
+
+    //
+    // Copy getStr code here, modified to respond specifically to typed input
+    //
+    int n = 7                  // max # chars we can put in testStr1
+
+    //
+    // Wait for first char to be typed
+    //
+    timeToWait = respTime 
+    int ch = thePort.in.read()    // use timeToWait for timeout
+    if (ch<0)
+    {
+      rxTimeout = Sys.ticks()
+      rxTimeout = rxTimeout + timeToWait
+
+      while (ch<0)
+      {
+        rxNow = Sys.ticks()
+        if (rxNow > rxTimeout) break
+        ch = thePort.in.read()
+      }
+    }
+
+    if ((ch<0) || (ch=='\r'))     // if timed out or recd CR char, we're done
+    {
+      if (ch<0) Sys.out.print("Timed out waiting for any response.\n")
+      thePort.close()
+      return
+    }
+
+    testStr1.set(0, ch & 0xff)
+    thePort.out.write(ch)    // echo char that was typed
+
+
+    //
+    // Now wait for rest of word (assume these bytes will arrive faster)
+    //
+    timeToWait = byteTime 
+    for (int k=1; k<n; k++)
+    {
+      ch = thePort.in.read()
+      if (ch<0)
+      {
+        rxTimeout = Sys.ticks()
+        rxTimeout = rxTimeout + timeToWait
+
+        while (ch<0)
+        {
+          rxNow = Sys.ticks()
+          if (rxNow > rxTimeout) break
+          ch = thePort.in.read()
+        }
+      }
+
+      if ((ch<0) || (ch=='\r'))    // if timed out or recd CR char, we're done
+      {
+        testStr1.set(k, 0)
+        if (ch<0) Sys.out.print("Timed out waiting for char# ").printInt(k).print("\n")
+        break 
+      }
+
+      testStr1.set(k, ch & 0xff)
+      thePort.out.write(ch)    // echo char that was typed
+    }
+
+    testStr1.set(n, 0)
+
+
+    // Write what we got back onto port
+    thePort.out.print("\nGot: [").print(testStr1).print("]\n").print("\nBye!\n")
+
+    Sys.out.print("COM4 read: [").print(testStr1).print("]\n")   // DIAG
+
+    thePort.close()
+  }
+
+}
+

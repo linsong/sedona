@@ -1,0 +1,290 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   07 Sep 06  Brian Frank  Creation
+//   06 Jun 07  Brian Frank  Port from Java to Sedona
+//
+
+**
+** WebRes models the response side of an HTTP transaction.
+** All responses should be ordered as:
+**
+**   1. res.writeStatus
+**   2. zero or more calls to res.writeHeader
+**   3. res.finishHeaders
+**   4. write body
+**
+class WebRes
+  extends OutStream
+{
+
+////////////////////////////////////////////////////////////////
+// WebRes
+////////////////////////////////////////////////////////////////
+
+  **
+  ** Convenience for writeStatus(200)
+  **
+  WebRes writeStatusOk()
+  {
+    return w("HTTP/1.0 200 OK\r\n")
+  }
+
+  **
+  ** Write response status line with specified HTTP status
+  ** code.  This call must be the very first thing written.
+  **
+  WebRes writeStatus(int status)
+  {
+    print("HTTP/1.0 ").printInt(status).print(" ").printInt(status).print("\r\n")
+    return this
+  }
+
+  **
+  ** Convenience for writeHeader("Content-Type", val)
+  **
+  WebRes writeContentType(Str val)
+  {
+    return writeHeader("Content-Type", val)
+  }
+
+  **
+  ** Write a header name/value pair.  This call must be
+  ** made between writeStatus() and finishHeaders().
+  **
+  WebRes writeHeader(Str name, Str val)
+  {
+    print(name).print(": ").print(val).print("\r\n")
+    return this
+  }
+
+  **
+  ** This call closes the header section and readys the
+  ** output stream for the response content.
+  **
+  WebRes finishHeaders()
+  {
+    return w("\r\n")
+  }
+
+////////////////////////////////////////////////////////////////
+// HTML Output
+////////////////////////////////////////////////////////////////
+
+  **
+  ** Write out 200 OK status, text/html content type,
+  ** and opening HTML markup.
+  **
+  WebRes html()
+  {
+    writeStatus(HttpCode.ok)
+    writeContentType("text/html")
+    finishHeaders()
+    return w("<html><body>\n")
+  }
+
+  **
+  ** Write closing HTML markup.
+  **
+  WebRes htmlEnd()
+  {
+    return w("</body></html>\n")
+  }
+
+  **
+  ** Write a tr element with the specified colspan that
+  ** can be used as a title header to separate rows.
+  **
+  WebRes trTitle(Str title, int colspan)
+  {
+    return w("<tr><th nowrap='true' colspan='").wi(colspan)
+            .w("' bgcolor='#d0d0d0'>").w(title).w("</th></tr>\n")
+  }
+
+  **
+  ** Write th element with no-wrap and left align.
+  **
+  WebRes th(Str title)
+  {
+    return w("<th align='left' nowrap='true'>").w(title).w("</th>")
+  }
+
+  **
+  ** Write td start tag with no-wrap and left align.
+  **
+  WebRes td()
+  {
+    return w("<td align='left' nowrap='true'>")
+  }
+
+  **
+  ** Print the component's current value of the specified property.
+  **
+  WebRes printProp(Component c, Slot prop)
+  {
+    switch (prop.type.id)
+    {
+      case Type.boolId:    printBool(c.getBool(prop));     break
+      case Type.byteId:    printInt(c.getInt(prop));       break
+      case Type.shortId:   printInt(c.getInt(prop));       break
+      case Type.intId:     printInt(c.getInt(prop));       break
+      case Type.longId:    printLong(c.getLong(prop));     break
+      case Type.floatId:   printFloat(c.getFloat(prop));   break
+      case Type.doubleId:  printDouble(c.getDouble(prop)); break
+      case Type.bufId:     
+        Buf buf = c.getBuf(prop);
+        if (prop.isAsStr()) w(buf.toStr())
+        else  // if not a string
+        {                 
+          /* Print contents of buf using base64 encoding */
+          encode64(buf)
+          /* Print contents of buf as hex bytes
+          w("0x")
+          for (int i=0; i<buf.size; ++i)
+          {
+            int x = buf.get(i)
+            if (x < 0x10) w("0")
+            w(Sys.hexStr(x))
+          }
+          */
+        }
+        break
+      default: 
+        w("????")
+    }
+    return this
+  }
+
+  **
+  ** Print the buf contents using base64 encoding and return this.
+  **
+  WebRes encode64(Buf b)
+  {
+    Base64.encode(this, b.bytes, b.size)
+    return this
+  }
+
+  **
+  ** Print the specified string and return this.
+  **
+  WebRes w(Str s)
+  {
+    print(s)
+    return this
+  }
+
+  **
+  ** Print the specified integer and return this.
+  **
+  WebRes wi(int i)
+  {
+    printInt(i)
+    return this
+  }
+
+  **
+  ** Print the specified string escaping <, >, and &
+  ** into the &lt;, &gt;, and &amp;
+  **
+  public WebRes esc(Str s)
+  {                  
+    for (int i=0; true; ++i)
+    {                      
+      int c = s.get(i)
+      if (c == 0) break
+      switch (c)
+      {
+        case '<': print("&lt;"); break;
+        case '>': print("&gt;"); break;
+        case '&': print("&amp;"); break;
+        default: writeChar(c); break;
+      }
+    }
+    return this
+  }
+
+  **
+  ** Print duration in human readable form.
+  **
+  WebRes printDuration(long ticks)
+  {
+    if (ticks < 5ms)
+    {
+      return wi((int)ticks).w("ns")
+    }
+    else if (ticks < 5sec)
+    {
+      return wi((int)(ticks/1ms)).w("ms")
+    }
+    else if (ticks < 5min)
+    {
+      return wi((int)(ticks/1sec)).w("sec")
+    }
+    else
+    {
+      return wi((int)(ticks/1min)).w("min")
+    }
+  }
+
+  **
+  ** Print elapsed duration from specified ticks to now.
+  **
+  WebRes printElapsed(long ticks)
+  {
+    if (ticks < 0L) return w("null")
+    return printDuration(Sys.ticks() - ticks)
+  }
+
+  **
+  ** Print the specified number of spaces.
+  WebRes spaces(int num)
+  {
+    for (int i=0; i<num; ++i) writeChar(' ')
+    return this
+  }
+
+////////////////////////////////////////////////////////////////
+// OutStream
+////////////////////////////////////////////////////////////////
+
+  override bool write(int b)
+  {
+    if (pos >= bufLen) flush()
+    buf[pos++] = b
+    return true
+  }
+
+  override bool writeBytes(byte[] b, int off, int len)
+  {
+    if (pos != 0) flush()
+    return handler.socket.write(b, off, len) < len
+  }
+
+  override void flush()
+  {
+    handler.socket.write(buf, 0, pos)
+    pos = 0
+  }
+
+  override void close()
+  {
+    flush()
+    handler.socket.close()
+  }
+
+////////////////////////////////////////////////////////////////
+// Fields
+////////////////////////////////////////////////////////////////
+
+  define int bufLen = 256
+
+  ** Parent web service component
+  WebService service
+
+  internal Handler handler;
+  internal inline byte[bufLen] buf
+  internal short pos
+
+}

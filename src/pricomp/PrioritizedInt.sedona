@@ -1,0 +1,203 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+
+**
+** PrioritizedInt 
+**
+class PrioritizedInt
+  extends Component
+{
+
+////////////////////////////////////////////////////////////////
+// Properties
+////////////////////////////////////////////////////////////////
+
+  @readonly 
+  @summary=false property int in1
+
+  @summary=false property int in2
+  @summary=false property int in3
+  @summary=false property int in4
+  @summary=false property int in5
+  @summary=false property int in6
+  @summary=false property int in7
+
+  @readonly 
+  @summary=false property int in8
+
+  @summary=false property int in9
+  @summary=true  property int in10
+  @summary=false property int in11
+  @summary=false property int in12
+  @summary=false property int in13
+  @summary=false property int in14
+  @summary=false property int in15
+  @summary=true  property int in16
+
+  @readonly 
+  @summary=false property int fallback
+
+  @readonly 
+  @summary=true  property int out
+
+  @readonly 
+  @range=srcLevelStr
+  @summary=false property int sourceLevel = MAXLEVEL
+
+  @readonly 
+  @summary=false property long overrideExpTime = 0L        // 0 indicates no timeout ("permanent")
+
+
+  define Str srcLevelStr= "in0, emergency, in2, in3, in4, in5, in6, in7, override, in9, in10, in11, in12, in13, in14, in15, in16, fallback"
+
+
+////////////////////////////////////////////////////////////////
+// Unlinkable input properties
+////////////////////////////////////////////////////////////////
+
+  // Only need to cache status for unlinkable inputs
+  bool use_in1      = false
+  bool use_in8      = false
+
+
+////////////////////////////////////////////////////////////////
+// Actions
+////////////////////////////////////////////////////////////////
+
+  action void emergencySet(int newValue)
+  {
+    in1 = newValue
+    use_in1 = true
+  }
+
+  action void emergencyAuto()
+  {
+    setToDefault(PrioritizedInt.in1)
+    use_in1 = false
+  }
+
+  ** 
+  ** manualSet - Override value.
+  **  Arg to action is 8-byte long; first 4 bytes are new value,
+  **    last 4 are override duration in milliseconds.
+  **
+  action void manualSet(long valAndExpTime)
+  {
+    in8 = (int)(valAndExpTime>>32)
+    use_in8 = true
+
+    overrideExpTime = (valAndExpTime & 0xffffffffL) * 1ms
+    if (overrideExpTime>0L) overrideExpTime += Sys.ticks()
+  }
+
+  action void manualAuto()
+  {
+    setToDefault(PrioritizedInt.in8)
+    use_in8 = false
+    overrideExpTime = 0L
+  }
+
+
+  action void setFallback(int newValue)
+  {
+    fallback = newValue
+  }
+
+
+  //
+  // Do we need to provide a way to stop using fallback?
+  //
+
+
+
+////////////////////////////////////////////////////////////////
+// Component
+////////////////////////////////////////////////////////////////
+
+  **
+  ** Execute is called once every scan using the
+  ** simple round-robin scan engine.
+  **
+  override virtual void execute()
+  {
+    int value = out
+    int level = MAXLEVEL
+
+    // Step through linksTo list & select highest level linkable input
+    for (Link link = linksTo; link != null; link = link.nextTo)
+    {
+      Slot s = type.slot(link.toSlot)
+
+      int lev = getSlotLevel(s)
+      if (lev==MAXLEVEL) continue          // MAXLEVEL here indicates error
+
+      if (level>=lev)
+      {
+        value = getInt(s)
+        level = lev
+      }
+    }
+    
+
+    // Expire manual override if any 
+    if ( (overrideExpTime>0L) && (Sys.ticks()>overrideExpTime) )
+      manualAuto()
+
+
+
+    // Check unlinkable inputs, override links if apprpriate
+    if (use_in1)
+    {
+      value = in1
+      level = 1
+    }
+    else if (use_in8 && (level>=8))        
+    {
+      value = in8
+      level = 8
+    }
+    else if (level>=FB_LEVEL)
+    {
+      value = fallback
+      level = FB_LEVEL
+    }
+
+
+    // Update output value & level
+    //  TODO: Have WB field editor translate FB and MAX levels to text descriptions?
+    out         = value
+    sourceLevel = level
+  }
+
+  
+
+////////////////////////////////////////////////////////////////
+// Util
+////////////////////////////////////////////////////////////////
+
+  int getSlotLevel(Slot slot)
+  {
+    if (slot.name.startsWith("in"))
+      return Str.fromBytes(slot.name.toBytes(), 2).parseInt()
+    if (slot.name.equals("fallback"))
+      return FB_LEVEL
+    return MAXLEVEL
+  }
+
+
+////////////////////////////////////////////////////////////////
+// Constants
+////////////////////////////////////////////////////////////////
+
+  define int FB_LEVEL  =  17   // "level" for fallback input
+  define int MAXLEVEL  = 256   // lowest possible input level
+
+
+////////////////////////////////////////////////////////////////
+// Fields
+////////////////////////////////////////////////////////////////
+
+}

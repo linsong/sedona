@@ -1,0 +1,240 @@
+//
+// Copyright (c) 2008 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   15 May 08  Brian Frank  Creation
+//
+
+**
+** OptimizeTest verifies compiler optimizations
+**                
+class OptimizeTest
+  extends Test
+{        
+
+////////////////////////////////////////////////////////////////
+// ConstFolding
+////////////////////////////////////////////////////////////////
+
+  static void testNegate()
+  {              
+    int zero = 0        
+    assert(-3 == zero-3) 
+  }
+
+  static void testMul()
+  {              
+    assert(2 * 8   == 16) 
+    assert(2L * 8L == 16L) 
+    assert(2f * 8f == 16f) 
+    assert(2d * 8d == 16d) 
+    assert(2ns * 8L == 16ns) 
+  }                     
+
+  static void testDiv()
+  {              
+    assert(-6  / 2  == -3) 
+    assert(-6L / 2L == -3L) 
+    assert(-6f / 2f == -3f) 
+    assert(-6d / 2d == -3d) 
+    assert(-6ns / 2ns == -3ns) 
+  }                     
+
+  static void testMod()
+  {              
+    assert(23  % 10  == 3) 
+    assert(23L % 10L == 3L) 
+    assert(23ns % 10ns == 3ns) 
+  }                     
+  
+  static void testAdd()
+  {              
+    assert(1  + 2 == 3) 
+    assert(1L + 2L == 3L) 
+    assert(1f + 2f == 3f) 
+    assert(1d + 2d == 3d) 
+    assert(1ns + 2ns == 3ns) 
+  }                     
+
+  static void testSub()
+  {              
+    assert(1  - 4  == -3) 
+    assert(1L - 4L == -3L) 
+    assert(1f - 4f == -3f) 
+    assert(1d - 4d == -3d) 
+    assert(1ns - 4ns == -3ns)  
+  }                     
+
+  static void testBits()
+  {        
+    assert((0xabcd_0123 & 0xfedc_0853) == 0xaacc_0003)
+    assert((0x38b_def3 | 0x947b_e320)  == 0x97fb_fff3)
+    assert((-1 ^ 12345678)    == -12345679)
+    assert(0xa482_9e23 << 4 == 0x4829_e230)
+    assert(0xa482_9e23 >> 3 == 0xf490_53c4)       
+
+    assert((0xabcd1234ffff4567L & 0x3b585acf7800df39L) == 0x2b48120478004521L)
+    assert((0xabcd1234ffff4567L | 0x3b585acf7800df39L) == 0xbbdd5affffffdf7fL)
+    assert((0xabcd1234ffff4567L ^ 0x3b585acf7800df39L) == 0x909548fb87ff9a5eL)
+    assert(0xabcd1234ffff4567L << 3 == 0x5e6891a7fffa2b38L)
+    assert(0xabcd1234ffff4567L >> 2 == 0xeaf3448d3fffd159L)    
+  }
+
+  static void testCompound()
+  {                    
+    assert((3+4)*(20/2)+(1<<2) == 74)
+  }           
+
+////////////////////////////////////////////////////////////////
+// OptimizeIr
+////////////////////////////////////////////////////////////////
+
+  static void testJumpInt()
+  {                      
+    int x = 3  
+
+    // JumpIntNotEq
+    if (x == 2) assert(false); else assert(true)
+    if (x == 3) assert(true);  else assert(false)
+
+    // JumpIntEq
+    if (x != 2) assert(true); else assert(false)
+    if (x != 3) assert(false); else assert(true)
+    
+    // JumpIntGtEq
+    if (x < 2) assert(false); else assert(true)
+    if (x < 3) assert(false); else assert(true)
+    if (x < 4) assert(true);  else assert(false)
+    
+    // JumpIntGt
+    if (x <= 2) assert(false); else assert(true)
+    if (x <= 3) assert(true);  else assert(false)
+    if (x <= 4) assert(true);  else assert(false)
+
+    // JumpIntLtEq
+    if (x > 2) assert(true); else assert(false)
+    if (x > 3) assert(false);  else assert(true)
+    if (x > 4) assert(false);  else assert(true)
+    
+    // JumpIntLt
+    if (x >= 2) assert(true); else assert(false)
+    if (x >= 3) assert(true);  else assert(false)
+    if (x >= 4) assert(false);  else assert(true)
+  }               
+
+  static void testJumpIntZero()
+  {                   
+    int x = 3  
+    if (x == 0) assert(false); else assert(true);
+    if (x != 0) assert(true); else assert(false);
+    x = 0
+    if (x == 0) assert(true); else assert(false);
+    if (x != 0) assert(false); else assert(true);
+  }   
+
+////////////////////////////////////////////////////////////////
+// Literals
+////////////////////////////////////////////////////////////////
+
+  static void testLiterals()
+  {        
+    long xl = 3L
+    long yl = 30L
+    long zl = -300L
+    assert(xl+yl+zl == -267L)                       
+    
+    float xf = 3f
+    float yf = 30f
+    float zf = -300f
+    assert(xf+yf+zf == -267f)                       
+    
+    double xd = 3d
+    double yd = 30d
+    double zd = -300d 
+    assert(xd+yd+zd == -267d)                       
+  }                      
+
+////////////////////////////////////////////////////////////////
+// Identity
+////////////////////////////////////////////////////////////////
+
+  static void testIntIdentity()
+  {        
+    int x = 3
+    assert(x+0   == 3)
+    assert(x-0   == 3)
+    assert((x|0) == 3)
+    assert((x^0) == 3)
+    assert(x<<0  == 3)
+    assert(x>>0  == 3)
+    assert(x*0   == 0)
+    assert((x&0) == 0)
+  }
+
+  static void testLongIdentity()
+  {        
+    long x = 3L
+    assert(x+0L   == 3L)
+    assert(x-0L   == 3L)
+    assert((x|0L) == 3L)
+    assert((x^0L) == 3L)
+    assert(x<<0   == 3L)
+    assert(x>>0   == 3L)
+    assert(x*0L   == 0L)
+    assert((x&0L) == 0L)
+  }
+
+  static void testFloatIdentity()
+  {        
+    float x = 3.2f
+    assert(x+0.0f == 3.2f)
+    assert(x-0.0f == 3.2f)
+    assert(x*0.0f == 0.0f)
+  }
+
+  static void testDoubleIdentity()
+  {        
+    double x = 3.2d
+    assert(x+0.0d == 3.2d)
+    assert(x-0.0d == 3.2d)
+    assert(x*0.0d == 0.0d)
+  }                                     
+
+////////////////////////////////////////////////////////////////
+// Inline
+////////////////////////////////////////////////////////////////
+
+  static void testInline()
+  {      
+    assert("ab".get(1) == 'b')
+  }
+
+////////////////////////////////////////////////////////////////
+// EqZero
+////////////////////////////////////////////////////////////////
+
+  static void testEqZero()
+  {
+    int i = 3; 
+    assert(i != 0)       
+    if (i != 0) assert(true); else assert(false);
+    i = 0; 
+    assert(i == 0)
+    if (i == 0) assert(true); else assert(false);
+    
+    Obj p = Sys.kits
+    assert(p != null)    
+    if (p != null) assert(true); else assert(false);
+    p = null
+    assert(p == null)
+    if (p == null) assert(true); else assert(false);
+    
+    bool b = false
+    assert(!b)
+    if (!b) assert(true); else assert(false);
+  }
+
+}  
+
+
