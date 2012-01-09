@@ -37,7 +37,7 @@ class PrioritizedInt
   @summary=false property int in15
   @summary=true  property int in16
 
-  @readonly 
+  @config 
   @summary=false property int fallback
 
   @readonly 
@@ -45,7 +45,7 @@ class PrioritizedInt
 
   @readonly 
   @range=srcLevelStr
-  @summary=false property int sourceLevel = MAXLEVEL
+  @summary=false property int sourceLevel = FB_LEVEL
 
   @readonly 
   @summary=false property long overrideExpTime = 0L        // 0 indicates no timeout ("permanent")
@@ -100,16 +100,6 @@ class PrioritizedInt
     overrideExpTime = 0L
   }
 
-
-  action void setFallback(int newValue)
-  {
-    fallback = newValue
-  }
-
-
-  //
-  // Do we need to provide a way to stop using fallback?
-  //
 
 
 

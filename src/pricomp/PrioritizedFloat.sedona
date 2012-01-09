@@ -37,7 +37,7 @@ class PrioritizedFloat
   @summary=false property float in15
   @summary=true  property float in16
 
-  @readonly 
+  @config 
   @summary=false property float fallback
 
   @readonly 
@@ -45,7 +45,7 @@ class PrioritizedFloat
 
   @readonly 
   @range=srcLevelStr
-  @summary=false property int sourceLevel = MAXLEVEL
+  @summary=false property int sourceLevel = FB_LEVEL
 
   @readonly 
   @summary=false property long overrideExpTime = 0L        // 0 indicates no timeout ("permanent")
@@ -97,16 +97,6 @@ class PrioritizedFloat
     overrideExpTime = 0L
   }
 
-
-  action void setFallback(float newValue)
-  {
-    fallback = newValue
-  }
-
-
-  //
-  // Do we need to provide a way to stop using fallback?
-  //
 
 
 

@@ -40,7 +40,7 @@ class PrioritizedBool
   @summary=false property bool in15
   @summary=true  property bool in16
 
-  @readonly 
+  @config 
   @summary=false property bool fallback
 
   @readonly 
@@ -48,7 +48,7 @@ class PrioritizedBool
 
   @readonly 
   @range=srcLevelStr
-  @summary=false property int sourceLevel = MAXLEVEL
+  @summary=false property int sourceLevel = FB_LEVEL
 
   @readonly 
   @summary=false property long overrideExpTime = 0L    // 0 indicates no timeout ("permanent")
@@ -121,12 +121,6 @@ class PrioritizedBool
     setToDefault(PrioritizedBool.in8)
     use_in8 = false
     overrideExpTime = 0L
-  }
-
-
-  action void setFallback(bool newValue)
-  {
-    fallback = newValue
   }
 
 
@@ -206,7 +200,6 @@ class PrioritizedBool
 
 
     // Update output value
-    //  TODO: Have WB field editor translate FB and MAX levels to text descriptions?
     out         = value
     sourceLevel = level
 
