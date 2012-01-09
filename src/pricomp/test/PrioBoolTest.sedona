@@ -1,0 +1,38 @@
+//
+// Copyright (c) 2011 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   09 Jan 12  Elizabeth McKenney  Creation
+//
+
+**
+** PrioBoolTest
+**
+class PrioBoolTest
+  extends Test
+{
+  static inline PrioritizedBool  b
+
+ 
+  static void test()
+  {
+    // Check output & sourceLevel for defaults
+    assert(b.out==false)                              // uninitialized bool should be false
+    assert(b.sourceLevel==PrioritizedBool.MAXLEVEL)   // uninitialized level is MAXLEVEL
+
+    // Setting inputs directly won't work, since prioritized design only looks at links
+    b.in1 = true 
+    assert(b.out==false)
+    assert(b.sourceLevel==PrioritizedBool.MAXLEVEL)
+
+    // Use actions to set in1 & in8 & fallback (need links to test other levels)
+
+
+
+
+
+
+  }
+
+}
