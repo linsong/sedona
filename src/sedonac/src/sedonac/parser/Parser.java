@@ -344,7 +344,8 @@ public class Parser
     // parse array
     ArrayList acc = new ArrayList();
     consume(Token.LBRACE);        
-    while (true)
+    if (curt == Token.COMMA) consume();
+    else while (true)
     {
       acc.add(literal().value);
       if (curt != Token.COMMA) break;

@@ -185,6 +185,8 @@ public class CheckErrors
     if (f.init.id == Expr.ARRAY_LITERAL)
     {                                    
       Object[] array = ((Expr.Literal)f.init).asArray();
+      if (array.length == 0)
+        err("Cannot create empty array literal", f.init.loc);
       if (!type.isArray()) err("Cannot use array literal with non-array type", f.init.loc);     
       Type of = type.arrayOf();
       for (int i=0; i<array.length; ++i)
