@@ -1,57 +1,54 @@
 //
-// Copyright (c) 2007 Tridium, Inc
+// Copyright (c) 2012 Tridium, Inc
 // Licensed under the Academic Free License version 3.0
 //
 // History:
+//   26 Oct 11  Elizabeth McKenney  Creation
+//
 
 **
 ** PrioritizedBool 
 **
 class PrioritizedBool
-  extends Component
+  extends Prioritized
 {
+
+  define bool NULLVAL = null
 
 ////////////////////////////////////////////////////////////////
 // Properties
 ////////////////////////////////////////////////////////////////
 
   @readonly 
-  @summary=false property bool in1
+  @summary=false property bool in1 = NULLVAL
 
-  @summary=false property bool in2
-  @summary=false property bool in3
-  @summary=false property bool in4
-  @summary=false property bool in5
-
-  @readonly 
-  @summary=false property bool in6
-
-  @summary=false property bool in7
+  @summary=false property bool in2 = NULLVAL
+  @summary=false property bool in3 = NULLVAL
+  @summary=false property bool in4 = NULLVAL
+  @summary=false property bool in5 = NULLVAL
 
   @readonly 
-  @summary=false property bool in8
+  @summary=false property bool in6 = NULLVAL
 
-  @summary=false property bool in9
-  @summary=true  property bool in10
-  @summary=false property bool in11
-  @summary=false property bool in12
-  @summary=false property bool in13
-  @summary=false property bool in14
-  @summary=false property bool in15
-  @summary=true  property bool in16
+  @summary=false property bool in7 = NULLVAL
 
   @readonly 
-  @summary=false property bool fallback
+  @summary=false property bool in8 = NULLVAL
+
+  @summary=false property bool in9 = NULLVAL
+  @summary=true  property bool in10 = NULLVAL
+  @summary=false property bool in11 = NULLVAL
+  @summary=false property bool in12 = NULLVAL
+  @summary=false property bool in13 = NULLVAL
+  @summary=false property bool in14 = NULLVAL
+  @summary=false property bool in15 = NULLVAL
+  @summary=true  property bool in16 = NULLVAL
+
+  @config 
+  @summary=false property bool fallback = NULLVAL
 
   @readonly 
   @summary=true  property bool out
-
-  @readonly 
-  @range=srcLevelStr
-  @summary=false property int sourceLevel = MAXLEVEL
-
-  @readonly 
-  @summary=false property long overrideExpTime = 0L    // 0 indicates no timeout ("permanent")
 
 
   @config 
@@ -63,18 +60,6 @@ class PrioritizedBool
   @summary=false property int minInactiveTime = 0
 
 
-  define Str srcLevelStr= "in0, emergency, in2, in3, in4, in5, in6, in7, override, in9, in10, in11, in12, in13, in14, in15, in16, fallback"
-
-
-////////////////////////////////////////////////////////////////
-// Unlinkable input properties
-////////////////////////////////////////////////////////////////
-
-  // Only need to cache status for unlinkable inputs
-  bool use_in1      = false
-  bool use_in6      = false
-  bool use_in8      = false
-
 
 ////////////////////////////////////////////////////////////////
 // Actions
@@ -83,26 +68,21 @@ class PrioritizedBool
   action void emergencySetActive()
   {
     in1 = true
-    use_in1 = true
   }
 
   action void emergencySetInactive()
   {
     in1 = false
-    use_in1 = true
   }
 
   action void emergencyAuto()
   {
     setToDefault(PrioritizedBool.in1)
-    use_in1 = false
   }
 
   action void manualSetActive(int expTime)
   {
     in8 = true
-    use_in8 = true
-
     overrideExpTime = (long)expTime * 1ms
     if (overrideExpTime>0L) overrideExpTime += Sys.ticks()
   }
@@ -110,8 +90,6 @@ class PrioritizedBool
   action void manualSetInactive(int expTime)
   {
     in8 = false
-    use_in8 = true
-
     overrideExpTime = (long)expTime * 1ms
     if (overrideExpTime>0L) overrideExpTime += Sys.ticks()
   }
@@ -119,14 +97,7 @@ class PrioritizedBool
   action void manualAuto()
   {
     setToDefault(PrioritizedBool.in8)
-    use_in8 = false
     overrideExpTime = 0L
-  }
-
-
-  action void setFallback(bool newValue)
-  {
-    fallback = newValue
   }
 
 
@@ -141,29 +112,12 @@ class PrioritizedBool
   **
   override virtual void execute()
   {
-    bool value = out
-    int  level = MAXLEVEL
-
-    // Step through linksTo list & select highest level linkable input
-    for (Link link = linksTo; link != null; link = link.nextTo)
-    {
-      Slot s = type.slot(link.toSlot)
-
-      int lev = getSlotLevel(s)
-      if (lev==MAXLEVEL) continue          // MAXLEVEL here indicates error
-
-      if (level>=lev)
-      {
-        value = getBool(s)
-        level = lev
-      }
-    }
-    
+    bool value = fallback
+    int  level = FB_LEVEL
 
     // Expire manual override if any 
     if ( (overrideExpTime>0L) && (Sys.ticks()>overrideExpTime) )
       manualAuto()
-
 
     // Expire active timeout if any 
     if ( (minActiveEndTime>0L) && (Sys.ticks()>minActiveEndTime) )
@@ -177,82 +131,47 @@ class PrioritizedBool
     if ( (minActiveEndTime==0L) && (minInactiveEndTime==0L) )
     {
       setToDefault(PrioritizedBool.in6)
-      use_in6 = false
     }
 
-
-
-    // Check unlinkable inputs, override links if appropriate
-    if (use_in1)
+    
+    // Step through slot list, looking for highest active input (lowest level#)
+    foreach (Slot s : this.type.slots, this.type.slotsLen)
     {
-      value = in1
-      level = 1
-    }
-    else if (use_in6 && (level>=6))        
-    {
-      value = in6
-      level = 6
-    }
-    else if (use_in8 && (level>=8))        
-    {
-      value = in8
-      level = 8
-    }
-    else if (level>=FB_LEVEL)
-    {
-      value = fallback
-      level = FB_LEVEL
-    }
+      int lev = getSlotLevel(s)
+      if (lev==MAXLEVEL) continue          // MAXLEVEL here indicates slot not relevant
 
+      bool bval = getBool(s)
+      if (bval==NULLVAL) continue          // can't test (bval!=NULLVAL) - always true???
 
-    // Update output value
-    //  TODO: Have WB field editor translate FB and MAX levels to text descriptions?
-    out         = value
-    sourceLevel = level
-
-
+      if (level>=lev)
+      {
+        value = bval
+        level = lev
+      }
+    }
+    
     // Start min active/inactive timer if appropriate
-    if (out!=prevOut)
+    if ((value!=prevOut) && (value!=NULLVAL))
     {
-      if (out && (minActiveTime>0))
+      if (value && (minActiveTime>0))
       {
         in6 = true
-        use_in6 = true
         minActiveEndTime = Sys.ticks() + ((long)minActiveTime * 1ms)
       }
-      else if (!out && (minInactiveTime>0))
+      else if (!value && (minInactiveTime>0))
       {
         in6 = false
-        use_in6 = true
         minInactiveEndTime = Sys.ticks() + ((long)minInactiveTime * 1ms)
       }
-      prevOut = out
+      prevOut = value
     }
+
+    // Update output value
+    out         = value
+    sourceLevel = level
   }
 
   
-
-////////////////////////////////////////////////////////////////
-// Util
-////////////////////////////////////////////////////////////////
-
-  int getSlotLevel(Slot slot)
-  {
-    if (slot.name.startsWith("in"))
-      return Str.fromBytes(slot.name.toBytes(), 2).parseInt()
-    if (slot.name.equals("fallback"))
-      return FB_LEVEL
-    return MAXLEVEL
-  }
-
-
-////////////////////////////////////////////////////////////////
-// Constants
-////////////////////////////////////////////////////////////////
-
-  define int FB_LEVEL  =  17   // "level" for fallback input
-  define int MAXLEVEL  = 256   // lowest possible input level
-
 
 ////////////////////////////////////////////////////////////////
 // Fields

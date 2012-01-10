@@ -159,7 +159,7 @@ class Component
   ** have the declared default at runtime, so we just set it
   ** zero.
   **
-  void setToDefault(Slot slot)
+  virtual void setToDefault(Slot slot)
   {
     switch (slot.type.id)
     {
