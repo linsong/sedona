@@ -1,66 +1,52 @@
 //
-// Copyright (c) 2007 Tridium, Inc
+// Copyright (c) 2012 Tridium, Inc
 // Licensed under the Academic Free License version 3.0
 //
 // History:
+//   26 Oct 11  Elizabeth McKenney  Creation
+//
 
 **
 ** PrioritizedInt 
 **
 class PrioritizedInt
-  extends Component
+  extends Prioritized
 {
+
+  //define int NULLVAL = Sys.minInt        // can't do this - Sys.minInt is define, not literal
+  int NULLVAL = Sys.minInt
 
 ////////////////////////////////////////////////////////////////
 // Properties
 ////////////////////////////////////////////////////////////////
 
   @readonly 
-  @summary=false property int in1
+  @summary=false property int in1 = Sys.minInt
 
-  @summary=false property int in2
-  @summary=false property int in3
-  @summary=false property int in4
-  @summary=false property int in5
-  @summary=false property int in6
-  @summary=false property int in7
+  @summary=false property int in2 = Sys.minInt
+  @summary=false property int in3 = Sys.minInt
+  @summary=false property int in4 = Sys.minInt
+  @summary=false property int in5 = Sys.minInt
+  @summary=false property int in6 = Sys.minInt
+  @summary=false property int in7 = Sys.minInt
 
   @readonly 
-  @summary=false property int in8
+  @summary=false property int in8 = Sys.minInt
 
-  @summary=false property int in9
-  @summary=true  property int in10
-  @summary=false property int in11
-  @summary=false property int in12
-  @summary=false property int in13
-  @summary=false property int in14
-  @summary=false property int in15
-  @summary=true  property int in16
+  @summary=false property int in9 = Sys.minInt
+  @summary=true  property int in10 = Sys.minInt
+  @summary=false property int in11 = Sys.minInt
+  @summary=false property int in12 = Sys.minInt
+  @summary=false property int in13 = Sys.minInt
+  @summary=false property int in14 = Sys.minInt
+  @summary=false property int in15 = Sys.minInt
+  @summary=true  property int in16 = Sys.minInt
 
   @config 
-  @summary=false property int fallback
+  @summary=false property int fallback = Sys.minInt
 
   @readonly 
   @summary=true  property int out
-
-  @readonly 
-  @range=srcLevelStr
-  @summary=false property int sourceLevel = FB_LEVEL
-
-  @readonly 
-  @summary=false property long overrideExpTime = 0L        // 0 indicates no timeout ("permanent")
-
-
-  define Str srcLevelStr= "in0, emergency, in2, in3, in4, in5, in6, in7, override, in9, in10, in11, in12, in13, in14, in15, in16, fallback"
-
-
-////////////////////////////////////////////////////////////////
-// Unlinkable input properties
-////////////////////////////////////////////////////////////////
-
-  // Only need to cache status for unlinkable inputs
-  bool use_in1      = false
-  bool use_in8      = false
 
 
 ////////////////////////////////////////////////////////////////
@@ -70,13 +56,11 @@ class PrioritizedInt
   action void emergencySet(int newValue)
   {
     in1 = newValue
-    use_in1 = true
   }
 
   action void emergencyAuto()
   {
     setToDefault(PrioritizedInt.in1)
-    use_in1 = false
   }
 
   ** 
@@ -87,8 +71,6 @@ class PrioritizedInt
   action void manualSet(long valAndExpTime)
   {
     in8 = (int)(valAndExpTime>>32)
-    use_in8 = true
-
     overrideExpTime = (valAndExpTime & 0xffffffffL) * 1ms
     if (overrideExpTime>0L) overrideExpTime += Sys.ticks()
   }
@@ -96,7 +78,6 @@ class PrioritizedInt
   action void manualAuto()
   {
     setToDefault(PrioritizedInt.in8)
-    use_in8 = false
     overrideExpTime = 0L
   }
 
@@ -113,78 +94,35 @@ class PrioritizedInt
   **
   override virtual void execute()
   {
-    int value = out
-    int level = MAXLEVEL
-
-    // Step through linksTo list & select highest level linkable input
-    for (Link link = linksTo; link != null; link = link.nextTo)
-    {
-      Slot s = type.slot(link.toSlot)
-
-      int lev = getSlotLevel(s)
-      if (lev==MAXLEVEL) continue          // MAXLEVEL here indicates error
-
-      if (level>=lev)
-      {
-        value = getInt(s)
-        level = lev
-      }
-    }
-    
+    int value = fallback
+    int level = FB_LEVEL
 
     // Expire manual override if any 
     if ( (overrideExpTime>0L) && (Sys.ticks()>overrideExpTime) )
       manualAuto()
 
-
-
-    // Check unlinkable inputs, override links if apprpriate
-    if (use_in1)
+    // Step through slot list, looking for highest active input (lowest level#)
+    foreach (Slot s : this.type.slots, this.type.slotsLen)
     {
-      value = in1
-      level = 1
-    }
-    else if (use_in8 && (level>=8))        
-    {
-      value = in8
-      level = 8
-    }
-    else if (level>=FB_LEVEL)
-    {
-      value = fallback
-      level = FB_LEVEL
-    }
+      int lev = getSlotLevel(s)
+      if (lev==MAXLEVEL) continue          // MAXLEVEL here indicates slot not relevant
 
+      int ival = getInt(s)
+      if (ival==NULLVAL) continue          // can't test (ival!=NULLVAL) - always true???
 
+      if (level>=lev)
+      {
+        value = ival
+        level = lev
+      }
+    }
+    
     // Update output value & level
-    //  TODO: Have WB field editor translate FB and MAX levels to text descriptions?
     out         = value
     sourceLevel = level
   }
 
   
-
-////////////////////////////////////////////////////////////////
-// Util
-////////////////////////////////////////////////////////////////
-
-  int getSlotLevel(Slot slot)
-  {
-    if (slot.name.startsWith("in"))
-      return Str.fromBytes(slot.name.toBytes(), 2).parseInt()
-    if (slot.name.equals("fallback"))
-      return FB_LEVEL
-    return MAXLEVEL
-  }
-
-
-////////////////////////////////////////////////////////////////
-// Constants
-////////////////////////////////////////////////////////////////
-
-  define int FB_LEVEL  =  17   // "level" for fallback input
-  define int MAXLEVEL  = 256   // lowest possible input level
-
 
 ////////////////////////////////////////////////////////////////
 // Fields
