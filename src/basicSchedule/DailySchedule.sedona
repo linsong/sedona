@@ -1,0 +1,140 @@
+//
+// Copyright (c) 2009 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   30 Apr 09  Dan Giorgis   creation
+//   28 May 09  Matthew Giannini store everything in minutes instead of seconds
+//
+
+  **
+  ** DailySchedule represents a simple daily schedule with up to two active 
+  ** periods.  Each active period is defined by a start time and duration.
+  ** If the duration is zero, the period is disabled.   
+  ** If the periods overlap, then first period (defined by start1 and dur1) 
+  ** take precedence.  If the duration extends past midnight, then the 
+  ** active period will span two separate calendar days.
+  ** 
+abstract class DailySchedule extends Component
+{    
+  **
+  **  Start time for first active period, expressed in minutes after midnight
+  ** 
+  @unit=Units.minute 
+  @config property short start1
+
+  **
+  **  Duration for first active period, expressed in minutes after midnight
+  ** 
+  @min=0 @max=minsInDay @unit=Units.minute
+  @config property short dur1  
+
+  **
+  **  Start time for second active period, expressed in minutes after midnight
+  ** 
+  @unit=Units.minute
+  @config property short start2
+
+  **
+  **  Duration for the second active period, expressed in minutes after midnight
+  ** 
+  @min=0 @max=minsInDay @unit=Units.minute
+  @config property short dur2
+  
+////////////////////////////////////////////////////////////////
+// Component
+////////////////////////////////////////////////////////////////
+
+  virtual override void start()
+  {
+    dtSrvc = (DateTimeService)Sys.app.lookupService(DateTimeService.type)
+  }
+
+  virtual override void execute()
+  {         
+    //  If neither duration specified, output should be default
+    if ((dur1 == 0) && (dur2 == 0))
+    {
+      setOutValue(outputDefault)
+      return
+    }   
+           
+    //  Determine current time of day        
+    int h = dtSrvc.hour
+    int m = dtSrvc.minute
+
+    //  convert to mins past midnight
+    int timeOfDay = (h * 60) + m
+    
+    int end1 = (start1 + dur1) % minsInDay
+    int end2 = (start2 + dur2) % minsInDay
+                   
+    bool s1active = isActive(timeOfDay, start1, end1)
+    bool s2active = isActive(timeOfDay, start2, end2)
+
+    if (s1active)
+      setOutValue(output1)
+    else if (s2active)
+      setOutValue(output2)
+    else
+      setOutValue(outputDefault)
+
+  }
+
+////////////////////////////////////////////////////////////////
+// Component
+////////////////////////////////////////////////////////////////
+
+  **
+  ** Subclasses of DailySchedule must implement this to set the proper
+  ** output value based on current time and schedule configuration
+  ** 
+  virtual void setOutValue(int activeVal)
+  {
+  }
+
+////////////////////////////////////////////////////////////////
+// Component
+////////////////////////////////////////////////////////////////
+  
+  private bool isActive(int now, int start, int end)
+  {
+    if (end == start)    
+      return false   
+      
+    if (end > start)
+    {
+      if (now < start)
+        return false
+      else if (now >= end)
+        return false
+      else  //  start <= now <= end
+        return true        
+    }
+    
+    if (end < start)
+    {
+      if (now < end) 
+        return true
+      else if (now >= start)
+        return true
+      else //  end <= now <= start
+        return false      
+    }          
+
+    return false
+  }
+
+////////////////////////////////////////////////////////////////
+// Component
+////////////////////////////////////////////////////////////////
+
+  DateTimeService dtSrvc
+  
+  define int minsInDay = 24 * 60
+  
+  define int outputDefault = 0
+  define int output1       = 1
+  define int output2       = 2
+  
+}

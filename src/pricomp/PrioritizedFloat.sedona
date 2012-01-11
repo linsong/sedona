@@ -1,0 +1,127 @@
+//
+// Copyright (c) 2012 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   26 Oct 11  Elizabeth McKenney  Creation
+//
+
+**
+** PrioritizedFloat 
+**
+class PrioritizedFloat
+  extends Prioritized
+{
+
+  define float NULLVAL  = null
+
+////////////////////////////////////////////////////////////////
+// Properties
+////////////////////////////////////////////////////////////////
+
+  @readonly   // unlinkable; must set via action
+  @summary=false property float in1 = NULLVAL
+
+  @summary=false property float in2 = NULLVAL
+  @summary=false property float in3 = NULLVAL
+  @summary=false property float in4 = NULLVAL
+  @summary=false property float in5 = NULLVAL
+  @summary=false property float in6 = NULLVAL
+  @summary=false property float in7 = NULLVAL
+
+  @readonly   // unlinkable; must set via action
+  @summary=false property float in8 = NULLVAL
+
+  @summary=false property float in9 = NULLVAL
+  @summary=true  property float in10 = NULLVAL
+  @summary=false property float in11 = NULLVAL
+  @summary=false property float in12 = NULLVAL
+  @summary=false property float in13 = NULLVAL
+  @summary=false property float in14 = NULLVAL
+  @summary=false property float in15 = NULLVAL
+  @summary=true  property float in16 = NULLVAL
+
+  @config 
+  @summary=false property float fallback = NULLVAL
+
+  @readonly 
+  @summary=true  property float out
+
+
+////////////////////////////////////////////////////////////////
+// Actions
+////////////////////////////////////////////////////////////////
+
+  action void emergencySet(float newValue)
+  {
+    in1 = newValue
+  }
+
+  action void emergencyAuto()
+  {
+    setToDefault(PrioritizedFloat.in1)
+  }
+
+
+  //action void manualSet(float newValue)
+  action void manualSet(long valAndExpTime)
+  {
+    in8 = Sys.bitsToFloat((int)(valAndExpTime>>32))
+    overrideExpTime = (valAndExpTime & 0xffffffffL) * 1ms
+    if (overrideExpTime>0L) overrideExpTime += Sys.ticks()
+  }
+
+  action void manualAuto()
+  {
+    setToDefault(PrioritizedFloat.in8)
+    overrideExpTime = 0L
+  }
+
+
+
+
+////////////////////////////////////////////////////////////////
+// Component
+////////////////////////////////////////////////////////////////
+
+  **
+  ** Execute is called once every scan using the
+  ** simple round-robin scan engine.
+  **
+  override virtual void execute()
+  {
+    float value = fallback
+    int   level = FB_LEVEL
+
+    // Expire manual override if any 
+    if ( (overrideExpTime>0L) && (Sys.ticks()>overrideExpTime) )
+      manualAuto()
+
+    // Step through slot list, looking for highest active input (lowest level#)
+    foreach (Slot s : this.type.slots, this.type.slotsLen)
+    {
+      int lev = getSlotLevel(s)
+      if (lev==MAXLEVEL) continue          // MAXLEVEL here indicates slot not relevant
+
+      float fval = getFloat(s)
+      if (fval==NULLVAL) continue 
+
+      if (level>=lev)
+      {
+        value = fval
+        level = lev
+      }
+    }
+    
+    // Update output value
+    out         = value
+    sourceLevel = level
+  }
+
+  
+
+////////////////////////////////////////////////////////////////
+// Fields
+////////////////////////////////////////////////////////////////
+
+}

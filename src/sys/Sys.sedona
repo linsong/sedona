@@ -1,0 +1,525 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   03 Mar 07  Brian Frank  Creation
+//
+
+**
+** Sys provides access to the system environment.
+**
+class Sys
+{
+
+//////////////////////////////////////////////////////////////////////////
+// Defines
+//////////////////////////////////////////////////////////////////////////
+
+  **
+  ** Size in bytes of a reference/pointer on this system.
+  **
+  define int sizeofRef = 0                  
+                   
+  **
+  ** Max value of a 32-bit signed integer: 2,147,483,647       
+  **                   
+  define int maxInt = 0x7fff_ffff
+
+  **
+  ** Min value of a 32-bit signed integer: -2,147,483,648 
+  **                   
+  define int minInt = 0x8000_0000
+
+  **
+  ** Max value of a 64-bit signed integer: 9,223,372,036,854,775,807  
+  **                   
+  define long maxLong = 0x7fff_ffff_ffff_ffffL
+
+  **
+  ** Min value of a 64-bit signed integer: -9,223,372,036,854,775,808  
+  **                   
+  define long minLong = 0x8000_0000_0000_0000L
+
+//////////////////////////////////////////////////////////////////////////
+// Fields
+//////////////////////////////////////////////////////////////////////////
+
+  **
+  ** Standard output stream.
+  **
+  static inline StdOutStream out
+  
+  **
+  ** The application instance for the VM
+  **
+  static inline App app
+
+  **
+  ** The time in nanosecond ticks the Sedona runtime was booted
+  **
+  static long bootTime
+
+  **
+  ** The null output stream sinks its output to nowhere.
+  **
+  static inline NullOutStream nullOut
+
+  **
+  ** The null input stream is always at end of file.
+  **
+  static inline NullInStream nullIn
+
+//////////////////////////////////////////////////////////////////////////
+// Platform
+//////////////////////////////////////////////////////////////////////////
+  
+
+  **
+  ** Get the qualified name of the PlatformService type which is
+  ** required by this hardware/OS platform.  There must be exactly
+  ** one PlatformService defined in the App which implements this
+  ** type in order to boot the system.
+  **
+  native internal static Str platformType()
+
+//////////////////////////////////////////////////////////////////////////
+// Kits
+//////////////////////////////////////////////////////////////////////////
+
+  **
+  ** The number of items in the kits array.
+  **
+  define int kitsLen = 1
+
+  **
+  ** The list of kits installed in this environment.
+  **
+  const static Kit[kitsLen] kits
+
+  **
+  ** Get the kit for the specified id or return null if out of range.
+  **
+  static Kit kit(int id)
+  {
+    if (0 <= id && id < kitsLen)
+      return kits[id]
+    return null
+  }
+
+  **
+  ** Get the type for the specified kit and type id or
+  ** return null if out of range.
+  **
+  static Type type(int kitId, int typeId)
+  {
+    Kit kit = kit(kitId)
+    if (kit != null) return kit.type(typeId)
+    return null
+  }
+
+  **
+  ** Find a kit by its unique name or return null if not found.
+  **
+  static Kit findKit(Str name)
+  {
+    foreach (Kit kit : kits, kitsLen)
+      if (kit.name.equals(name)) return kit
+    return null
+  }
+
+  **
+  ** Find a type by its qualified name such as 
+  ** "sys::Component" or return null if not found.
+  **
+  static Type findType(Str qname)
+  {                       
+    int colon = qname.index(':')
+    if (colon < 0) return null  
+
+    // find kit by region                         
+    Kit kit = null
+    foreach (Kit k : kits, kitsLen)
+      if (k.name.equalsRegion(qname, 0, colon)) { kit = k; break; }
+    if (kit == null) return null              
+    
+    // find type by region                         
+    foreach (Type t : kit.types, kit.typesLen)
+      if (t.name.equalsRegion(qname, colon+2, 100))
+        return t
+       
+    return null
+  }
+  
+//////////////////////////////////////////////////////////////////////////
+// Logging
+//////////////////////////////////////////////////////////////////////////
+ 
+  **
+  ** The number of items in the logs array.
+  **
+  define int logsLen = 1
+
+  **
+  ** The list of logs installed in this environment.
+  **
+  const static Log[logsLen] logs
+
+  ** The current severity level of each log
+  static inline byte[logsLen] logLevels
+
+  **
+  ** Get the log for the specified id or return null if out of range.
+  **
+  static Log log(int id)
+  {
+    if (0 <= id && id < logsLen)
+      return logs[id]
+    return null
+  }
+
+  **
+  ** Find a log by its qualified name or return null if not found.
+  **
+  static Log findLog(Str qname)
+  {
+    foreach (Log log : logs, logsLen)
+      if (log.qname.equals(qname)) return log
+    return null
+  }
+  
+//////////////////////////////////////////////////////////////////////////
+// Time
+//////////////////////////////////////////////////////////////////////////
+
+  **
+  ** Get the current time as a 64-bit integer of nanosecond ticks.  
+  ** Ticks are not necessarily based on wall-time, but rather based 
+  ** on an arbitrary epoch (typically the boot time of the host)
+  **
+  native static long ticks()
+
+  **
+  ** Sleep for the specified time in nanosecond ticks.
+  ** If t <= 0, then sleep should return immediately.
+  ** 
+  ** This method is for use by App and test code only.  Do not call from
+  ** within Component execute() or Service work() methods.
+  **
+  native static void sleep(long t)
+
+////////////////////////////////////////////////////////////////
+//  Entry / Exit points
+////////////////////////////////////////////////////////////////
+    
+    
+  **
+  ** This is the entry point where native code resumes the 
+  ** Sedona VM from a yield or hibernate state.  VM heap
+  ** remains intact.
+  **
+  static int resume(Str[] args, int argsLen)
+  {                             
+    // run the app's main loop, but skip initialization      
+    return shutdown(app.resumeApp())
+  }
+
+  **
+  ** This method unwinds the Sedona call stack and the VM exits
+  ** with the given error code.
+  **
+  ** If it returns 'Err.hibernate' or 'Err.yield', the Sedona heap 
+  ** remains intact and can be restarted via 'resume' entry point
+  **
+  ** If the specified result is not the hibernate or yield error
+  ** codes, then stop the application and cleanup memory.
+  **
+  static int shutdown(int result)
+  {
+    if ((result == Err.yield) || (result == Err.hibernate))
+    {
+      // Do nothing
+    }  
+    else  // full shutdown  
+    { 
+      if (app != null)
+      {                                             
+        app.stopApp()
+        app.cleanupApp()
+      }
+    }   
+    return result
+  }
+
+//////////////////////////////////////////////////////////////////////////
+// Memory Management
+//////////////////////////////////////////////////////////////////////////
+
+  **
+  ** Allocate num bytes of memory or return null on error.
+  ** The allocated memory is zeroed.
+  ** NOTE: this method should never be used directly, instead
+  **   use the 'new' operator (sys use only!)
+  **
+  internal native static byte[] malloc(int num)
+
+  **
+  ** Free memory allocated by malloc.
+  ** NOTE: this method should never be used directly, instead
+  **   use the 'delete' operator (sys use only!)
+  **
+  internal native static void free(Obj mem)
+
+  **
+  ** Copy num bytes from the source byte array to the destination byte
+  ** array.  The arrays may be overlapping (like memmove, not memcpy).
+  **
+  native static void copy(byte[] src, int srcOff, byte[] dest, int destOff, int num)
+
+  **
+  ** Compare two byte arrays for equality. If equal return 0, if
+  ** a is less than b return -1, if a greater than b return 1.
+  **
+  native static int compareBytes(byte[] a, int aOff, byte[] b, int bOff, int len)
+
+  **
+  ** Set all the bytes in the specified array to val.
+  **
+  native static void setBytes(int val, byte[] bytes, int off, int len)
+
+  **
+  ** Perform a bitwise "and" using the specified mask on each
+  ** byte in the bytes array.
+  **
+  native static void andBytes(int mask, byte[] bytes, int off, int len)
+
+  **
+  ** Perform a bitwise "or" using the specified mask on each
+  ** byte in the bytes array.
+  **
+  native static void orBytes(int mask, byte[] bytes, int off, int len)   
+  
+  **
+  ** Get the base address of the scode image as a byte pointer.
+  ** INTERNAL USE ONLY.
+  **
+  native static byte[] scodeAddr()
+
+//////////////////////////////////////////////////////////////////////////
+// Utils
+//////////////////////////////////////////////////////////////////////////
+
+  **
+  ** Format an integer as a decimal string.
+  ** The string is stored in a static shared buffer.
+  **
+  native static Str intStr(int v)
+
+  **
+  ** Format an integer as a hexadecimal string.
+  ** The string is stored in a static shared buffer.
+  **
+  native static Str hexStr(int v)
+
+  **
+  ** Format the 64-bit integer into a string.
+  ** The string is stored in a static shared buffer.
+  **
+  native static Str longStr(long v)
+
+  **
+  ** Format the 64-bit integer into a hexidecimal string.
+  ** The string is stored in a static shared buffer.
+  **
+  native static Str longHexStr(long v)
+
+  **
+  ** Format a float into a string.
+  ** The string is stored in a static shared buffer.
+  **
+  native static Str floatStr(float v)
+
+  **
+  ** Format a double into a string.
+  ** The string is stored in a static shared buffer.
+  **
+  native static Str doubleStr(double v)
+
+  **
+  ** Return an integer representation of a 32-bit floating point
+  ** value according to the IEEE 754 floating-point "single format"
+  ** bit layout.
+  **
+  native static int floatToBits(float v)
+
+  **
+  ** Return a long representation of a 64-bit floating point
+  ** value according to the IEEE 754 floating-point "double format"
+  ** bit layout.
+  **
+  native static long doubleToBits(double v)
+                                         
+  **
+  ** Return a 32-bit floating point value according to the
+  ** IEEE 754 floating-point "single format" bit layout.
+  **
+  native static float bitsToFloat(int bits)
+
+  **
+  ** Return a 64-bit floating point value according to the
+  ** IEEE 754 floating-point "double format" bit layout.
+  **
+  native static double bitsToDouble(long bits)  
+
+  **
+  ** Return the numeric value of a decimal character:
+  **   '0' -> 0
+  **   '9' -> 9
+  ** Return -1 if not a valid decimal digit.
+  **
+  static int fromDigit(int digit)
+  {       
+    if ('0' <= digit && digit <= '9') return digit - '0'                  
+    return -1
+  }  
+  
+  **
+  ** Return the numeric value of an decimal character:
+  **   '0' -> 0
+  **   '9' -> 9
+  **   'a' or 'A' -> 10
+  **   'f' or 'F' -> 15
+  ** Return -1 if not a valid hex digit.
+  **
+  static int fromHexDigit(int digit)
+  {      
+    if ('0' <= digit && digit <= '9') return digit - '0'
+    if ('a' <= digit && digit <= 'f') return digit - 'a' + 10
+    if ('A' <= digit && digit <= 'F') return digit - 'A' + 10
+    return -1
+  }
+
+  **
+  ** Return the max of two ints.
+  **
+  static int max(int a, int b)
+  {
+    return a > b ? a : b
+  }                         
+
+  **
+  ** Return the min of two ints.
+  **
+  static int min(int a, int b)
+  {
+    return a < b ? a : b
+  }                         
+  
+  **
+  ** Generate a random 32-bit integer.
+  **
+  native static int rand()
+
+//////////////////////////////////////////////////////////////////////////
+// Main
+//////////////////////////////////////////////////////////////////////////
+
+  **
+  ** Print version information to the output stream.
+  **
+  static void printVer(OutStream out)
+  {
+    foreach (Kit kit : kits, kitsLen)
+    {
+      out.printPad(kit.name, 12).print("  ").printPad(kit.version, 6)
+         .print("  0x").printHex(kit.checksum).nl()
+    }
+  }
+
+  **
+  ** Standard main entry point.
+  **
+  static int main(Str[] args, int argsLen)
+  {                    
+    // init our boot time
+    bootTime = ticks()     
+    
+    // default all log levels to message
+    setBytes(Log.MESSAGE, logLevels, 0, logsLen)
+        
+    // process args
+    Str appFile = null
+    foreach (Str arg : args, argsLen)
+    {
+      if (arg.equals("-test")) { return Test.main() }
+      if (arg.equals("-ver")) { printVer(Sys.out); return 1 }
+      if (appFile == null) appFile = arg
+    }
+
+    // load application
+    if (appFile == null) return Err.invalidArgs
+    app.file.name = appFile
+    int r = app.load()
+    if (r != 0)
+    {
+      Sys.out.print("ERROR: Cannot load app err=$r").nl()
+      return r
+    }               
+    
+    // start and run application
+    r = app.startApp(args, argsLen)
+    if (r != 0)
+    {
+      Sys.out.print("ERROR: Cannot start app err=$r").nl()
+      return r
+    }
+    return shutdown(app.runApp())
+  }
+
+}
+
+**************************************************************************
+** StdOutStream
+**************************************************************************
+
+** Implementation of OutStream which sinks to standard output.
+**
+internal class StdOutStream
+  extends OutStream
+{
+  override bool write(int b) { return doWrite(b) }
+  override bool writeBytes(byte[] b, int off, int len) { return doWriteBytes(b, off, len) }
+  override void flush() { doFlush() }
+
+  native static bool doWrite(int b)
+  native static bool doWriteBytes(byte[] b, int off, int len)
+  native static void doFlush()
+} 
+
+**************************************************************************
+** NullOutStream
+**************************************************************************
+
+**
+** Implementation of OutStream which sinks to nowhere
+**
+internal class NullOutStream
+  extends OutStream
+{
+  override bool write(int b) { return false }
+  override bool writeBytes(byte[] b, int off, int len) { return false }
+}
+
+**************************************************************************
+** NullInStream
+**************************************************************************
+
+**
+** Implementation of InStream which can never be read
+**
+internal class NullInStream
+  extends InStream
+{
+  override int read() { return -1 }
+  override int readBytes(byte[] b, int off, int len) { return -1 }
+}
