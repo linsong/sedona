@@ -110,7 +110,7 @@ public class UnusedCodeAnalysis extends CompilerStep
   {
     if (f == null || f.isPublic() || f.isProtected() || !(f instanceof FieldDef))
       return;
-    if (curMethod.isInstanceInit()) 
+    if (curMethod != null && curMethod.isInstanceInit())
       return;
     refs.put(f, f);
   }
