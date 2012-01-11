@@ -78,8 +78,14 @@ public class FieldDef
 
     type = visitor.type(type);
 
-    if (depth >= AstVisitor.WALK_TO_EXPRS && init != null)
-      init = init.walk(visitor);
+    if (depth >= AstVisitor.WALK_TO_EXPRS)
+    {
+      if (init != null)
+        init = init.walk(visitor);
+      if (ctorArgs != null)
+        for (int i=0; i<ctorArgs.length; ++i)
+          ctorArgs[i] = ctorArgs[i].walk(visitor);
+    }
 
     visitor.exitField(this);
   }
