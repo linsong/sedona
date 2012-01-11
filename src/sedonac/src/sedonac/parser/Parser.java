@@ -304,6 +304,7 @@ public class Parser
       else
       {
         init = expr();
+        init.isNullLiteral(type);       // coerce null to correct type if necessary
       }
     }
     endOfStmt();

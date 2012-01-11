@@ -129,7 +129,10 @@ public class IrReader
         if (curt == Token.LBRACE)
           define = arrayLiteral(flags, type); 
         else
+        {
           define = literal();
+          define.isNullLiteral(type);       // coerce null value into correct type
+        }
       }
       else
       {
