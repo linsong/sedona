@@ -13,37 +13,40 @@ class PrioritizedInt
   extends Prioritized
 {
 
-  //define int NULLVAL = Sys.minInt        // can't do this - Sys.minInt is define, not literal
-  int NULLVAL = Sys.minInt
+  **
+  ** Sys.minInt
+  **   Min value of a 32-bit signed integer: -2,147,483,648 
+  **                   
+  define int NULLVAL = 0x8000_0000
 
 ////////////////////////////////////////////////////////////////
 // Properties
 ////////////////////////////////////////////////////////////////
 
   @readonly 
-  @summary=false property int in1 = Sys.minInt
+  @summary=false property int in1 = NULLVAL
 
-  @summary=false property int in2 = Sys.minInt
-  @summary=false property int in3 = Sys.minInt
-  @summary=false property int in4 = Sys.minInt
-  @summary=false property int in5 = Sys.minInt
-  @summary=false property int in6 = Sys.minInt
-  @summary=false property int in7 = Sys.minInt
+  @summary=false property int in2 = NULLVAL
+  @summary=false property int in3 = NULLVAL
+  @summary=false property int in4 = NULLVAL
+  @summary=false property int in5 = NULLVAL
+  @summary=false property int in6 = NULLVAL
+  @summary=false property int in7 = NULLVAL
 
   @readonly 
-  @summary=false property int in8 = Sys.minInt
+  @summary=false property int in8 = NULLVAL
 
-  @summary=false property int in9 = Sys.minInt
-  @summary=true  property int in10 = Sys.minInt
-  @summary=false property int in11 = Sys.minInt
-  @summary=false property int in12 = Sys.minInt
-  @summary=false property int in13 = Sys.minInt
-  @summary=false property int in14 = Sys.minInt
-  @summary=false property int in15 = Sys.minInt
-  @summary=true  property int in16 = Sys.minInt
+  @summary=false property int in9 = NULLVAL
+  @summary=true  property int in10 = NULLVAL
+  @summary=false property int in11 = NULLVAL
+  @summary=false property int in12 = NULLVAL
+  @summary=false property int in13 = NULLVAL
+  @summary=false property int in14 = NULLVAL
+  @summary=false property int in15 = NULLVAL
+  @summary=true  property int in16 = NULLVAL
 
   @config 
-  @summary=false property int fallback = Sys.minInt
+  @summary=false property int fallback = NULLVAL
 
   @readonly 
   @summary=true  property int out
@@ -108,7 +111,7 @@ class PrioritizedInt
       if (lev==MAXLEVEL) continue          // MAXLEVEL here indicates slot not relevant
 
       int ival = getInt(s)
-      if (ival==NULLVAL) continue          // can't test (ival!=NULLVAL) - always true???
+      if (ival==NULLVAL) continue 
 
       if (level>=lev)
       {
