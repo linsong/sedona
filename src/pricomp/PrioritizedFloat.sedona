@@ -104,7 +104,7 @@ class PrioritizedFloat
       if (lev==MAXLEVEL) continue          // MAXLEVEL here indicates slot not relevant
 
       float fval = getFloat(s)
-      if (fval==NULLVAL) continue          // can't test (fval!=NULLVAL) - always true???
+      if (fval==NULLVAL) continue 
 
       if (level>=lev)
       {

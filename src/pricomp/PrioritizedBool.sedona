@@ -141,7 +141,7 @@ class PrioritizedBool
       if (lev==MAXLEVEL) continue          // MAXLEVEL here indicates slot not relevant
 
       bool bval = getBool(s)
-      if (bval==NULLVAL) continue          // can't test (bval!=NULLVAL) - always true???
+      if (bval==NULLVAL) continue 
 
       if (level>=lev)
       {
