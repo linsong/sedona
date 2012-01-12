@@ -181,7 +181,9 @@ abstract class OutStream
   **
   OutStream printBool(bool x)
   {
-    return print(x ? "true" : "false")
+    //return print(x ? "true" : "false")
+    //return print(x==null ? "null" : (x ? "true" : "false"))
+    return print(x ? (x==null ? "null" : "true") : "false")
   }
 
   **
