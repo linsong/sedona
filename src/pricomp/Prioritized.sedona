@@ -58,7 +58,7 @@ class Prioritized
 // Util
 ////////////////////////////////////////////////////////////////
 
-  int getSlotLevel(Slot slot)
+  static int getSlotLevel(Slot slot)
   {
     if (slot.name.startsWith("in"))
       return Str.fromBytes(slot.name.toBytes(), 2).parseInt()

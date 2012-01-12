@@ -15,24 +15,131 @@ class PrioBoolTest
   static inline PrioritizedBool  b
 
  
+  //
+  // Adapted from ControlTest.verifyPriorityAlgorithm()
+  //
   static void test()
   {
+    //Sys.out.print("Check value of PrioritizedBool.NULLVAL = ${PrioritizedBool.NULLVAL}\n")
+
     // Check output & sourceLevel for defaults
-    assert(b.out==false)                              // uninitialized bool should be false
-    assert(b.sourceLevel==PrioritizedBool.MAXLEVEL)   // uninitialized level is MAXLEVEL
+    assert(b.out==false)                               // property should be init to null??
+    assert(b.sourceLevel==PrioritizedBool.FB_LEVEL)   // init level is FB_LEVEL
+    assert(b.sourceLevel==Prioritized.getSlotLevel(PrioritizedBool.fallback))  // should be same
 
-    // Setting inputs directly won't work, since prioritized design only looks at links
+    // Set in1 directly
     b.in1 = true 
+    b.execute()
+    assert(b.out==true)
+    assert(b.sourceLevel==Prioritized.getSlotLevel(PrioritizedBool.in1))
+
+    // Relinquish in1 
+    b.setToDefault(PrioritizedBool.in1)
+    b.execute()
+    assert(b.out==PrioritizedBool.NULLVAL)
+    assert(b.sourceLevel==Prioritized.getSlotLevel(PrioritizedBool.fallback))
+
+    // Set in16 directly
+    b.in16 = false 
+    b.execute()
     assert(b.out==false)
-    assert(b.sourceLevel==PrioritizedBool.MAXLEVEL)
+    assert(b.sourceLevel==Prioritized.getSlotLevel(PrioritizedBool.in16))
 
-    // Use actions to set in1 & in8 & fallback (need links to test other levels)
+    // Set in9 directly
+    b.in9 = true 
+    b.execute()
+    assert(b.out==true)
+    assert(b.sourceLevel==Prioritized.getSlotLevel(PrioritizedBool.in9))
+
+    // Relinquish in9 
+    b.setToDefault(PrioritizedBool.in9)
+    b.execute()
+    assert(b.out==false)
+    assert(b.sourceLevel==Prioritized.getSlotLevel(PrioritizedBool.in16))
+
+    // Relinquish in16 
+    b.setToDefault(PrioritizedBool.in16)
+    b.execute()
+    assert(b.out==PrioritizedBool.NULLVAL)
+    assert(b.sourceLevel==Prioritized.getSlotLevel(PrioritizedBool.fallback))
+
+    // Test emergency set actions
+    b.emergencySetActive()
+    b.execute()
+    assert(b.out==true)
+    assert(b.sourceLevel==Prioritized.getSlotLevel(PrioritizedBool.in1))
+
+    b.emergencySetInactive()
+    b.execute()
+    assert(b.out==false)
+    assert(b.sourceLevel==Prioritized.getSlotLevel(PrioritizedBool.in1))
+
+    // Test emergency auto action
+    b.emergencyAuto()
+    b.execute()
+    assert(b.out==PrioritizedBool.NULLVAL)
+    assert(b.sourceLevel==Prioritized.getSlotLevel(PrioritizedInt.fallback))
 
 
-
-
-
-
+    // Test manual set active with 1sec expiration
+    verifyManualSet(true, 1000)
+    // Test manual set active with no expiration
+    verifyManualSet(true, 0)
+    // Test manual set inactive with 1sec expiration
+    verifyManualSet(false, 1000)
+    // Test manual set inactive with no expiration
+    verifyManualSet(false, 0)
   }
+
+
+
+  //
+  // Test manual set and duration
+  //
+  static void verifyManualSet(bool bSetActive, int dur)
+  {
+    Sys.out.print("  Testing manual set ")
+    Sys.out.print(bSetActive?"active":"inactive")
+    if (dur==0) Sys.out.print(" ended by manualAuto action\n")
+    else Sys.out.print(" for $dur ms\n")
+
+    if (bSetActive)
+      b.manualSetActive(dur)
+    else
+      b.manualSetInactive(dur)
+
+    // Verify action succeeded
+    b.execute()
+    assert(b.out==bSetActive)
+    assert(b.sourceLevel==Prioritized.getSlotLevel(PrioritizedInt.in8))
+
+    // Verify correct value for duration (or 2sec if Permanent)
+    long expTime 
+    if (dur==0) 
+      expTime = Sys.ticks() + 2sec
+    else
+      expTime = b.overrideExpTime
+
+    while (Sys.ticks() <= expTime)
+    {
+      b.execute()
+      assert(b.out==bSetActive)
+      assert(b.sourceLevel==Prioritized.getSlotLevel(PrioritizedInt.in8))
+      Sys.sleep(100ms)
+    }
+
+    // If duration is Permanent, use manualAuto action to end immediately
+    if (dur==0) b.manualAuto()
+
+    // Call execute() once more to propagate state to output
+    b.execute()
+
+    // Either way, should be done now
+    //Sys.out.print("After loop, out = ${b.out} (should be ${PrioritizedBool.NULLVAL})\n")
+    assert(b.out==PrioritizedBool.NULLVAL)
+    assert(b.sourceLevel==Prioritized.getSlotLevel(PrioritizedInt.fallback))
+  }
+
+
 
 }
