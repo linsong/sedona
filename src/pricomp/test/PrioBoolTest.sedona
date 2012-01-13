@@ -14,7 +14,7 @@ class PrioBoolTest
 {
   static inline PrioritizedBool  b
 
- 
+
   //
   // Adapted from ControlTest.verifyPriorityAlgorithm()
   //
@@ -22,63 +22,77 @@ class PrioBoolTest
   {
     //Sys.out.print("Check value of PrioritizedBool.NULLVAL = ${PrioritizedBool.NULLVAL}\n")
 
+    ////////////////////////////////////////////////////////////////
+    // Initial values
+    ////////////////////////////////////////////////////////////////
+
     // Check output & sourceLevel for defaults
-    assert(b.out==false)                               // property should be init to null??
-    assert(b.sourceLevel==PrioritizedBool.FB_LEVEL)   // init level is FB_LEVEL
-    assert(b.sourceLevel==Prioritized.getSlotLevel(PrioritizedBool.fallback))  // should be same
+    b.execute()
+    assert(b.out==PrioritizedBool.NULLVAL)            // property should be init to null??
+    assert(b.sourceLevel==Prioritized.FB_LEVEL)   // init level is FB_LEVEL
+
+
+    ////////////////////////////////////////////////////////////////
+    // Direct setting of input properties
+    ////////////////////////////////////////////////////////////////
 
     // Set in1 directly
     b.in1 = true 
     b.execute()
     assert(b.out==true)
-    assert(b.sourceLevel==Prioritized.getSlotLevel(PrioritizedBool.in1))
+    assert(b.sourceLevel==1)
 
     // Relinquish in1 
     b.setToDefault(PrioritizedBool.in1)
     b.execute()
     assert(b.out==PrioritizedBool.NULLVAL)
-    assert(b.sourceLevel==Prioritized.getSlotLevel(PrioritizedBool.fallback))
+    assert(b.sourceLevel==Prioritized.FB_LEVEL)
 
     // Set in16 directly
     b.in16 = false 
     b.execute()
     assert(b.out==false)
-    assert(b.sourceLevel==Prioritized.getSlotLevel(PrioritizedBool.in16))
+    assert(b.sourceLevel==16)
 
     // Set in9 directly
     b.in9 = true 
     b.execute()
     assert(b.out==true)
-    assert(b.sourceLevel==Prioritized.getSlotLevel(PrioritizedBool.in9))
+    assert(b.sourceLevel==9)
 
     // Relinquish in9 
     b.setToDefault(PrioritizedBool.in9)
     b.execute()
     assert(b.out==false)
-    assert(b.sourceLevel==Prioritized.getSlotLevel(PrioritizedBool.in16))
+    assert(b.sourceLevel==16)
 
     // Relinquish in16 
     b.setToDefault(PrioritizedBool.in16)
     b.execute()
     assert(b.out==PrioritizedBool.NULLVAL)
-    assert(b.sourceLevel==Prioritized.getSlotLevel(PrioritizedBool.fallback))
+    assert(b.sourceLevel==Prioritized.FB_LEVEL)
+
+
+    ////////////////////////////////////////////////////////////////
+    // Actions
+    ////////////////////////////////////////////////////////////////
 
     // Test emergency set actions
     b.emergencySetActive()
     b.execute()
     assert(b.out==true)
-    assert(b.sourceLevel==Prioritized.getSlotLevel(PrioritizedBool.in1))
+    assert(b.sourceLevel==1)
 
     b.emergencySetInactive()
     b.execute()
     assert(b.out==false)
-    assert(b.sourceLevel==Prioritized.getSlotLevel(PrioritizedBool.in1))
+    assert(b.sourceLevel==1)
 
     // Test emergency auto action
     b.emergencyAuto()
     b.execute()
     assert(b.out==PrioritizedBool.NULLVAL)
-    assert(b.sourceLevel==Prioritized.getSlotLevel(PrioritizedInt.fallback))
+    assert(b.sourceLevel==Prioritized.FB_LEVEL)
 
 
     // Test manual set active with 1sec expiration
@@ -111,7 +125,7 @@ class PrioBoolTest
     // Verify action succeeded
     b.execute()
     assert(b.out==bSetActive)
-    assert(b.sourceLevel==Prioritized.getSlotLevel(PrioritizedInt.in8))
+    assert(b.sourceLevel==8)
 
     // Verify correct value for duration (or 2sec if Permanent)
     long expTime 
@@ -124,7 +138,7 @@ class PrioBoolTest
     {
       b.execute()
       assert(b.out==bSetActive)
-      assert(b.sourceLevel==Prioritized.getSlotLevel(PrioritizedInt.in8))
+      assert(b.sourceLevel==8)
       Sys.sleep(100ms)
     }
 
@@ -137,7 +151,7 @@ class PrioBoolTest
     // Either way, should be done now
     //Sys.out.print("After loop, out = ${b.out} (should be ${PrioritizedBool.NULLVAL})\n")
     assert(b.out==PrioritizedBool.NULLVAL)
-    assert(b.sourceLevel==Prioritized.getSlotLevel(PrioritizedInt.fallback))
+    assert(b.sourceLevel==Prioritized.FB_LEVEL)
   }
 
 

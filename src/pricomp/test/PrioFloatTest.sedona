@@ -13,6 +13,7 @@ class PrioFloatTest
   extends Test
 {
   static inline PrioritizedFloat  f
+ 
 
   //
   // Test sequence adapted from ControlTest.verifyPriorityAlgorithm()
@@ -24,13 +25,13 @@ class PrioFloatTest
     //Sys.out.print("${PrioritizedFloat.NULLVAL} (0x${Sys.hexStr(inull)})\n")
 
     ////////////////////////////////////////////////////////////////
-    // Initial values (??)
+    // Initial values
     ////////////////////////////////////////////////////////////////
 
     // Check output & sourceLevel for defaults
-    assert(f.out==0.0)                               // property should be init to null??
-    assert(f.sourceLevel==PrioritizedFloat.FB_LEVEL)   // init level is FB_LEVEL
-    assert(f.sourceLevel==Prioritized.getSlotLevel(PrioritizedFloat.fallback))  // should be same
+    f.execute()
+    assert(f.out==PrioritizedFloat.NULLVAL)       // property should be init to null
+    assert(f.sourceLevel==Prioritized.FB_LEVEL)   // init level is FB_LEVEL
 
 
     ////////////////////////////////////////////////////////////////
@@ -41,37 +42,37 @@ class PrioFloatTest
     f.in1 = 1.0
     f.execute()
     assert(f.out==1.0)
-    assert(f.sourceLevel==Prioritized.getSlotLevel(PrioritizedFloat.in1))
+    assert(f.sourceLevel==1)
 
     // Relinquish in1 
     f.setToDefault(PrioritizedFloat.in1)
     f.execute()
     assert(f.out==PrioritizedFloat.NULLVAL)
-    assert(f.sourceLevel==Prioritized.getSlotLevel(PrioritizedFloat.fallback))
+    assert(f.sourceLevel==Prioritized.FB_LEVEL)
 
     // Set in16 directly
     f.in16 = 16.0 
     f.execute()
     assert(f.out==16.0)
-    assert(f.sourceLevel==Prioritized.getSlotLevel(PrioritizedFloat.in16))
+    assert(f.sourceLevel==16)
 
     // Set in9 directly
     f.in9 = 9.0 
     f.execute()
     assert(f.out==9.0)
-    assert(f.sourceLevel==Prioritized.getSlotLevel(PrioritizedFloat.in9))
+    assert(f.sourceLevel==9)
 
     // Relinquish in9 
     f.setToDefault(PrioritizedFloat.in9)
     f.execute()
     assert(f.out==16.0)
-    assert(f.sourceLevel==Prioritized.getSlotLevel(PrioritizedFloat.in16))
+    assert(f.sourceLevel==16)
 
     // Relinquish in16 
     f.setToDefault(PrioritizedFloat.in16)
     f.execute()
     assert(f.out==PrioritizedFloat.NULLVAL)
-    assert(f.sourceLevel==Prioritized.getSlotLevel(PrioritizedFloat.fallback))
+    assert(f.sourceLevel==Prioritized.FB_LEVEL)
 
 
     ////////////////////////////////////////////////////////////////
@@ -82,13 +83,13 @@ class PrioFloatTest
     f.emergencySet(1.5)
     f.execute()
     assert(f.out==1.5)
-    assert(f.sourceLevel==Prioritized.getSlotLevel(PrioritizedFloat.in1))
+    assert(f.sourceLevel==1)
 
     // Test emergency auto action
     f.emergencyAuto()
     f.execute()
     assert(f.out==PrioritizedFloat.NULLVAL)
-    assert(f.sourceLevel==Prioritized.getSlotLevel(PrioritizedFloat.fallback))
+    assert(f.sourceLevel==Prioritized.FB_LEVEL)
 
     // Test manual set action with expiration
     verifyManualSet(8.5, 1000)
@@ -115,7 +116,7 @@ class PrioFloatTest
     // Verify action succeeded
     f.execute()
     assert(f.out==setval)
-    assert(f.sourceLevel==Prioritized.getSlotLevel(PrioritizedInt.in8))
+    assert(f.sourceLevel==8)
 
     // Verify correct value for duration (or 2sec if Permanent)
     long expTime 
@@ -128,7 +129,7 @@ class PrioFloatTest
     {
       f.execute()
       assert(f.out==setval)
-      assert(f.sourceLevel==Prioritized.getSlotLevel(PrioritizedInt.in8))
+      assert(f.sourceLevel==8)
       Sys.sleep(100ms)
     }
 
@@ -141,7 +142,7 @@ class PrioFloatTest
     // Either way, should be done now
     //Sys.out.print("After loop, out = ${f.out} (should be ${PrioritizedFloat.NULLVAL})\n")
     assert(f.out==PrioritizedFloat.NULLVAL)
-    assert(f.sourceLevel==Prioritized.getSlotLevel(PrioritizedInt.fallback))
+    assert(f.sourceLevel==Prioritized.FB_LEVEL)
   }
 
 

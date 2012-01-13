@@ -12,7 +12,6 @@
 class PrioritizedInt
   extends Prioritized
 {
-
   **
   ** Sys.minInt
   **   Min value of a 32-bit signed integer: -2,147,483,648 
@@ -104,22 +103,28 @@ class PrioritizedInt
     if ( (overrideExpTime>0L) && (Sys.ticks()>overrideExpTime) )
       manualAuto()
 
-    // Step through slot list, looking for highest active input (lowest level#)
-    foreach (Slot s : this.type.slots, this.type.slotsLen)
-    {
-      int lev = getSlotLevel(s)
-      if (lev==MAXLEVEL) continue          // MAXLEVEL here indicates slot not relevant
-
-      int ival = getInt(s)
-      if (ival==NULLVAL) continue 
-
-      if (level>=lev)
-      {
-        value = ival
-        level = lev
-      }
-    }
+    //
+    // Big if/else if block 
+    //   (believe it or not this is the fastest & smallest strategy)
+    //
+    if (in1 != NULLVAL)       {  value = in1;   level = 1 }
+    else if (in2 != NULLVAL)  {  value = in2;   level = 2 }
+    else if (in3 != NULLVAL)  {  value = in3;   level = 3 }
+    else if (in4 != NULLVAL)  {  value = in4;   level = 4 }
+    else if (in5 != NULLVAL)  {  value = in5;   level = 5 }
+    else if (in6 != NULLVAL)  {  value = in6;   level = 6 }
+    else if (in7 != NULLVAL)  {  value = in7;   level = 7 }
+    else if (in8 != NULLVAL)  {  value = in8;   level = 8 }
+    else if (in9 != NULLVAL)  {  value = in9;   level = 9 }
+    else if (in10 != NULLVAL) {  value = in10;  level = 10 }
+    else if (in11 != NULLVAL) {  value = in11;  level = 11 }
+    else if (in12 != NULLVAL) {  value = in12;  level = 12 }
+    else if (in13 != NULLVAL) {  value = in13;  level = 13 }
+    else if (in14 != NULLVAL) {  value = in14;  level = 14 }
+    else if (in15 != NULLVAL) {  value = in15;  level = 15 }
+    else if (in16 != NULLVAL) {  value = in16;  level = 16 }
     
+
     // Update output value & level
     out         = value
     sourceLevel = level

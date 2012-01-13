@@ -9,9 +9,17 @@
 **
 ** Prioritized
 **
-class Prioritized
+abstract class Prioritized
   extends Component
 {
+
+////////////////////////////////////////////////////////////////
+// Constants
+////////////////////////////////////////////////////////////////
+
+  define int FB_LEVEL  =  17   // "level" for fallback input
+  define int MAXLEVEL  = 256   // lowest possible input level
+
 
 ////////////////////////////////////////////////////////////////
 // Common properties
@@ -28,11 +36,10 @@ class Prioritized
   define Str srcLevelStr= "in0, emergency, in2, in3, in4, in5, in6, in7, override, in9, in10, in11, in12, in13, in14, in15, in16, fallback"
   
 
-
-
 ////////////////////////////////////////////////////////////////
 // Component
 ////////////////////////////////////////////////////////////////
+
 
   **
   ** Set a property to its default value.  This overrides the
@@ -57,23 +64,6 @@ class Prioritized
 ////////////////////////////////////////////////////////////////
 // Util
 ////////////////////////////////////////////////////////////////
-
-  static int getSlotLevel(Slot slot)
-  {
-    if (slot.name.startsWith("in"))
-      return Str.fromBytes(slot.name.toBytes(), 2).parseInt()
-    if (slot.name.equals("fallback"))
-      return FB_LEVEL
-    return MAXLEVEL
-  }
-
-
-////////////////////////////////////////////////////////////////
-// Constants
-////////////////////////////////////////////////////////////////
-
-  define int FB_LEVEL  =  17   // "level" for fallback input
-  define int MAXLEVEL  = 256   // lowest possible input level
 
 
 ////////////////////////////////////////////////////////////////
