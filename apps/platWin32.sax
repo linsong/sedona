@@ -20,6 +20,7 @@
   <kit name='math' />
   <kit name='timing' />
   <kit name='types' />
+  <kit name='pricomp' />
 </schema>
 <app>               
   <prop name="appName" val="demo"/>
@@ -72,10 +73,6 @@
     <!-- /play/adder -->
     <comp name="adder" id="2" type="math::Add2">
       <prop name="meta" val="386662401"/>
-    </comp>
-    <!-- /play/test -->
-    <comp name="test" id="9" type="sys::TestComp">
-      <prop name="meta" val="671350785"/>
     </comp>
   </comp>
 </app>
