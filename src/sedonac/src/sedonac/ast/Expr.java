@@ -108,6 +108,8 @@ public abstract class Expr
   public static final int NEW            = 73;  // New
   public static final int DELETE         = 74;  // Delete
 
+  public static final int PROP_ASSIGN    = 75;
+
 //////////////////////////////////////////////////////////////////////////
 // Expr
 //////////////////////////////////////////////////////////////////////////
@@ -159,6 +161,7 @@ public abstract class Expr
       case ASSIGN_BIT_XOR:
       case ASSIGN_LSHIFT:
       case ASSIGN_RSHIFT:
+      case PROP_ASSIGN:
       case CALL:
       case INIT_ARRAY:
       case INIT_VIRT:

@@ -68,7 +68,7 @@ public class Normalize
       // skip if not assignment statement
       if (stmt.id != Stmt.EXPR_STMT) continue;
       Expr expr = ((Stmt.ExprStmt)stmt).expr;
-      if (expr.id != Expr.ASSIGN) continue;
+      if ((expr.id != Expr.ASSIGN) && (expr.id != Expr.PROP_ASSIGN)) continue;
       Expr.Binary assign = (Expr.Binary)expr;
 
       // skip if lhs is assigment to "something.length"

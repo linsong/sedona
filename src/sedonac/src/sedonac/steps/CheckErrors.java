@@ -730,6 +730,7 @@ public class CheckErrors
       case Expr.ASSIGN_LSHIFT: 
       case Expr.ASSIGN_RSHIFT:  checkShift((Expr.Binary)expr); checkAssignable(((Expr.Binary)expr).lhs); break;
       case Expr.ELVIS:          checkElvis((Expr.Binary)expr); break;
+      case Expr.PROP_ASSIGN:    checkPropAssign((Expr.Binary)expr); break;
       case Expr.TERNARY:        checkTernary((Expr.Ternary)expr); break;
       case Expr.THIS:           checkThis((Expr.This)expr); break;
       case Expr.SUPER:          checkSuper((Expr.Super)expr); break;
@@ -851,6 +852,13 @@ public class CheckErrors
     if (!expr.lhs.type.isRef())                                  
       err("Cannot apply '?:' operator to '" + expr.lhs.type + "'", expr.loc);
     checkAssignable(expr.lhs.type, expr.rhs, expr.rhs.loc);
+  }
+
+  private void checkPropAssign(Expr.Binary expr)
+  {
+    checkAssign(expr);
+    if (expr.lhs.id!=Expr.FIELD)                                  
+      err("Cannot apply ':=' operator to non-property", expr.loc);
   }
 
   private void checkTernary(Expr.Ternary expr)

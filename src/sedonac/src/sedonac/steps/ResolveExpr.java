@@ -207,6 +207,7 @@ public class ResolveExpr
       case Expr.ASSIGN_BIT_XOR:
       case Expr.ASSIGN_LSHIFT:
       case Expr.ASSIGN_RSHIFT:
+      case Expr.PROP_ASSIGN:
       case Expr.ELVIS:          expr.type = ((Expr.Binary)expr).lhs.type; break;
 
       // misc

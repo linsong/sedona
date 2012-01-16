@@ -545,6 +545,7 @@ public class Tokenizer
       case ':':
         consume();
         if (cur == ':') { consume(); return new Token(loc, Token.DOUBLE_COLON); }
+        if (cur == '=') { consume(); return new Token(loc, Token.PROP_ASSIGN); }
         return new Token(loc, Token.COLON);
       case '+':
         consume();

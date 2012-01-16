@@ -291,7 +291,7 @@ public class Parser
   
     Expr init = null;
     boolean populateObjArray = false;
-    if (curt == Token.ASSIGN)
+    if ((curt == Token.ASSIGN) || (curt == Token.PROP_ASSIGN))
     {
       consume();
       if (curt == Token.LBRACE)
@@ -495,7 +495,7 @@ public class Parser
 
     String id = consumeId();
     Expr init = null;
-    if (curt == Token.ASSIGN) { consume(); init = expr(); }
+    if ((curt == Token.ASSIGN) || (curt == Token.PROP_ASSIGN)) { consume(); init = expr(); }
     if (isEndOfStmt) endOfStmt();
     return new Stmt.LocalDef(loc, type, id, init);
   }

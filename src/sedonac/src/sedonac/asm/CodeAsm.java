@@ -550,6 +550,7 @@ public class CodeAsm
       case Expr.ASSIGN_ADD:     assign(expr, SCode.IntAdd, SCode.LongAdd, SCode.FloatAdd, SCode.DoubleAdd); break;
       case Expr.ASSIGN_SUB:     assign(expr, SCode.IntSub, SCode.LongSub, SCode.FloatSub, SCode.DoubleSub); break;
       case Expr.ELVIS:          elvis((Expr.Binary)expr); break;
+      case Expr.PROP_ASSIGN:    assign((Expr.Binary)expr); break;
       case Expr.TERNARY:        ternary((Expr.Ternary)expr); break;
       case Expr.PARAM:          loadParam(((Expr.Param)expr).def); break;
       case Expr.LOCAL:          loadLocal(((Expr.Local)expr).def); break;
