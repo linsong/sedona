@@ -816,13 +816,15 @@ class App
     // components
     while (true)
     {
-      // read check component id
+      // read component id
       int compId = in.readU2()
       if (compId == 0xffff) break
       if (compId < 0) return Err.unexpectedEOF
 
-      // read kit id
-      Kit kit = Sys.kit(in.read())
+      // read app kit id, map to equivalent scode kit id
+      Kit kit = null
+      int kitid = in.read()
+      if (kitid>=0) kit = Sys.kit( kitIdMap[kitid] )
       if (kit == null) return Err.invalidKitId
 
       // read type id
@@ -900,27 +902,71 @@ class App
   ** Check that the schema on the input stream matches
   ** the schema of the current runtime.
   **
+  ** In this version, we allow the app to depend on fewer kits than 
+  ** the scode, as long as all the app's kits are in the scode.
+  **
   bool loadSchema(InStream in)
   {
-    int n = in.read()
-    if (n != Sys.kitsLen)
+    int numkits = in.read()
+    if (numkits > Sys.kitsLen)
     {
-      log.error("Schema mismatch num kits: $Sys.kitsLen != $n")
+      log.error("Schema mismatch (num kits): $numkits > $Sys.kitsLen")
       return false
     }
 
+    // Create kit id map array
+    if (kitIdMap!=null) delete kitIdMap         // can kitIDMap ever be non-null here?
+    kitIdMap = new int[ numkits ]
+    if (kitIdMap==null) return false
+
+
+    // Assume both app & scode have kits in the same order, so we just 
+    // have to scan Sys.kits once to match all input kits.
+    int n = numkits
+    int checksum  = 0
+    bool gotMatch = true
+
     foreach (Kit kit : Sys.kits, Sys.kitsLen)
     {
-      if (!in.readStr(Str.temp, Str.tempLen)) return false
-      int checksum = in.readS4()
-      if (!kit.name.equals(Str.temp) || kit.checksum != checksum)
+      // If we matched last input kit, read next one
+      if (gotMatch && (n>0))
       {
-        log.error("Schema mismatch: $kit.name 0x${Sys.hexStr(kit.checksum)} != $Str.temp 0x${Sys.hexStr(checksum)}")
+        if (!in.readStr(Str.temp, Str.tempLen)) return false
+        checksum = in.readS4()
+        n--
+      }
+
+      // If kit name doesn't match, go to next in Sys.kits
+      if (!kit.name.equals(Str.temp)) { gotMatch = false; continue }
+
+      // If kit name matches but checksum doesn't, fail
+      if (kit.checksum != checksum)
+      {
+        log.error("Schema mismatch (checksum): $Str.temp 0x${Sys.hexStr(checksum)} " +
+                  "!= $kit.name 0x${Sys.hexStr(kit.checksum)} ")
         return false
       }
+
+      // If here, then kit & checksum both match; go to next kit
+      gotMatch = true
+
+      // Map this kit to Sys kit id (used in loadApp)
+      kitIdMap[ numkits-n-1 ] = kit.id
+
+      // If we've read in all kits & last one matched, we're done
+      if (n==0) break
     }
+
+    // If last input kit name didn't match, fail
+    if (!gotMatch)
+    {
+      log.error("Schema mismatch (kits): Kit $Str.temp not found")
+      return false
+    }
+
     return true
   }
+
 
 ////////////////////////////////////////////////////////////////
 // Actions
@@ -1090,4 +1136,11 @@ class App
   ** corresponds to the PREVIOUS scan.
   **     lastEndWork - lastStartWork = work time of previous scan
   long lastEndWork   = 0L
+
+
+  // Kit IDs are assigned at build time; if app schema is subset of scode's then the
+  // IDs may not match even though schemas are compatible.  This array maps app kit IDs 
+  // to scode kit IDs.  (created in loadSchema, used in loadApp)
+  int[] kitIdMap = null
+
 }
