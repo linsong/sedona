@@ -35,6 +35,7 @@ class Dasp
 // Message Types
 ////////////////////////////////////////////////////////////////
 
+  define int DISCOVER     = 0
   define int HELLO        = 1
   define int CHALLENGE    = 2
   define int AUTHENTICATE = 3
@@ -74,6 +75,7 @@ class Dasp
 // Error Codes
 ///////////////////////////////////////////////////////////////
 
+  define int DISCOVER_RESP         = 0xe0
   define int INCOMPATIBLE_VERSION  = 0xe1
   define int BUSY                  = 0xe2
   define int DIGEST_NOT_SUPPORTED  = 0xe3

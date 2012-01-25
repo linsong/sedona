@@ -1196,6 +1196,29 @@ public class SoxClient
     res.checkResponse('B');
   }
 
+
+////////////////////////////////////////////////////////////////
+// Device discovery
+////////////////////////////////////////////////////////////////
+
+  /**
+   * Start a discover operation
+   */
+  public synchronized void doDiscover()
+  {
+    socket.discover(port);
+  }
+
+
+  /**
+   * Access the list of currently discovered nodes  (not thread safe?)
+   */
+  public InetAddress[] getDiscovered()
+  {
+    return socket.getDiscovered();
+  }
+
+
 //////////////////////////////////////////////////////////////////////////
 // PStore Convenience
 //////////////////////////////////////////////////////////////////////////

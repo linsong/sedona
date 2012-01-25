@@ -44,6 +44,7 @@ public interface DaspConst
 // Message Types
 ////////////////////////////////////////////////////////////////
 
+  public static final int DISCOVER     = 0;   // any reason not to use 0 ?
   public static final int HELLO        = 1;
   public static final int CHALLENGE    = 2;
   public static final int AUTHENTICATE = 3;
@@ -83,6 +84,7 @@ public interface DaspConst
 // Error Codes
 ///////////////////////////////////////////////////////////////
 
+  public static final int DISCOVER_RESP        = 0xe0;
   public static final int INCOMPATIBLE_VERSION = 0xe1;
   public static final int BUSY                 = 0xe2;
   public static final int DIGEST_NOT_SUPPORTED = 0xe3;

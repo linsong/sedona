@@ -86,7 +86,7 @@ class SoxService
     // free watch slot in the application
     Sys.app.closeWatch(s)
 
-    // rest transfer (i.e. close it)
+    // reset transfer (i.e. close it)
     s.transfer.reset()
 
     // log close
@@ -243,13 +243,21 @@ class SoxService
     int msgType   = in.read()
     int numFields = msgType & 0xf
     msgType       = (msgType >> 4) & 0xf
-
+    
     // if hello try to allocate new session, right
     // now we just ignore the hello when busy instead
     // of sending back proper busy error
     SoxSession session = null
     if (msgType == Dasp.HELLO)
       session = openSession()
+
+    // Device discovery via DASP... just print a msg for now
+    else if (msgType == Dasp.DISCOVER)
+    {
+      session = openSession()
+      //Sys.out.print("Received Dasp.DISCOVER (session ID = ${Sys.hexStr(session.id())})\n")
+    }
+
     else
       session = session(sessionId)
 
@@ -272,6 +280,9 @@ class SoxService
         return
       case Dasp.CLOSE:
         closeSession(session, "Recd cmd");
+        return
+      case Dasp.DISCOVER:
+        session.close(this, Dasp.DISCOVER_RESP);
         return
     }
 

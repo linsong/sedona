@@ -147,11 +147,22 @@ Cell inet_UdpSocket_bind(SedonaVM* vm, Cell* params)
   bool closed   = getClosed(self);
   socket_t sock = getSocket(self);
 
+  // TEST: join the 224.0.1.1 multicast group 
+  struct ip_mreq mreq;
+
   if (closed)
     return falseCell;
 
   if (inet_bind(sock, port) != 0)
     return falseCell;
+
+  // TEST: join the 224.0.1.1 multicast group 
+  // TODO - this should really be a separate native method
+  mreq.imr_interface.s_addr = inet_addr("0.0.0.0");
+  mreq.imr_multiaddr.s_addr = inet_addr("224.0.0.1");   // IPv4 all-hosts multicast addr
+  setsockopt(sock, IPPROTO_IP, IP_ADD_MEMBERSHIP, (char *)&mreq, sizeof(mreq));
+  mreq.imr_multiaddr.s_addr = inet_addr("224.1.2.3");   // IPv4 multicast addr for group "1.2.3"
+  setsockopt(sock, IPPROTO_IP, IP_ADD_MEMBERSHIP, (char *)&mreq, sizeof(mreq));
 
   return trueCell;
 }
@@ -177,6 +188,8 @@ Cell inet_UdpSocket_send(SedonaVM* vm, Cell* params)
   struct sockaddr_in addr;
   int r;
 
+  if (closed) printf("  send error! UDP socket is closed\n");
+
   if (closed) return falseCell;
   if (sDatagram == NULL) return falseCell;
 
@@ -193,6 +206,9 @@ Cell inet_UdpSocket_send(SedonaVM* vm, Cell* params)
   len = datagram.len;
 
   r = sendto(sock, buf, len, 0, (SOCKADDR_PARAM*)&addr, sizeof(addr));
+
+  if (r!=len) printf("  send error! sendto sent %d bytes (should have sent %d)\n", r, len);
+
   if (r != len) return falseCell;
   return trueCell;
 }
