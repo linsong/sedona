@@ -147,7 +147,7 @@ Cell inet_UdpSocket_bind(SedonaVM* vm, Cell* params)
   bool closed   = getClosed(self);
   socket_t sock = getSocket(self);
 
-  // TEST: join the 224.0.1.1 multicast group 
+  // Join the all-hosts multicast group (224.0.0.1)
   struct ip_mreq mreq;
 
   if (closed)
@@ -156,12 +156,9 @@ Cell inet_UdpSocket_bind(SedonaVM* vm, Cell* params)
   if (inet_bind(sock, port) != 0)
     return falseCell;
 
-  // TEST: join the 224.0.1.1 multicast group 
-  // TODO - this should really be a separate native method
+  // Join the all-hosts multicast group (224.0.0.1)
   mreq.imr_interface.s_addr = inet_addr("0.0.0.0");
   mreq.imr_multiaddr.s_addr = inet_addr("224.0.0.1");   // IPv4 all-hosts multicast addr
-  setsockopt(sock, IPPROTO_IP, IP_ADD_MEMBERSHIP, (char *)&mreq, sizeof(mreq));
-  mreq.imr_multiaddr.s_addr = inet_addr("224.1.2.3");   // IPv4 multicast addr for group "1.2.3"
   setsockopt(sock, IPPROTO_IP, IP_ADD_MEMBERSHIP, (char *)&mreq, sizeof(mreq));
 
   return trueCell;
