@@ -30,6 +30,7 @@ import sedona.Value;
 import sedona.dasp.DaspMsg;
 import sedona.dasp.DaspSession;
 import sedona.dasp.DaspSocket;
+import sedona.dasp.DiscoveredNode;
 import sedona.manifest.KitManifest;
 import sedona.manifest.ManifestDb;
 import sedona.util.Version;
@@ -1213,7 +1214,7 @@ public class SoxClient
   /**
    * Access the list of currently discovered nodes  (not thread safe?)
    */
-  public InetAddress[] getDiscovered()
+  public DiscoveredNode[] getDiscovered()
   {
     return socket.getDiscovered();
   }

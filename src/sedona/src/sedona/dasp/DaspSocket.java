@@ -335,12 +335,13 @@ public class DaspSocket
       s.challenge(msg);
       return;
     }
-    else if ((msg.msgType == CLOSE) && (msg.errorCode == DISCOVER_RESP))
+    else if (msg.msgType == DISCOVER) 
     {
       System.out.println("  Received Discover response!  host=" + host + "  port=" + port);
 
-      // Here we add responses to a list somewhere...
-      discovered.add(host);
+      // Add response to list 
+      DiscoveredNode info = new DiscoveredNode(host, msg.platformId());
+      discovered.add(info);
     }
   
     // otherwise ensure host/port are valid
@@ -410,8 +411,8 @@ public class DaspSocket
 // IO Hooks
 ////////////////////////////////////////////////////////////////
   
-  static InetAddress ipv4AllHostsAddress, ipv4Group123Address;
-  static InetAddress ipv6AllHostsAddress, ipv6Group123Address;
+  static InetAddress ipv4AllHostsAddress;
+  static InetAddress ipv6AllHostsAddress;
 
   static
   {
@@ -420,13 +421,8 @@ public class DaspSocket
     {
       addrName = "224.0.0.1";    // IPv4 all-hosts multicast address
       ipv4AllHostsAddress = InetAddress.getByName(addrName);
-      addrName = "224.1.2.3";    // IPv4 multicast address for group ID "1.2.3"
-      ipv4Group123Address = InetAddress.getByName(addrName);
-
       addrName = "ff02::1";      // IPv6 all-hosts multicast address 
       ipv6AllHostsAddress = InetAddress.getByName(addrName);
-      addrName = "ff02::1:0203";  // IPv6 multicast address for group ID "1:0203"
-      ipv6Group123Address = InetAddress.getByName(addrName);
     }
     catch (UnknownHostException e)
     {
@@ -435,21 +431,13 @@ public class DaspSocket
     }
   }
 
-  static String tHS(byte inByte)  
-  { 
-    String hb = Integer.toHexString(0xff & inByte); 
-    if (hb.length()==1)    // 0-pad single digit
-      return "0" + hb;
-    else 
-      return hb;
-  }
 
   /**
    * Return current list of discovered nodes   (not thread safe?)
    */        
-  public InetAddress[] getDiscovered()
+  public DiscoveredNode[] getDiscovered()
   {
-    return (InetAddress[])discovered.toArray(new InetAddress[0]);
+    return (DiscoveredNode[])discovered.toArray(new DiscoveredNode[0]);
   }
 
 
@@ -459,12 +447,9 @@ public class DaspSocket
   public void discover(int port)
   {
     // Is there a way to auto-detect whether to use ipv4 or ipv6?
-    // For now, just hardcode it...
-
-    InetAddress addr = ipv4AllHostsAddress;
-    //InetAddress addr = ipv4Group123Address;
-    //InetAddress addr = ipv6AllHostsAddress;
-    //InetAddress addr = ipv6Group123Address;
+    // For now, just hardcode our selection...
+    InetAddress mcaddr = ipv4AllHostsAddress;
+    //InetAddress mcaddr = ipv6AllHostsAddress;
 
     byte[] mbuf = new byte[DaspConst.ABS_MAX_VAL];
 
@@ -473,17 +458,13 @@ public class DaspSocket
     msg.msgType = DaspMsg.DISCOVER;
     int mlen = msg.encode(mbuf);
 
-    System.out.print("  Outgoing DaspMsg contents: ");
-    for (int b=0; b<mlen; b++) System.out.print(" " + tHS(mbuf[b]));
-    System.out.println();
-
     // Collect info into DatagramPacket for sending...
-    DatagramPacket dgPacket = new DatagramPacket(mbuf, mlen, addr, port);
+    DatagramPacket dgPacket = new DatagramPacket(mbuf, mlen, mcaddr, port);
 
-    System.out.println("  Sending datagram to address " + addr + " on port " + port);
+    System.out.println("  Sending discover req to " + mcaddr + " on port " + port);    // DIAG
 
     // Find the right interface for the address...
-    DaspSocketInterface iface = route(addr, port);
+    DaspSocketInterface iface = route(mcaddr, port);
 
     // Clear list of discovered nodes (create if necessary)
     if (discovered==null) discovered = new ArrayList();
@@ -502,8 +483,6 @@ public class DaspSocket
         e.printStackTrace();
       }
     }
-
-    System.out.println("  Message sent!");
   }
 
 
