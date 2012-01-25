@@ -66,16 +66,16 @@ class Dasp
   define int IDEAL_MAX        = 0x07  // 0x1d (7,1)
   define int ABS_MAX          = 0x08  // 0x21 (8,1)
   define int ACK              = 0x09  // 0x25 (9,1)
-  define int ACK_MORE         = 0x0a  // 0x2b (a, 3)
+  define int ACK_MORE         = 0x0a  // 0x2b (a,3)
   define int RECEIVE_MAX      = 0x0b  // 0x2d (b,1)  
-  define int RECEIVE_TIMEOUT  = 0x0c  // 0x31 (c, 1)
+  define int RECEIVE_TIMEOUT  = 0x0c  // 0x31 (c,1)
   define int ERROR_CODE       = 0x0d  // 0x35 (d,1)
+  define int PLATFORM_ID      = 0x0e  // 0x3a (e,2)
   
 ////////////////////////////////////////////////////////////////
 // Error Codes
 ///////////////////////////////////////////////////////////////
 
-  define int DISCOVER_RESP         = 0xe0
   define int INCOMPATIBLE_VERSION  = 0xe1
   define int BUSY                  = 0xe2
   define int DIGEST_NOT_SUPPORTED  = 0xe3

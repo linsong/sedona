@@ -248,16 +248,8 @@ class SoxService
     // now we just ignore the hello when busy instead
     // of sending back proper busy error
     SoxSession session = null
-    if (msgType == Dasp.HELLO)
+    if ( (msgType == Dasp.HELLO) || (msgType == Dasp.DISCOVER) )
       session = openSession()
-
-    // Device discovery via DASP... just print a msg for now
-    else if (msgType == Dasp.DISCOVER)
-    {
-      session = openSession()
-      //Sys.out.print("Received Dasp.DISCOVER (session ID = ${Sys.hexStr(session.id())})\n")
-    }
-
     else
       session = session(sessionId)
 
@@ -282,7 +274,8 @@ class SoxService
         closeSession(session, "Recd cmd");
         return
       case Dasp.DISCOVER:
-        session.close(this, Dasp.DISCOVER_RESP);
+        session.discoverResponse(this);
+        closeSession(session, "Discovered");
         return
     }
 
