@@ -29,8 +29,6 @@ public class DaspSession
    */
   protected DaspSession(DaspSocketInterface iface, int id, InetAddress host, int port, boolean isClient, Hashtable options)
   {
-    System.out.println(" Creating DaspSession with id=" + id);
-
     this.socket          = iface.daspSocket;
     this.iface           = iface;
     this.id              = id;
