@@ -160,8 +160,6 @@ Cell inet_UdpSocket_bind(SedonaVM* vm, Cell* params)
   //mreq.imr_multiaddr.s_addr = inet_addr("224.0.0.1");    // hardcoded address
   mreq.imr_multiaddr = in4addr_allnodesonlink;     
 
-  printf(" multiaddr = %lx\n", mreq.imr_multiaddr.s_addr);
-
 #elif defined( SOCKET_FAMILY_INET6 )
 
   // Join the IPv6 all-nodes multicast group (FF02::1)
