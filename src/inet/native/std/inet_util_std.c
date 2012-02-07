@@ -56,11 +56,22 @@ bool inet_errorIsWouldBlock()
  */
 int inet_bind(socket_t sock, int port)
 {
-  struct sockaddr_in addr;
+#ifdef SOCKET_FAMILY_INET
 
+  struct sockaddr_in addr;
   addr.sin_family = AF_INET;
   addr.sin_addr.s_addr = INADDR_ANY;
   addr.sin_port = htons(port);
+
+#elif defined( SOCKET_FAMILY_INET6 )
+
+  struct sockaddr_in6 addr;
+  addr.sin6_family = AF_INET6;
+  addr.sin6_addr   = in6addr_any;
+  addr.sin6_port   = htons(port);
+
+#endif
+
   return bind(sock, (SOCKADDR_PARAM*)&addr, sizeof(addr));
 }
 
