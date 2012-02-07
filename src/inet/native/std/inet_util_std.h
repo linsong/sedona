@@ -128,6 +128,8 @@ typedef int socket_t;
 
 #ifdef NETOS_GNU_TOOLS
 
+#error The NETOS_GNU_TOOLS compile switch is not fully supported at this time.  Contact Tridium Engineering if you need to use this to build your Sedona VM.
+
 #include <sockapi.h>
 #include <narmapi.h>
 
