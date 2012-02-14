@@ -440,13 +440,14 @@ public class DaspSocket
     return (DiscoveredNode[])discovered.toArray(new DiscoveredNode[0]);
   }
 
-  //
+  //-----------------------------------------------------------//
   //         *** SELECT IPv4 vs. IPv6 HERE ***
   //
   // Is there a way to auto-detect whether to use ipv4 or ipv6?
   // For now, just hardcode our selection...
   //
   boolean bSelectIpv6 = true;
+  //-----------------------------------------------------------//
 
 
   /**
