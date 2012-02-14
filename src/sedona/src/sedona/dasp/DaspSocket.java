@@ -440,16 +440,22 @@ public class DaspSocket
     return (DiscoveredNode[])discovered.toArray(new DiscoveredNode[0]);
   }
 
+  //
+  //         *** SELECT IPv4 vs. IPv6 HERE ***
+  //
+  // Is there a way to auto-detect whether to use ipv4 or ipv6?
+  // For now, just hardcode our selection...
+  //
+  boolean bSelectIpv6 = true;
+
 
   /**
    * Send device discovery multicast msg
    */                         
   public void discover(int port)
   {
-    // Is there a way to auto-detect whether to use ipv4 or ipv6?
-    // For now, just hardcode our selection...
-    InetAddress mcaddr = ipv4AllHostsAddress;
-    //InetAddress mcaddr = ipv6AllHostsAddress;
+    // Select multicast address based on protocol choice
+    InetAddress mcaddr = bSelectIpv6 ? ipv6AllHostsAddress : ipv4AllHostsAddress;
 
     byte[] mbuf = new byte[DaspConst.ABS_MAX_VAL];
 
@@ -461,7 +467,8 @@ public class DaspSocket
     // Collect info into DatagramPacket for sending...
     DatagramPacket dgPacket = new DatagramPacket(mbuf, mlen, mcaddr, port);
 
-    System.out.println("  Sending discover req to " + mcaddr + " on port " + port);    // DIAG
+    String proto = bSelectIpv6 ? "IPv6" : "IPv4";
+    System.out.println("\n  Sending " + proto + " discover req to " + mcaddr + " on port " + port);
 
     // Find the right interface for the address...
     DaspSocketInterface iface = route(mcaddr, port);
