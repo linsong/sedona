@@ -124,7 +124,11 @@ Cell inet_UdpSocket_open(SedonaVM* vm, Cell* params)
   sock = socket(AF_INET6, SOCK_DGRAM,  0);
 #endif
 
+#ifdef _WIN32
+  if (sock == INVALID_SOCKET) return falseCell;
+#else
   if (sock < 0) return falseCell;
+#endif
 
   // make socket non-blocking
   if (inet_setNonBlocking(sock) != 0)
@@ -172,7 +176,11 @@ Cell inet_UdpSocket_bind(SedonaVM* vm, Cell* params)
   if (closed)
     return falseCell;
 
+#ifdef _WIN32
+  if (inet_bind(sock, port) == SOCKET_ERROR)
+#else
   if (inet_bind(sock, port) != 0)
+#endif
     return falseCell;
 
 #ifdef SOCKET_FAMILY_INET

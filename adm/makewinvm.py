@@ -67,10 +67,10 @@ if __name__ == '__main__':
   # Add command line arg to select ipv4 vs. ipv6 socket family
   if (options.ipv4):
     config = [("SOCKET_FAMILY_INET","0")]   # value doesn't matter
-    print " Building Sedona VM using IPv4 protocol.\n"
+    print " Building Sedona VM to use IPv4 protocol.\n"
   elif (options.ipv6):
     config = [("SOCKET_FAMILY_INET6","0")]   # value doesn't matter
-    print " Building Sedona VM using IPv6 protocol.\n"
+    print " Building Sedona VM to use IPv6 protocol.\n"
   #else:
   #  print " Must specify --ipv4 or --ipv6 option.\n"
   #  exit(-1)
