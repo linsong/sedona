@@ -93,12 +93,18 @@ public class ManifestDb
       if (km != null) return km;
       
       // check sedonadev.org websites
-      km = Download.fetchManifest(part);
-      if (km != null) 
+      boolean enable = Env.getProperty("sedonadev.autodownload", false);
+      if (enable)
       {
-        save(km);
-        return km;
+        km = Download.fetchManifest(part);
+        if (km != null) 
+        {
+          save(km);
+          return km;
+        }
       }
+      else
+        System.out.println(" sedonadev.org autodownload is disabled");
 
       // no dice
       return null;
