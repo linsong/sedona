@@ -170,9 +170,9 @@ class SendWindow
     bool work = false
     if (appScanPeriod != Sys.app.scanPeriod)
     {
-    	retryAge = appScanPeriod = Sys.app.scanPeriod
-    	while (retryAge < 100) retryAge += appScanPeriod
-    	retryAge = Sys.max(1, 1000 / retryAge)
+      retryAge = appScanPeriod = Sys.app.scanPeriod
+      while (retryAge < 100) retryAge += appScanPeriod
+      retryAge = Sys.max(1, 1000 / retryAge)
     }
     foreach (SendPacket p : packets, max)
     {

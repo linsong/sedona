@@ -11,6 +11,8 @@ package sedona.dasp;
 
 import java.net.DatagramPacket;
 import java.net.InetAddress;
+import java.net.Inet4Address;
+import java.net.Inet6Address;
 import java.net.UnknownHostException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -446,7 +448,7 @@ public class DaspSocket
   // Is there a way to auto-detect whether to use ipv4 or ipv6?
   // For now, just hardcode our selection...
   //
-  boolean bSelectIpv6 = true;
+  boolean bSelectIpv6 = false;
   //-----------------------------------------------------------//
 
 
@@ -455,6 +457,25 @@ public class DaspSocket
    */                         
   public void discover(int port)
   {
+/*
+    // test
+    boolean bIpv4OK = true;
+    try { InetAddress test4addr = InetAddress.getByName("127.0.0.1"); }
+    catch (UnknownHostException e) { bIpv4OK = false; }
+    if (bIpv4OK)
+      System.out.println("  IPv4 appears to be supported"); 
+    else
+      System.out.println("  IPv4 does NOT appear to be supported"); 
+
+    boolean bIpv6OK = true;
+    try { InetAddress test6addr = InetAddress.getByName("::1"); }
+    catch (UnknownHostException e) { bIpv6OK = false; }
+    if (bIpv6OK)
+      System.out.println("  IPv6 appears to be supported"); 
+    else
+      System.out.println("  IPv6 does NOT appear to be supported"); 
+*/
+
     // Select multicast address based on protocol choice
     InetAddress mcaddr = bSelectIpv6 ? ipv6AllHostsAddress : ipv4AllHostsAddress;
 
