@@ -1,0 +1,67 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   23 Aug 07  Andy Saunders  Creation
+//
+
+**
+** Models a digital output point in a Device.
+**
+class DoPoint
+  extends Point 
+{
+  ////////////////////////////////////////////////////////////////
+  // Properties
+  ////////////////////////////////////////////////////////////////
+
+  ** Value to write to digital output
+  property bool  in  = false
+
+
+  ////////////////////////////////////////////////////////////////
+  // Life cycle
+  ////////////////////////////////////////////////////////////////
+
+  **
+  ** Calls super to propagate fault state from device;
+  ** writes 'in' to digital output on (a) value change 
+  ** or (b) first cycle after point status becomes 'up'.
+  ** While status is 'down', does nothing.
+  **
+  virtual override void execute()
+  {
+    super.execute()
+    if(isDown())
+    {
+      isFirstTime = true
+      return
+    }
+  
+    if(isFirstTime || (in != lastValue))
+    {
+      lastValue = in
+      wrValue(in)
+      isFirstTime = false
+      isInChanged = true
+    }
+  }  
+
+  **
+  ** wrValue call back when input changes
+  **
+  virtual void wrValue(bool value)
+  {
+    getDevice()?.setDoValue(address, value)
+  }
+  
+  ////////////////////////////////////////////////////////////////
+  // Fields
+  ////////////////////////////////////////////////////////////////
+
+  public bool lastValue
+  bool isFirstTime = true;
+  public bool isInChanged = false
+   
+}

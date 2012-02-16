@@ -1,0 +1,138 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   26 Jun 07  Brian Frank  Creation
+//
+
+**
+** Watch is used to manage an event queue of component changes.
+** Every component is allocated a byte per potential watch determined
+** by the Watch.max define.  To use the watch framework:
+**   - Create your own subclass of Watch
+**   - In your service create an array of your Watch subclass
+**   - Call App.initWatches() on service startup with your subclass array
+**   - To allocate a watch call App.openWatch() passing in the
+**     array of your subclasses
+**   - When you close a watch, make sure you call App.closeWatch()
+**
+abstract class Watch
+  extends Virtual
+{
+
+//////////////////////////////////////////////////////////////////////////
+// Methods
+//////////////////////////////////////////////////////////////////////////
+
+  **
+  ** The watch id is a combination of the count in the
+  ** high byte and the index in the low byte.
+  **
+  int id()
+  {
+    return (rand << 8) | index
+  }
+
+//////////////////////////////////////////////////////////////////////////
+// Defines
+//////////////////////////////////////////////////////////////////////////
+
+  ** Number of concurrent watches to support
+  define int max = 4
+
+  // subscription bits
+
+  ** Watch bitmask indicating a subscription to tree changes
+  define int subTree = 0x10
+
+  ** Watch bitmask indicating a subscription to config property changes
+  define int subConfig = 0x20
+
+  ** Watch bitmask indicating a subscription to runtime property changes
+  define int subRuntime = 0x40
+
+  ** Watch bitmask indicating a subscription to link changes
+  define int subLinks = 0x80
+
+  ** Watch bitmask for all subscription bits
+  define int subAll   = 0xf0
+
+  // event bits
+
+  ** Watch bitmask indicating a pending tree change event
+  define int eventTree = 0x01
+
+  ** Watch bitmask indicating a pending config property change event
+  define int eventConfig = 0x02
+
+  ** Watch bitmask indicating a pending runtime property change event
+  define int eventRuntime = 0x04
+
+  ** Watch bitmask indicating a pending link change event
+  define int eventLinks = 0x08
+
+  ** Watch bitmask for all change event bits
+  define int eventAll = 0x0f
+
+//////////////////////////////////////////////////////////////////////////
+// Utils
+//////////////////////////////////////////////////////////////////////////
+
+  **
+  ** Map a subscription bit to its ASCII code.
+  **
+  static int fromSubBit(int subBit)
+  {
+    if (subBit == subTree)    return 't'
+    if (subBit == subConfig)  return 'c'
+    if (subBit == subRuntime) return 'r'
+    if (subBit == subLinks)   return 'l'
+    return '!'
+  }
+
+  **
+  ** Map ASCII codes to subscription bit:
+  **  't' = subTree
+  **  'c' = subConfig
+  **  'r' = subRuntime
+  **  'l' = subLink
+  **  '*' = subAll
+  **
+  static int toSubBit(int what)
+  {
+    return toEventBit(what) << 4
+  }
+
+  **
+  ** Map ASCII codes to event bit:
+  **  't' = eventTree
+  **  'c' = eventConfig
+  **  'r' = eventRuntime
+  **  'l' = eventLink
+  **  '*' = eventAll
+  **
+  static int toEventBit(int what)
+  {
+    if (what == 't') return eventTree
+    if (what == 'c') return eventConfig
+    if (what == 'r') return eventRuntime
+    if (what == 'l') return eventLinks
+    if (what == '*') return eventAll
+    return 0
+  }
+
+//////////////////////////////////////////////////////////////////////////
+// Fields
+//////////////////////////////////////////////////////////////////////////
+
+  ** The top byte of the id is randomized to prevent id collisions
+  byte rand
+
+  ** Bottom byte of the id is the index into App.watches
+  byte index
+
+  ** Is this watch open or closed
+  bool closed
+
+}

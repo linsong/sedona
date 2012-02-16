@@ -1,0 +1,23 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   23 Aug 07  Andy Saunders  Creation
+//
+
+**
+** Models an analog input point in a Device.
+**
+class AiPoint
+  extends Point 
+{
+  ////////////////////////////////////////////////////////////////
+  // Properties
+  ////////////////////////////////////////////////////////////////
+
+  ** Value read from analog input
+  property float out  = 0.0
+  
+}
+  
