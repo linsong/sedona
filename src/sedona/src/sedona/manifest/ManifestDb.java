@@ -103,8 +103,8 @@ public class ManifestDb
           return km;
         }
       }
-      //else
-      //  System.out.println(" sedonadev.org autodownload is disabled");
+      else
+        System.out.println(" sedonadev.org autodownload is disabled");
 
       // no dice
       return null;
