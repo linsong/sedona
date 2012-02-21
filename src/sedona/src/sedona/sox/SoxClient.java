@@ -30,6 +30,7 @@ import sedona.Value;
 import sedona.dasp.DaspMsg;
 import sedona.dasp.DaspSession;
 import sedona.dasp.DaspSocket;
+import sedona.dasp.DiscoveredNode;
 import sedona.manifest.KitManifest;
 import sedona.manifest.ManifestDb;
 import sedona.util.Version;
@@ -1195,6 +1196,29 @@ public class SoxClient
     // parse response
     res.checkResponse('B');
   }
+
+
+////////////////////////////////////////////////////////////////
+// Device discovery
+////////////////////////////////////////////////////////////////
+
+  /**
+   * Start a discover operation
+   */
+  public synchronized void doDiscover()
+  {
+    socket.discover(port);
+  }
+
+
+  /**
+   * Access the list of currently discovered nodes  (not thread safe?)
+   */
+  public DiscoveredNode[] getDiscovered()
+  {
+    return socket.getDiscovered();
+  }
+
 
 //////////////////////////////////////////////////////////////////////////
 // PStore Convenience

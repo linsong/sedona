@@ -105,9 +105,10 @@ def archive():
   
   zip = zipfile.ZipFile(outFile, "w", zipfile.ZIP_DEFLATED)
   zip.write(manifest, "platformManifest.xml")
-  if doSvm and os.path.isdir(svmDir) and len(os.listdir(svmDir)) == 1:
-    svmFile = os.listdir(svmDir)[0]
-    zip.write(os.path.join(os.path.join(svmDir, svmFile)), "svm/"+svmFile)
+  if doSvm and os.path.isdir(svmDir):
+    # Do we need to check for file/filename correctness here?
+    for sf in os.listdir(svmDir):
+      zip.write(os.path.join(os.path.join(svmDir, sf)), "svm/" + sf)
   zip.close()
   
   if (doDb): addToPlatformDb(platformId)

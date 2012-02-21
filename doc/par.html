@@ -62,9 +62,11 @@ are reserved by the Sedona Framework, except vendors may stash any content they 
   if you attempt to upload them. Further, the manifest <i>must</i>
   have the <code>id</code> attribute set to the platform id.</li>
 
-  <li><b>svm/&lt;svm binary></b>: (optional) If you desire to package the
-  svm binary for the platform, it should be the only file in the <code>/svm</code>
-  directory.  It can have any name.</li>
+  <li><b>svm/&lt;svm binary></b>: (optional) If you wish to package the
+  svm binary for the platform, it should be placed in the <code>/svm</code>
+  directory.  It can have any name, as long as it does not have one of the
+  scode or app extensions: xml, scode, sax, or sab.  If desired, an scode
+  and app file may also be included in this directory with the svm.</li>
 
   <li><b>vendor/*</b>: (optional) The vendor may put any arbitrary contents
   in this location.</li>

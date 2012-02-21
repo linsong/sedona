@@ -13,7 +13,7 @@
 >
 
   <!-- Dependencies -->
-  <depend on="sys 1.0+" />
+  <depend on="sys 1.2" />
 
   <!-- Source Directories -->
   <source dir="." />

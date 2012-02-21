@@ -206,6 +206,61 @@ public final class PlatformDb
     catch (Exception e) { throw new PlatformDbException(e); }
   }
 
+  /**
+   * Extract all PAR file contents for the given platform id to the given
+   * file. The file will be written as a zipped par file. All directories
+   * will be created if they don't exist.
+   *
+   * @param platformId the platform id of the par file to extract
+   * @param parFile the file to write the zipped par file to.
+   *
+   * @throws PlatformDbException Thrown if the extraction fails for any reason.
+   */
+  public void extractPar(final String platformId, File parFile)
+  {
+    File dbPar = toParLocation(platformId);
+    if (!dbPar.exists())
+      throw new PlatformDbException("'" + platformId + "' is not in the database");
+
+    try
+    {
+      FileUtil.mkdir(parFile.getParentFile(), null);
+      ZipOutputStream zip = new ZipOutputStream(new FileOutputStream(parFile));
+      try
+      {
+        zip(zip, dbPar, "");
+      }
+      finally
+      {
+        zip.close();
+      }
+    }
+    catch (Exception e)
+    {
+      throw new PlatformDbException(e);
+    }
+  }
+  
+  private void zip(ZipOutputStream zip, File dir, String entryPath) throws Exception
+  {
+    File[] files = dir.listFiles();
+    for (int i=0; i<files.length; ++i)
+    {
+      File f = files[i]; 
+      if (f.isDirectory())
+        zip(zip, f, entryPath.length() == 0 ? f.getName() + "/" : entryPath + f.getName() + "/");
+      else
+      {
+        ZipEntry entry = new ZipEntry(entryPath + f.getName());
+        zip.putNextEntry(entry);
+        FileInputStream in = new FileInputStream(f);
+        FileUtil.pipe(in, zip);
+        in.close();
+        zip.closeEntry();
+      }
+    }
+  }
+  
 //////////////////////////////////////////////////////////////////////////
 // List
 //////////////////////////////////////////////////////////////////////////
@@ -348,8 +403,21 @@ public final class PlatformDb
       return null;
     File[] files = vmDir.listFiles();
 
-    // There should only be one vm in the platform's svm directory
-    return (files.length > 0) ? new DbVm(platform.matchId, files[0]) : null;
+    // There should only be one vm in the platform's svm directory, AND 
+    // it should not have any of these extensions: { .xml, .scode, .sax, .sab }.
+    // So, assume the first file we find w/diff extension is the SVM executable.
+    File svmFile = null;
+    for (int d=0; d<files.length; d++)
+    {
+      String n = files[d].getName();
+      if ( n.endsWith(".xml") || n.endsWith(".scode") || 
+           n.endsWith(".sax") || n.endsWith(".sab") )
+        continue;
+      svmFile = files[d];
+      break;
+    }
+
+    return (svmFile == null) ? null : new DbVm(platform.matchId, svmFile);
   }
 
 ////////////////////////////////////////////////////////////////

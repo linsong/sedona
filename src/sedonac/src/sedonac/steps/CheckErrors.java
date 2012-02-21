@@ -185,6 +185,8 @@ public class CheckErrors
     if (f.init.id == Expr.ARRAY_LITERAL)
     {                                    
       Object[] array = ((Expr.Literal)f.init).asArray();
+      if (array.length == 0)
+        err("Cannot create empty array literal", f.init.loc);
       if (!type.isArray()) err("Cannot use array literal with non-array type", f.init.loc);     
       Type of = type.arrayOf();
       for (int i=0; i<array.length; ++i)
@@ -247,11 +249,14 @@ public class CheckErrors
       err("Unsupported type '" + f.type + "' for define field", f.loc);
     
     if (f.init != null && !f.type.isArray())
-    {
+    { 
+      // Check for init type compatibility (coercing null to correct type as needed)
       // NOTE: array type checking is done in checkFieldInit
-      if (!f.type.equals(f.init.type))
-        err("Define field '" + f.name + "' has type '" + f.type + "', but is initialized with expression of type '" + f.init.type + "'", f.loc);        
+      if (!f.type.equals(f.init.type) && !f.init.isNullLiteral(f.type))
+        err("Define field '" + f.name + "' has type '" + f.type + 
+                 "', but is initialized with expression of type '" + f.init.type + "'", f.loc); 
     }
+
   }                       
   
   private boolean isValidDefineType(Type t)

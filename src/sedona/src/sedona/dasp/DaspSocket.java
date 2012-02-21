@@ -11,6 +11,10 @@ package sedona.dasp;
 
 import java.net.DatagramPacket;
 import java.net.InetAddress;
+import java.net.Inet4Address;
+import java.net.Inet6Address;
+import java.net.UnknownHostException;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -333,6 +337,14 @@ public class DaspSocket
       s.challenge(msg);
       return;
     }
+    else if (msg.msgType == DISCOVER) 
+    {
+      System.out.println("  Received Discover response!  host=" + host + "  port=" + port);
+
+      // Add response to list 
+      DiscoveredNode info = new DiscoveredNode(host, msg.platformId());
+      discovered.add(info);
+    }
   
     // otherwise ensure host/port are valid
     if (session == null || 
@@ -401,8 +413,110 @@ public class DaspSocket
 // IO Hooks
 ////////////////////////////////////////////////////////////////
   
+  static InetAddress ipv4AllHostsAddress;
+  static InetAddress ipv6AllHostsAddress;
+
+  static
+  {
+    String addrName = "(not set!)";
+    try
+    {
+      addrName = "224.0.0.1";    // IPv4 all-hosts multicast address
+      ipv4AllHostsAddress = InetAddress.getByName(addrName);
+      addrName = "ff02::1";      // IPv6 all-hosts multicast address 
+      ipv6AllHostsAddress = InetAddress.getByName(addrName);
+    }
+    catch (UnknownHostException e)
+    {
+      System.out.println("ERROR: Unknown host '" + addrName + "': " + e.getMessage());
+      e.printStackTrace();
+    }
+  }
+
+
   /**
-   * All sends route thru here
+   * Return current list of discovered nodes   (not thread safe?)
+   */        
+  public DiscoveredNode[] getDiscovered()
+  {
+    return (DiscoveredNode[])discovered.toArray(new DiscoveredNode[0]);
+  }
+
+  //-----------------------------------------------------------//
+  //         *** SELECT IPv4 vs. IPv6 HERE ***
+  //
+  // Is there a way to auto-detect whether to use ipv4 or ipv6?
+  // For now, just hardcode our selection...
+  //
+  boolean bSelectIpv6 = false;
+  //-----------------------------------------------------------//
+
+
+  /**
+   * Send device discovery multicast msg
+   */                         
+  public void discover(int port)
+  {
+/*
+    // test
+    boolean bIpv4OK = true;
+    try { InetAddress test4addr = InetAddress.getByName("127.0.0.1"); }
+    catch (UnknownHostException e) { bIpv4OK = false; }
+    if (bIpv4OK)
+      System.out.println("  IPv4 appears to be supported"); 
+    else
+      System.out.println("  IPv4 does NOT appear to be supported"); 
+
+    boolean bIpv6OK = true;
+    try { InetAddress test6addr = InetAddress.getByName("::1"); }
+    catch (UnknownHostException e) { bIpv6OK = false; }
+    if (bIpv6OK)
+      System.out.println("  IPv6 appears to be supported"); 
+    else
+      System.out.println("  IPv6 does NOT appear to be supported"); 
+*/
+
+    // Select multicast address based on protocol choice
+    InetAddress mcaddr = bSelectIpv6 ? ipv6AllHostsAddress : ipv4AllHostsAddress;
+
+    byte[] mbuf = new byte[DaspConst.ABS_MAX_VAL];
+
+    // Encode DASP msg...
+    DaspMsg msg = new DaspMsg();
+    msg.msgType = DaspMsg.DISCOVER;
+    int mlen = msg.encode(mbuf);
+
+    // Collect info into DatagramPacket for sending...
+    DatagramPacket dgPacket = new DatagramPacket(mbuf, mlen, mcaddr, port);
+
+    String proto = bSelectIpv6 ? "IPv6" : "IPv4";
+    System.out.println("\n  Sending " + proto + " discover req to " + mcaddr + " on port " + port);
+
+    // Find the right interface for the address...
+    DaspSocketInterface iface = route(mcaddr, port);
+
+    // Clear list of discovered nodes (create if necessary)
+    if (discovered==null) discovered = new ArrayList();
+    discovered.clear();
+
+    // Send the message...
+    try
+    {
+      iface.send(dgPacket);    
+    }
+    catch (IOException e)
+    {
+      if (traceSend)
+      {
+        System.out.println("ERROR: DaspSocket discover - " + e.getMessage());
+        e.printStackTrace();
+      }
+    }
+  }
+
+
+  /**
+   * All sends route thru here, except Discovery
    */                         
   void send(DaspSession session, DaspMsg msg)
   {
@@ -483,4 +597,5 @@ public class DaspSocket
   int qMode;                        // session or socket queueing mode
   ReceiveQueue queue;               // used for socket queuing
 
+  ArrayList discovered;             // collects responses to discover msg
 }

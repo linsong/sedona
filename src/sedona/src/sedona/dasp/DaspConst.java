@@ -44,6 +44,7 @@ public interface DaspConst
 // Message Types
 ////////////////////////////////////////////////////////////////
 
+  public static final int DISCOVER     = 0;
   public static final int HELLO        = 1;
   public static final int CHALLENGE    = 2;
   public static final int AUTHENTICATE = 3;
@@ -78,6 +79,7 @@ public interface DaspConst
   public static final int RECEIVE_MAX          = 0x2d;  // (b,1)
   public static final int RECEIVE_TIMEOUT      = 0x31;  // (c,1)
   public static final int ERROR_CODE           = 0x35;  // (d,1)
+  public static final int PLATFORM_ID          = 0x3a;  // (e,2)
 
 ////////////////////////////////////////////////////////////////
 // Error Codes

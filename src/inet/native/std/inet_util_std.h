@@ -12,6 +12,16 @@
 
 #include "inet_util.h"
 
+// Must define this to select IPv4 vs. IPv6 sockets
+#ifndef SOCKET_FAMILY_INET
+ #ifndef SOCKET_FAMILY_INET6
+  //#warning No SOCKET_FAMILY specified: assuming SOCKET_FAMILY_INET (IPv4).            // normal
+  #pragma message ( "No SOCKET_FAMILY specified: assuming SOCKET_FAMILY_INET (IPv4)." )  // MSVC
+  #define SOCKET_FAMILY_INET
+ #endif
+#endif
+
+
 // we never select more than one socket at
 // a time, so conserve memory.
 // NOTE: gcc gives a lot of warnings about redefining FD_SETSIZE
@@ -127,6 +137,8 @@ typedef int socket_t;
 ////////////////////////////////////////////////////////////////
 
 #ifdef NETOS_GNU_TOOLS
+
+#error The NETOS_GNU_TOOLS compile switch is not fully supported at this time.  Contact Tridium Engineering if you need to use this to build your Sedona VM.
 
 #include <sockapi.h>
 #include <narmapi.h>

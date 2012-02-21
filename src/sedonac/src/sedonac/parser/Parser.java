@@ -304,6 +304,7 @@ public class Parser
       else
       {
         init = expr();
+        init.isNullLiteral(type);       // coerce null to correct type if necessary
       }
     }
     endOfStmt();
@@ -344,7 +345,8 @@ public class Parser
     // parse array
     ArrayList acc = new ArrayList();
     consume(Token.LBRACE);        
-    while (true)
+    if (curt == Token.COMMA) consume();
+    else while (true)
     {
       acc.add(literal().value);
       if (curt != Token.COMMA) break;

@@ -13,9 +13,7 @@
   <target name="soxcert" />
   <target name="serial" />
   <target name="web" />
-  <!-- Deprecated as of 1.2 
   <target name="control" />
-  -->
   <target name="driver" />
   <target name="datetime" />
   <target name="datetimeStd" />
@@ -25,13 +23,14 @@
   <target name="../platforms/src/generic/win32" />
   <target name="../platforms/src/generic/unix" />
 
-  <!-- New kits supersede 'control' for 1.2 -->
+  <!-- modular versions of the control kit -->
   <target name="types" />
   <target name="func" />
   <target name="hvac" />
   <target name="logic" />
   <target name="math" />
   <target name="timing" />
+  <target name="pricomp" />
 
 </sedonaDir>
 

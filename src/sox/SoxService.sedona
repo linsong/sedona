@@ -86,7 +86,7 @@ class SoxService
     // free watch slot in the application
     Sys.app.closeWatch(s)
 
-    // rest transfer (i.e. close it)
+    // reset transfer (i.e. close it)
     s.transfer.reset()
 
     // log close
@@ -187,7 +187,6 @@ class SoxService
       // fall thru to ensure house keeping and transfers
     }
 
-    // perform house keeping every 100ms
     houseKeeping()
 
     // check any file transfers in progress
@@ -248,7 +247,7 @@ class SoxService
     // now we just ignore the hello when busy instead
     // of sending back proper busy error
     SoxSession session = null
-    if (msgType == Dasp.HELLO)
+    if ( (msgType == Dasp.HELLO) || (msgType == Dasp.DISCOVER) )
       session = openSession()
     else
       session = session(sessionId)
@@ -272,6 +271,10 @@ class SoxService
         return
       case Dasp.CLOSE:
         closeSession(session, "Recd cmd");
+        return
+      case Dasp.DISCOVER:
+        session.discoverResponse(this);
+        closeSession(session, "Discovered");
         return
     }
 
@@ -408,9 +411,8 @@ class SoxService
   **
   private bool houseKeeping()
   {
-    // we only do house keeping every 100ms
     long now = Sys.ticks()
-    if (now - lastHouseKeeping < 100ms)
+    if (now - lastHouseKeeping < (long)HouseKeepingFreq)
       return false
 
     // give each open session a chance to do house keeping
@@ -459,6 +461,7 @@ class SoxService
 ////////////////////////////////////////////////////////////////
 
   define Log log
+	define int HouseKeepingFreq = 100 // (ms) do houskeeping no more frequently than this
 
   inline SoxSession[Watch.max] sessions = {...}
   inline UdpSocket socket           // socket used for send/receive

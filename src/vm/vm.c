@@ -610,9 +610,9 @@ int vmCall(SedonaVM* vm, uint16_t method, Cell* args, int argc)
       ////////////////////////////////////////////////////////////////////
 
       // float compare
-      // NOTE: FloatEq needs to compare as int32_t so that NaN is ==
+      // NOTE: FloatEq and FloatNotEq need to compare as int32_t so that NaN is == (or !=)
       Case FloatEq:    --sp; sp->ival = sp->ival == (sp+1)->ival; ++cp; EndInstr;
-      Case FloatNotEq: --sp; sp->ival = sp->fval != (sp+1)->fval; ++cp; EndInstr;
+      Case FloatNotEq: --sp; sp->ival = sp->ival != (sp+1)->ival; ++cp; EndInstr;
       Case FloatGt:    --sp; sp->ival = sp->fval >  (sp+1)->fval; ++cp; EndInstr;
       Case FloatGtEq:  --sp; sp->ival = sp->fval >= (sp+1)->fval; ++cp; EndInstr;
       Case FloatLt:    --sp; sp->ival = sp->fval <  (sp+1)->fval; ++cp; EndInstr;

@@ -293,7 +293,7 @@ public class DaspSession
   protected void connect()
     throws Exception
   {
-    // send hello, receiver response
+    // send hello, receive response
     DaspMsg res = hello();
 
     // process challenge (or close, welcome)

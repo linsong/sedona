@@ -118,8 +118,17 @@ Cell inet_UdpSocket_open(SedonaVM* vm, Cell* params)
   if (!closed || sock != -1) return falseCell;
 
   // create socket
+#ifdef SOCKET_FAMILY_INET
   sock = socket(AF_INET, SOCK_DGRAM,  0);
+#elif defined( SOCKET_FAMILY_INET6 )
+  sock = socket(AF_INET6, SOCK_DGRAM,  0);
+#endif
+
+#ifdef _WIN32
+  if (sock == INVALID_SOCKET) return falseCell;
+#else
   if (sock < 0) return falseCell;
+#endif
 
   // make socket non-blocking
   if (inet_setNonBlocking(sock) != 0)
@@ -147,11 +156,42 @@ Cell inet_UdpSocket_bind(SedonaVM* vm, Cell* params)
   bool closed   = getClosed(self);
   socket_t sock = getSocket(self);
 
+#ifdef SOCKET_FAMILY_INET
+
+  // Join the IPv4 all-hosts multicast group (224.0.0.1)
+  struct ip_mreq mreq;
+  mreq.imr_interface.s_addr = inet_addr("0.0.0.0");
+  //mreq.imr_multiaddr.s_addr = inet_addr("224.0.0.1");    // hardcoded address
+  mreq.imr_multiaddr = in4addr_allnodesonlink;     
+
+  printf("\nJoining IPv4 all-nodes multicast group (224.0.0.1)\n\n");
+
+#elif defined( SOCKET_FAMILY_INET6 )
+
+  // Join the IPv6 all-nodes multicast group (FF02::1)
+  struct ipv6_mreq mreq;
+  mreq.ipv6mr_interface = 0;
+  mreq.ipv6mr_multiaddr = in6addr_allnodesonlink;   
+
+  printf("\nJoining IPv6 all-nodes multicast group (FF02::1)\n\n");
+
+#endif
+
   if (closed)
     return falseCell;
 
+#ifdef _WIN32
+  if (inet_bind(sock, port) == SOCKET_ERROR)
+#else
   if (inet_bind(sock, port) != 0)
+#endif
     return falseCell;
+
+#ifdef SOCKET_FAMILY_INET
+  setsockopt(sock, IPPROTO_IP, IP_ADD_MEMBERSHIP, (char *)&mreq, sizeof(mreq));
+#elif defined( SOCKET_FAMILY_INET6 )
+  setsockopt(sock, IPPROTO_IPV6, IPV6_ADD_MEMBERSHIP, (char *)&mreq, sizeof(mreq));
+#endif
 
   return trueCell;
 }
@@ -177,6 +217,8 @@ Cell inet_UdpSocket_send(SedonaVM* vm, Cell* params)
   struct sockaddr_in addr;
   int r;
 
+  if (closed) printf("  send error! UDP socket is closed\n");
+
   if (closed) return falseCell;
   if (sDatagram == NULL) return falseCell;
 
@@ -186,13 +228,18 @@ Cell inet_UdpSocket_send(SedonaVM* vm, Cell* params)
 
   // Issue 18436 - the inet natives currently only create ipv4 sockets,
   // so we need to fail-fast if the addr is not ipv4.
-  if (!inet_isIPv4(datagram.addr)) return falseCell;
+  // Issue 17030 - Support ipv4 & ipv6 sockets
+  // so we need to NOT fail if addr is not ipv4...
+  //if (!inet_isIPv4(datagram.addr)) return falseCell;
 
   inet_toSockaddr(&addr, datagram.addr, datagram.port);
   buf = datagram.buf + datagram.off;
   len = datagram.len;
 
   r = sendto(sock, buf, len, 0, (SOCKADDR_PARAM*)&addr, sizeof(addr));
+
+  if (r!=len) printf("  send error! sendto sent %d bytes (should have sent %d)\n", r, len);
+
   if (r != len) return falseCell;
   return trueCell;
 }

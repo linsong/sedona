@@ -149,6 +149,7 @@ public class DaspMsg implements DaspConst
         case RECEIVE_MAX:       receiveMax      = u2;     break;
         case RECEIVE_TIMEOUT:   receiveTimeout  = u2 * 1000L; break;
         case ERROR_CODE:        errorCode       = u2;     break;
+        case PLATFORM_ID:       platformId      = str;    break;
         default: throw new IllegalStateException("Unknown field id: " + id);
       }
     }
@@ -199,6 +200,7 @@ public class DaspMsg implements DaspConst
     if (hasReceiveMax)           { num++; buf[pos++] = (byte)RECEIVE_MAX;      pos = u2(pos, buf, receiveMax); }
     if (hasReceiveTimeout)       { num++; buf[pos++] = (byte)RECEIVE_TIMEOUT;  pos = u2(pos, buf, (int)(receiveTimeout/1000L)); }
     if (errorCode > -1)          { num++; buf[pos++] = (byte)ERROR_CODE;       pos = u2(pos, buf, errorCode); }
+    if (platformId != null)      { num++; buf[pos++] = (byte)PLATFORM_ID;      pos = str(pos, buf, platformId); }
 
     // backpatch msgType and numFields
     buf[4] = (byte)((msgType << 4) | num);
@@ -621,6 +623,28 @@ public class DaspMsg implements DaspConst
     this.errorCode = Math.max(-1, errorCode);
   }
   
+    /**
+   * Get the platformId header field.
+   * 
+   * @return the platformId, or null if this header is not set.
+   */
+  public final String platformId()
+  {
+    return platformId;
+  }
+  
+  /**
+   * Set the platformId header.
+   * 
+   * @param platformId
+   *          the platformId, or null to clear this field.
+   */
+  public final void setPlatformId(String platformId)
+  {
+    this.platformId = platformId;
+  }
+
+
 ////////////////////////////////////////////////////////////////
 //Debug
 ////////////////////////////////////////////////////////////////
@@ -644,6 +668,7 @@ public class DaspMsg implements DaspConst
    if (receiveMax > -1)         out.println("  receiveMax      = " + receiveMax);
    if (receiveTimeout > -1)     out.println("  receiveTimeout  = " + receiveTimeout);
    if (errorCode > -1)          out.println("  errorCode       = " + errorCode);
+   if (platformId != null)      out.println("  platformId      = " + platformId);
 
    out.flush();
  }
@@ -682,6 +707,7 @@ public class DaspMsg implements DaspConst
   protected int     receiveMax = -1;
   protected long    receiveTimeout = -1;
   protected int     errorCode = -1;
+  protected String  platformId;
   
   // payload bytes
   protected byte[] payload = noBytes;

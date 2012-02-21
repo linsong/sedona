@@ -37,10 +37,14 @@ Cell inet_TcpServerSocket_bind(SedonaVM* vm, Cell* params)
 #endif
 
   // create socket
+#ifdef SOCKET_FAMILY_INET
   sock = socket(AF_INET, SOCK_STREAM,  0);
+#elif defined( SOCKET_FAMILY_INET6 )
+  sock = socket(AF_INET6, SOCK_STREAM,  0);
+#endif
   if (sock < 0) return falseCell;
 
-  // set socket to reuse it's port
+  // set socket to reuse its port
   val = 1;
   if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (void*)&val, sizeof(val)) != 0)
   {

@@ -131,6 +131,7 @@ class Type2
 {
   static native int add(int a, int b)
   static native void test(bool z, int i, float f)
+  native float  testf(int i, float f)
 }
 </pre>
 
@@ -221,6 +222,28 @@ Cell foo_Type2_test(SedonaVM* vm, Cell* params)
   printf("test %d %d %f\n", z, b, f);
 
   return nullCell;
+}
+</pre>
+
+
+
+<p>
+An example implementation of the (non-static) <code>foo::Type2.testf</code> method:
+</p>
+
+<pre>
+Cell foo_Type2_testf(SedonaVM* vm, Cell* params)
+{
+  void* this = params[0].aval;   /* 'this' pointer is implicit first element of params[] */
+  int32_t b  = params[1].ival;
+  float   f  = params[2].fval;
+  Cell result;
+
+  result.fval = b*f;
+
+  printf("test %d*%f=%f\n", b, f, result.fval);
+
+  return result;
 }
 </pre>
 
