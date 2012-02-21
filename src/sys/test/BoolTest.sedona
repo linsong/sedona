@@ -1,0 +1,110 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   10 Mar 07  Brian Frank  Creation
+//
+
+**
+** BoolTest
+**
+class BoolTest
+  extends Test
+{
+  static bool t() { return true  }
+  static bool f() { return false }
+  static bool n() { return null }
+
+  static void testNull()
+  {
+    assert(t() != n())                   
+    assert(null != f())                   
+    assert(n() == null)
+    assert(n())
+  }
+
+  static void testCondNot()
+  {
+    assert(!t() == false)
+    assert(!f() == true)
+  }
+
+  static void testCondOr()
+  {
+    // cond or x2
+    assert((f() || f()) == false)
+    assert((f() || t()) == true)
+    assert((t() || f()) == true)
+    assert((t() || t()) == true)
+
+    // cond or x4
+    assert((f() || f() || f() || f()) == false)
+    assert((f() || f() || f() || t()) == true)
+    assert((f() || f() || t() || f()) == true)
+    assert((f() || t() || f() || f()) == true)
+    assert((t() || f() || f() || f()) == true)
+    assert((t() || t() || f() || t()) == true)
+  }
+
+  static void testCondAnd()
+  {
+    // cond and x2
+    assert((f() && f()) == false)
+    assert((f() && t()) == false)
+    assert((t() && f()) == false)
+    assert((t() && t()) == true)
+
+    // cond and x4
+    assert((f() && f() && f() && f()) == false)
+    assert((f() && f() && f() && t()) == false)
+    assert((f() && f() && t() && f()) == false)
+    assert((f() && t() && f() && f()) == false)
+    assert((t() && f() && f() && f()) == false)
+    assert((t() && t() && f() && t()) == false)
+    assert((t() && t() && t() && t()) == true)
+  }
+
+  static void testIfStmts()
+  {
+    if (f() || f() || t())
+      assert(true)
+    else
+      assert(false)
+
+    int x = 0
+    if (f() || f() || t())
+      x = 2
+    assert(x == 2)
+
+    if (t() && t() && f())
+      assert(false)
+    else
+      assert(true)
+  }
+
+  static void testTernary()
+  {
+    int x = 7
+    int y = 3
+    assert((t() ? 2 : 3) == 2)
+    assert((f() ? 2 : 3) == 3)
+    assert((t() ? x+y : x-y) == 10)
+    assert((f() ? x+y : x-y) == 4)
+  }
+
+  static void testBitwise()
+  {
+    bool t = true
+    bool f = false
+    assert((t & f) == false)
+    assert((t | f) == true)
+    assert((t ^ f) == true)
+    assert((t ^ t) == false)
+
+    assert((f |= t) == true)
+    f ^= t
+    assert(f == false)
+  }
+
+}

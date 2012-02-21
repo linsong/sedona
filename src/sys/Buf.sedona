@@ -1,0 +1,124 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   26 Jul 06  Brian Frank  Creation
+//   24 May 07  Brian Frank  Port from Java to Sedona
+//   10 Sep 07  Brian Frank  Split out BufInStream and BufOutStream
+//
+
+**
+** Buf encapsulates a fixed capacity byte[].  The fixed
+** capacity is available via the 'bytesLen' field.  At any
+** time a variable number of bytes are actually used as
+** defined by the 'size' field.  Use the BufInStream and
+** BufOutStream classes to perform memory based IO against
+** a Buf instance.
+**
+final class Buf
+{
+
+////////////////////////////////////////////////////////////////
+// Constructor
+////////////////////////////////////////////////////////////////
+
+  **
+  ** Construct a buffer with the specified maximum size.
+  **
+  Buf(int maxBufLen)
+  {
+    this.bytesLen = maxBufLen
+    this.bytes.length = maxBufLen
+  }
+
+////////////////////////////////////////////////////////////////
+// Get/Set
+////////////////////////////////////////////////////////////////
+
+  **
+  ** Get the byte at the specified index.
+  **
+  int get(int index)
+  {
+    return bytes[index]
+  }         
+  
+  **
+  ** Copy the specified buffer bytes into this buffer's bytes and 
+  ** update size.  If the specified buffer contains more than 
+  ** bytesLen bytes then the copy is truncated.
+  **
+  void copyFromBuf(Buf that)
+  {             
+    copyFromBytes(that.bytes, 0, that.size)
+  }
+
+  
+  **
+  ** Copy the specified byte array into this buffer's bytes and 
+  ** update size.  If the specified length is greater than 
+  ** bytesLen bytes then the copy is truncated.
+  **
+  void copyFromBytes(byte[] that, int off, int len)
+  {             
+    int newSize = len
+    if (len > bytesLen) newSize = bytesLen      
+    this.size = newSize
+    Sys.copy(that, off, this.bytes, 0, newSize)
+  }
+
+
+  **
+  ** Set size to zero.  The data remains untouched, but the
+  ** buffer is ready to be used to begin writing from scratch.
+  **
+  void clear()
+  {
+    size = 0
+  }
+
+////////////////////////////////////////////////////////////////
+// Str Utils
+////////////////////////////////////////////////////////////////
+
+  **
+  ** Return the bytes cast to a Str reference.  No guarantee
+  ** is made whether the string is actually null terminated.
+  **
+  @javaNative Str toStr()
+  {
+    return (Str)bytes
+  }         
+    
+  **
+  ** Copy the specified string including its null terminator
+  ** into this buffer bytes field and update size accordingly.
+  ** If the specified string contains more than bytesLen characters
+  ** including the null terminator then return false and truncate
+  ** the copy.  If truncated we still add a null terminator.
+  **
+  bool copyFromStr(Str s)
+  {
+    int max = bytesLen
+    for (int i=0; i<max; ++i)
+    {
+      int ch = s.get(i)
+      bytes[i] = ch
+      if (ch == 0) { size = (i+1); return true }
+    }
+    bytes[max-1] = 0
+    size = max
+    return false
+  }
+
+////////////////////////////////////////////////////////////////
+// Fields
+////////////////////////////////////////////////////////////////
+
+  inline byte[] bytes    // raw byte array
+  short bytesLen         // length of bytes array
+  short size             // number of bytes currently used
+
+}
+
