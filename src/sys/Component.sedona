@@ -219,6 +219,64 @@ class Component
   }
 
 //////////////////////////////////////////////////////////////////////////
+// Component event callbacks
+//////////////////////////////////////////////////////////////////////////
+
+  define int ADDED   = 1
+  define int REMOVED = 0
+
+  **
+  ** This gets called whenever a child is added to or removed from the 
+  ** component's child list.  Returns 0 on success, <0 on failure.
+  **
+  virtual int childEvent(int eType, Component child)
+  {
+/*
+    Sys.out.print("  ${this.name}: Child ${child.name} ")
+    if (eType==ADDED) Sys.out.print("added\n")
+    else if (eType==REMOVED) Sys.out.print("removed\n")
+*/
+
+    return 0
+  }
+
+
+  **
+  ** This gets called whenever a component is added to or removed from 
+  ** a parent component's child list.  Returns 0 on success, <0 on failure.
+  **
+  virtual int parentEvent(int eType, Component parent)
+  {
+/*
+    Sys.out.print("  ${this.name}: ")
+    if (eType==ADDED) Sys.out.print("Added to ")
+    else if (eType==REMOVED) Sys.out.print("Removed from ")
+    Sys.out.print("parent ${parent.name}\n")
+*/
+
+    return 0
+  }
+
+
+  **
+  ** This gets called whenever a link is connected to or removed from one 
+  ** of the component's slots.  Returns 0 on success, <0 on failure.
+  **
+  virtual int linkEvent(int eType, Link link)
+  {
+/*
+    Sys.out.print("  ${this.name}: Link ")
+    if (eType==ADDED) Sys.out.print("added\n")
+    else if (eType==REMOVED) Sys.out.print("removed\n")
+*/
+
+    return 0
+  }
+
+
+  
+
+//////////////////////////////////////////////////////////////////////////
 // Watch Eventing
 //////////////////////////////////////////////////////////////////////////
 
