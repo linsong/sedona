@@ -368,7 +368,7 @@ class App
     // call parent's callback function (before starting child)
     if (parent.childEvent(Component.ADDED, c)<0) { remove(c); return null }
 
-    // call parent's callback function (before starting child)
+    // call child's callback function (before starting child)
     if (c.parentEvent(Component.ADDED, parent)<0) { remove(c); return null }
 
     // start child if app is running
@@ -506,7 +506,7 @@ class App
     // call parent's callback function (before starting child)
     if (parent.childEvent(Component.REMOVED, c)<0) { return false }
 
-    // call parent's callback function (before starting child)
+    // call child's callback function (before starting child)
     if (c.parentEvent(Component.REMOVED, parent)<0) { return false }
 
     // fire config changed on parent
