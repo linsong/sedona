@@ -107,8 +107,8 @@ public abstract class Expr
   public static final int INTERPOLATION  = 72;  // Interpolation
   public static final int NEW            = 73;  // New
   public static final int DELETE         = 74;  // Delete
+  public static final int PROP_ASSIGN    = 75;  // Property assignment :=
 
-  public static final int PROP_ASSIGN    = 75;
 
 //////////////////////////////////////////////////////////////////////////
 // Expr

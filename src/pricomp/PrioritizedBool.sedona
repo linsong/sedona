@@ -173,8 +173,8 @@ class PrioritizedBool
     }
 
     // Update output value
-    out         = value
-    sourceLevel = level
+    out         := value
+    sourceLevel := level
     //Sys.out.print(" -- choosing in:$level, out set to $value --\n")
   }
 

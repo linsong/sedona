@@ -857,8 +857,12 @@ public class CheckErrors
   private void checkPropAssign(Expr.Binary expr)
   {
     checkAssign(expr);
-    if (expr.lhs.id!=Expr.FIELD)                                  
-      err("Cannot apply ':=' operator to non-property", expr.loc);
+    if (expr.lhs.id==Expr.FIELD)
+    {
+      Expr.Field f = (Expr.Field)expr.lhs;
+      if (f.field.isProperty()) return;
+    }
+    err("Cannot apply ':=' operator to non-property", expr.loc);
   }
 
   private void checkTernary(Expr.Ternary expr)
