@@ -1,0 +1,246 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   26 Jul 06  Brian Frank  Creation
+//   03 Apr 07  Brian Frank  Port from Java to Sedona
+//
+
+**
+** OutStream is used to output printed text or binary encoded data.
+**
+abstract class OutStream
+  extends Virtual
+{
+
+////////////////////////////////////////////////////////////////
+// Write
+////////////////////////////////////////////////////////////////
+
+  **
+  ** Write a single byte.
+  ** Return true on success, false on failure.
+  **
+  abstract bool write(int b)
+
+  **
+  ** Write a block of bytes.
+  ** Return true on success, false on failure.
+  **
+  abstract bool writeBytes(byte[] b, int off, int len)
+
+  **
+  ** Flush the stream.  Default implementation does nothing.
+  **
+  virtual void flush()
+  {
+  }
+
+  **
+  ** Close the stream.  Default implementation does nothing.
+  **
+  virtual void close()
+  {
+  }
+
+////////////////////////////////////////////////////////////////
+// Binary
+////////////////////////////////////////////////////////////////
+
+  **
+  ** Write a bool 1 or 0.
+  ** Return true on success or fail on failure.
+  **
+  bool writeBool(bool b)
+  {
+    return write(b == null ? 2 : (b ? 1 : 0))
+  }
+
+  **
+  ** Write a character.
+  ** Return true on success or fail on failure.
+  **
+  bool writeChar(int b)
+  {
+    return write(b)
+  }
+
+  **
+  ** Write the null terminated string.
+  ** Return true on success, false on failure.
+  **
+  bool writeStr(Str s)
+  {
+    for (int i=0; true; ++i)
+    {
+      int ch = s.get(i)
+      if (ch == 0) break
+      writeChar(ch)
+    }
+    return write(0)
+  }
+
+  **
+  ** Write a two byte integer in network byte order.
+  ** Return true on success, false on failure.
+  **
+  bool writeI2(int v)
+  {
+    return write((v >> 8) & 0xFF) &
+           write((v >> 0) & 0xFF)
+  }
+
+  **
+  ** Write a four byte (32-bit) integer in network byte order.
+  ** Return true on success, false on failure.
+  **
+  bool writeI4(int v)
+  {
+    return write((v >> 24) & 0xFF) &
+           write((v >> 16) & 0xFF) &
+           write((v >>  8) & 0xFF) &
+           write((v >>  0) & 0xFF)
+  }
+
+  **
+  ** Write a eight byte (64-bit) integer in network byte order.
+  ** Return true on success, false on failure.
+  **
+  bool writeI8(long v)
+  {
+    return writeI4((int)((v >> 32) & 0xFFFF_FFFFL)) &
+           writeI4((int)((v >>  0) & 0xFFFF_FFFFL));
+  }
+
+  **
+  ** Write a four byte (32-bit) floating point value in network 
+  ** byte order.  Return true on success, false on failure.
+  **
+  bool writeF4(float v)
+  {
+    return writeI4(Sys.floatToBits(v))
+  }               
+  
+  **
+  ** Write an eight byte (64-bit) floating point value in network 
+  ** byte order.  Return true on success, false on failure.
+  **
+  bool writeF8(double v)
+  {
+    return writeI8(Sys.doubleToBits(v))
+  }
+
+////////////////////////////////////////////////////////////////
+// Print
+////////////////////////////////////////////////////////////////
+
+  **
+  ** Print a newline character.  Return this.
+  **
+  OutStream nl()
+  {
+    writeChar('\n')
+    flush()
+    return this
+  }
+
+  **
+  ** Print the specified string.  Return this.
+  **
+  OutStream print(Str s)
+  {
+    for (int i=0; true; ++i)
+    {
+      int ch = s.get(i)
+      if (ch == 0) break
+      writeChar(ch)
+    }
+    return this
+  }
+
+  **
+  ** Print the specified string left justified according
+  ** the specified padding width.  Return this.
+  **
+  OutStream printPad(Str s, int width)
+  {
+    int i = 0
+    for (; true; ++i)
+    {      
+      int ch = s.get(i)
+      if (ch == 0) break
+      writeChar(ch)
+    }
+    for (; i<width; ++i) writeChar(' ')
+    return this
+  }
+
+  **
+  ** Print a string for the specified boolean.  Return this.
+  **
+  OutStream printBool(bool x)
+  {
+    //return print(x ? "true" : "false")
+    //return print(x==null ? "null" : (x ? "true" : "false"))
+    return print(x ? (x==null ? "null" : "true") : "false")
+  }
+
+  **
+  ** Print the integer as a character.  Return this.
+  **
+  OutStream printChar(int x)
+  {
+    writeChar(x)
+    return this
+  }
+
+  **
+  ** Print the integer as a signed decimal string.  Return this.
+  **
+  OutStream printInt(int x)
+  {
+    return print(Sys.intStr(x))
+  }
+
+  **
+  ** Print the integer as an unsigned hexadecimal string.
+  **
+  OutStream printHex(int x)
+  {
+    return print(Sys.hexStr(x))
+  }
+
+  **
+  ** Print the long as a signed decimal string.  Return this.
+  **
+  OutStream printLong(long x)
+  {
+    return print(Sys.longStr(x))
+  }
+
+  **
+  ** Print the long as an unsigned hexadecimal string.
+  **
+  OutStream printLongHex(long x)
+  {
+    return print(Sys.longHexStr(x))
+  }
+
+  **
+  ** Print the float as a string.
+  **
+  OutStream printFloat(float x)
+  {
+    return print(Sys.floatStr(x))
+  }
+
+  **
+  ** Print the double as a string.
+  **
+  OutStream printDouble(double x)
+  {
+    return print(Sys.doubleStr(x))
+  }
+
+}

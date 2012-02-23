@@ -1,0 +1,204 @@
+//
+// Copyright (c) 2009 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   19 May 09  Brian Frank         Creation
+//   13 Oct 11  Elizabeth McKenney  Enhanced to include linked list of FileStore objects
+//
+
+**
+** FileStore is used to implement the backing storage of File based I/O.  
+** Typically each storage device such as static RAM or EEPROM implements 
+** a subclass of FileStore and declares a singleton instance, inserting 
+** it into the FileStore static linked list at runtime.  Filenames are 
+** mapped to a FileStore instance via 'FileStore.lookup', which steps 
+** through the static linked list and calls accept() on each one, returning 
+** the first instance that returns true.
+**                 
+class FileStore 
+  extends Virtual
+{                      
+  **
+  ** Implementation for 'File.size'.  
+  ** Must work without opening the file.
+  **
+  virtual int size(File f) 
+  {
+    return doSize(f.name)
+  }
+
+  **
+  ** Implementation for 'File.open'.
+  **
+  virtual bool open(File f, Str mode) 
+  { 
+    f.fp = doOpen(f.name, mode)
+    return f.fp != null
+  }
+
+  **
+  ** Implementation for 'File.out.flush'.
+  **
+  virtual void flush(File f) 
+  { 
+    doFlush(f.fp) 
+  }
+
+  **
+  ** Implementation for 'File.close'.
+  **
+  virtual bool close(File f) 
+  {
+    // If fp is null, then the file was never open
+    if (null == f.fp) return true
+    
+    bool ok = doClose(f.fp)  
+    f.fp = null
+    return ok
+  }
+  
+  **
+  ** Implementation for 'File.tell'.
+  **
+  virtual int tell(File f) 
+  { 
+    return doTell(f.fp)
+  }  
+
+  **
+  ** Implementation for 'File.seek'.
+  **
+  virtual bool seek(File f, int pos)
+  { 
+    return doSeek(f.fp, pos)
+  }  
+  
+  **
+  ** Implementation for 'File.in.read'.
+  **
+  virtual int read(File f) 
+  { 
+    return doRead(f.fp)
+  }
+
+  **
+  ** Implementation for 'File.in.readBytes'.
+  **
+  virtual int readBytes(File f, byte[] b, int off, int len) 
+  {
+    return doReadBytes(f.fp, b, off, len)
+  }
+
+  **
+  ** Implementation for 'File.out.write'.
+  **
+  virtual bool write(File f, int b)
+  {
+    return doWrite(f.fp, b)
+  }
+
+  **
+  ** Implementation for 'File.out.writeBytes'.
+  **
+  virtual bool writeBytes(File f, byte[] b, int off, int len)
+  {
+    return doWriteBytes(f.fp, b, off, len)
+  }
+
+  **
+  ** Rename a file. Return true on success, false on failure.
+  **
+  native static bool rename(Str from, Str to)
+  
+
+  native static int doSize(Str name)
+  native static Obj doOpen(Str name, Str mode)
+  native static int doRead(Obj fp)
+  native static int doReadBytes(Obj fp, byte[] b, int off, int len)
+  native static bool doWrite(Obj fp, int b)
+  native static bool doWriteBytes(Obj fp, byte[] b, int off, int len)
+  native static bool doSeek(Obj fp, int pos)
+  native static int  doTell(Obj fp)
+  native static void doFlush(Obj fp)
+  native static bool doClose(Obj fp)
+
+
+////////////////////////////////////////////////////////////////
+// accept
+////////////////////////////////////////////////////////////////
+
+  **
+  ** Parse the given filename, and return true if this is the appropriate
+  ** FileStore instance to handle it.  Default is to return false.
+  **
+  virtual bool accept(Str filename)
+  {
+    return false
+  }
+
+
+////////////////////////////////////////////////////////////////
+// Static methods 
+////////////////////////////////////////////////////////////////
+
+  **
+  ** Insert fsObj at end of FileStore list.
+  **
+  ** This function should be called by the constructor of an instance 
+  ** of a FileStore subclass, to insert itself into the list.
+  **
+  ** Always returns true.
+  ** No protection against adding an instance multiple times.
+  **
+  static bool insert(FileStore fsObj)
+  {
+    // List is never empty, since static 'sys' is always the head.
+    // So look for last object in list and insert fsObj after it
+    FileStore fs = sys
+    while (fs.next!=null) fs = fs.next
+
+    fs.next   = fsObj
+    fsObj.next = null
+
+    return true
+  }
+
+
+  **
+  ** Return first FileStore instance from list that returns true from accept().
+  ** Returns FileStore.sys if no instance returns true.
+  **
+  static FileStore lookup(Str filename)
+  {
+    FileStore fs = sys
+    while (fs!=null) 
+    {
+      if (fs.accept(filename)) return fs
+      fs = fs.next
+    }
+    return sys
+  }
+
+
+
+
+////////////////////////////////////////////////////////////////
+// Fields
+////////////////////////////////////////////////////////////////
+
+  **
+  ** Built-in system file storage implementation.
+  **   Also head of linked list of other FileStores, if any
+  **
+  static inline FileStore sys
+
+
+  **
+  ** Pointer to next FileStore object in linked list.
+  **
+  FileStore next = null
+
+}
+
+

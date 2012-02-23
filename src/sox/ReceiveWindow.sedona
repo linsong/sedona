@@ -1,0 +1,131 @@
+//
+// Copyright (c) 2008 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   1 Apr 08  Brian Frank  Creation
+//
+
+**
+** ReceiveWindow manages the incoming message sequences and acknowledgements.
+**
+class ReceiveWindow
+{
+
+////////////////////////////////////////////////////////////////
+// Methods
+////////////////////////////////////////////////////////////////
+
+  **
+  ** Reset into a clean state for new session.
+  **
+  void reset()
+  {
+    seqNum = -1
+  }
+
+  **
+  ** If add the ack and ackMore headers if needed.
+  **
+  void setAckHeaders(SoxService service)
+  {
+    if (acked) return
+    acked = true
+
+    OutStream out = service.out
+
+    // add ack header
+    int numHeaders = 1
+    out.write(Dasp.ACK << 2 | Dasp.U2)
+      out.writeI2(seqNum)
+
+    // add optional ackMore (we only do 8 bits max)
+    if (seqMore > 0x1)
+    {
+      out.write(Dasp.ACK_MORE << 2 | Dasp.BYTES)
+        out.write(1)
+        out.write(seqMore)
+      numHeaders++
+    }
+
+    // update header count
+    service.packet.bytes[4] |= numHeaders
+  }
+
+  **
+  ** Initialize the receive window with the handshake seqNum.
+  **
+  void init(int num)
+  {
+    seqNum  = num - 1  // assignement to short will mask
+    seqMore = 1
+    acked   = false
+  }
+
+  **
+  ** Receive the given sequence number.  Return true if the
+  ** message should be processed.  Return false if outside of
+  ** the receiving window or we have already processed it.
+  **
+  bool receive(int num)
+  {
+    // check if out of range within our current receiving window
+    int start = seqNum;         // exclusive start of accept window
+    int end   = start + max;    // inclusive end of accept window
+    if (end <= 0xffff)
+    {
+      if (num <= start || num > end)
+      {
+        acked = false           // force next outgoing msg to include ackNum
+        return false
+      }
+    }
+    else
+    {
+      end -= 0xffff;
+      if (num <= start && num > end)
+      {
+        acked = false           // force next outgoing msg to include ackNum
+        return false
+      }
+    }
+
+    // if next message in window, then slide the window
+    if (num == seqNum+1 || (num == 0 && seqNum == 0xffff))
+    {
+      do
+      {
+        seqNum++;
+        seqMore = (seqMore >> 1) & 0x7fffffff;
+      }
+      while ((seqMore & 0x2) != 0);
+      seqNum &= 0xffff;
+      seqMore |= 0x1;
+    }
+
+    // otherwise we've received a message out of order
+    else
+    {
+      int bit = 1 << ((num - start) & 0xffff);
+      if ((seqMore & bit) != 0) return false;
+      seqMore |= bit;
+    }
+
+    // clean our acked so we know to send acknowledgement
+    acked = false;
+
+    // successful received
+    return true;
+  }
+
+////////////////////////////////////////////////////////////////
+// Fields
+////////////////////////////////////////////////////////////////
+
+  define int max = 32
+
+  private int seqNum  = -1    // successful received - start of window
+  private int seqMore         // successful received out of order
+  internal bool acked         // have we acked seqNum and seqMore
+
+}

@@ -1,0 +1,140 @@
+//
+// Copyright (c) 2011 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   08 Dec 11  Elizabeth McKenney  Creation
+//
+
+**
+** RampTest
+**
+class RampTest
+  extends Test
+{
+  static inline Ramp  r
+  static inline IRamp ir
+
+ 
+  static void test()
+  {
+    // Ramp produces triangle or sawtooth; float output; fixed delta; set period in seconds
+    r.min = 12f
+    r.max = 24f
+    r.period = 1f
+
+    r.rampType = true   // triangle
+    waveChk(12f, 1sec)
+    waveChk(18f, 1250ms)
+    waveChk(24f, 1500ms)
+    waveChk(18f, 1750ms)
+    waveChk(12f, 2sec)
+
+    r.rampType = false   // sawtooth
+    waveChk(12f, 1sec)
+    waveChk(15f, 1250ms)
+    waveChk(18f, 1500ms)
+    waveChk(21f, 1750ms)
+    waveChk(12f, 2sec)
+
+    r.min = 12f
+    r.max = 24f
+    r.period = 2f
+    r.rampType = true   // triangle
+    waveChk(15f, 250ms)
+    waveChk(18f, 500ms)
+    waveChk(21f, 750ms)
+    waveChk(24f, 1sec)
+    waveChk(12f, 2sec)
+
+    r.rampType = false   // sawtooth
+    waveChk(13.5f, 250ms)
+    waveChk(15f, 500ms)
+    waveChk(16.5f, 750ms)
+    waveChk(18f, 1sec)
+    waveChk(24f, 2sec)    // this would be 12f, except roundoff error delays end of waveform (?)
+
+
+
+    // IRamp produces triangle only; int output; prop delta (int); set change time in seconds
+    ir.min = 12
+    ir.max = 24
+    ir.delta = 2
+    ir.secs  = 1L
+    IwaveChk(14, 500ms)   // very first call to execute ALWAYS increments
+    IwaveChk(14, 1sec)
+    IwaveChk(16, 1500ms)
+    IwaveChk(18, 2500ms)
+
+    ir.delta = 3
+    ir.secs  = 2L
+    IwaveChk(15, 500ms)   // very first call to execute ALWAYS increments
+    IwaveChk(15, 2sec)
+    IwaveChk(18, 2500ms)
+
+  }
+
+
+  //
+  // From beginning of waveform, waits 'dur' nanos and then checks output
+  //
+  static void waveChk(float x, long dur)
+  {
+    //Sys.out.print("  Ramp: ${(float)dur / (float)1sec} sec test\n")
+
+    // Wait for beginning of cycle
+    while (r.out != 12f) 
+      r.execute()
+
+    // Calc how many App cycles in 'dur'
+    int nCycles = (int) (dur / ((long)Sys.app.scanPeriod*1ms))
+    for (int n=0; n<nCycles; n++) 
+      r.execute()
+
+    //Sys.out.print(" waveChk: o = ${r.out}, expected $x ($nCycles cycles)\n")
+
+    // Is output within "close enough" of expected?  (allow for float error)
+    checkVal(r.out, x, (float)nCycles*1e-6)
+  }
+
+
+  //
+  // From beginning of waveform, waits 'dur' nanos and then checks output
+  //
+  static void IwaveChk(int x, long dur)
+  {
+    Sys.out.print("  IRamp: ${(float)dur / (float)1sec} sec test\n")
+
+    long pd = ir.secs*1sec
+
+    // Reset to beginning of waveform
+    ir.start()
+
+    // IRamp is time-based but incremental, so we can't just spin until time is up
+    long now = Sys.ticks()
+    long end = now + dur
+    while (now<end) 
+    {
+      long pdEnd = now + pd
+      while (now<pdEnd) now = Sys.ticks()
+      ir.execute()
+      now = Sys.ticks()
+    }
+
+    //Sys.out.print(" IwaveChk: o = ${ir.out}, expected $x\n")
+
+    assert( ir.out == x )
+  }
+
+
+  //
+  // Check that value is "nearly" what we expected
+  //
+  static void checkVal(float x, float v, float epsilon)
+  {
+    //Sys.out.print("     checking: ${v-epsilon} < $x < ${v+epsilon} ?\n")
+    assert( (x > v-epsilon) && (x < v+epsilon) )
+  }
+
+
+}
