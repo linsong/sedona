@@ -15,6 +15,7 @@ syntax: glob
 *.swp
 src/sedona/src/version.txt
 bin/svm
+store/*
 
 # Ignore Eclipse metafiles
 *.classpath
