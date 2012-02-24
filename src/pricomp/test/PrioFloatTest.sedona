@@ -39,7 +39,7 @@ class PrioFloatTest
     ////////////////////////////////////////////////////////////////
 
     // Set in1 directly
-    f.in1 = 1.0
+    f.in1 := 1.0
     f.execute()
     assert(f.out==1.0)
     assert(f.sourceLevel==1)
@@ -51,13 +51,13 @@ class PrioFloatTest
     assert(f.sourceLevel==Prioritized.FB_LEVEL)
 
     // Set in16 directly
-    f.in16 = 16.0 
+    f.in16 := 16.0 
     f.execute()
     assert(f.out==16.0)
     assert(f.sourceLevel==16)
 
     // Set in9 directly
-    f.in9 = 9.0 
+    f.in9 := 9.0 
     f.execute()
     assert(f.out==9.0)
     assert(f.sourceLevel==9)

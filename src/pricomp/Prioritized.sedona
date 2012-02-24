@@ -27,10 +27,10 @@ abstract class Prioritized
 
   @readonly 
   @range=srcLevelStr
-  @summary=false property int sourceLevel = FB_LEVEL
+  @summary=false property int sourceLevel := FB_LEVEL
 
   @readonly 
-  @summary=false property long overrideExpTime = 0L        // 0 indicates no timeout ("permanent")
+  @summary=false property long overrideExpTime := 0L        // 0 indicates no timeout ("permanent")
 
 
   define Str srcLevelStr= "in0, emergency, in2, in3, in4, in5, in6, in7, override, in9, in10, in11, in12, in13, in14, in15, in16, fallback"
