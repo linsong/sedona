@@ -162,6 +162,7 @@ public abstract class CfgStep extends CompilerStep
       case Expr.ASSIGN_MUL:
       case Expr.ASSIGN_RSHIFT:
       case Expr.ASSIGN_SUB:
+      case Expr.PROP_ASSIGN:
         binaryExpr((Expr.Binary)expr);
         break;
        
