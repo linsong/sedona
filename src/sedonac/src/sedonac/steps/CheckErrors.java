@@ -877,11 +877,11 @@ public class CheckErrors
       if ( f.field.isProperty() && 
           (expr.op.toBinaryExprId()!=Expr.PROP_ASSIGN) &&
           !curMethod.isInstanceInit() )
-        warn("Should use ':=' assignment operator for properties   " + expr.toString(), expr.loc);
+        warn("Should use ':=' assignment operator for properties", expr.loc);
 
       // If using PROP_ASSIGN for a non-property, throw compile error
       if ( !f.field.isProperty() && (expr.op.toBinaryExprId()==Expr.PROP_ASSIGN) )
-        err("Cannot apply ':=' operator to non-property   " + expr.toString(), expr.loc);
+        err("Cannot apply ':=' operator to non-property", expr.loc);
     }
   }
 
