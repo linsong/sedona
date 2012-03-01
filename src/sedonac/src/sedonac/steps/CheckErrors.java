@@ -869,8 +869,6 @@ public class CheckErrors
   // Checks that prop assignment := is used appropriately
   private void checkPropAssign(Expr.Binary expr)
   {
-    checkAssign(expr);
-
     if (expr.lhs.id==Expr.FIELD)
     {
       Expr.Field f = (Expr.Field)expr.lhs;
