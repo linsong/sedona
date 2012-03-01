@@ -57,6 +57,48 @@ static void setUdpDatagram(int8_t* sedona, struct UdpDatagram* c)
   }
 }
 
+
+//////////////////////////////////////////////////////////////////////////
+// Multicast
+//////////////////////////////////////////////////////////////////////////
+
+//
+// Join the all-hosts multicast group for appropriate protocol
+//
+static int join_allnodes_multicast(socket_t sock)
+{
+
+#ifdef SOCKET_FAMILY_INET
+
+  struct ip_mreq mreq;
+  //inet_pton(AF_INET, "224.0.0.1", &(mreq.imr_multiaddr));    // all-nodes multicast address
+  //inet_aton("224.0.0.1", &(mreq.imr_multiaddr));    
+  mreq.imr_multiaddr.s_addr = inet_addr("224.0.0.1");
+  mreq.imr_interface.s_addr = INADDR_ANY;
+
+  printf("\nJoining IPv4 all-nodes multicast group (224.0.0.1)\n\n");
+
+  setsockopt(sock, IPPROTO_IP, IP_ADD_MEMBERSHIP, (char *)&mreq, sizeof(mreq));
+
+#elif defined( SOCKET_FAMILY_INET6 )
+
+  // Join the IPv6 all-nodes multicast group (FF02::1)
+  struct ipv6_mreq mreq;
+  //inet_pton(AF_INET6, "FF02::1", &(mreq.ipv6mr_multiaddr));  // all-nodes multicast address
+  inet_aton("FF02::1", &(mreq.ipv6mr_multiaddr));    
+  mreq.ipv6mr_interface = 0;
+
+  printf("\nJoining IPv6 all-nodes multicast group (FF02::1)\n\n");
+
+  setsockopt(sock, IPPROTO_IPV6, IPV6_ADD_MEMBERSHIP, (char *)&mreq, sizeof(mreq));
+
+#endif
+
+  return 0;
+}
+
+
+
 //////////////////////////////////////////////////////////////////////////
 // Native Methods
 //////////////////////////////////////////////////////////////////////////
@@ -156,27 +198,6 @@ Cell inet_UdpSocket_bind(SedonaVM* vm, Cell* params)
   bool closed   = getClosed(self);
   socket_t sock = getSocket(self);
 
-#ifdef SOCKET_FAMILY_INET
-
-  // Join the IPv4 all-hosts multicast group (224.0.0.1)
-  struct ip_mreq mreq;
-  mreq.imr_interface.s_addr = inet_addr("0.0.0.0");
-  //mreq.imr_multiaddr.s_addr = inet_addr("224.0.0.1");    // hardcoded address
-  mreq.imr_multiaddr = in4addr_allnodesonlink;     
-
-  printf("\nJoining IPv4 all-nodes multicast group (224.0.0.1)\n\n");
-
-#elif defined( SOCKET_FAMILY_INET6 )
-
-  // Join the IPv6 all-nodes multicast group (FF02::1)
-  struct ipv6_mreq mreq;
-  mreq.ipv6mr_interface = 0;
-  mreq.ipv6mr_multiaddr = in6addr_allnodesonlink;   
-
-  printf("\nJoining IPv6 all-nodes multicast group (FF02::1)\n\n");
-
-#endif
-
   if (closed)
     return falseCell;
 
@@ -187,11 +208,8 @@ Cell inet_UdpSocket_bind(SedonaVM* vm, Cell* params)
 #endif
     return falseCell;
 
-#ifdef SOCKET_FAMILY_INET
-  setsockopt(sock, IPPROTO_IP, IP_ADD_MEMBERSHIP, (char *)&mreq, sizeof(mreq));
-#elif defined( SOCKET_FAMILY_INET6 )
-  setsockopt(sock, IPPROTO_IPV6, IPV6_ADD_MEMBERSHIP, (char *)&mreq, sizeof(mreq));
-#endif
+  // Join all-hosts multicast address group (used for device discovery)
+  join_allnodes_multicast(sock);
 
   return trueCell;
 }
