@@ -27,6 +27,6 @@ class UnixPlatformService extends PlatformService
     super.start()
     updatePlatformId(doPlatformId())
     // TODO: UNIX  needs to dynamically update available memory???
-    memAvailable = 314159265L
+    memAvailable := 314159265L
   }
 }

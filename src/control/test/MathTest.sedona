@@ -30,72 +30,72 @@ class MathTest
 
   static void test()
   {
-    add2.in1 = 1.0f
-    add2.in2 = 2.0f
+    add2.in1 := 1.0f
+    add2.in2 := 2.0f
     add2.execute()
     assert(add2.out == 3.0f)
-    add2.in2 = -1.0f
+    add2.in2 := -1.0f
     add2.execute()
     assert(add2.out == 0.0f)
 
-    add4.in1 = 1.0f
-    add4.in2 = 2.0f
-    add4.in3 = 3.0f
-    add4.in4 = 4.0f
+    add4.in1 := 1.0f
+    add4.in2 := 2.0f
+    add4.in3 := 3.0f
+    add4.in4 := 4.0f
     add4.execute()
     assert(add4.out == 10.0f)
-    add4.in4 = -6.0f
+    add4.in4 := -6.0f
     add4.execute()
     assert(add4.out == 0.0f)
 
-    sub2.in1 = 2.0f
-    sub2.in2 = 1.0f
+    sub2.in1 := 2.0f
+    sub2.in2 := 1.0f
     sub2.execute()
     assert(sub2.out == 1.0f)
-    sub2.in2 = 2.0f
+    sub2.in2 := 2.0f
     sub2.execute()
     assert(sub2.out == 0.0f)
 
-    sub4.in1 = 100.0f
-    sub4.in2 = 25.0f
-    sub4.in3 = 25.0f
-    sub4.in4 = 25.0f
+    sub4.in1 := 100.0f
+    sub4.in2 := 25.0f
+    sub4.in3 := 25.0f
+    sub4.in4 := 25.0f
     sub4.execute()
     assert(sub4.out == 25.0f)
-    sub4.in4 = 50.0f
+    sub4.in4 := 50.0f
     sub4.execute()
     assert(sub4.out == 0.0f)
 
-    mul2.in1 = 2.0f
-    mul2.in2 = 2.0f
+    mul2.in1 := 2.0f
+    mul2.in2 := 2.0f
     mul2.execute()
     assert(mul2.out == 4.0f)
-    mul2.in2 = -2.0f
+    mul2.in2 := -2.0f
     mul2.execute()
     assert(mul2.out == -4.0f)
 
-    mul4.in1 = 0.1f
-    mul4.in2 = 10.0f
-    mul4.in3 = 0.01f
-    mul4.in4 = 100.0f
+    mul4.in1 := 0.1f
+    mul4.in2 := 10.0f
+    mul4.in3 := 0.01f
+    mul4.in4 := 100.0f
     mul4.execute()
     assert(mul4.out == 1.0f)
-    mul4.in4 = 200.0f
+    mul4.in4 := 200.0f
     mul4.execute()
     assert(mul4.out == 2.0f)
 
-    div2.in1 = 1.0f
-    div2.in2 = 2.0f
+    div2.in1 := 1.0f
+    div2.in2 := 2.0f
     div2.execute()
     assert(div2.out == 0.5f)
-    div2.in2 = -2.0f
+    div2.in2 := -2.0f
     div2.execute()
     assert(div2.out == -0.5f)
 
 
     avg10.start()     // not in an app, so call this explicitly
 
-    avg10.maxTime=40
+    avg10.maxTime := 40
     doAvg(1.0)
     assert(avg10.out == 1.0)
     doAvg(2.0)
@@ -117,7 +117,7 @@ class MathTest
     }
     assert(avg10.out == 11.0)
 
-    avg10.maxTime = 0
+    avg10.maxTime := 0
     doAvg(1.0)
     float value = avg10.out
     startTime = Sys.ticks()
@@ -130,73 +130,73 @@ class MathTest
 
     validateReset( 100.0);
     validateReset( 4000.0);
-    reset.inMax = 2000.0
-    reset.inMin = 100.0
+    reset.inMax := 2000.0
+    reset.inMin := 100.0
     validateReset( 0.0);
     validateReset( 1000.0);
     validateReset( 1900.0);
 
-    cmpr.y = 10.0
-    cmpr.x = 9.0
+    cmpr.y := 10.0
+    cmpr.x := 9.0
     cmpr.execute()
     assert(cmpr.xgy == false)
     assert(cmpr.xey == false)
     assert(cmpr.xly == true)
-    cmpr.x = 10.0
+    cmpr.x := 10.0
     cmpr.execute()
     assert(cmpr.xgy == false)
     assert(cmpr.xey == true)
     assert(cmpr.xly == false)
-    cmpr.x = 11.0
+    cmpr.x := 11.0
     cmpr.execute()
     assert(cmpr.xgy == true)
     assert(cmpr.xey == false)
     assert(cmpr.xly == false)
 
-    cmpr.y = -10.0
-    cmpr.x = -9.0
+    cmpr.y := -10.0
+    cmpr.x := -9.0
     cmpr.execute()
     assert(cmpr.xgy == true)
     assert(cmpr.xey == false)
     assert(cmpr.xly == false)
-    cmpr.x = -10.0
+    cmpr.x := -10.0
     cmpr.execute()
     assert(cmpr.xgy == false)
     assert(cmpr.xey == true)
     assert(cmpr.xly == false)
-    cmpr.x = -11.0
+    cmpr.x := -11.0
     cmpr.execute()
     assert(cmpr.xgy == false)
     assert(cmpr.xey == false)
     assert(cmpr.xly == true)
     
-    min.in1 = 10f
-    min.in2 = 9f
+    min.in1 := 10f
+    min.in2 := 9f
     min.execute()
     assert(min.out == 9f)
 
-    min.in1 = -8f
-    min.in2 = -9f
+    min.in1 := -8f
+    min.in2 := -9f
     min.execute()
     assert(min.out == -9f)
 
-    max.in1 = 10f
-    max.in2 = 9f
+    max.in1 := 10f
+    max.in2 := 9f
     max.execute()
     assert(max.out == 10f)
 
-    max.in1 = -8f
-    max.in2 = -9f
+    max.in1 := -8f
+    max.in2 := -9f
     max.execute()
     assert(max.out == -8f)
 
     validateMinMax()
 
-    foff.offset = 1.0f
-    foff.in = 2.0f
+    foff.offset := 1.0f
+    foff.in := 2.0f
     foff.execute()
     assert(foff.out == 3.0f)
-    foff.in = -1.0f
+    foff.in := -1.0f
     foff.execute()
     assert(foff.out == 0.0f)
 
@@ -212,7 +212,7 @@ class MathTest
 
    static void doAvg(float value)
    {
-     avg10.in = value
+     avg10.in := value
      avg10.execute()
    }
 
@@ -229,7 +229,7 @@ class MathTest
        value = inMax
      if(value < inMin)
        value = inMin
-     reset.in = value
+     reset.in := value
      reset.execute()
      float cValue = (value - inMin)/(inMax - inMin)
      cValue = outMin + cValue * (outMax - outMin)
@@ -245,7 +245,7 @@ class MathTest
 
   static void doMinMax(float f)
   {
-    minmax.in = f
+    minmax.in := f
     minmax.execute()
   }
 
@@ -283,15 +283,15 @@ class MathTest
     doMinMax(-10f)
     checkMinMax(-10f, 1000f)    // 5
 
-    minmax.r = true
+    minmax.r := true
     minmax.execute()
     checkMinMax(-10f, -10f)     // 6
 
-    minmax.r = false
+    minmax.r := false
     doMinMax(1f)
     checkMinMax(-10f, 1f)       // 7
 
-    minmax.r = true
+    minmax.r := true
     minmax.execute()
     checkMinMax(1f, 1f)         // 8
   }
@@ -299,8 +299,8 @@ class MathTest
 
   static void doRound(float val, int places, float checkVal)
   {
-    rnd.in = val
-    rnd.decimalPlaces = places
+    rnd.in := val
+    rnd.decimalPlaces := places
     rnd.execute()
     assert(rnd.out == checkVal)
   }

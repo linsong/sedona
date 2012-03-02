@@ -31,7 +31,7 @@ class WriteBool
   **
   action void setTrue()
   {           
-    in = true
+    in := true
   }
   
   **  
@@ -39,7 +39,7 @@ class WriteBool
   **
   action void setFalse()
   {           
-    in = false
+    in := false
   }
   
   **  
@@ -47,7 +47,7 @@ class WriteBool
   **
   action void setNull()
   {           
-    in = null
+    in := null
   }
 
   **
@@ -55,7 +55,7 @@ class WriteBool
   **
   virtual override void execute()
   {
-    out = in
+    out := in
   }
   
   

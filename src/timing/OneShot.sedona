@@ -37,7 +37,7 @@ class OneShot
   action void clear()
   {
     pulseEnd = 0L
-    out = false
+    out := false
   }
 
   **
@@ -62,7 +62,7 @@ class OneShot
         pulseEnd = now + (long)( (double)pulseWidth * (double)1sec )
     }
 
-    out = pulseEnd > now
+    out := pulseEnd > now
 
     lastIn = in
   }

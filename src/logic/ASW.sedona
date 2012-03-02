@@ -34,7 +34,7 @@ class ASW
   **
   virtual override void execute()
   {
-    out = s1 ? in2 : in1
+    out := s1 ? in2 : in1
   }
 
 }

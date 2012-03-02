@@ -40,7 +40,7 @@ class IRamp
   **
   virtual override void start()
   {
-    out = min
+    out := min
     lastUpdate = 0L
   }
   
@@ -63,7 +63,7 @@ class IRamp
     if (tmp < min) { tmp = min; firstHalf = true }
     if (tmp > max) { tmp = max; firstHalf = false }
 
-    out = tmp
+    out := tmp
   }
 
   private bool firstHalf = true

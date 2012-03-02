@@ -78,8 +78,8 @@ public class B2F
       mask = mask << 1
     }
 
-    out   = (float)value
-    count = (float)icount
+    out   := (float)value
+    count := (float)icount
   }
 
 }

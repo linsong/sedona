@@ -78,9 +78,9 @@ class Ramp
     if(rampType) delta = delta * 2f
     firstHalf = true
     if(out < min)
-      out = min
+      out := min
     else if(out > max)
-      out = max
+      out := max
   }
   
   **
@@ -91,7 +91,7 @@ class Ramp
     //disable if period is 0
     if(period == 0f)
     {
-      out = min
+      out := min
       return
     }
 
@@ -113,7 +113,7 @@ class Ramp
       if(tmp > max) tmp = min
     }
 
-    out = tmp
+    out := tmp
   }
 
   //**

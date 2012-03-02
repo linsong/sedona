@@ -30,7 +30,7 @@ class WriteInt
   **
   action void set(int x)
   {           
-    in = x
+    in := x
   }
   
   **
@@ -38,7 +38,7 @@ class WriteInt
   **
   virtual override void execute()
   {
-    out = in
+    out := in
   }
   
   

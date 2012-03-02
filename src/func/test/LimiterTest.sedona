@@ -20,12 +20,12 @@ class LimiterTest
  
   static void test()
   {
-    l.lowLmt  = MIN
-    l.highLmt = MAX
+    l.lowLmt  := MIN
+    l.highLmt := MAX
 
     for (float f=-6f; f<20f; f+=0.3)
     {
-      l.in = f
+      l.in := f
       l.execute()
       assert( (l.out>=MIN) && (l.out<=MAX) )
     }

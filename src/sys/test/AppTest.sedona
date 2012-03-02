@@ -45,10 +45,10 @@ class AppTest
     // Component x (child of app)
     TestComp x = (TestComp)a.add(a, "x", TestComp.type)
     assert(x != null)
-    x.z1 = true
-    x.b1 = 0x98
-    x.i1 = 1972
-    x.f1 = 0.0002467
+    x.z1 := true
+    x.b1 := 0x98
+    x.i1 := 1972
+    x.f1 := 0.0002467
     x.str.copyFromStr("bar")
 
     // Issue 19880: don't allow siblings with duplicate names
@@ -61,8 +61,8 @@ class AppTest
     // Component z (child of x)
     SubTestComp z = (SubTestComp)a.add(x, "z", SubTestComp.type)
     assert(z != null)
-    z.i1 = 70_001
-    z.si = 70_002
+    z.i1 := 70_001
+    z.si := 70_002
 
     // TestService s2 (child of z)
     TestService s2 = (TestService)a.add(z, "s2", TestService.type)

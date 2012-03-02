@@ -37,9 +37,9 @@ class ADemux2
   virtual override void execute()
   {
     if(s1)
-      out2 = in
+      out2 := in
     else
-      out1 = in
+      out1 := in
   }
 
 }

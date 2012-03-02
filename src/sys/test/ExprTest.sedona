@@ -21,10 +21,10 @@ class ExprTest
     
     TestComp c = CompTest.a
     TestComp cx = null
-    c.f2 = 2.04
-    c.d1 = 0d       
-    c.d2 = 256d       
-    c.j2 = -3sec
+    c.f2 := 2.04
+    c.d1 := 0d       
+    c.d2 := 256d       
+    c.j2 := -3sec
 
     // safe calls with leave
     assert(s?.length() == 5)
@@ -45,7 +45,7 @@ class ExprTest
     c?.addD1(100d)
     cx?.addD1(100d)
     assert(c.d1 == 100d)
-    c.d1 = 0d       
+    c.d1 := 0d       
     
     // safe field access
     assert(c?.f2 == 2.04)

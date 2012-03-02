@@ -76,7 +76,7 @@ class AvgN
   virtual override void execute()
   {
     computeAverage()
-    out = avg
+    out := avg
   }
 
   **

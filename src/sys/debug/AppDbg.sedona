@@ -239,38 +239,38 @@ class AppDbg
       workTime = tmpWorkTime
       scanTime = tmpScanTime
       
-      execMin = tmpExecTimeMin
-      execMax = tmpExecTimeMax
-      workMin = tmpWorkTimeMin
-      workMax = tmpWorkTimeMax
-      scanMin = tmpScanTimeMin
-      scanMax = tmpScanTimeMax
+      execMin := tmpExecTimeMin
+      execMax := tmpExecTimeMax
+      workMin := tmpWorkTimeMin
+      workMax := tmpWorkTimeMax
+      scanMin := tmpScanTimeMin
+      scanMax := tmpScanTimeMax
 
       if(first)
       {
       	first = false
-        execMinMin = execMin
-        execMaxMax = execMax
-        workMinMin = workMin
-        workMaxMax = workMax
-        scanMinMin = scanMin
-        scanMaxMax = scanMax
+        execMinMin := execMin
+        execMaxMax := execMax
+        workMinMin := workMin
+        workMaxMax := workMax
+        scanMinMin := scanMin
+        scanMaxMax := scanMax
       }
       else
       {
-        execMinMin = execMin < execMinMin ? execMin : execMinMin
-        execMaxMax = execMax > execMaxMax ? execMax : execMaxMax
-        workMinMin = workMin < workMinMin ? workMin : workMinMin
-        workMaxMax = workMax > workMaxMax ? workMax : workMaxMax
-        scanMinMin = scanMin < scanMinMin ? scanMin : scanMinMin
-        scanMaxMax = scanMax > scanMaxMax ? scanMax : scanMaxMax
+        execMinMin := execMin < execMinMin ? execMin : execMinMin
+        execMaxMax := execMax > execMaxMax ? execMax : execMaxMax
+        workMinMin := workMin < workMinMin ? workMin : workMinMin
+        workMaxMax := workMax > workMaxMax ? workMax : workMaxMax
+        scanMinMin := scanMin < scanMinMin ? scanMin : scanMinMin
+        scanMaxMax := scanMax > scanMaxMax ? scanMax : scanMaxMax
       }
       
 
       //compute and update averages
-      execAvg = execTimeRunningTotal/(float)scanCyclesPerUpdate
-      workAvg = workTimeRunningTotal/(float)scanCyclesPerUpdate
-      scanAvg = scanTimeRunningTotal/(float)scanCyclesPerUpdate
+      execAvg := execTimeRunningTotal/(float)scanCyclesPerUpdate
+      workAvg := workTimeRunningTotal/(float)scanCyclesPerUpdate
+      scanAvg := scanTimeRunningTotal/(float)scanCyclesPerUpdate
 
       //reset running totals
       execTimeRunningTotal = 0.0
@@ -298,25 +298,25 @@ class AppDbg
   action void resetValues()
   {
     first = true
-    execAvg = 0.0
-    execMin = 0.0
-    execMax = 0.0
-    execMinMin = (float)Sys.maxInt
-    execMaxMax = 0.0
+    execAvg := 0.0
+    execMin := 0.0
+    execMax := 0.0
+    execMinMin := (float)Sys.maxInt
+    execMaxMax := 0.0
     execTimeRunningTotal = 0.0
-    workAvg = 0.0
-    workMin = 0.0
-    workMax = 0.0
-    workMinMin = (float)Sys.maxInt
-    workMaxMax = 0.0
+    workAvg := 0.0
+    workMin := 0.0
+    workMax := 0.0
+    workMinMin := (float)Sys.maxInt
+    workMaxMax := 0.0
     workTimeRunningTotal = 0.0
-    scanAvg = 0f
-    scanMin = 0f
-    scanMax = 0f
-    scanMinMin = (float)Sys.maxInt
-    scanMaxMax = 0f
+    scanAvg := 0f
+    scanMin := 0f
+    scanMax := 0f
+    scanMinMin := (float)Sys.maxInt
+    scanMaxMax := 0f
     scanTimeRunningTotal = 0f
-    overruns = 0
+    overruns := 0
 
     tmpExecTimeMin = (float)Sys.maxInt
     tmpWorkTimeMin = (float)Sys.maxInt

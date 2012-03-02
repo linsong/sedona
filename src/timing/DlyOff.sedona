@@ -55,13 +55,13 @@ class DlyOff
     if (in)
     {
       delayEnd = 0L
-      out = true
+      out := true
     }
     // If input is false, output is true if delay not expired;
     // o/w output is false and delay timer is reset
     else
     {
-      out = delayEnd > now
+      out := delayEnd > now
 
       // If out is false, delay has expired
       if (!out) delayEnd = 0L
@@ -69,9 +69,9 @@ class DlyOff
 
     // Update hold property to reflect delay time remaining
     if (delayEnd == 0L)
-      hold = 0
+      hold := 0
     else
-      hold = (int)((delayEnd - now)/1000000L)  // convert to msec
+      hold := (int)((delayEnd - now)/1000000L)  // convert to msec
 
     lastIn = in
   }

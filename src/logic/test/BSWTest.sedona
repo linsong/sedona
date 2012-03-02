@@ -16,9 +16,9 @@ class BSWTest
 
   static bool bswExec(bool in1, bool in2, bool s1)
   {
-    bsw.in1 = in1
-    bsw.in2 = in2
-    bsw.s1 = s1
+    bsw.in1 := in1
+    bsw.in2 := in2
+    bsw.s1 := s1
     bsw.execute()
     return bsw.out  
   }  

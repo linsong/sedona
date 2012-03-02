@@ -25,7 +25,7 @@ class ConstFloat
   **
   action void set(float x)
   {           
-    out = x
+    out := x
   }
   
   **
@@ -33,6 +33,6 @@ class ConstFloat
   **
   action void setNull()
   {           
-    out = null
+    out := null
   }
 }

@@ -16,20 +16,20 @@ class B2PTest
 
   static void test()
   {
-    b2p.in = true
+    b2p.in := true
     b2p.execute()
     assert(b2p.out == true)
     b2p.execute()
     assert(b2p.out == false)
-    b2p.in = false
+    b2p.in := false
     b2p.execute()
     assert(b2p.out == false)
-    b2p.in = true
+    b2p.in := true
     b2p.execute()
     assert(b2p.out == true)
     b2p.execute()
     assert(b2p.out == false)
-    b2p.in = false
+    b2p.in := false
     b2p.execute()
     assert(b2p.out == false)
   }

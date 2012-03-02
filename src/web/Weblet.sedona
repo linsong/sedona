@@ -17,7 +17,6 @@
 ** the WebService using unregister().
 **
 abstract class Weblet
-//  extends Virtual
   extends Component
 {
 

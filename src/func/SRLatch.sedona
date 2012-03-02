@@ -49,10 +49,10 @@ class SRLatch
   virtual override void execute()
   {
     if (s && !lastSet)
-      out = true
+      out := true
 
     if (r && !lastReset)
-      out = false
+      out := false
 
     lastSet   = s
     lastReset = r

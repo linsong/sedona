@@ -56,13 +56,13 @@ class PstoreService
   {                                 
     file.name = filename.toStr()  
     if (!file.open("m")) return                             
-    this.size = file.size() 
+    this.size := file.size() 
     if (this.size < fileSize)
     {
       file.seek(fileSize)
       file.out.write(0)
       file.out.flush()
-      this.size = file.size() 
+      this.size := file.size() 
     }
   }      
   

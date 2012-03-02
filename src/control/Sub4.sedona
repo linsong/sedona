@@ -28,7 +28,7 @@ class Sub4
   **
   virtual override void execute()
   {
-    out = in1 - in2 - in3 - in4
+    out := in1 - in2 - in3 - in4
   }
 
 }

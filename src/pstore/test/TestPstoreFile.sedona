@@ -18,49 +18,49 @@ class TestPstoreFile
 
   action void verifyOwner()
   {
-    result = isOwner() ? 1 : 0;
+    result := isOwner() ? 1 : 0;
     //Sys.out.print("%% verifyOwner => ${isOwner()}").nl()
   }
 
   action void verifyClaim()
   {
-    result = claim() ? 1 : 0;
+    result := claim() ? 1 : 0;
     //Sys.out.print("%% verifyClaim => $result").nl()
   }
 
   action void verifyTell()
   {
-    result = tell();   
+    result := tell();   
     //Sys.out.print("%% verifyTell => $result").nl()
   }
 
   action void verifySeek(int offset)
   {
-    result = seek(offset) ? 1 : 0;
+    result := seek(offset) ? 1 : 0;
     //Sys.out.print("%% verifySeek $offset => $result").nl()
   }
 
   action void verifyRead()
   {          
-    result = in().read()
+    result := in().read()
     //Sys.out.print("%% verifyRead => $result").nl()
   }
 
   action void verifyWrite(int val)
   {
-    result = out().write(val) ? 1 : 0
+    result := out().write(val) ? 1 : 0
     //Sys.out.print("%% verifyWrite $val => $result").nl()
   }
 
   action void verifyReadS4()
   {
-    result = in().readS4()
+    result := in().readS4()
     //Sys.out.print("%% verifyReadS4 $val => $result").nl()
   }
 
   action void verifyWriteI4(int val)
   {
-    result = out().writeI4(val) ? 1 : 0
+    result := out().writeI4(val) ? 1 : 0
     //Sys.out.print("%% verifyWriteI4 $val => $result").nl()
   }
 

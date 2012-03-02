@@ -35,11 +35,11 @@ public class Div2
   **
   virtual override void execute()
   {
-    div0 = (in2 == 0.0f)
+    div0 := (in2 == 0.0f)
 
     if (div0)
-      out = 0.0
+      out := 0.0
     else
-      out = in1 / in2
+      out := in1 / in2
   }
 }

@@ -56,13 +56,13 @@ class DlyOn
     if (!in)
     {
       delayEnd = 0L
-      out = false
+      out := false
     }
     // If input is true, output is false if delay not expired;
     // o/w output is true and delay is reset
     else
     {
-      out = delayEnd < now
+      out := delayEnd < now
 
       // If out is true, delay has expired
       if (out) delayEnd = 0L
@@ -70,9 +70,9 @@ class DlyOn
 
     // Update hold property to reflect delay time remaining
     if (delayEnd == 0L)
-      hold = 0
+      hold := 0
     else
-      hold = (int)((delayEnd - now)/1000000L)  // convert to msec
+      hold := (int)((delayEnd - now)/1000000L)  // convert to msec
 
     lastIn = in
   }

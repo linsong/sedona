@@ -19,35 +19,35 @@ class RampTest
   static void test()
   {
     // Ramp produces triangle or sawtooth; float output; fixed delta; set period in seconds
-    r.min = 12f
-    r.max = 24f
-    r.period = 1f
+    r.min := 12f
+    r.max := 24f
+    r.period := 1f
 
-    r.rampType = true   // triangle
+    r.rampType := true   // triangle
     waveChk(12f, 1sec)
     waveChk(18f, 1250ms)
     waveChk(24f, 1500ms)
     waveChk(18f, 1750ms)
     waveChk(12f, 2sec)
 
-    r.rampType = false   // sawtooth
+    r.rampType := false   // sawtooth
     waveChk(12f, 1sec)
     waveChk(15f, 1250ms)
     waveChk(18f, 1500ms)
     waveChk(21f, 1750ms)
     waveChk(12f, 2sec)
 
-    r.min = 12f
-    r.max = 24f
-    r.period = 2f
-    r.rampType = true   // triangle
+    r.min := 12f
+    r.max := 24f
+    r.period := 2f
+    r.rampType := true   // triangle
     waveChk(15f, 250ms)
     waveChk(18f, 500ms)
     waveChk(21f, 750ms)
     waveChk(24f, 1sec)
     waveChk(12f, 2sec)
 
-    r.rampType = false   // sawtooth
+    r.rampType := false   // sawtooth
     waveChk(13.5f, 250ms)
     waveChk(15f, 500ms)
     waveChk(16.5f, 750ms)
@@ -57,17 +57,17 @@ class RampTest
 
 
     // IRamp produces triangle only; int output; prop delta (int); set change time in seconds
-    ir.min = 12
-    ir.max = 24
-    ir.delta = 2
-    ir.secs  = 1L
+    ir.min := 12
+    ir.max := 24
+    ir.delta := 2
+    ir.secs  := 1L
     IwaveChk(14, 500ms)   // very first call to execute ALWAYS increments
     IwaveChk(14, 1sec)
     IwaveChk(16, 1500ms)
     IwaveChk(18, 2500ms)
 
-    ir.delta = 3
-    ir.secs  = 2L
+    ir.delta := 3
+    ir.secs  := 2L
     IwaveChk(15, 500ms)   // very first call to execute ALWAYS increments
     IwaveChk(15, 2sec)
     IwaveChk(18, 2500ms)

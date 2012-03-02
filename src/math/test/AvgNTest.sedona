@@ -17,7 +17,7 @@ class AvgNTest
 
   static void doAvgN(float value)
   {
-    avgN.in = value
+    avgN.in := value
     avgN.execute()
   }
 
@@ -35,8 +35,8 @@ class AvgNTest
 
   static void test()
   {
-    avgN.reset = false
-    avgN.numSamplesToAvg = 4
+    avgN.reset := false
+    avgN.numSamplesToAvg := 4
 
     avgN.start()     // not in an app, so call this explicitly
 
@@ -79,13 +79,13 @@ class AvgNTest
     
 
     // Trigger reset via rising edge on reset slot - should get new value
-    avgN.reset = true
+    avgN.reset := true
     doAvgN(10.0)
     assert(avgN.out == 10.0)
 
     // Trigger reset again - should get new value
-    avgN.reset = false
-    avgN.reset = true
+    avgN.reset := false
+    avgN.reset := true
     doAvgN(1.0)
     assert(avgN.out == 1.0)
 

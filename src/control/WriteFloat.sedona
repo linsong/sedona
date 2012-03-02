@@ -30,7 +30,7 @@ class WriteFloat
   **
   action void set(float x)
   {           
-    in = x
+    in := x
   }
   
   **  
@@ -38,7 +38,7 @@ class WriteFloat
   **
   action void setNull()
   {           
-    in = null
+    in := null
   }
 
   **
@@ -46,7 +46,7 @@ class WriteFloat
   **
   virtual override void execute()
   {
-    out = in
+    out := in
   }
   
   

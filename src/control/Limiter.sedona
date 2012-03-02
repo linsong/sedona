@@ -35,10 +35,10 @@ class Limiter
   virtual override void execute()
   {
     if(in > highLmt)
-      out = highLmt
+      out := highLmt
     else if (in < lowLmt)
-      out = lowLmt
+      out := lowLmt
     else
-      out = in
+      out := in
   }
 }

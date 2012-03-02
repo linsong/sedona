@@ -41,7 +41,7 @@ class B2P
   {
     // Output is true immediately on rising edge of input;
     // set false again on next scan cycle
-    out = (in && !lastIn)
+    out := (in && !lastIn)
     lastIn = in
   }
 

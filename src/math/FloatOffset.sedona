@@ -29,7 +29,7 @@ class FloatOffset
   **
   virtual override void execute()
   {
-    out = in + offset
+    out := in + offset
   }
   
 }

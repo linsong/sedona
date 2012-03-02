@@ -312,14 +312,14 @@ class CompTest
     assert(c.bufB.toStr().equals("0"))
 
     // check direct sets
-    clear(c); c.meta = 0305;                      verifyEvent(c, 'c')
-    clear(c); c.z2  = false;                      verifyEvent(c, 'r')
-    clear(c); assert((c.b2  = 101) == 101);       verifyEvent(c, 'r')
-    clear(c); c.s2  = 62013;                      verifyEvent(c, 'r')
-    clear(c); c.i2  = 0xdeadbabe;                 verifyEvent(c, 'r')
-    clear(c); c.j2  = 0xdead0000babeL;            verifyEvent(c, 'r')
-    clear(c); assert(801.4f == (c.f2  = 801.4f)); verifyEvent(c, 'r')    
-    clear(c); c.d2  = 45d;                        verifyEvent(c, 'r')
+    clear(c); c.meta := 0305;                      verifyEvent(c, 'c')
+    clear(c); c.z2  := false;                      verifyEvent(c, 'r')
+    clear(c); assert((c.b2  := 101) == 101);       verifyEvent(c, 'r')
+    clear(c); c.s2  := 62013;                      verifyEvent(c, 'r')
+    clear(c); c.i2  := 0xdeadbabe;                 verifyEvent(c, 'r')
+    clear(c); c.j2  := 0xdead0000babeL;            verifyEvent(c, 'r')
+    clear(c); assert(801.4f == (c.f2  := 801.4f)); verifyEvent(c, 'r')    
+    clear(c); c.d2  := 45d;                        verifyEvent(c, 'r')
     
     // check flags
     assert(meta.isProp());   assert(!meta.isAction()); assert(meta.isConfig());
@@ -330,7 +330,7 @@ class CompTest
 
     // check reflection invokes  
     
-    c.i1 = -77; c.j1 = 0x1234_5678_abcd_eeffL; c.f1 = 8.0f; c.d1 = -2.4d;
+    c.i1 := -77; c.j1 := 0x1234_5678_abcd_eeffL; c.f1 := 8.0f; c.d1 := -2.4d;
     c.invokeVoid(incI1);        assert(c.i1 == -76)
     c.invokeBool(setZ1, false); assert(c.z1 == false)
     c.invokeInt(addI1, 78);     assert(c.i1 == 2)
@@ -375,7 +375,7 @@ class CompTest
       c.setFloat(sf, 1004.008);    assert(x.sf == 1004.008)
 
       // check reflection invokes
-      x.si = 7; c.invokeInt(addSI, -5); assert(x.si == 2)
+      x.si := 7; c.invokeInt(addSI, -5); assert(x.si == 2)
     }
   }
 
@@ -391,6 +391,9 @@ class CompTest
     int dummy3 = dummy + dummy1 + dummy2
     TestComp local = c
     
+/*
+ *   This part of test moot since compound assgns for props not currently supported 
+ *
     // prop sets via compound assignment (with and without leaves)      
     c.b2 = c.s2 = c.i1 = 10; c.j1 = 0xABL; c.f1 = 3F; c.d2 = 8D;
     int vi; long vj; double vd;
@@ -411,6 +414,8 @@ class CompTest
     clear(c); vj = --c.j1;      verifyEvent(c, 'c'); assert(c.j1 == 0xC24L); assert(vj == 0xC24L);
     clear(c); local.f1++;       verifyEvent(c, 'c'); assert(c.f1 == 7F);
     clear(c); --local.d2;       verifyEvent(c, 'r'); assert(c.d2 == 3D);
+*/
+
   }
 
   static void clear(Component c)

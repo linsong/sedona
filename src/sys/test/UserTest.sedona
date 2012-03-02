@@ -54,8 +54,8 @@ class UserTest
   static void verifyHas(int groups, int perm, int has, bool result)
   {                                   
     // Sys.out.print("verifyHas 0x" + Sys.hexStr(groups) + "  0x" + Sys.hexStr(perm) + "  0x" + Sys.hexStr(has)).nl()  
-    c.meta = groups
-    u.perm = perm
+    c.meta := groups
+    u.perm := perm
     assert(u.has(c, has) == result)
   }
   

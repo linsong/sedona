@@ -36,18 +36,18 @@ class SoxTest
     // make changes to c
     TestComp c = (TestComp)Sys.app.lookup(id)
 //dump(c, "Before Change");    
-    c.z1 = !c.z1
-    c.z2 = !c.z2 
-    c.b1 = c.b1 + 1
-    c.b2 += 1
+    c.z1 := !c.z1
+    c.z2 := !c.z2 
+    c.b1 := c.b1 + 1
+    c.b2 := c.b2 + 1
     c.s1++
     ++c.s2
-    c.i1 = c.i1 + 1
-    c.i2 += 1
+    c.i1 := c.i1 + 1
+    c.i2 := c.i2 + 1
     c.j1++
     ++c.j2
-    c.f1 = c.f1 + 1f
-    c.f2 += 1f
+    c.f1 := c.f1 + 1f
+    c.f2 := c.f2 + 1f
     c.d1++
     ++c.d2
     if (c.bufA.size == 0) c.bufA.size = 1

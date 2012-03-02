@@ -59,27 +59,27 @@ class Tstat
     
     if (cv > hiValue) 
     {
-      lower = true
-      raise = false
+      lower := true
+      raise := false
     }
     else if ( cv < loValue )
     {
-      lower = false
-      raise = true
+      lower := false
+      raise := true
     }
     else if ( lower && cv < sp )
     {
-      lower = false
+      lower := false
     }
     else if ( raise && cv > sp )
     {
-      raise = false
+      raise := false
     }
 
     if (isHeating)
-      out = raise
+      out := raise
     else 
-      out = lower
+      out := lower
   }
 
 }

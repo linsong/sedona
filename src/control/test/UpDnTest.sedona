@@ -27,13 +27,13 @@ class UpDnTest
     // test reset
     pulseCounter(true, 10)
     assert(counter.out == 10.0)
-    counter.rst = true
+    counter.rst := true
     counter.execute()
-    counter.rst = false
+    counter.rst := false
     assert(counter.out == 0.0)
 
     // test limit
-    counter.limit = 15.0
+    counter.limit := 15.0
     pulseCounter(true, 14)
     assert(counter.out == 14.0)
     assert(counter.ovr == false)
@@ -45,11 +45,11 @@ class UpDnTest
     assert(counter.ovr == true)
 
     // test hold at limit
-    counter.rst = true
+    counter.rst := true
     counter.execute()
-    counter.rst = false
+    counter.rst := false
     assert(counter.out == 0.0)
-    counter.holdAtLimit = true
+    counter.holdAtLimit := true
     pulseCounter(true, 17)
     assert(counter.out == 15.0)
     assert(counter.ovr == true)
@@ -57,12 +57,12 @@ class UpDnTest
 
   static void pulseCounter(bool up, int count)
   {
-    counter.cDwn = !up
+    counter.cDwn := !up
     for(int i = 0; i < count; i++)
     {
-      counter.in = true
+      counter.in := true
       counter.execute()
-      counter.in = false
+      counter.in := false
       counter.execute()
     }
   }

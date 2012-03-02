@@ -18,8 +18,8 @@ class HysterTest
   static void test()
   {
     // "normal" case, rising > falling
-    h.risingEdge  = 10f
-    h.fallingEdge =  2f
+    h.risingEdge  := 10f
+    h.fallingEdge :=  2f
 
     hysCheck(0f, false)
     hysCheck(2f, false)
@@ -31,8 +31,8 @@ class HysterTest
     hysCheck(2f, false)
 
     // "inverted" case, rising < falling
-    h.risingEdge  =  2f
-    h.fallingEdge = 10f
+    h.risingEdge  :=  2f
+    h.fallingEdge := 10f
 
     hysCheck(0f, true)
     hysCheck(2f, true)
@@ -46,7 +46,7 @@ class HysterTest
 
   static void hysCheck(float v, bool b)
   {
-    h.in = v
+    h.in := v
     h.execute()
     assert(h.out == b)
   }

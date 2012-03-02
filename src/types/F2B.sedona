@@ -62,7 +62,7 @@ class F2B
   {
     int value = (int)in
     int mask = 1
-    ovrf = value > 0xffff
+    ovrf := value > 0xffff
 
     // Loop out1 to out16 setting values
     for(int i = F2B.out1.id; i <= F2B.out16.id; i++)

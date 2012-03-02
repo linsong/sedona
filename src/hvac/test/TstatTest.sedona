@@ -29,92 +29,92 @@ class TstatTest
 
   static void validateControl(float setpoint, float diff)
   {
-    tstat.sp = setpoint
-    tstat.diff = diff
+    tstat.sp := setpoint
+    tstat.diff := diff
     
     float halfDiff = diff / 2.0f
     
-    tstat.cv = setpoint
+    tstat.cv := setpoint
     tstat.execute()
     assert(!tstat.out)
     assert(!tstat.raise)
     assert(!tstat.lower)
     
-    tstat.isHeating = true
-    tstat.cv = setpoint - halfDiff - 0.001f
+    tstat.isHeating := true
+    tstat.cv := setpoint - halfDiff - 0.001f
     tstat.execute()
     assert(tstat.out)
     assert(tstat.raise)
     assert(!tstat.lower)
     
-    tstat.cv = setpoint - halfDiff
+    tstat.cv := setpoint - halfDiff
     tstat.execute()
     assert(tstat.out)
     assert(tstat.raise)
     assert(!tstat.lower)
     
-    tstat.cv = setpoint
+    tstat.cv := setpoint
     tstat.execute()
     assert(tstat.out)
     assert(tstat.raise)
     assert(!tstat.lower)
     
-    tstat.cv = setpoint + 0.001f
+    tstat.cv := setpoint + 0.001f
     tstat.execute()
     assert(!tstat.out)
     assert(!tstat.raise)
     assert(!tstat.lower)
     
-    tstat.cv = setpoint + halfDiff + 0.001f
+    tstat.cv := setpoint + halfDiff + 0.001f
     tstat.execute()
     assert(!tstat.out)
     assert(!tstat.raise)
     assert(tstat.lower)
     
-    tstat.cv = setpoint
+    tstat.cv := setpoint
     tstat.execute()
     assert(!tstat.out)
     assert(!tstat.raise)
     assert(tstat.lower)
     
-    tstat.cv = setpoint - 0.001f
+    tstat.cv := setpoint - 0.001f
     tstat.execute()
     assert(!tstat.out)
     assert(!tstat.raise)
     assert(!tstat.lower)
     
-    tstat.isHeating = false
-    tstat.cv = setpoint - halfDiff - 0.001f
+    tstat.isHeating := false
+    tstat.cv := setpoint - halfDiff - 0.001f
     tstat.execute()
     assert(!tstat.out)
     assert(tstat.raise)
     assert(!tstat.lower)
     
-    tstat.cv = setpoint
+    tstat.cv := setpoint
     tstat.execute()
     assert(!tstat.out)
     assert(tstat.raise)
     assert(!tstat.lower)
     
-    tstat.cv = setpoint + 0.001f
+    tstat.cv := setpoint + 0.001f
     tstat.execute()
     assert(!tstat.out)
     assert(!tstat.raise)
     assert(!tstat.lower)
     
-    tstat.cv = setpoint + halfDiff + 0.001f
+    tstat.cv := setpoint + halfDiff + 0.001f
     tstat.execute()
     assert(tstat.out)
     assert(!tstat.raise)
     assert(tstat.lower)
     
-    tstat.cv = setpoint
+    tstat.cv := setpoint
     tstat.execute()
     assert(tstat.out)
     assert(!tstat.raise)
     assert(tstat.lower)
     
-    tstat.cv = setpoint - 0.001f
+    tstat.cv := setpoint - 0.001f
     tstat.execute()
     assert(!tstat.out)
     assert(!tstat.raise)

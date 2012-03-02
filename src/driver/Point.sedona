@@ -39,7 +39,7 @@ class Point
     Device device = getDevice()
     if(device != null)
       setDown(device.isDown())
-    fault = status != 0
+    fault := status != 0
   }
   
   ////////////////////////////////////////////////////////////////
@@ -76,10 +76,10 @@ class Point
   virtual void setDown(bool isDown)
   {
     if(isDown)
-      status = status | Status.DOWN
+      status := status | Status.DOWN
     else
     {
-      status = status & ~Status.DOWN
+      status := status & ~Status.DOWN
     }	
   }  	
 
@@ -89,10 +89,10 @@ class Point
   virtual void setFault(bool isFault)
   {
     if(isFault)
-      status = status | Status.FAULT
+      status := status | Status.FAULT
     else
     {
-      status = status & ~Status.FAULT
+      status := status & ~Status.FAULT
     }	
   }  	
 

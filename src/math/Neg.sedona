@@ -28,7 +28,7 @@ class Neg
   **
   virtual override void execute()
   {
-    out = -in
+    out := -in
   }
 
 }

@@ -50,10 +50,10 @@ class Timer
   **
   action void resetTimer()
   {
-    out = false
+    out := false
     lastRun = false
-    run = false
-    left = 0
+    run := false
+    left := 0
   }
   
   **
@@ -62,7 +62,7 @@ class Timer
   **
   action void startTimer()
   {
-    run = true
+    run := true
     lastRun = false
   }
   
@@ -95,24 +95,24 @@ class Timer
       if(!lastRun)
       {
         deadline = now + timems
-        out = true
+        out := true
         lastRun = run
-        left = time
+        left := time
       }
       else
       {
-        left = (deadline - now > 0L) ? (int)((deadline - now)/1sec) : 0
+        left := (deadline - now > 0L) ? (int)((deadline - now)/1sec) : 0
         if(now > deadline)
         {
-          out = false
+          out := false
         }
       }
     }
     else
     {
-      out = false
+      out := false
       lastRun = false
-      left = 0
+      left := 0
     }
   }
 

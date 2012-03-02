@@ -59,7 +59,7 @@ class Count
   **
   action void reset()
   {
-    out = preset
+    out := preset
     lastIn = in
   }
 
@@ -89,7 +89,7 @@ class Count
     }
     if(r) tcnt = preset
 
-    out = tcnt
+    out := tcnt
 
     lastIn = in
   }

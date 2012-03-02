@@ -36,14 +36,14 @@ class DailyScheduleBool extends DailySchedule
     switch (activeVal)
     {
       case output1:
-        out = val1
+        out := val1
         break
       case output2:
-        out = val2
+        out := val2
         break        
       case outputDefault:     
       default:
-        out = defVal
+        out := defVal
         break
 
     }  

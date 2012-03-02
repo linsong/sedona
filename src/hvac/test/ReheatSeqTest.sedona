@@ -20,28 +20,28 @@ class ReheatSeqTest
  
   static void test()
   {
-    rs.hysteresis = 0.5
+    rs.hysteresis := 0.5
 
-    rs.threshold1 = 0.0
-    rs.threshold2 = 2.0
-    rs.threshold3 = 4.0
-    rs.threshold4 = 6.0
+    rs.threshold1 := 0.0
+    rs.threshold2 := 2.0
+    rs.threshold3 := 4.0
+    rs.threshold4 := 6.0
     
-    rs.enable = false
+    rs.enable := false
 
     for (int j=0; j<10; j++)
     {
-      rs.in = in_test[j]
+      rs.in := in_test[j]
       rs.execute()
       assert( collectOuts() == 0 )
       assert( rs.dOn == 0 )
     }
 
-    rs.enable = true
+    rs.enable := true
 
     for (int j=0; j<10; j++)
     {
-      rs.in = in_test[j]
+      rs.in := in_test[j]
       rs.execute()
       assert( collectOuts() == outs_test[j] )
       assert( rs.dOn == dOn_test[j] )

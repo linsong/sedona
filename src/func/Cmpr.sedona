@@ -40,9 +40,9 @@ class Cmpr
   **
   virtual override void execute()
   {
-    xgy = x > y
-    xey = x == y
-    xly = x < y
+    xgy := x > y
+    xey := x == y
+    xly := x < y
   }
 
 }
