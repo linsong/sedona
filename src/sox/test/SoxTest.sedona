@@ -40,16 +40,19 @@ class SoxTest
     c.z2 := !c.z2 
     c.b1 := c.b1 + 1
     c.b2 := c.b2 + 1
-    c.s1++
-    ++c.s2
+    c.s1 := c.s1 + 1
+    //++c.s2
+    c.s2 := c.s2 + 1
     c.i1 := c.i1 + 1
     c.i2 := c.i2 + 1
-    c.j1++
-    ++c.j2
+    c.j1 := c.j1 + 1L
+    //++c.j2
+    c.j2 := c.j2 + 1L
     c.f1 := c.f1 + 1f
     c.f2 := c.f2 + 1f
-    c.d1++
-    ++c.d2
+    c.d1 := c.d1 + 1d
+    //++c.d2
+    c.d2 := c.d2 + 1d
     if (c.bufA.size == 0) c.bufA.size = 1
     if (c.bufB.size == 0) c.bufB.size = 1
     c.bufA.bytes[0]++
@@ -156,9 +159,9 @@ class SoxTest
   {
     // Sys.out.print("   verify(").printBool(cond).print(")").nl()
     if (cond)
-      verifies++
+      verifies := verifies + 1
     else
-      failures++
+      failures := failures + 1
   }    
 
 //////////////////////////////////////////////////////////////////////////

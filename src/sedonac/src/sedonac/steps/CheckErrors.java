@@ -796,6 +796,14 @@ public class CheckErrors
   {
     checkNumeric(expr);
     checkAssignable(expr.operand);
+
+    // Discourage use of pre/postfix ops with properties
+    if (expr.operand instanceof Expr.Field)
+    {
+      Expr.Field f = (Expr.Field)expr.operand;
+      if (f.field.isProperty())
+        warn("Should use ':=' assignment operator for properties", expr.loc);
+    }
   }
 
   private void checkEquality(Expr.Binary expr)

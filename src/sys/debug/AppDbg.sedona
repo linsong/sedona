@@ -225,7 +225,7 @@ class AppDbg
 
     //see if we have any overruns and update
     if(tmpScanTime > (float)Sys.app.scanPeriod + 1.0)
-      overruns++
+      overruns := overruns + 1
 
     if(print)
       Sys.out.printInt((int)(tmpExecTime * 10f)).print(" ")
