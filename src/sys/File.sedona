@@ -1,0 +1,206 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   5 Jun 07  Brian Frank        Creation
+//  27 Feb 09  Elizabeth McKenney Add buffering for single-byte writes
+//
+
+**
+** File is used to manage I/O to a "file".  A Sedona VM may support
+** multiple file backing storage devices via FileStore subclasses.
+**
+final class File
+{                   
+
+//////////////////////////////////////////////////////////////////////////
+// Constructor
+//////////////////////////////////////////////////////////////////////////
+
+  **
+  ** File constructor.
+  **
+  File()
+  {
+    out.file = this
+    in.file = this    
+    store = FileStore.sys
+  }
+
+//////////////////////////////////////////////////////////////////////////
+// Methods
+//////////////////////////////////////////////////////////////////////////
+
+  **
+  ** Return if the file identified by name exists on the file system.
+  ** This method may used without opening the file.
+  **
+  bool exists()
+  {
+    return size() >= 0
+  }
+
+  **
+  ** Return the size in bytes of the file, or -1 if the file does
+  ** not exist or cannot currently be accessed (e.g. if open for
+  ** writing).  This method may used without opening the file.
+  **
+  int size()
+  {                
+    return toStore(name).size(this)
+  }
+
+  **
+  ** Open the file using the configured name field.  Mode
+  ** is a string how IO will be performed:
+  **   - "r": open for reading
+  **   - "w": open for writing (truncate existing)
+  **   - "m": open for modification and read/writing (don't truncate)
+  ** Return true on success or false on error.
+  **
+  ** Note although the mode strings are passed as simply "r", "w", or
+  ** "m", it is expected that files are always opened for binary
+  ** IO - for example "w" maps to the C fopen mode of "wb".
+  **
+  bool open(Str mode)
+  {
+    store = toStore(name)
+    return store.open(this, mode)
+  }
+
+  **
+  ** Close this file.  Return true on success or false on failure.
+  **
+  bool close()
+  {           
+    in.close()
+    out.close()
+    return store.close(this)
+  }
+  
+  **
+  ** Return the current byte offset position of the file.  
+  ** Use seek to change the current position. Returns -1
+  ** on an error.
+  **
+  int tell()
+  {
+    out.flush()
+    return store.tell(this)
+  }  
+
+  **
+  ** Seek to a specific byte offset position in the file.
+  ** Return true on success or false on failure.  A failure
+  ** typically indicates a seek past the file limit of the
+  ** device's "file system".  Use tell to read the current
+  ** position.
+  **
+  bool seek(int pos)
+  {    
+    out.flush()
+    return store.seek(this, pos)
+  }             
+  
+
+//////////////////////////////////////////////////////////////////////////
+// toStore
+//////////////////////////////////////////////////////////////////////////
+
+  **
+  ** Map the current file name to a FileStore reference.
+  **
+  static internal FileStore toStore(Str name)
+  {
+    FileStore fs = FileStore.lookup(name)
+    return fs?:FileStore.sys
+  }
+
+
+//////////////////////////////////////////////////////////////////////////
+// Fields
+//////////////////////////////////////////////////////////////////////////
+
+  Str name                  // name of the file           
+  FileStore store           // backing store implementation
+  inline FileOutStream out  // stream to write file (buffered)
+  inline FileInStream in    // stream to read file
+  Obj fp                    // from FileStore - native handle for open file
+}
+
+****************************************************************
+** FileOutStream
+****************************************************************
+//
+// This version is modelled in part on BufOutStream.
+//   Single-byte writes are buffered, but block writes are not.
+//   This minimizes code size, but is inefficient for small block 
+//   writes, or single-byte writes mixed in with block writes.
+//   It is assumed that in general files will be written
+//   exclusively via single-byte writes OR moderately-sized
+//   block writes.
+//
+internal class FileOutStream extends OutStream
+{
+  override bool write(int b) 
+  { 
+    // If buffer is full, write contents to file
+    if (fbuf.size >= fbuf.bytesLen) 
+    {
+      if (!writeBufToFile()) return false
+    }
+    fbuf.bytes[fbuf.size++] = b
+    return true
+  }
+
+  override bool writeBytes(byte[] b, int off, int len) 
+  {
+    // Write any accumulated data in buf first
+    if (fbuf.size > 0) writeBufToFile()
+
+    // Now write contents of b
+    return file.store.writeBytes(file, b, off, len) 
+  }
+
+  override void flush() 
+  { 
+    if (fbuf.size > 0) writeBufToFile()
+    file.store.flush(file) 
+  }
+
+  override void close() { if (fbuf.size > 0) writeBufToFile() }
+
+  internal bool writeBufToFile()
+  { 
+    // Write contents of buf to file
+    if (!file.store.writeBytes(file, fbuf.bytes, 0, fbuf.size)) 
+      return false
+
+    // Clear contents of buf
+    fbuf.clear()
+    return true
+  }
+
+  inline Buf(32) fbuf             // internal buffer for single-byte writes
+
+  internal File file
+}
+
+
+****************************************************************
+** FileInStream
+****************************************************************
+
+internal class FileInStream extends InStream
+{
+  override int read() { return file.store.read(file) }
+  override int readBytes(byte[] b, int off, int len) 
+  { 
+    return file.store.readBytes(file, b, off, len) 
+  }
+
+  override void close() { /* file.close() */ }
+
+  internal File file
+}

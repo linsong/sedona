@@ -1,0 +1,36 @@
+//
+// Copyright (c) 2010 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+// History:
+// 6/4/2010 - Dan Giorgis - creation
+
+
+**
+** Win32 Platform Service demonstrating use of yield APIs.  
+** Instead of calling Sys.sleep() each App execute cycle,
+**
+** VM will exit with Err.yield code and sleep will be called
+** by native code in main.c, followed by a call to resume().
+**
+** Note that yield is NOT required for Win32 - this is just
+** sample code.
+**
+class Win32YieldPlatformService extends Win32PlatformService
+{  
+////////////////////////////////////////////////////////////////
+// Service
+////////////////////////////////////////////////////////////////
+  
+  override virtual bool yieldRequired()   
+  { 
+    return true
+  }
+
+  override virtual void yield(long yieldTime)
+  {    
+    doYield(yieldTime)
+  }
+
+  internal static native void doYield(long yieldTime)         
+
+}

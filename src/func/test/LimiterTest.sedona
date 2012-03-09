@@ -1,0 +1,35 @@
+//
+// Copyright (c) 2011 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   08 Dec 11  Elizabeth McKenney  Creation
+//
+
+**
+** LimiterTest
+**
+class LimiterTest
+  extends Test
+{
+  static inline Limiter  l
+
+  define float MIN = 0f
+  define float MAX = 8f
+
+ 
+  static void test()
+  {
+    l.lowLmt  := MIN
+    l.highLmt := MAX
+
+    for (float f=-6f; f<20f; f+=0.3)
+    {
+      l.in := f
+      l.execute()
+      assert( (l.out>=MIN) && (l.out<=MAX) )
+    }
+
+  }
+
+}

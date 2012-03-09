@@ -1,0 +1,105 @@
+//
+// Copyright (c) 2010-2011 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   07 Jun 2010  Clif Turman  Creation
+//   04 Aug 2011  Clif Turman  Add comments
+//
+
+**
+** Modified Moving Average math object
+**
+**   out = [(n-1)*out + in]/n = (total + in - avg)/n
+** 
+**   where total = approx. running total of last n samples
+**         avg   = last computed average = total/n 
+**
+**   Note: 1) the "avg" value is "seeded" with the "in" 
+**            value at startup or whenever "n" changes
+**         2) the "total" value is "seeded" with (in * n)
+**            at startup or whenever "n" changes
+**         3) boolean input "reset" resets the object to 
+**            return to first execute cycle state, and avg
+**            and total are re "seeded".  This may be useful
+**            to invoke in an application where large step changes
+**            of "in" are expected and "n" is a high value, to prevent
+**            output lag of the input.
+**            
+**
+**   For large step changes in values, the "out" value will asymptotically
+**   approach the "in" value.
+**
+@niagaraIcon="module://icons/x16/control/math/average.png"
+class AvgN
+  extends Component
+{
+  ** the average value updated every execute cycle
+  @readonly property float out
+
+  ** value of in is added to average computation every execute cycle
+  property float in
+  
+  ** number of samples to average. One new sample is read every execute cycle.
+  @min=1
+  @config property int numSamplesToAvg = 5
+
+  ** reset is invoked to re-initialize the averaging
+  @readonly property bool reset = false
+
+  **
+  ** Callback when component is first started in an app,
+  ** before the first call to propagateLinksTo() or execute().
+  **
+  virtual override void start()
+  {
+    first = true
+  }
+
+
+  **
+  ** Behavior to execute when a property is changed externally
+  ** 
+  virtual override void changed(Slot slot)
+  {
+    if(slot == AvgN.numSamplesToAvg)
+      first = true
+    else if(slot == AvgN.reset)
+      if(reset)
+        first = true
+    super.changed(slot)
+  }
+
+  **
+  ** Execute is called once every scan.
+  **
+  virtual override void execute()
+  {
+    computeAverage()
+    out := avg
+  }
+
+  **
+  ** average in a new sample
+  **
+  void computeAverage()
+  {
+    if(first)
+    {
+      avg = in
+      total = (in * (float)numSamplesToAvg)
+      first = false
+    }
+    else
+    {
+      total = total + in - avg
+      avg   = total/(float)numSamplesToAvg
+    }
+  }
+
+
+  private float  total
+  private float  avg
+  private bool   first
+
+}
