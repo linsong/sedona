@@ -62,18 +62,8 @@ public class TextUtil
    */
   public static String intToHexString(int i)
   {
-    return intToHexString(i,8);
-  }                       
-
-  /**
-   * @return a 32-bit integer to a hex string, but guarantee that
-   *  the string is minChars chars long by padding with leading zeros
-   */
-  public static String intToHexString(int i, int minChars)
-  {
-    if ((minChars < 1) || (minChars > 8)) minChars = 8;
     String s = Integer.toHexString(i);
-    while (s.length() < minChars) s = "0" + s;
+    while (s.length() < 8) s = "0" + s;
     return s;
   }                       
   
@@ -121,7 +111,7 @@ public class TextUtil
 
   /**
    * Check if all the characters in a given string
-   * are hexadecimal, i.e [0-9], [A-F]
+   * are hexidecimal, i.e [0-9], [A-F]
    */
   public static boolean isHex(String str)
   {

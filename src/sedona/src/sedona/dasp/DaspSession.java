@@ -13,8 +13,6 @@ import java.io.*;
 import java.security.*;
 import java.util.*;
 
-import sedona.util.TextUtil;
-
 /**
  * DaspSession models the client/server endpoint of a session.
  */
@@ -139,7 +137,7 @@ public class DaspSession
    */
   public String toString()
   {
-    return (isClient ? "Client [" : "Server [") + TextUtil.intToHexString(id,4) + " -> " + TextUtil.intToHexString(remoteId,4) + "]";
+    return (isClient ? "Client [" : "Server [") + id + " -> " + remoteId + "]";
   }
 
   /**

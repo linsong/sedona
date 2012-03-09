@@ -14,7 +14,7 @@ import java.util.LinkedList;
 import java.util.Properties;
 
 import sedona.Env;
-import sedona.sox.ISoxComm.TransferListener;
+import sedona.sox.SoxClient.TransferListener;
 
 /**
  * FileTransfer manages file get/puts
@@ -26,9 +26,7 @@ class FileTransfer
 // Constructor
 //////////////////////////////////////////////////////////////
 
-//  FileTransfer(SoxClient client, String uri, SoxFile file,
-//               Properties reqHeaders, TransferListener listener)
-  FileTransfer(SoxExchange exchange, String uri, SoxFile file,
+  FileTransfer(SoxClient client, String uri, SoxFile file,
                Properties reqHeaders, TransferListener listener)
   {
     if (reqHeaders == null) reqHeaders = new Properties();
@@ -43,10 +41,9 @@ class FileTransfer
     //   2 bytes chunkNum
     //   2 bytes chunkSize
     // Also see SoxCommands.sedona (openFileReq)
-    int defaultChunkSize = exchange.session().idealMax() - 18;
+    int defaultChunkSize = client.session().idealMax() - 18;
 
-//    this.client      = client;
-    this.exchange    = exchange;
+    this.client      = client;
     this.listener    = listener;
     this.uri         = uri;
     this.file        = file;
@@ -94,10 +91,10 @@ class FileTransfer
       while (transferedChunks < numChunks)
       {
         // sanity check
-        if (exchange.session()==null)
+        if (client.session()==null)
           throw new IOException("file transfer session disconnected");
 
-        if (Env.ticks() - lastReceiveTicks > exchange.session().receiveTimeout())
+        if (Env.ticks() - lastReceiveTicks > client.session().receiveTimeout())
           throw new IOException("file transfer timed out");
 
         // wait to receive chunks
@@ -107,7 +104,7 @@ class FileTransfer
 
     // send close message to free transfer
     Msg req = Msg.prepareRequest('z');
-    Msg res = exchange.request(req);
+    Msg res = client.request(req);
     res.checkResponse('Z');
 
     // update progress and report done
@@ -215,10 +212,10 @@ class FileTransfer
       while (!closeReceived)
       {
         // sanity check
-        if (exchange.session()==null)
+        if (client.session()==null)
           throw new IOException("file transfer session disconnected");
 
-        if (Env.ticks() - waitStart > exchange.session().receiveTimeout())
+        if (Env.ticks() - waitStart > client.session().receiveTimeout())
           throw new IOException("file transfer timed out waiting for put close");
 
         // wait to receive close message
@@ -250,7 +247,7 @@ class FileTransfer
     req.u2(thisChunkSize);
     file.read(chunkNum*chunkSize, req, thisChunkSize);
 
-    exchange.send(req);
+    client.send(req);
   }
 
   void receiveClose(Msg msg)
@@ -294,7 +291,7 @@ class FileTransfer
       req.u1(0);  // end of headers
 
       // send request
-      Msg res = exchange.request(req);
+      Msg res = client.request(req);
 
       // parse response
       res.checkResponse('F');
@@ -374,7 +371,7 @@ class FileTransfer
   private void done()
   {
     long dur = Env.ticks() - startTicks;
-    if (!exchange.client.traceXferStats) return;
+    if (!client.traceXferStats) return;
 
     System.out.println();
     System.out.println("Done [" + uri + "]");
@@ -389,8 +386,7 @@ class FileTransfer
 // Fields
 //////////////////////////////////////////////////////////////
 
-//  SoxClient client;       // parent client
-  SoxExchange exchange;
+  SoxClient client;       // parent client
   TransferListener listener;  // progress callback
   String uri;             // filename to read/write
   SoxFile file;           // local representation of file to read/write

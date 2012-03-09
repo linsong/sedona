@@ -1,17 +1,38 @@
+//
+// Copyright (c) 2006 Tridium, Inc.
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   18 Sep 06  Brian Frank  Creation
+//
+
 package sedona.sox;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.InetAddress;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Properties;
 
-import sedona.*;
+import sedona.Buf;
+import sedona.Component;
+import sedona.Env;
+import sedona.Kit;
+import sedona.KitPart;
+import sedona.Link;
+import sedona.Schema;
+import sedona.Slot;
+import sedona.Str;
+import sedona.Type;
+import sedona.Value;
+import sedona.dasp.DaspMsg;
 import sedona.dasp.DaspSession;
 import sedona.dasp.DaspSocket;
 import sedona.dasp.DiscoveredNode;
 import sedona.manifest.KitManifest;
 import sedona.manifest.ManifestDb;
-import sedona.sox.ISoxComm.TransferListener;
 import sedona.util.Version;
 import sedona.xml.XParser;
 
@@ -22,9 +43,9 @@ import sedona.xml.XParser;
 public class SoxClient
 {
 
-//////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
 // Constructor
-//////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
 
   /**
    * Constructor
@@ -40,34 +61,17 @@ public class SoxClient
     initOptions();
   }
 
-//////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
 // Lifecycle
-// These methods are provided as convenience methods wrapping
-// access to the underlying ISoxComm.
-//////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
 
-  /**
-   * Convenience access to my <code>SoxExchange</code>.
-   * @return a guaranteed non-null reference to this client's <code>SoxExchange</code>.
-   */
-  ISoxComm comm()
-  {
-    if (comm == null) comm = new SoxExchange(this);
-    return comm;
-  }
-
-  public void setComm(ISoxComm c)
-  {
-    comm = c;
-  }
-  
   /**
    * Convenience for <code>connect(null)</code>.
    */
   public synchronized void connect()
     throws Exception
   {
-    comm().connect(null);
+    connect(null);
   }
 
   /**
@@ -77,8 +81,29 @@ public class SoxClient
   public synchronized void connect(Hashtable options)
     throws Exception
   {
-    comm().connect(options);
-  }  
+    // if already opened, raise exception
+    if (!isClosed())
+      throw new SoxException("Already open!");
+
+    // open the dasp session
+    session = socket.connect(addr, port, username, password, options);
+    session.listener = new DaspSession.Listener()
+    {
+      public void daspSessionClosed(DaspSession s)
+      {
+        closeCause = s.closeCause();
+        if (!closing) close();
+      }
+    };
+    closeCause = "???";
+
+    // init exchange
+    exchange = new SoxExchange(this);
+
+    // launch receiver thread
+    receiver = new SoxReceiver(this);
+    receiver.start();
+  }
 
   /**
    * Return the underlying DaspSession or null if closed.
@@ -86,7 +111,7 @@ public class SoxClient
    */
   public DaspSession session()
   {
-    return comm().session();
+    return session;
   }
 
   /**
@@ -94,7 +119,8 @@ public class SoxClient
    */
   public int localId()
   {
-    return comm().localId();
+    DaspSession s = this.session;
+    return s == null ? -1 : s.id;
   }
 
   /**
@@ -102,7 +128,8 @@ public class SoxClient
    */
   public int remoteId()
   {
-    return comm().remoteId();
+    DaspSession s = this.session;
+    return s == null ? -1 : s.remoteId();
   }
 
   /**
@@ -110,7 +137,10 @@ public class SoxClient
    */
   public boolean isClosed()
   {
-    return comm().isClosed();
+    DaspSession s = this.session;
+    if (s == null) return true;
+    if (s.isClosed()) { closeCause = s.closeCause(); return true; }
+    return false;
   }
 
   /**
@@ -118,7 +148,40 @@ public class SoxClient
    */
   public void close()
   {
-    comm().close();
+    if (this.closing) return;
+    this.closing = true;
+
+    // shut down receiver
+    try
+    {
+      SoxReceiver r = this.receiver;
+      if (r != null) r.kill();
+      this.receiver = null;
+    }
+    catch (Exception e)
+    {
+      e.printStackTrace();
+    }
+
+    // close the dasp session
+    try
+    {
+      DaspSession  s = this.session;
+      if (s != null) s.close();
+      this.session = null;
+    }
+    catch (Exception e)
+    {
+      e.printStackTrace();
+    }
+
+    // null out cached state
+    this.exchange = null;
+    this.session  = null;
+    this.receiver = null;
+    this.cache    = new SoxComponent[1024];
+    this.allTreeEvents = false;
+    this.util  = null;
 
     // notify listener if registered
     try
@@ -129,11 +192,14 @@ public class SoxClient
     {
       e.printStackTrace();
     }
+
+    // done closing
+    this.closing = false;
   }
 
-//////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
 // Read Schema
-//////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
 
   /**
    * Read the schema version.  If we've already read it
@@ -239,9 +305,9 @@ public class SoxClient
     return util.version;
   }
 
-//////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
 // Read Prop (single)
-//////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
 
   /**
    * Read a property.
@@ -278,9 +344,9 @@ public class SoxClient
     return v.decodeBinary(res);
   }
 
-//////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
 // Load Component (Tree)
-//////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
 
   /**
    * Return the app root component.
@@ -558,7 +624,7 @@ public class SoxClient
   }
 
   /**
-   * Pre sox protocol version implementation of subscribe.  It does not support batch
+   * Pre sox protocol implementation of subscribe.  It does not support batch
    * and is synchronous.  This method is only used if the remote server
    * does not have a sox protocol version.
    */
@@ -693,9 +759,9 @@ public class SoxClient
     requests(reqs);
   }
 
-//////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
 // Invoke
-//////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
 
   /**
    * Invoke an action.
@@ -729,9 +795,9 @@ public class SoxClient
     res.checkResponse('I');
   }
 
-//////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
 // Write
-//////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
 
   /**
    * Write a property.
@@ -764,9 +830,9 @@ public class SoxClient
     res.checkResponse('W');
   }
 
-//////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
 // Database Modification
-//////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
 
   /**
    * Add a new component to an existing parent of the
@@ -1025,9 +1091,9 @@ public class SoxClient
     return links.size() == 0 ? Link.none : (Link[])links.toArray(new Link[links.size()]);
   }
 
-//////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
 // Query
-//////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
 
   /**
    * Query for the installed service type.  Return the
@@ -1078,7 +1144,15 @@ public class SoxClient
                                          TransferListener listener)
     throws Exception
   {
-    return comm().getFile(uri, file, headers, listener);
+    fileTransfer = new FileTransfer(this, uri, file, headers, listener);
+    try
+    {
+      return fileTransfer.getFile();
+    }
+    finally
+    {
+      fileTransfer = null;
+    }
   }
 
   /**
@@ -1093,7 +1167,15 @@ public class SoxClient
                                          TransferListener listener)
     throws Exception
   {
-    return comm().putFile(uri, file, headers, listener);
+    fileTransfer = new FileTransfer(this, uri, file, headers, listener);
+    try
+    {
+      return fileTransfer.putFile();
+    }
+    finally
+    {
+      fileTransfer = null;
+    }
   }
 
 
@@ -1115,9 +1197,10 @@ public class SoxClient
     res.checkResponse('B');
   }
 
-//////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////
 // Device discovery
-//////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
 
   /**
    * Start a discover operation
@@ -1127,6 +1210,7 @@ public class SoxClient
     socket.discover(port);
   }
 
+
   /**
    * Access the list of currently discovered nodes  (not thread safe?)
    */
@@ -1134,6 +1218,7 @@ public class SoxClient
   {
     return socket.getDiscovered();
   }
+
 
 //////////////////////////////////////////////////////////////////////////
 // PStore Convenience
@@ -1257,7 +1342,7 @@ public class SoxClient
    * Recursively remove this component and all its descendants
    * from the cache.  This actually won't handle clearing the
    * cache in all cases, but it should nuke old entries in most
-   * scenarios.
+   * scenerios.
    */
   void cacheRemove(SoxComponent c)
   {
@@ -1288,36 +1373,69 @@ public class SoxClient
       checkMine(c[i]);
   }
 
-//////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
 // Networking
-//////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
 
   /**
-   * Send a single request and wait for the response.
+   * Send a single request and await for the responses.
    */
   Msg request(Msg req)
     throws Exception
   {
-    return comm().request(new Msg[] { req})[0];
+    return requests(new Msg[] { req })[0];
   }
 
   /**
-   * Send a batch of requests and wait for the responses.
+   * Send a batch of requests and await for the responses.
    */
   Msg[] requests(Msg[] reqs)
     throws Exception
   {
-    //checkOpen(); is done in SoxExchange
-    return comm().request(reqs);
+    checkOpen();
+    return exchange.request(reqs);
   }
 
-//////////////////////////////////////////////////////////////////////////
+  void send(Msg buf)
+    throws Exception
+  {
+    checkOpen();
+
+    if (traceMsg)
+      System.out.println("--> [send] " + (char)buf.command() + " replyNum=" + buf.replyNum());
+
+    session.send(buf.bytes, 0, buf.size);
+  }
+
+  Msg receive(long timeout)
+    throws Exception
+  {
+    DaspMsg rec = session.receive(timeout);
+    if (rec == null) return null;
+
+    Msg msg = new Msg(rec.payload());
+    if (traceMsg)
+      System.out.println("<-- [recv] " + (char)msg.command() + " replyNum=" + msg.replyNum());
+    return msg;
+  }
+
+  void checkOpen()
+  {
+    if (isClosed()) throw new SoxException("SoxClient closed: " + closeCause);
+  }
+
+////////////////////////////////////////////////////////////////
 // Listeners
-//////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
 
   public static interface Listener
   {
     public void soxClientClosed(SoxClient client);
+  }
+
+  public static interface TransferListener
+  {
+    public void progress(int bytesTransfered, int bytesTotal);
   }
 
 ////////////////////////////////////////////////////////////////
@@ -1351,23 +1469,26 @@ public class SoxClient
     out.flush();
   }
 
-//////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
 // Fields
-//////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
 
   public final DaspSocket socket;
   public final InetAddress addr;
   public final int port;
   public final String username;
-  final String password;
   public Listener listener;
-  
+  final String password;
+  DaspSession session;
+  String closeCause = "never opened";
   boolean allTreeEvents;
   SoxComponent[] cache = new SoxComponent[1024];
+  SoxExchange exchange;
+  SoxReceiver receiver;
+  FileTransfer fileTransfer;
+  volatile boolean closing;
 
-  ISoxComm comm;
-
-  SoxUtil util;
+  private SoxUtil util;
   private final Object subscribeSyncLock = new Object();
 
 }
