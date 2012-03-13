@@ -715,6 +715,27 @@ public class ImageGen
       code.u1(SCode.LoadBuf);
       opArg(op);
     }
+    else if (op.opcode == SCode.LoadSlotId)
+    {
+      // Optimization for code that refers to slot ID:
+      //    Since slot ID value is known at compile time, just subst LoadIntU1 <slot id value>
+      code.u1(SCode.LoadIntU1);
+      try
+      {
+        // Arg is slot id qname, write id's value instead of arg
+        IrSlot slot = (IrSlot)ns.resolveSlot(op.arg);
+        code.u1(slot.id);
+
+        // DEBUG
+        System.out.println("  ImageGen:  0x" + Integer.toHexString(code.bytes[code.pos-2]) + 
+                                      "  0x" + Integer.toHexString(code.bytes[code.pos-1]));
+        // DEBUG
+      }
+      catch (IllegalStateException e)
+      {
+        opArg(op);          // If any problems resolving slot, just treat arg normally
+      }
+    }
     else
     {
       code.u1(op.opcode);      // write opcode

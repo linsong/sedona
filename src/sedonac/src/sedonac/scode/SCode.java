@@ -323,6 +323,7 @@ public class SCode
   public static final int MetaSlot           = 236;  // inline meta-data, index to slot qname triple
   public static final int Cast               = 237;  // only used for Java bytecode
   public static final int LoadArrayLiteral   = 238;  // in SVM we use LoadBuf as pointer to array in code section
+  public static final int LoadSlotId         = 239;  // arg is slot qname; subst id at image gen
 
   // OpCodes by name
   public static final String[] names =
@@ -566,6 +567,7 @@ public class SCode
     "MetaSlot",           // 236
     "Cast",               // 237
     "LoadArrayLiteral",   // 238
+    "LoadSlotId",         // 239
   };
 
   // OpCodes arguments
@@ -668,6 +670,7 @@ public class SCode
       case MetaSlot:            return u2Arg;
       case Cast:                return typeArg;
       case LoadArrayLiteral:    return arrayArg;
+      case LoadSlotId:          return u1Arg;
       default:                  return noArg;
     }
   }
