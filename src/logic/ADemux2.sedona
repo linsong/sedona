@@ -1,0 +1,45 @@
+//
+// Copyright (c) 2010-2011 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   18 May 2010  Clif Turman  Creation
+//   04 Aug 2011  Clif Turman  Add comments
+//
+
+**
+** ADemux2 object selects one of two outputs to receive the input value, depending
+** on the value of boolean switch input.  The value
+** of the other output remains unchanged.
+**
+** If s1 is false, then out1 is updated with in, and out2 value remains constant at previous value
+** If s2 is true, then out2 is updated with in, and out1 value remains constant at previous value
+**
+@niagaraIcon="module://icons/x16/control/util/split.png"
+class ADemux2
+  extends Component
+{
+  ** output 1
+  @readonly property float out1
+  
+  ** output 2
+  @readonly property float out2
+
+  ** value to get routed to out1 or out2
+  property float in
+  
+  ** s1 selects whether 'in' gets routed to 'out1' (if false) or 'out2' (if true)
+  property bool s1
+
+  **
+  ** Execute is called once every scan.
+  **
+  virtual override void execute()
+  {
+    if(s1)
+      out2 := in
+    else
+      out1 := in
+  }
+
+}

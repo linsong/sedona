@@ -1,0 +1,128 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   17 May 07  Andy Sunders  Creation
+//
+
+**
+** TstatTest
+**
+class TstatTest
+  extends Test
+{
+  static inline Tstat tstat
+
+  static void test()
+  {
+    validateControl(50.0, 4.0)
+
+  }
+
+  static float absValue(float value)
+  {
+    if( value < 0.0)
+      return -1.0 * value
+    return value
+  }
+
+  static void validateControl(float setpoint, float diff)
+  {
+    tstat.sp := setpoint
+    tstat.diff := diff
+    
+    float halfDiff = diff / 2.0f
+    
+    tstat.cv := setpoint
+    tstat.execute()
+    assert(!tstat.out)
+    assert(!tstat.raise)
+    assert(!tstat.lower)
+    
+    tstat.isHeating := true
+    tstat.cv := setpoint - halfDiff - 0.001f
+    tstat.execute()
+    assert(tstat.out)
+    assert(tstat.raise)
+    assert(!tstat.lower)
+    
+    tstat.cv := setpoint - halfDiff
+    tstat.execute()
+    assert(tstat.out)
+    assert(tstat.raise)
+    assert(!tstat.lower)
+    
+    tstat.cv := setpoint
+    tstat.execute()
+    assert(tstat.out)
+    assert(tstat.raise)
+    assert(!tstat.lower)
+    
+    tstat.cv := setpoint + 0.001f
+    tstat.execute()
+    assert(!tstat.out)
+    assert(!tstat.raise)
+    assert(!tstat.lower)
+    
+    tstat.cv := setpoint + halfDiff + 0.001f
+    tstat.execute()
+    assert(!tstat.out)
+    assert(!tstat.raise)
+    assert(tstat.lower)
+    
+    tstat.cv := setpoint
+    tstat.execute()
+    assert(!tstat.out)
+    assert(!tstat.raise)
+    assert(tstat.lower)
+    
+    tstat.cv := setpoint - 0.001f
+    tstat.execute()
+    assert(!tstat.out)
+    assert(!tstat.raise)
+    assert(!tstat.lower)
+    
+    tstat.isHeating := false
+    tstat.cv := setpoint - halfDiff - 0.001f
+    tstat.execute()
+    assert(!tstat.out)
+    assert(tstat.raise)
+    assert(!tstat.lower)
+    
+    tstat.cv := setpoint
+    tstat.execute()
+    assert(!tstat.out)
+    assert(tstat.raise)
+    assert(!tstat.lower)
+    
+    tstat.cv := setpoint + 0.001f
+    tstat.execute()
+    assert(!tstat.out)
+    assert(!tstat.raise)
+    assert(!tstat.lower)
+    
+    tstat.cv := setpoint + halfDiff + 0.001f
+    tstat.execute()
+    assert(tstat.out)
+    assert(!tstat.raise)
+    assert(tstat.lower)
+    
+    tstat.cv := setpoint
+    tstat.execute()
+    assert(tstat.out)
+    assert(!tstat.raise)
+    assert(tstat.lower)
+    
+    tstat.cv := setpoint - 0.001f
+    tstat.execute()
+    assert(!tstat.out)
+    assert(!tstat.raise)
+    assert(!tstat.lower)
+    
+    
+  }
+
+
+
+}

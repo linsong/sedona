@@ -1,0 +1,171 @@
+//
+// Copyright (c) 2009 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   18 Feb 09  Dan Giorgis   creation
+//
+
+**
+** DateTimeService is used to manage the system clock.
+** It also stores the current time which is automatically
+** updated each second.
+**
+class DateTimeService 
+  extends Service
+{
+  
+////////////////////////////////////////////////////////////////
+// Properties
+////////////////////////////////////////////////////////////////
+
+  ** Nanos since epoch
+  @unit=Units.nanosecond property long nanos
+
+  ** Hour, adjusted for UTC offset
+  property byte hour
+
+  ** Minute 
+  property byte minute
+
+  ** Second 
+  property byte second
+
+  ** Year 
+  property int year
+
+  ** Month of year (see also datetime::Month)
+  property byte month
+
+  ** Day of month
+  property byte day
+  
+  ** Day of week (see also datetime::DayOfWeek)
+  property byte dayOfWeek
+
+  ** Current UTC offset in seconds used to calculate the time
+  ** fields from nanos.  If osUtcOffset is true this is a read-only 
+  ** property read from the operating system.  If osUtcOffset is 
+  ** false then this is a configuration property.
+  @unit=Units.second @config property int utcOffset       
+
+  ** If true, then the utcOffset is controlled by the 
+  ** operating system.  If false then the utcOffset is 
+  ** configured strictly by Sedona.
+  @config property bool osUtcOffset       
+  
+  ** Olsen timezone identifier such as "America/New_York".
+  ** This property is purely extra informational meta-data to 
+  ** help tools interpret the utcOffset property.
+  @config @asStr property Buf(32) tz
+
+////////////////////////////////////////////////////////////////
+// Actions
+////////////////////////////////////////////////////////////////
+  
+  **
+  **  Refreshes all property fields with current value 
+  **    
+  action void refresh()
+  {
+    long n = now()    
+ 
+    // if configured to use OS utc-offset, then read it
+    if (osUtcOffset)
+      utcOffset := getUtcOffset()
+    
+    dt.reset()
+    dt.utcOffset = utcOffset
+    if (dt.fromNanos(n) != -1)
+      updateProperties(n)
+  }   
+
+  **
+  **  Sets the system clock and refreshes properties.  May not
+  **  be supported on all properties
+  **
+  action void setSysClock(long nanos) 
+  {
+    setClock(nanos)
+    refresh()
+  }
+
+
+////////////////////////////////////////////////////////////////
+//  Override points
+////////////////////////////////////////////////////////////////
+
+  **
+  **  Return the current UTC date/time on the system in nanoseconds, or 
+  **  DateTime.invalid if not supported, i.e. platform does not have clock
+  **  capability
+  **    
+  virtual long now() { return DateTime.invalid }
+
+  **
+  ** Return the current UTC offset in seconds, including adjustment for
+  ** daylight savings time if necessary
+  **    
+  virtual int getUtcOffset() { return 0 }
+
+  **
+  **  Set the system clock to the given UTC value.  May
+  **  not be supported on all platform.
+  ** 
+  protected virtual void setClock(long nanos) {}
+    
+////////////////////////////////////////////////////////////////
+// Service
+////////////////////////////////////////////////////////////////
+
+  **
+  **  Callback when component first started
+  **
+  virtual override void start()
+  {
+    refresh()
+  }
+
+  **
+  ** Perform a chunk of background work.  Return true
+  ** is there is pending work or false if the Service is
+  ** done working this cycle.
+  **
+  virtual override bool work()
+  {
+    long ticks = Sys.ticks()
+    if ((ticks - lastRefreshTicks) > 1sec)  //  only update once per second
+    {       
+      lastRefreshTicks = ticks;   
+      refresh()
+    }    
+    return false
+  }
+
+
+  ** 
+  **  Update the property fields with values stored in dt  
+  ** 
+  protected void updateProperties(long n)
+  {   
+    nanos := n
+    year := dt.year
+    month := dt.month
+    day := dt.day
+    dayOfWeek := dt.dayOfWeek
+    hour := dt.hour
+    minute := dt.minute
+    second := dt.second            
+  }
+
+////////////////////////////////////////////////////////////////
+// Fields
+////////////////////////////////////////////////////////////////
+  define Log log  
+
+  long lastRefreshTicks
+  inline protected DateTime dt
+
+
+
+}
