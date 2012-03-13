@@ -508,6 +508,7 @@ public class CodeAsm
       case Expr.NULL_LITERAL:
       case Expr.TYPE_LITERAL:
       case Expr.SLOT_LITERAL:
+      case Expr.SLOT_ID_LITERAL:
       case Expr.SIZE_OF:        op(loadLiteral((Expr.Literal)expr)); break;
       case Expr.LONG_LITERAL:   loadLong(((Expr.Literal)expr).asLong()); break; 
       case Expr.TIME_LITERAL:   loadLong(((Expr.Literal)expr).asLong()); break;
@@ -592,6 +593,7 @@ public class CodeAsm
       case Expr.NULL_LITERAL:       return loadNull(expr);
       case Expr.TYPE_LITERAL:       return new IrOp(SCode.LoadType, (Type)expr.value);
       case Expr.SLOT_LITERAL:       return new IrOp(SCode.LoadSlot, (Slot)expr.value);
+      case Expr.SLOT_ID_LITERAL:    return new IrOp(SCode.LoadSlotId, expr.toCodeString());
       case Expr.SIZE_OF:            return new IrOp(SCode.SizeOf, expr.toCodeString());
       default:                      throw new IllegalStateException(expr.toString());
     }

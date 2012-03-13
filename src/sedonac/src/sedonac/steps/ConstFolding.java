@@ -175,7 +175,7 @@ public class ConstFolding
     Expr lhs = expr.lhs;
     Expr rhs = expr.rhs;
     
-    // don't try fold unless lhs and rhs have some 
+    // don't try fold unless lhs and rhs have same 
     // type (most likely an error to catch in CheckErrors)
     if (lhs.type != rhs.type && !expr.op.isShift()) 
       return expr;

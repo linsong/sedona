@@ -93,8 +93,9 @@ public class WriteKit
         writeType(zout, kit.types[i]);
 
       // Java bytecode files
-      for (int i=0; i<compiler.java.length; ++i)
-        writeJava(zout, compiler.java[i]);
+      if (compiler.java!=null)
+        for (int i=0; i<compiler.java.length; ++i)
+          writeJava(zout, compiler.java[i]);
 
       // write source
       if (compiler.ast.includeSource)

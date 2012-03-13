@@ -295,7 +295,7 @@ public class DaspTest
     {                 
       if (msgType == dropType)
       {
-        System.out.println("  DROPING msgType=" + msgType + " " + msgStr(msg));
+        System.out.println("  DROPPING msgType=" + msgType + " " + msgStr(msg));
         dropType = -1;
         return false;
       }
@@ -304,7 +304,7 @@ public class DaspTest
         if (drop[i] == seqNum) 
         { 
           drop[i] = -1;                                           
-          System.out.println("  DROPING " + seqNum + " " + msgStr(msg));
+          System.out.println("  DROPPING " + seqNum + " " + msgStr(msg));
           return false; 
         }
       //System.out.println("  sending " + seqNum + " " + msgStr(msg));
