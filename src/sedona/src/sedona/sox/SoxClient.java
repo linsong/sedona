@@ -1180,7 +1180,7 @@ public class SoxClient
 // Apply
 //////////////////////////////////////////////////////////////////////////
 
-  void applyToCache(Msg msg)
+  public void applyToCache(Msg msg)
     throws Exception
   {
     final boolean isEvent = msg.command() == 'e';
