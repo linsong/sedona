@@ -1,0 +1,126 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   11 Sep 06  Brian Frank  Creation
+//   06 Jun 07  Brian Frank  Port from Java to Sedona
+//
+
+**
+** Weblet is the base class for Objects which handle
+** HTTP requests for a specified URI prefix.
+**
+** Weblets will not be registered with the WebService until the
+** register() method is invoked.  This could be done in
+** _sInit(), or at some other time. Weblets can be removed from
+** the WebService using unregister().
+**
+abstract class Weblet
+  extends Component
+{
+
+////////////////////////////////////////////////////////////////
+// Weblet
+////////////////////////////////////////////////////////////////
+  
+  **
+  ** Register the weblet with the WebService.
+  **
+  void register()
+  {
+    nextWeblet = WebService.weblets
+    WebService.weblets = this
+  }
+  
+  **
+  ** Remove this weblet from the WebService.
+  **
+  void unregister()
+  {
+    Weblet w = WebService.weblets
+    if (w == this) WebService.weblets = w.nextWeblet
+    else
+    {
+      while (w != null && w.nextWeblet != this)
+        w = w.nextWeblet
+      if (w != null) w.nextWeblet = nextWeblet
+    }
+  }
+
+  **
+  ** Get the weblet's prefix which should be a simple
+  ** name (no slash) used for routing URIs to this Weblet.
+  **
+  abstract Str prefix()
+  
+  **
+  ** Get a brief description of the weblet.
+  ** 
+  virtual Str description() { return "" }
+
+  **
+  ** Service the specified request.  Default implementation
+  ** routes to get(), head(), post(), put(), or delete().
+  **
+  virtual void service(WebReq req, WebRes res)
+  {
+    Str method = req.method;
+    if (method.equals("GET"))         get(req, res)
+    else if (method.equals("HEAD"))   head(req, res)
+    else if (method.equals("POST"))   post(req, res)
+    else if (method.equals("PUT"))    put(req, res)
+    else if (method.equals("DELETE")) doDelete(req, res)
+    else res.writeStatus(HttpCode.methodNotAllowed)
+  }
+
+  **
+  ** Service a GET request.
+  **
+  virtual void get(WebReq req, WebRes res)
+  {
+    res.writeStatus(HttpCode.ok)
+    res.writeContentType("text/plain")
+    res.finishHeaders()
+    req.dump(res)
+  }
+
+  **
+  ** Service a HEAD request.
+  **
+  virtual void head(WebReq req, WebRes res)
+  {
+    res.writeStatus(HttpCode.methodNotAllowed)
+  }
+
+  **
+  ** Service a POST request.
+  **
+  virtual void post(WebReq req, WebRes res)
+  {
+    res.writeStatus(HttpCode.methodNotAllowed)
+  }
+
+  **
+  ** Service a PUT request.
+  **
+  virtual void put(WebReq req, WebRes res)
+  {
+    res.writeStatus(HttpCode.methodNotAllowed)
+  }
+
+  **
+  ** Service a DELETE request.
+  **
+  virtual void doDelete(WebReq req, WebRes res)
+  {
+    res.writeStatus(HttpCode.methodNotAllowed)
+  }
+
+//////////////////////////////////////////////////////////////////////////
+// Fields
+//////////////////////////////////////////////////////////////////////////
+
+  ** Used for WebService's linked list of weblets
+  Weblet nextWeblet
+}

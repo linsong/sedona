@@ -1,0 +1,81 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   17 May 07  Andy Sunders  Creation
+//
+
+**
+** LPTest
+**
+class LPTest
+  extends Test
+{
+  static inline LP lp
+
+  static void test()
+  {
+    validateControl(50.0)
+    //validateControl(25.0)
+    //validateControl(75.0)
+    //validateControl(70.0)
+    //validateControl(65.0)
+    //validateControl(60.0)
+    //validateControl(55.0)
+    //validateControl(50.0)
+
+  }
+
+  static float absValue(float value)
+  {
+    if( value < 0.0)
+      return -1.0 * value
+    return value
+  }
+
+  static void validateControl(float setpoint)
+  {
+    Sys.out.print("    test setpoint: ").printFloat(setpoint).print("  max 10 sec @50 exec/sec ")
+    lp.sp := setpoint
+    lp.cv := 0.0
+    lp.kp := 0.80
+    lp.ki := 500.0
+    lp.exTime := 20
+    lp.enable := true
+    lp.direct := false
+    lp.max := 100.0
+    long startTime = Sys.ticks()
+    bool done = false
+    float deltaValue = 0.0
+    int inControlCount = 0
+    float lastLpOut = 0.0
+    while( ((Sys.ticks() - startTime) < 10sec) && !done)
+    {
+      lp.execute()
+      lp.cv := lp.out
+      if(lp.out != lastLpOut)
+      {
+        lastLpOut = lp.out
+        //Sys.out.print("lp.out=").printFloat(lp.out).nl()
+        deltaValue = absValue(setpoint - lp.out)
+        if(deltaValue < 0.001)
+          inControlCount++
+        else
+          inControlCount = 0
+        //Sys.out.print("deltaValue=").printFloat(deltaValue).print("inControlCount=").printInt(inControlCount).nl()
+        done = inControlCount >= 5
+      }
+    }
+    if(done)
+    {
+      Sys.out.print(" control time = ").printInt( (int)((Sys.ticks() - startTime)/1ms) ).print(" ms").nl()
+    }
+    else
+      Sys.out.print(" deltaValue = ").printFloat(deltaValue).nl()
+    assert(done == true)
+  }
+
+
+
+}

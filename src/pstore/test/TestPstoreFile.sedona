@@ -1,0 +1,67 @@
+//
+// Copyright (c) 2009 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   28 Apr 09  Brian Frank  Creation
+//
+
+**
+** TestPstoreFile
+**
+class TestPstoreFile
+  extends PstoreFile
+{
+
+
+  property int result
+
+  action void verifyOwner()
+  {
+    result := isOwner() ? 1 : 0;
+    //Sys.out.print("%% verifyOwner => ${isOwner()}").nl()
+  }
+
+  action void verifyClaim()
+  {
+    result := claim() ? 1 : 0;
+    //Sys.out.print("%% verifyClaim => $result").nl()
+  }
+
+  action void verifyTell()
+  {
+    result := tell();   
+    //Sys.out.print("%% verifyTell => $result").nl()
+  }
+
+  action void verifySeek(int offset)
+  {
+    result := seek(offset) ? 1 : 0;
+    //Sys.out.print("%% verifySeek $offset => $result").nl()
+  }
+
+  action void verifyRead()
+  {          
+    result := in().read()
+    //Sys.out.print("%% verifyRead => $result").nl()
+  }
+
+  action void verifyWrite(int val)
+  {
+    result := out().write(val) ? 1 : 0
+    //Sys.out.print("%% verifyWrite $val => $result").nl()
+  }
+
+  action void verifyReadS4()
+  {
+    result := in().readS4()
+    //Sys.out.print("%% verifyReadS4 $val => $result").nl()
+  }
+
+  action void verifyWriteI4(int val)
+  {
+    result := out().writeI4(val) ? 1 : 0
+    //Sys.out.print("%% verifyWriteI4 $val => $result").nl()
+  }
+
+}

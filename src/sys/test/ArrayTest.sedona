@@ -1,0 +1,351 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   14 Mar 07  Brian Frank  Creation
+//
+
+**
+** ArrayTest
+**
+class ArrayTest
+  extends Test
+{             
+
+//////////////////////////////////////////////////////////////////////////
+// Fields
+//////////////////////////////////////////////////////////////////////////
+
+  define int len = 5
+  inline static bool[len] za
+  inline static byte[ArrayTest.len] ba
+  inline static short[sys::ArrayTest.len] sa
+  inline static int[5] ia
+  inline static float[5] fa
+  inline static long[5] ja
+  inline static double[5] da
+
+  inline static TestFoo[3] x = {...}
+  inline static TestFoo[3] y
+  static TestFoo[] z = x      
+  
+////////////////////////////////////////////////////////////////
+// Loop Reset
+////////////////////////////////////////////////////////////////
+
+  /* LOOPTEST
+  static void testReset()
+  {
+    for (int i=0; i<len; ++i)
+    {
+      za[i] = false
+      ba[i] = 0
+      sa[i] = 0
+      ia[i] = 0
+      fa[i] = 0F
+      ja[i] = 0L
+      da[i] = 0D
+    }                  
+    
+    for (int i=0; i<3; ++i) x[i].reset()
+  }
+  */
+
+//////////////////////////////////////////////////////////////////////////
+// Primitives
+//////////////////////////////////////////////////////////////////////////
+
+  static void testPrimitives()
+  {
+    for (int i=0; i<5; ++i)
+    {
+      assert(!za[i])
+      assert(ba[i] == 0)
+      assert(sa[i] == 0)
+      assert(ia[i] == 0)
+      assert(fa[i] == 0.0f)
+      assert(ja[i] == 0L)
+      assert(da[i] == 0.0d)
+
+      za[i] = i % 2 == 0
+      ba[i] = 200 + i
+      sa[i] = 10_000 * i
+      ia[i] = 0xabcd << (i*8)
+      ja[i] = 0x1234L << (i*8)
+      fa[i] = 2.2 * (float)i
+      da[i] = 2000.008d * (double)i
+    }
+
+    bool[] zx = za
+    int[] ix = ia
+    long[] jx = ja
+
+    for (int i=0; i<5; ++i)
+    {
+      assert(zx[i] == (i % 2 == 0))
+      assert(ba[i] == 200+i)
+      assert(sa[i] == 10_000 * i)
+      assert(ix[i] == 0xabcd << (i*8))
+      assert(jx[i] == 0x1234L << (i*8))
+      assert(fa[i] == 2.2 * (float)i)
+      assert(da[i] == 2000.008d * (double)i)
+    }
+  }
+
+//////////////////////////////////////////////////////////////////////////
+// Obj Array
+//////////////////////////////////////////////////////////////////////////
+
+  static void testObjs()
+  {
+    assert(x != y)
+    assert(x == z)
+
+    for (int i=0; i<3; ++i)
+    {
+      x[i].n = i
+      x[i].verifyInit()
+      y[2-i] = x[i]
+      z[i].verifyInit()
+      x[i].change()
+    }
+
+    for (int i=0; i<3; ++i)
+    {
+      assert(x[i].n == i)
+      assert(y[2-i].n == i)
+      x[i].verifyChange()
+      y[2-i].verifyChange()
+      z[i].verifyChange()
+    }
+  }
+
+//////////////////////////////////////////////////////////////////////////
+// Foreach
+//////////////////////////////////////////////////////////////////////////
+
+  static void nested1(int n)
+  {
+    foreach (int x : ia)
+    {
+      foreach (int y : ia) if (y == n) return
+    }
+  }
+
+  static int nested2(int n)
+  {
+    int c = 0
+    foreach (int x : ia)
+    {
+      if (x == n) return c
+      c++
+    }
+    return -1
+  }
+
+  static int nested3(long n)
+  {
+    int c = 0
+    foreach (long x : ja)
+    {
+      if (x == n) return c
+      c++
+    }
+    return -1
+  }
+  
+  static void testForeach()
+  {
+    int i
+    int j
+
+    i = 0; foreach (bool z : za)   { assert(z == (i % 2 == 0)); ++i }
+    i = 0; foreach (int b : ba)    { assert(b == 200+i); ++i }
+    i = 0; foreach (int s : sa)    { assert(s == 10_000 * i); ++i }
+    i = 0; foreach (int x : ia)    { assert(x == 0xabcd << (i*8)); ++i }
+    i = 0; foreach (long xxx : ja) { assert(xxx == 0x1234L << (i*8)); ++i  }
+    i = 0; foreach (float f : fa)  { assert(f == 2.2 * (float)i); ++i }
+    i = 0; foreach (double d : da) { assert(d == 2000.008d * (double)i); ++i }
+
+    i = j = 0
+    foreach (TestFoo foo : x)
+    {
+      ++i
+      if (foo.n == 1) continue
+      ++j
+    }
+    assert(i == 3)
+    assert(j == 2)
+
+    i = j = 0
+    foreach (TestFoo foo : x)
+    {
+      ++i
+      if (foo.n == 1) break
+      ++j
+    }
+    assert(i == 2)
+    assert(j == 1)
+
+    // length based
+    i = 0; foreach (int x : ia) i++;     assert(i == 5)
+    i = 0; foreach (int x : ia, 0) i++;  assert(i == 0)
+    i = 0; foreach (int x : ia, 2) i++;  assert(i == 2)
+
+    // test stack balancing on return from inside foreach
+    nested1(2)
+    nested1(9)
+    ia[2] = 99; assert(nested2(99) == 2)
+    assert(nested2(0x83748) == -1)
+    assert(nested3(0x1234L) == 0)
+    assert(nested3(0x12340000L) == 2)
+  }
+
+//////////////////////////////////////////////////////////////////////////
+// Assignments
+//////////////////////////////////////////////////////////////////////////
+
+  static void testAssigns()
+  {
+    assert((ba[2] = 0x33) == 0x33);  assert(ba[2] == 0x33)
+    ba[1] = sa[1] = ia[1] = 13
+    assert(ba[1] == 13)
+    assert(sa[1] == 13)
+    assert(ia[1] == 13)
+
+    sa[1]++; assert(sa[1] == 14)
+    assert(sa[1]++ == 14); assert(sa[1] == 15)
+    assert(++sa[1] == 16); assert(sa[1] == 16)
+
+    ja[2]++; assert(ja[2] == 0x12340001L)
+    assert(ja[2]++ == 0x12340001L); assert(ja[2] == 0x12340002L)
+    assert(++ja[2] == 0x12340003L); assert(ja[2] == 0x12340003L)
+
+    fa[2] = 7.0;
+    --fa[2]; assert(fa[2] == 6.0);
+    assert(fa[2]-- == 6.0); assert(fa[2] == 5.0)
+    assert(--fa[2] == 4.0); assert(fa[2] == 4.0)
+
+    da[3] = 7.0d;
+    --da[3]; assert(da[3] == 6.0d);
+    assert(da[3]-- == 6.0d); assert(da[3] == 5.0d)
+    assert(--da[3] == 4.0d); assert(da[3] == 4.0d)
+
+    ba[1] += 2; assert(ba[1] == 15)
+    assert((ba[1] -= 5) == 10)
+    ba[1] *= ia[1]
+    assert(ba[1] == 130)
+  }
+
+//////////////////////////////////////////////////////////////////////////
+// Pointer Arithmetic
+//////////////////////////////////////////////////////////////////////////
+  
+  /* no longer supported
+  static void testPtrMath()
+  {
+    for (int i=0; i<5; ++i)
+    {
+      ba[i] = sa[i] = ia[i] = i*10 
+      ja[i] = (long)(i*10)
+    }
+
+    byte[] bp  = ba+1
+    short[] sp = sa+1
+    int[] ip   = ia+1
+    long[] jp  = ja+1
+    
+    for (int i=0; i<4; ++i)
+    {                  
+      int x = i + 1
+      assert(bp[i] == x*10); 
+      assert(sp[i] == x*10); 
+      assert(ip[i] == x*10); 
+      assert(jp[i] == (long)(x*10))
+    }
+
+    bp = bp+2
+    sp = sp+2
+    ip = ip+2
+    jp = jp+2
+    assert(bp[0] == 30); assert(sp[0] == 30); assert(ip[0] == 30); assert(jp[0] == 30L)
+    assert(bp[1] == 40); assert(sp[1] == 40); assert(ip[1] == 40); assert(jp[1] == 40L)
+
+    bp = bp-3
+    sp = sp-3
+    ip = ip-3
+    jp = jp-3
+    assert(bp[0] == 0);  assert(sp[0] == 0);  assert(ip[0] == 0);  assert(jp[0] == 0L)
+    assert(bp[3] == 30); assert(sp[3] == 30); assert(ip[3] == 30); assert(jp[3] == 30L)
+
+    TestFoo[] rp = x + 1
+    assert(rp[0] == x[1])
+    assert(rp[1] == x[2])
+
+    rp = rp - 1
+    assert(rp[0] == x[0])
+    assert(rp[2] == x[2])   
+  }              
+  */
+
+//////////////////////////////////////////////////////////////////////////
+// Array Literal Defines
+//////////////////////////////////////////////////////////////////////////
+
+  define byte[] bd = {7, 200}
+  define byte[] bdDup = {7, 200}  // verify same arrays interned
+  define byte[] bdTwo = {7, 255}
+
+  define short[] sd = {10_000, 30_000, 50_000}
+
+  define int[] id = {-2, -1, 0, 0xabcd_ff00}
+  define int[] idDup = {-2, -1, 0, 0xabcd_ff00}
+
+  define long[] ld = {0xaaaa_bbbb_ccccL, 4hr}
+  
+  define float[] fd = {24f}
+
+  define double[] dd = {-10_000D, 0.2D}   
+  
+  define Str[] strd = {"a", "hi", "| \n \" \r \\ |"}
+
+  @javaSkip
+  static void testArraysInterned()
+  {
+    assert(bd == bdDup)
+    assert(bd != bdTwo)
+    assert(id == idDup)
+  }
+    
+  static void testArrayLiterals()
+  {                              
+    assert(bd[0] == 7)
+    assert(bd[1] == 200)
+    
+    assert(bdDup[1] == 200)
+    assert(bdTwo[1] == 255)            
+    
+    assert(sd[0] == 10_000)
+    assert(sd[1] == 30_000)
+    assert(sd[2] == 50_000)
+
+    assert(id[0] == -2)
+    assert(id[1] == -1)
+    assert(id[2] == 0)
+    assert(id[3] == 0xabcd_ff00)
+
+    assert(ld[0] == 0xaaaa_bbbb_ccccL)
+    assert(ld[1] == 4hr)
+
+    assert(fd[0] == 24f)
+    
+    assert(dd[0] == -10_000D)
+    assert(dd[1] == 0.2D)    
+    
+    assert(strd[0].equals("a"))
+    assert(strd[1].equals("hi"))       
+    assert(strd[2].equals("| \n \" \r \\ |"))     
+  }
+
+}

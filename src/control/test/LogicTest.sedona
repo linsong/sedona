@@ -1,0 +1,165 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   16 May 07  Andy Sunders  Creation
+//
+
+**
+** LogicTest
+**
+class LogicTest
+  extends Test
+{
+  static inline Or2 or2
+  static inline Or4 or4
+  static inline And2 and2
+  static inline And4 and4
+  static inline Not not
+  static inline Xor xor1
+
+  static void test()
+  {
+    or2.in1 := false
+    or2.in2 := false
+    or2.execute()
+    assert(or2.out == false)
+    or2.in1 := true
+    or2.in2 := false
+    or2.execute()
+    assert(or2.out == true)
+    or2.in1 := false
+    or2.in2 := true
+    or2.execute()
+    assert(or2.out == true)
+    or2.in1 := true
+    or2.in2 := true
+    or2.execute()
+    assert(or2.out == true)
+
+    or4.in1 := false
+    or4.in2 := false
+    or4.in3 := false
+    or4.in4 := false
+    or4.execute()
+    assert(or4.out == false)
+    or4.in1 := true
+    or4.in2 := false
+    or4.in3 := false
+    or4.in4 := false
+    or4.execute()
+    assert(or4.out == true)
+    or4.in1 := false
+    or4.in2 := true
+    or4.in3 := false
+    or4.in4 := false
+    or4.execute()
+    assert(or4.out == true)
+    or4.in1 := false
+    or4.in2 := false
+    or4.in3 := true
+    or4.in4 := false
+    or4.execute()
+    assert(or4.out == true)
+    or4.in1 := false
+    or4.in2 := false
+    or4.in3 := false
+    or4.in4 := true
+    or4.execute()
+    assert(or4.out == true)
+
+    and2.in1 := false
+    and2.in2 := false
+    and2.execute()
+    assert(and2.out == false)
+    and2.in1 := true
+    and2.in2 := false
+    and2.execute()
+    assert(and2.out == false)
+    and2.in1 := false
+    and2.in2 := true
+    and2.execute()
+    assert(and2.out == false)
+    and2.in1 := true
+    and2.in2 := true
+    and2.execute()
+    assert(and2.out == true)
+
+    and4.in1 := false
+    and4.in2 := false
+    and4.in3 := false
+    and4.in4 := false
+    and4.execute()
+    assert(and4.out == false)
+    and4.in1 := true
+    and4.in2 := false
+    and4.in3 := false
+    and4.in4 := false
+    and4.execute()
+    assert(and4.out == false)
+    and4.in1 := false
+    and4.in2 := true
+    and4.in3 := false
+    and4.in4 := false
+    and4.execute()
+    assert(and4.out == false)
+    and4.in1 := false
+    and4.in2 := false
+    and4.in3 := true
+    and4.in4 := false
+    and4.execute()
+    assert(and4.out == false)
+    and4.in1 := false
+    and4.in2 := false
+    and4.in3 := false
+    and4.in4 := true
+    and4.execute()
+    assert(and4.out == false)
+    and4.in1 := true
+    and4.in2 := true
+    and4.in3 := true
+    and4.in4 := true
+    and4.execute()
+    assert(and4.out == true)
+
+    not.in := true
+    not.execute()
+    assert(not.out == false)
+    not.in := false
+    not.execute()
+    assert(not.out == true)
+
+    xor1.in1 := false
+    xor1.in2 := false
+    xor1.execute()
+    assert(xor1.out == false)
+    xor1.in1 := true
+    xor1.execute()
+    assert(xor1.out == true)
+    xor1.in2 := true
+    xor1.execute()
+    assert(xor1.out == false)
+    xor1.in1 := false
+    xor1.execute()
+    assert(xor1.out == true)
+    
+    xor1.in1 := null
+    xor1.in2 := true
+    xor1.execute()
+    assert(xor1.out == null)
+    xor1.in1 := null
+    xor1.in2 := false
+    xor1.execute()
+    assert(xor1.out == null)    
+    xor1.in1 := true
+    xor1.in2 := null
+    xor1.execute()
+    assert(xor1.out == null)
+    xor1.in1 := false
+    xor1.in2 := null
+    xor1.execute()
+    assert(xor1.out == null)
+
+  }
+}
