@@ -27,6 +27,7 @@
   <package name="sedona.vm.sys"         doc="true" src="true" edition="j2se"/>
   <package name="sedona.vm.inet"        doc="true" src="true" edition="j2se"/>
   <package name="sedona.vm.datetimeStd" doc="true" src="true"/>
+  <package name="sedona.vm.scheme"      doc="true" src="true"/>
 
   <!-- Resources -->
   <resources name="/version.txt" />
