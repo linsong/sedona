@@ -1230,8 +1230,11 @@ public class SoxClient
 
   /**
    * Try to lookup a component in the cache by its id.
+   * This will return null if the component is not in
+   * the cache, and will NOT attempt to retrieve it from
+   * the device.
    */
-  SoxComponent cache(int id)
+  public SoxComponent cache(int id)
   {
     if (0 <= id && id < cache.length)
       return cache[id];
