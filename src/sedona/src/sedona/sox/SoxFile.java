@@ -114,7 +114,15 @@ public abstract class SoxFile
 
     public void close()
     {
-      try { fp.close(); } catch(IOException e) { e.printStackTrace(); }
+      try
+      {
+        if (fp != null)
+          fp.close();
+      }
+      catch (IOException e)
+      {
+        e.printStackTrace();
+      }
       fp = null;
     }
 
