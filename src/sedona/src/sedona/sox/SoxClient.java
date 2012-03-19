@@ -3,7 +3,12 @@ package sedona.sox;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.InetAddress;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Properties;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import sedona.*;
 import sedona.dasp.DaspSession;
@@ -12,6 +17,7 @@ import sedona.dasp.DiscoveredNode;
 import sedona.manifest.KitManifest;
 import sedona.manifest.ManifestDb;
 import sedona.sox.ISoxComm.TransferListener;
+import sedona.util.FileUtil;
 import sedona.util.Version;
 import sedona.xml.XParser;
 
@@ -78,7 +84,7 @@ public class SoxClient
     throws Exception
   {
     comm().connect(options);
-  }  
+      }
 
   /**
    * Return the underlying DaspSession or null if closed.
@@ -185,7 +191,7 @@ public class SoxClient
           getFile(uri, SoxFile.make(b), null, null);
           if (b.size() > 0)
           {
-            b.seek(0);
+            b = unzipManifest(b);
             ManifestDb.save(KitManifest.fromXml(XParser.make("manifest", b.getInputStream()).parse()));
           }
         }
@@ -197,6 +203,20 @@ public class SoxClient
       // retry
       return Schema.load(parts);
     }
+  }
+
+  private Buf unzipManifest(Buf zipped) throws IOException
+  {
+    // there should only be one zip entry (the manifest) in the zip file
+    zipped.seek(0);
+    ZipInputStream zin = new ZipInputStream(zipped.getInputStream());
+    ZipEntry m = zin.getNextEntry();
+    Buf unzipped = new Buf();
+    FileUtil.pipe(zin, unzipped.getOutputStream());
+    zin.closeEntry();
+    zin.close();
+    unzipped.seek(0);
+    return unzipped;
   }
 
   /**
@@ -1079,7 +1099,7 @@ public class SoxClient
     throws Exception
   {
     return comm().getFile(uri, file, headers, listener);
-  }
+    }
 
   /**
    * Write the file specified URI using the contents of the given SoxFile
@@ -1094,7 +1114,7 @@ public class SoxClient
     throws Exception
   {
     return comm().putFile(uri, file, headers, listener);
-  }
+    }
 
 
   /**

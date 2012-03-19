@@ -99,7 +99,7 @@ public abstract class AbstractSoxTest
     // write build file
     File file = new File(testDir(), "kits.xml");
     XWriter out = new XWriter(file);
-    out.write("<sedonaCode name='sox-test' endian='little' blockSize='4'\n");
+    out.write("<sedonaCode endian='little' blockSize='4'\n");
     out.write("   refSize='4' main='sys::Sys.main' debug='true' test='true'>\n");
     for (int i=0; i<schema.kits.length; ++i)
       out.write("<depend on='" + schema.kits[i].name + " 0+'/>\n");

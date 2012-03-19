@@ -32,7 +32,7 @@ public class JavaMethodAsm
     this.code   = new Code(parent);         
     this.localOffset = computeLocalOffset(); 
     this.maxLocals = ir.maxLocals * 2 + 10;  // TODO
-    this.maxStack  = ir.maxStack;
+    this.maxStack  = ir.maxStack + 2;        // TODO
   }           
 
   int computeLocalOffset()
@@ -123,6 +123,22 @@ public class JavaMethodAsm
       case SCode.LoadBuf:    kitAsm.loadBuf(code, op.argToBuf()); break;
       case SCode.LoadType:   kitAsm.loadType(code, op.argToType()); break;
       case SCode.LoadSlot:   kitAsm.loadSlot(code, op.argToSlot()); break;
+
+      ///////////////////// Hack to get jasm to work with LoadSlotId ////////////////////////
+      case SCode.LoadSlotId: 
+                             // Get Slot object for base slot from qname (op.arg string)
+                             Slot s = (Slot)kitAsm.ns.resolveSlot(op.arg); 
+
+                             // Get IrOp object for loading slot's id field
+                             Slot sid = (Slot)kitAsm.ns.resolveSlot("sys::Slot.id");
+                             IrOp sop = new IrOp(SCode.Load8BitFieldU1, sid);
+
+                             // Insert two steps (LoadSlot + Load8BitFieldU1) for LoadSlotId
+                             kitAsm.loadSlot(code, s);
+                             loadField(sop);
+                             break;
+      ///////////////////// //////////////////////////////////////// ////////////////////////
+
       case SCode.LoadDefine: loadDefine(op); break;
 
       // load params
@@ -646,8 +662,7 @@ public class JavaMethodAsm
     Type type = op.type;
     if (type.isArray())
     {
-      int of = code.cp.cls(JavaClassAsm.jname(type.arrayOf(), false));       
-      code.add(ANEWARRAY, of);
+      JavaClassAsm.assembleNewArray(code, type.arrayOf());
     }
     else
     {
