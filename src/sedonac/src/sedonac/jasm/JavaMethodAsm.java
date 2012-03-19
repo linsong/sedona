@@ -32,7 +32,7 @@ public class JavaMethodAsm
     this.code   = new Code(parent);         
     this.localOffset = computeLocalOffset(); 
     this.maxLocals = ir.maxLocals * 2 + 10;  // TODO
-    this.maxStack  = ir.maxStack;
+    this.maxStack  = ir.maxStack + 2;        // TODO
   }           
 
   int computeLocalOffset()
