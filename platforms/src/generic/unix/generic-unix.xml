@@ -25,7 +25,14 @@
     <nativeSource path="/src/datetimeStd/native/std" />
     <nativeSource path="/platforms/src/generic/unix/native" />
   </compile>    
-
+  
+  <manifestInclude>
+    <schemes>
+      <!-- unix supports manifest transfer -->
+      <scheme id="m"/>
+    </schemes>
+  </manifestInclude>
+  
 </sedonaPlatform>
 
 
