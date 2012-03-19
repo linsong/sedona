@@ -662,8 +662,7 @@ public class JavaMethodAsm
     Type type = op.type;
     if (type.isArray())
     {
-      int of = code.cp.cls(JavaClassAsm.jname(type.arrayOf(), false));       
-      code.add(ANEWARRAY, of);
+      JavaClassAsm.assembleNewArray(code, type.arrayOf());
     }
     else
     {
