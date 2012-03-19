@@ -725,11 +725,6 @@ public class ImageGen
         // Arg is slot id qname, write id's value instead of arg
         IrSlot slot = (IrSlot)ns.resolveSlot(op.arg);
         code.u1(slot.id);
-
-        // DEBUG
-        System.out.println("  ImageGen:  0x" + Integer.toHexString(code.bytes[code.pos-2]) + 
-                                      "  0x" + Integer.toHexString(code.bytes[code.pos-1]));
-        // DEBUG
       }
       catch (IllegalStateException e)
       {
