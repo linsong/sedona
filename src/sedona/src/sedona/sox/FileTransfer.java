@@ -26,8 +26,6 @@ public class FileTransfer
 // Constructor
 //////////////////////////////////////////////////////////////
 
-//  FileTransfer(SoxClient client, String uri, SoxFile file,
-//               Properties reqHeaders, TransferListener listener)
   public FileTransfer(ISoxComm comm, String uri, SoxFile file,
                       Properties reqHeaders, TransferListener listener)
   {
@@ -45,7 +43,6 @@ public class FileTransfer
     // Also see SoxCommands.sedona (openFileReq)
     int defaultChunkSize = comm.session().idealMax() - 18;
 
-//    this.client      = client;
     this.comm        = comm;
     this.listener    = listener;
     this.uri         = uri;
@@ -389,7 +386,6 @@ public class FileTransfer
 // Fields
 //////////////////////////////////////////////////////////////
 
-//  SoxClient client;       // parent client
   ISoxComm comm;
   TransferListener listener;  // progress callback
   String uri;             // filename to read/write

@@ -1,3 +1,11 @@
+//
+// Copyright (c) 2006 Tridium, Inc.
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   18 Sep 06  Brian Frank  Creation
+//
+
 package sedona.sox;
 
 import java.util.ArrayList;
