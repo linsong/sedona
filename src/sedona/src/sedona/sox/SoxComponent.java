@@ -1,3 +1,11 @@
+//
+// Copyright (c) 2007 Tridium, Inc.
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   21 Jun 07  Brian Frank  Creation
+//
+
 package sedona.sox;
 
 import java.io.PrintWriter;
@@ -7,6 +15,10 @@ import java.util.HashSet;
 import sedona.*;
 import sedona.util.ArrayUtil;
 
+/**
+ * SoxComponent represents a remote Sedona component
+ * being accessed over a SoxClient session.
+ */
 public class SoxComponent
   extends Component
 {
