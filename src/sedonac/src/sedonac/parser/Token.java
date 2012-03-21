@@ -86,6 +86,7 @@ public class Token
   public static final int ASSIGN_RSHIFT  = 56;  //  >>=
   public static final int SAFE_NAV       = 57;  //  ?.
   public static final int ELVIS          = 58;  //  ?:
+  public static final int PROP_ASSIGN    = 59;  //  :=
 
   public static final int ABSTRACT       = 100;
   public static final int ACTION         = 101;
@@ -238,6 +239,7 @@ public class Token
       case ASSIGN_LSHIFT:  return Expr.ASSIGN_LSHIFT;
       case ASSIGN_RSHIFT:  return Expr.ASSIGN_RSHIFT;
       case ELVIS:          return Expr.ELVIS;
+      case PROP_ASSIGN:    return Expr.PROP_ASSIGN;
       default:             throw new IllegalStateException(toString());
     }
   }
@@ -262,6 +264,7 @@ public class Token
       case ASSIGN_CARET:
       case ASSIGN_LSHIFT:
       case ASSIGN_RSHIFT:
+      case PROP_ASSIGN:
         return true;
       default:
         return false;
@@ -385,6 +388,7 @@ public class Token
       case ASSIGN_RSHIFT:  return ">>=";
       case SAFE_NAV:       return "?.";
       case ELVIS:          return "?:";
+      case PROP_ASSIGN:    return ":=";
       default:             return toKeyword(type);
     }
   }

@@ -31,8 +31,8 @@ class TimerTest
     appPeriod = (long)Sys.app.scanPeriod*1ms
 
     // Initial conditions
-    t.time = 3  // sec
-    t.run  = false
+    t.time := 3  // sec
+    t.run  := false
 
     checkPulse(NONE, 0sec )       // Test nothing
     checkPulse(TRIG_ON, 3sec )    // Test action trigger
@@ -59,14 +59,14 @@ class TimerTest
       case TRIG_OFF: duration /= 2L 
                      t.startTimer() 
                      break
-      case ENB_ON  : t.run = false 
+      case ENB_ON  : t.run := false 
                      t.execute()
-                     t.run = true 
+                     t.run := true 
                      break
       case ENB_OFF : duration /= 2L 
-                     t.run = false 
+                     t.run := false 
                      t.execute()
-                     t.run = true 
+                     t.run := true 
                      break
       default : break
     }
@@ -85,7 +85,7 @@ class TimerTest
     if ( (which==TRIG_OFF) || (which==ENB_OFF) )
     {
       if (which==TRIG_OFF) t.resetTimer()
-      if (which==ENB_OFF)  t.run = false
+      if (which==ENB_OFF)  t.run := false
 
       stoptime = Sys.ticks() + duration
       fleft    = (float)duration / (float)1sec

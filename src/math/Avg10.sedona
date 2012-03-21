@@ -84,9 +84,9 @@ class Avg10
     
     // For first ten samples, average only the # samples read so far
     if (firstTen)
-      out = total / (float)index
+      out := total / (float)index
     else
-      out = total / 10.0f
+      out := total / 10.0f
   }
 
   **

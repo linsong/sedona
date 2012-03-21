@@ -23,6 +23,7 @@ import sedonac.jasm.JavaClassAsm;
 import sedonac.namespace.Method;
 import sedonac.namespace.Namespace;
 import sedonac.namespace.Slot;
+import sedonac.namespace.Field;
 import sedonac.namespace.Type;
 import sedonac.namespace.TypeUtil;
 import sedonac.parser.Token;
@@ -52,6 +53,7 @@ public abstract class Expr
   public static final int SLOT_LITERAL   = 12;
   public static final int ARRAY_LITERAL  = 13;
   public static final int SIZE_OF        = 14;  
+  public static final int SLOT_ID_LITERAL= 15;  
   public static final int NEGATE         = 20;  // Unary
   public static final int COND_NOT       = 21;
   public static final int BIT_NOT        = 22;
@@ -107,6 +109,8 @@ public abstract class Expr
   public static final int INTERPOLATION  = 72;  // Interpolation
   public static final int NEW            = 73;  // New
   public static final int DELETE         = 74;  // Delete
+  public static final int PROP_ASSIGN    = 75;  // Property assignment :=
+
 
 //////////////////////////////////////////////////////////////////////////
 // Expr
@@ -159,6 +163,7 @@ public abstract class Expr
       case ASSIGN_BIT_XOR:
       case ASSIGN_LSHIFT:
       case ASSIGN_RSHIFT:
+      case PROP_ASSIGN:
       case CALL:
       case INIT_ARRAY:
       case INIT_VIRT:
@@ -313,10 +318,11 @@ public abstract class Expr
     {
       switch (id)
       {
-        case NULL_LITERAL:  return "null";
-        case TIME_LITERAL:  return value.toString() + "ns";
-        case SIZE_OF:       return asType().qname();
-        default:            return TypeUtil.toCodeString(value);
+        case NULL_LITERAL:    return "null";
+        case TIME_LITERAL:    return value.toString() + "ns";
+        case SIZE_OF:         return asType().qname();
+        case SLOT_ID_LITERAL: return value.toString();
+        default:              return TypeUtil.toCodeString(value);
       }
     }
 
@@ -343,6 +349,16 @@ public abstract class Expr
     public String toString()
     {                        
       return toCodeString();
+    }
+
+    public void write(AstWriter out)
+    {
+      out.w("Expr.Literal: ").nl();
+      out.w("  loc=" + loc).nl();
+      out.w("  id=" + id).nl();
+      out.w("  type=" + type).nl();
+      out.w("  value=" + value).nl();
+      out.nl();
     }
 
     public Object value;
@@ -682,6 +698,18 @@ public abstract class Expr
     public String toString()
     {
       return super.toString();
+    }
+
+    public void write(AstWriter out)
+    {
+      out.w("Expr.Field: ").nl();
+      out.w("  loc=" + loc).nl();
+      out.w("  id=" + id).nl();
+      out.w("  type=" + type).nl();
+      out.w("  target=" + target).nl();
+      out.w("  name=" + name).nl();
+      out.w("  field=" + field).nl();
+      out.nl();
     }
 
     public sedonac.namespace.Field field;      

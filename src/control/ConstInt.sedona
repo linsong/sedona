@@ -23,7 +23,7 @@ class ConstInt
   **
   action void set(int x)
   {           
-    out = x
+    out := x
   }
   
 }

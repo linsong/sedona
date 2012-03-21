@@ -69,11 +69,11 @@ class Reset
   virtual override void execute()
   {
     if (in <= inMin)
-      out = outMin
+      out := outMin
     else if (in >= inMax)
-      out = outMax
+      out := outMax
     else
-      out = outInRatio * (in-inMin) + outMin
+      out := outInRatio * (in-inMin) + outMin
   }
 
 

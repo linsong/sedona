@@ -134,8 +134,8 @@ class LSeq
       setBool(type.slots[LSeq.out1.id+i], ((i+1) <= requiredStages))
     }
 
-    dOn  = requiredStages
-    ovfl = in > max
+    dOn  := requiredStages
+    ovfl := in > max
   }
 
 
@@ -175,7 +175,7 @@ class LSeq
     invalidConfig = false
     if (numOuts==0 || min == max)
       invalidConfig = true
-    delta = (max - min) / (float)(numOuts + 1)
+    delta := (max - min) / (float)(numOuts + 1)
   }
 
   float min

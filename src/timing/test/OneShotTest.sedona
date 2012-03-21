@@ -21,26 +21,26 @@ class OneShotTest
     // Set up const
     appPeriod = (long)Sys.app.scanPeriod*1ms
 
-    sh.pulseWidth = 1.0       // sec
+    sh.pulseWidth := 1.0       // sec
 
 
     //
     // First, test non-retriggerable
     //
     Sys.out.print("\tTesting non-retriggerable pulse\n")
-    sh.canRetrig  = false
+    sh.canRetrig  := false
     // Generate rising edge
-    sh.in = false
+    sh.in := false
     sh.execute()
-    sh.in = true
+    sh.in := true
     // Execute for 0.5 pulse width
     process(500ms)   
     // Output should be active
     assert(sh.out == true)
     // Generate another rising edge
-    sh.in = false
+    sh.in := false
     sh.execute()
-    sh.in = true
+    sh.in := true
     // Execute for 0.6 pulse width
     process(600ms)   
     // Output should be inactive
@@ -51,19 +51,19 @@ class OneShotTest
     // Second, test retriggerable
     //
     Sys.out.print("\tTesting retriggerable pulse\n")
-    sh.canRetrig  = true
+    sh.canRetrig  := true
     // Generate rising edge
-    sh.in = false
+    sh.in := false
     sh.execute()
-    sh.in = true
+    sh.in := true
     // Execute for 0.5 pulse width
     process(500ms)   
     // Output should be active
     assert(sh.out == true)
     // Generate another rising edge
-    sh.in = false
+    sh.in := false
     sh.execute()
-    sh.in = true
+    sh.in := true
     // Execute for 0.5 pulse width
     process(500ms)   
     // Output should still be active
@@ -78,11 +78,11 @@ class OneShotTest
     // Third, test clear action
     //
     Sys.out.print("\tTesting clear() action\n")
-    sh.canRetrig  = true
+    sh.canRetrig  := true
     // Generate rising edge
-    sh.in = false
+    sh.in := false
     sh.execute()
-    sh.in = true
+    sh.in := true
     // Execute for 0.5 pulse width
     process(500ms)   
     // Output should be active

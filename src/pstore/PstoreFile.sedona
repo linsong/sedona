@@ -195,7 +195,7 @@
     Component p = Sys.app.lookup(parent)
     if (p == null || !p.type.is(PstoreService.type))
     {
-      status = statusBadParent
+      status := statusBadParent
       return
     }                               
     PstoreService service = (PstoreService)p
@@ -203,21 +203,21 @@
     // validate parent size
     if (service.size <= 0)
     {
-      status = statusServiceErr
+      status := statusServiceErr
       return
     }
     
     // validate starting offset    
     if (resvOffset < 0 || resvOffset >= service.size)
     {                                     
-      status = statusBadOffset
+      status := statusBadOffset
       return
     }
 
     // validate ending size    
     if (resvSize <= 0 || resvOffset+resvSize >= service.size)
     {                                     
-      status = statusBadSize
+      status := statusBadSize
       return
     }
 
@@ -228,14 +228,14 @@
     {                 
       if (overlaps(kid))
       {                                              
-        status = statusDupRange
+        status := statusDupRange
         return
       }
       kid = Sys.app.lookup(kid.nextSibling)       
     }
     
     // file is now active   
-    this.status = statusOk
+    this.status := statusOk
     this.service = service
   }                 
   

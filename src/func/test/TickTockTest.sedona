@@ -29,8 +29,8 @@ class TickTockTest
     bool curOut = tickTock.out
     bool lastOut = curOut
     int count = 0;
-    freq.in = curOut
-    tickTock.ticksPerSec = pps
+    freq.in := curOut
+    tickTock.ticksPerSec := pps
     
     // Skip rest of current cycle, since we just changed ticksPerSec
     //waitForNextRisingEdge(tickTock)
@@ -50,7 +50,7 @@ class TickTockTest
         }
       }
       lastOut = curOut
-      freq.in = curOut
+      freq.in := curOut
       freq.execute()
     }
 

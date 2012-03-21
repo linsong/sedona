@@ -62,16 +62,26 @@ public class TextUtil
    */
   public static String intToHexString(int i)
   {
+    return intToHexString(i,8);
+  }
+
+  /**
+   * @return a 32-bit integer to a hex string, but guarantee that
+   *  the string is <code>minChars</code> chars long by padding with leading zeros
+   */
+  public static String intToHexString(int i, int minChars)
+  {
+    if ((minChars < 1) || (minChars > 8)) minChars = 8;
     String s = Integer.toHexString(i);
-    while (s.length() < 8) s = "0" + s;
+    while (s.length() < minChars) s = "0" + s;
     return s;
-  }                       
-  
+  }
+
   /**
    * Return hex string of bytes.
    */
   public static String toHexString(byte[] b)
-  {                              
+  {
     StringBuffer s = new StringBuffer();
     for (int i=0; i<b.length; ++i)
       s.append(byteToHexString(b[i]));
@@ -111,7 +121,7 @@ public class TextUtil
 
   /**
    * Check if all the characters in a given string
-   * are hexidecimal, i.e [0-9], [A-F]
+   * are hexadecimal, i.e [0-9], [A-F]
    */
   public static boolean isHex(String str)
   {
@@ -127,15 +137,15 @@ public class TextUtil
       }
     }
     return true;
-  }                      
-  
+  }
+
   /**
-   * Parse a hexadecimal string into a long.  This method deals 
+   * Parse a hexadecimal string into a long.  This method deals
    * with unsigned longs (which java.lang.Long) doesn't.
    */
   public static long parseHexLong(String s)
-  {      
-    long x = 0;  
+  {
+    long x = 0;
     for (int i=0; i<s.length(); ++i)
       x = (x << 4) + hexCharToInt(s.charAt(i));
     return x;
@@ -408,7 +418,7 @@ public class TextUtil
   public static Comparator caseInsensitiveComparator = new Comparator()
   {
     public int compare(Object a, Object b)
-    {       
+    {
       return toLowerCase(a.toString()).compareTo(toLowerCase(b.toString()));
     }
   };
@@ -466,13 +476,13 @@ public class TextUtil
 ////////////////////////////////////////////////////////////////
 // Misc
 ////////////////////////////////////////////////////////////////
-  
+
   /**
    * Return string for number of bytes.
    */
   public static String kb(int bytes)
   {
-    double d = ((double)bytes) / 1024.0; 
+    double d = ((double)bytes) / 1024.0;
     return padLeft(new DecimalFormat("#.#kb").format(d), 8) + " (" + bytes + " bytes)";
   }
 
@@ -531,7 +541,7 @@ public class TextUtil
   public static String[] splitAndTrim(String str, char delim)
   {
     return trim(split(str, delim));
-  }                   
+  }
 
   /**
    * Join the list of items together with the specified separator.
@@ -540,7 +550,7 @@ public class TextUtil
   {
     return join(items, 0, items.length, sep);
   }
-  
+
   /**
    * Join the list of items together with the specified separator.
    * Start index is inclusive, end index is exclusive.

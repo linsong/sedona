@@ -23,55 +23,55 @@ class And4Test
        
     if ((nullBits & 0x01) != 0)
     {   
-      and4.in1 = null; 
+      and4.in1 := null; 
       nullCnt++;
     }
     else if ((bits & 0x01) != 0) 
     { 
-      and4.in1 = true; 
+      and4.in1 := true; 
       trueCnt++;
     }
     else
-      and4.in1 = false;
+      and4.in1 := false;
          
     if ((nullBits & 0x02) != 0)
     {   
-      and4.in2 = null; 
+      and4.in2 := null; 
       nullCnt++;
     }
     else if ((bits & 0x02) != 0) 
     { 
-      and4.in2 = true; 
+      and4.in2 := true; 
       trueCnt++;
     }
     else
-      and4.in2 = false;
+      and4.in2 := false;
 
     if ((nullBits & 0x04) != 0)
     {   
-      and4.in3 = null; 
+      and4.in3 := null; 
       nullCnt++;
     }
     else if ((bits & 0x04) != 0) 
     { 
-      and4.in3 = true; 
+      and4.in3 := true; 
       trueCnt++;
     }
     else
-      and4.in3 = false;
+      and4.in3 := false;
 
     if ((nullBits & 0x08) != 0)
     {   
-      and4.in4 = null; 
+      and4.in4 := null; 
       nullCnt++;
     }
     else if ((bits & 0x08) != 0) 
     { 
-      and4.in4 = true; 
+      and4.in4 := true; 
       trueCnt++;
     }
     else
-      and4.in4 = false;
+      and4.in4 := false;
     
     and4.execute()
         

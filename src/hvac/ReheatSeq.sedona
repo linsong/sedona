@@ -70,11 +70,11 @@ class ReheatSeq
     int numStagesOn = 0
     if(!enable)
     {
-      out1=false
-      out2=false
-      out3=false
-      out4=false
-      dOn=0
+      out1:=false
+      out2:=false
+      out3:=false
+      out4:=false
+      dOn:=0
       return
     }
 
@@ -102,7 +102,7 @@ class ReheatSeq
       }
     }
 
-    dOn  = numStagesOn
+    dOn := numStagesOn
   }
   
 }

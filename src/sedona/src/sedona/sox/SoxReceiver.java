@@ -28,10 +28,10 @@ class SoxReceiver
   /**
    * Create dispatcher for use by specified client.
    */
-  SoxReceiver(SoxClient client)
+  SoxReceiver(SoxExchange exchange)
   {
     super("SoxReceiver");
-    this.client = client;
+    this.exchange = exchange;
   }
 
 ////////////////////////////////////////////////////////////////
@@ -45,19 +45,19 @@ class SoxReceiver
 
   public void run()
   {
-    while (!client.isClosed())
+    while (!exchange.isClosed())
     {
       try
       {
         // check for pending message
-        Msg msg = client.receive(1000);
+        Msg msg = exchange.receive(1000);
         
         // dispatch received message
         if (msg != null) dispatch(msg);
       }
       catch(Exception e)
       {
-        if (!client.closing && !client.isClosed()) e.printStackTrace();
+        if (!exchange.closing && !exchange.isClosed()) e.printStackTrace();
       }
     }
   }
@@ -73,9 +73,9 @@ class SoxReceiver
     switch (cmd)
     {
       case 'e':  dispatchEvent(msg); return;
-      case 'k':  client.fileTransfer.receiveChunk(msg); return;
-      case 'z':  client.fileTransfer.receiveClose(msg); return;
-      default:   client.exchange.receive(msg); return;
+      case 'k':  exchange.fileTransfer.receiveChunk(msg); return;
+      case 'z':  exchange.fileTransfer.receiveClose(msg); return;
+      default:   exchange.receive(msg); return;
     }
   }
 
@@ -89,7 +89,7 @@ class SoxReceiver
       msg.u1();         // replyNum
 
       // apply the event
-      client.applyToCache(msg);
+      exchange.client.applyToCache(msg);
     }
     catch(Exception e)
     {
@@ -102,6 +102,6 @@ class SoxReceiver
 // Fields
 ////////////////////////////////////////////////////////////////
 
-  SoxClient client;  // parent client
+  SoxExchange exchange;  // parent client
 
 }

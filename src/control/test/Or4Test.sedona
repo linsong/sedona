@@ -21,55 +21,55 @@ class Or4Test
        
     if ((nullBits & 0x01) != 0)
     {   
-      or4.in1 = null; 
+      or4.in1 := null; 
       nullCnt++;
     }
     else if ((bits & 0x01) != 0) 
     { 
-      or4.in1 = true; 
+      or4.in1 := true; 
       trueCnt++;
     }
     else
-      or4.in1 = false;
+      or4.in1 := false;
          
     if ((nullBits & 0x02) != 0)
     {   
-      or4.in2 = null; 
+      or4.in2 := null; 
       nullCnt++;
     }
     else if ((bits & 0x02) != 0) 
     { 
-      or4.in2 = true; 
+      or4.in2 := true; 
       trueCnt++;
     }
     else
-      or4.in2 = false;
+      or4.in2 := false;
 
     if ((nullBits & 0x04) != 0)
     {   
-      or4.in3 = null; 
+      or4.in3 := null; 
       nullCnt++;
     }
     else if ((bits & 0x04) != 0) 
     { 
-      or4.in3 = true; 
+      or4.in3 := true; 
       trueCnt++;
     }
     else
-      or4.in3 = false;
+      or4.in3 := false;
 
     if ((nullBits & 0x08) != 0)
     {   
-      or4.in4 = null; 
+      or4.in4 := null; 
       nullCnt++;
     }
     else if ((bits & 0x08) != 0) 
     { 
-      or4.in4 = true; 
+      or4.in4 := true; 
       trueCnt++;
     }
     else
-      or4.in4 = false;
+      or4.in4 := false;
     
     or4.execute()
         

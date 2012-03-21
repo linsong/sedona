@@ -53,14 +53,14 @@ class MinMax
       first = true
     if(first)
     {
-      minOut = in
-      maxOut = in
+      minOut := in
+      maxOut := in
       first = false
     }
     else
     {
-      minOut = in < minOut ? in : minOut
-      maxOut = in > maxOut ? in : maxOut
+      minOut := in < minOut ? in : minOut
+      maxOut := in > maxOut ? in : maxOut
     }
   }
   

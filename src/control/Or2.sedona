@@ -37,7 +37,7 @@ class Or2
     if (in2 != null) { tmp |= in2; allNull = false; }      
     if (allNull) tmp = null 
 
-    out = tmp
+    out := tmp
   }
 
 }

@@ -26,6 +26,6 @@ class Win32PlatformService extends PlatformService
     super.start()
     updatePlatformId(doPlatformId())
     // TODO: Win32Platform needs to dynamically update available memory???
-    memAvailable = 314159265L
+    memAvailable := 314159265L
   }
 }

@@ -23,7 +23,7 @@ class FreqTest
  
   static void test()
   {
-    Sys.app.scanPeriod = 50
+    Sys.app.scanPeriod := 50
     appPeriod = (long)Sys.app.scanPeriod*1ms
 
     f.start()
@@ -72,7 +72,7 @@ class FreqTest
   {
     long deadline = Sys.ticks() + appPeriod
 
-    f.in = inValue
+    f.in := inValue
     f.execute()
 
     // sleep rest of cycle

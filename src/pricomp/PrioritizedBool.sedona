@@ -13,7 +13,7 @@ class PrioritizedBool
   extends Prioritized
 {
 
-  define bool NULLVAL = null
+  define bool NULLVAL := null
 
 ////////////////////////////////////////////////////////////////
 // Properties
@@ -22,30 +22,30 @@ class PrioritizedBool
   @readonly 
   @summary=false property bool in1 = NULLVAL
 
-  @summary=false property bool in2 = NULLVAL
-  @summary=false property bool in3 = NULLVAL
-  @summary=false property bool in4 = NULLVAL
-  @summary=false property bool in5 = NULLVAL
+  @summary=false property bool in2 := NULLVAL
+  @summary=false property bool in3 := NULLVAL
+  @summary=false property bool in4 := NULLVAL
+  @summary=false property bool in5 := NULLVAL
 
   @readonly 
-  @summary=false property bool in6 = NULLVAL
+  @summary=false property bool in6 := NULLVAL
 
-  @summary=false property bool in7 = NULLVAL
+  @summary=false property bool in7 := NULLVAL
 
   @readonly 
-  @summary=false property bool in8 = NULLVAL
+  @summary=false property bool in8 := NULLVAL
 
-  @summary=false property bool in9 = NULLVAL
-  @summary=true  property bool in10 = NULLVAL
-  @summary=false property bool in11 = NULLVAL
-  @summary=false property bool in12 = NULLVAL
-  @summary=false property bool in13 = NULLVAL
-  @summary=false property bool in14 = NULLVAL
-  @summary=false property bool in15 = NULLVAL
-  @summary=true  property bool in16 = NULLVAL
+  @summary=false property bool in9 := NULLVAL
+  @summary=true  property bool in10 := NULLVAL
+  @summary=false property bool in11 := NULLVAL
+  @summary=false property bool in12 := NULLVAL
+  @summary=false property bool in13 := NULLVAL
+  @summary=false property bool in14 := NULLVAL
+  @summary=false property bool in15 := NULLVAL
+  @summary=true  property bool in16 := NULLVAL
 
   @config 
-  @summary=false property bool fallback = NULLVAL
+  @summary=false property bool fallback := NULLVAL
 
   @readonly 
   @summary=true  property bool out
@@ -53,11 +53,11 @@ class PrioritizedBool
 
   @config 
   @unit=Units.millisecond
-  @summary=false property int minActiveTime = 0
+  @summary=false property int minActiveTime := 0
 
   @config 
   @unit=Units.millisecond
-  @summary=false property int minInactiveTime = 0
+  @summary=false property int minInactiveTime := 0
 
 
 
@@ -67,12 +67,12 @@ class PrioritizedBool
 
   action void emergencySetActive()
   {
-    in1 = true
+    in1 := true
   }
 
   action void emergencySetInactive()
   {
-    in1 = false
+    in1 := false
   }
 
   action void emergencyAuto()
@@ -82,22 +82,24 @@ class PrioritizedBool
 
   action void manualSetActive(int expTime)
   {
-    in8 = true
-    overrideExpTime = (long)expTime * 1ms
-    if (overrideExpTime>0L) overrideExpTime += Sys.ticks()
+    in8 := true
+    long overtime := (long)expTime * 1ms
+    if (overtime>0L) overtime += Sys.ticks()
+    overrideExpTime := overtime
   }
 
   action void manualSetInactive(int expTime)
   {
-    in8 = false
-    overrideExpTime = (long)expTime * 1ms
-    if (overrideExpTime>0L) overrideExpTime += Sys.ticks()
+    in8 := false
+    long overtime = (long)expTime * 1ms
+    if (overtime>0L) overtime += Sys.ticks()
+    overrideExpTime := overtime
   }
 
   action void manualAuto()
   {
     setToDefault(PrioritizedBool.in8)
-    overrideExpTime = 0L
+    overrideExpTime := 0L
   }
 
 
@@ -161,20 +163,20 @@ class PrioritizedBool
     {
       if (value && (minActiveTime>0))
       {
-        in6 = true
+        in6 := true
         minActiveEndTime = Sys.ticks() + ((long)minActiveTime * 1ms)
       }
       else if (!value && (minInactiveTime>0))
       {
-        in6 = false
+        in6 := false
         minInactiveEndTime = Sys.ticks() + ((long)minInactiveTime * 1ms)
       }
       prevOut = value
     }
 
     // Update output value
-    out         = value
-    sourceLevel = level
+    out         := value
+    sourceLevel := level
     //Sys.out.print(" -- choosing in:$level, out set to $value --\n")
   }
 

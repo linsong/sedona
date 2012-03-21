@@ -17,8 +17,8 @@ class TimeAvgTest
  
   static void test()
   {
-    ta.in = 1f
-    ta.time = 500
+    ta.in := 1f
+    ta.time := 500
     ta.start()
 
     waitForSteadyState()
@@ -35,7 +35,7 @@ class TimeAvgTest
       // One cycle
       for (float f=-5f; f<5f; f+=1f)
       {
-        ta.in = f
+        ta.in := f
         ta.execute()
       }
 

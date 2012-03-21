@@ -69,12 +69,12 @@ class TestComp extends AbstractTestComp
   }
   */
 
-  @b=false action void incI1() { i1++ }
-  action void setZ1(bool x)   { z1 = x }
-  action void addI1(int x)    { i1 = i1 + x }
-  @operator action void addJ1(long x)   { j1 += x }
-  action void addF1(float x)  { f1 = f1 + x }
-  action void addD1(double x) { d1 = d1 + x }
+  @b=false action void incI1() { i1 := i1 + 1 }
+  action void setZ1(bool x)   { z1 := x }
+  action void addI1(int x)    { i1 := i1 + x }
+  @operator action void addJ1(long x)   { j1 := j1 + x }
+  action void addF1(float x)  { f1 := f1 + x }
+  action void addD1(double x) { d1 := d1 + x }
   
   action void actionBuf(Buf x) 
   {
@@ -133,7 +133,7 @@ class SubTestComp extends TestComp
   action void addSI(int x)
   {
     int y = x - 10    // use local
-    si = si + y + 10
+    si := si + y + 10
   }
 
   override virtual int m2() { return 202 }

@@ -20,7 +20,7 @@ class WriteTest
   static void test()
   {
     // Test bool
-    b.in = false
+    b.in := false
     b.execute()
     assert(b.out == false)
 
@@ -41,7 +41,7 @@ class WriteTest
     
 
     // Test float
-    f.in = null
+    f.in := null
     f.execute()
     assert(f.out == null)
 
@@ -78,7 +78,7 @@ class WriteTest
     
 
     // Test int
-    i.in = Sys.minInt
+    i.in := Sys.minInt
     i.execute()
     assert(i.out == Sys.minInt)
 

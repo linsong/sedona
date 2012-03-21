@@ -52,14 +52,14 @@ class Device
   **
   virtual override void execute()
   {
-  	long now = Sys.ticks()
-  	if(now > nextPingTime)
-  	{
+    long now = Sys.ticks()
+    if(now > nextPingTime)
+    {
       pingTime = 1sec * (long)net.pingTimeSec
       nextPingTime = now + pingTime
-  	  postPing()
-  	}
-  	fault = status != 0
+      postPing()
+    }
+    fault := status != 0
   }
 
   ////////////////////////////////////////////////////////////////
@@ -82,16 +82,16 @@ class Device
   **
   void addPoint(Str name, int address, Type type)
   {
-  	if(lookupByName(name) == null)
-  	{
-  	  Point c = (Point)app.add(this, name, type)
-  	  if(c == null)
-  	    Sys.out.print("   add ").print(name).print(" failed").nl()
-  	  else
-  	  {
-  	    c.address = address
-  	  }
-  	}
+    if(lookupByName(name) == null)
+    {
+      Point c = (Point)app.add(this, name, type)
+      if(c == null)
+        Sys.out.print("   add ").print(name).print(" failed").nl()
+      else
+      {
+        c.address := address
+      }
+    }
   }
 
   **
@@ -160,7 +160,7 @@ class Device
   **
   virtual bool isDown()
   {
-  	return (status & Status.DOWN) != 0
+    return (status & Status.DOWN) != 0
   }
 
   **
@@ -169,10 +169,10 @@ class Device
   virtual void setDown(bool isDown)
   {
     if(isDown)
-      status = status | Status.DOWN
+      status := status | Status.DOWN
     else
     {
-      status = status & ~Status.DOWN
+      status := status & ~Status.DOWN
       lastUpTime = Sys.ticks()
       nextPingTime = lastUpTime + pingTime
     }

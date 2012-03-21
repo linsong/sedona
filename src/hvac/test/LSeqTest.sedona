@@ -19,14 +19,14 @@ class LSeqTest
 
   static void test()
   {
-    seq.inMin = 0.0
-    seq.inMax = 100.0
-    seq.numOuts = 2
+    seq.inMin := 0.0
+    seq.inMax := 100.0
+    seq.numOuts := 2
 
     for(int numberOfOuts = 1; numberOfOuts < 17; numberOfOuts++)
     {
       // not in an app, so call this explicitly
-      seq.numOuts = numberOfOuts
+      seq.numOuts := numberOfOuts
       seq.start()
 
       //Sys.out.print("testing ${seq.numOuts} outputs\n")
@@ -34,14 +34,14 @@ class LSeqTest
       // test 16 outputs
       for(int i = 0; i <=100; i++)
       {
-        seq.in = (float)i
+        seq.in := (float)i
         seq.execute()
         validateOutputs(true)
       }
   
       for(int i = 100; i >= 0; i--)
       {
-        seq.in = (float)i
+        seq.in := (float)i
         seq.execute()
         validateOutputs(false)
       }
@@ -89,22 +89,22 @@ class LSeqTest
     assert(seq.out16 == (requiredStages >= 16))
 
 
-    b2f.in1  = seq.out1
-    b2f.in2  = seq.out2
-    b2f.in3  = seq.out3
-    b2f.in4  = seq.out4
-    b2f.in5  = seq.out5
-    b2f.in6  = seq.out6
-    b2f.in7  = seq.out7
-    b2f.in8  = seq.out8
-    b2f.in9  = seq.out9
-    b2f.in10 = seq.out10
-    b2f.in11 = seq.out11
-    b2f.in12 = seq.out12
-    b2f.in13 = seq.out13
-    b2f.in14 = seq.out14
-    b2f.in15 = seq.out15
-    b2f.in16 = seq.out16
+    b2f.in1  := seq.out1
+    b2f.in2  := seq.out2
+    b2f.in3  := seq.out3
+    b2f.in4  := seq.out4
+    b2f.in5  := seq.out5
+    b2f.in6  := seq.out6
+    b2f.in7  := seq.out7
+    b2f.in8  := seq.out8
+    b2f.in9  := seq.out9
+    b2f.in10 := seq.out10
+    b2f.in11 := seq.out11
+    b2f.in12 := seq.out12
+    b2f.in13 := seq.out13
+    b2f.in14 := seq.out14
+    b2f.in15 := seq.out15
+    b2f.in16 := seq.out16
     b2f.execute()
 
     float b2fValue = 0.0

@@ -37,7 +37,7 @@ class PrioBoolTest
     ////////////////////////////////////////////////////////////////
 
     // Set in1 directly
-    b.in1 = true 
+    b.in1 := true 
     b.execute()
     assert(b.out==true)
     assert(b.sourceLevel==1)
@@ -49,13 +49,13 @@ class PrioBoolTest
     assert(b.sourceLevel==Prioritized.FB_LEVEL)
 
     // Set in16 directly
-    b.in16 = false 
+    b.in16 := false 
     b.execute()
     assert(b.out==false)
     assert(b.sourceLevel==16)
 
     // Set in9 directly
-    b.in9 = true 
+    b.in9 := true 
     b.execute()
     assert(b.out==true)
     assert(b.sourceLevel==9)

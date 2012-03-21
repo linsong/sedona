@@ -37,9 +37,9 @@ class BSW
   virtual override void execute()
   {
     if (s1 == null)
-      out = null
+      out := null
     else
-      out = s1 ? in2 : in1
+      out := s1 ? in2 : in1
   }
 
 }

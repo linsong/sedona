@@ -17,15 +17,15 @@ class NotTest
  
   static void test()
   {
-    n.in = null
+    n.in := null
     n.execute()
     assert(n.out == null)
     
-    n.in = false
+    n.in := false
     n.execute()
     assert(n.out == true)
 
-    n.in = true
+    n.in := true
     n.execute()
     assert(n.out == false)
   }

@@ -18,8 +18,8 @@ class ResetTest
   {
     validateReset( 100.0);
     validateReset( 4000.0);
-    reset.inMax = 2000.0
-    reset.inMin = 100.0
+    reset.inMax := 2000.0
+    reset.inMin := 100.0
     validateReset( 0.0);
     validateReset( 1000.0);
     validateReset( 1900.0);
@@ -38,7 +38,7 @@ class ResetTest
       value = inMax
     if(value < inMin)
       value = inMin
-    reset.in = value
+    reset.in := value
     reset.execute()
     float cValue = (value - inMin)/(inMax - inMin)
     cValue = outMin + cValue * (outMax - outMin)

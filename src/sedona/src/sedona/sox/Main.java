@@ -8,12 +8,11 @@
 
 package sedona.sox;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
-import sedona.*;
-import sedona.dasp.*;
-import sedona.util.*;
+import java.io.File;
+import java.net.InetAddress;
+
+import sedona.dasp.DaspSocket;
+import sedona.sox.ISoxComm.TransferListener;
 
 /**
  * Main command line for sox client stuff.
@@ -119,7 +118,7 @@ public class Main
   public static void println() { System.out.println(); }
   public static void println(String s) { System.out.println(s); }
   
-  static class Progress implements SoxClient.TransferListener
+  static class Progress implements TransferListener
   {
     public void progress(int transfered, int total)
     {                                                  

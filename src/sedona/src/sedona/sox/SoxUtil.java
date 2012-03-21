@@ -12,9 +12,6 @@ import java.util.ArrayList;
 
 import sedona.*;
 
-/**
- * SoxUtil handles marshaling between Sox messages and SoxComponent.
- */
 public class SoxUtil
 {
 ////////////////////////////////////////////////////////////////
@@ -41,11 +38,11 @@ public class SoxUtil
   public VersionInfo getVersion() { return version; }
   public void setVersion(VersionInfo v) { version = v; }
 
-  
+
 //////////////////////////////////////////////////////////////////////////
 // Apply
 //////////////////////////////////////////////////////////////////////////
-  
+
   /**
    * Given a component read or event message then apply the
    * changes to our SoxComponent cache.
@@ -180,5 +177,6 @@ public class SoxUtil
   private SoxClient client;
   Schema schema;
   VersionInfo version;
+
 
 }

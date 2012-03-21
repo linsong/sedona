@@ -76,7 +76,7 @@ class Round
       x = x - 0.5D
 
     long xtruncated = (long)x
-    out = (float)(((double)xtruncated)/factor)
+    out := (float)(((double)xtruncated)/factor)
   }
   
   **

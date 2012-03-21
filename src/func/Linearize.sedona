@@ -125,7 +125,7 @@ class Linearize
     }
 
     // update output 
-    out = tmp
+    out := tmp
   }
 
 

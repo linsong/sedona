@@ -18,9 +18,9 @@ class DailyScheduleBoolTest
                       int minute,
                       int second)
   {
-    dtSrvc.hour = (byte)hour
-    dtSrvc.minute = (byte)minute
-    dtSrvc.second = (byte)second
+    dtSrvc.hour := (byte)hour
+    dtSrvc.minute := (byte)minute
+    dtSrvc.second := (byte)second
   } 	                
 
   define bool schActive1 = true
@@ -33,11 +33,11 @@ class DailyScheduleBoolTest
     sched.dtSrvc = dtSrvc;
     
     //  Simple case - no active time periods       
-    sched.defVal = true
+    sched.defVal := true
     sched.execute()
     assert(sched.out == true)       
 
-    sched.defVal = false
+    sched.defVal := false
     sched.execute()
     assert(sched.out == false)       
     
@@ -54,10 +54,10 @@ class DailyScheduleBoolTest
     //  1000  off
       
         
-    sched.defVal = schDefault 
-    sched.start1 = (short)(9hr / 60sec)  
-    sched.dur1 = (short)(1hr / 60sec)
-    sched.val1 = schActive1;
+    sched.defVal := schDefault 
+    sched.start1 := (short)(9hr / 60sec)  
+    sched.dur1 := (short)(1hr / 60sec)
+    sched.val1 := schActive1;
     setTime(8,0,0)
     sched.execute(); assert(sched.out == schDefault)
     setTime(9,0,0)
@@ -73,10 +73,10 @@ class DailyScheduleBoolTest
 
     // Case 2: Single active time spanning midnight
     //         Default off, active for 6 hours from 21:00 to 03:00
-    sched.defVal = schDefault 
-    sched.start1 = (short)(21hr / 60sec)  
-    sched.dur1 = (short)(6hr / 60sec)
-    sched.val1 = schActive1;
+    sched.defVal := schDefault 
+    sched.start1 := (short)(21hr / 60sec)  
+    sched.dur1 := (short)(6hr / 60sec)
+    sched.val1 := schActive1;
     setTime(0,0,0)  //  should be on midnight
     sched.execute(); assert(sched.out == schActive1)
     setTime(2,59,59)  //  on at 2:59:59
@@ -96,13 +96,13 @@ class DailyScheduleBoolTest
     // 1200    off
     // 1500    on2
     // 1800    off      
-    sched.defVal = schDefault 
-    sched.start1 = (int)(9hr / 60sec)  
-    sched.dur1 = (int)(3hr / 60sec)
-    sched.val1 = schActive1;
-    sched.start2 = (int)(15hr / 60sec)  
-    sched.dur2 = (int)(3hr / 60sec)
-    sched.val2 = true;
+    sched.defVal := schDefault 
+    sched.start1 := (int)(9hr / 60sec)  
+    sched.dur1 := (int)(3hr / 60sec)
+    sched.val1 := schActive1;
+    sched.start2 := (int)(15hr / 60sec)  
+    sched.dur2 := (int)(3hr / 60sec)
+    sched.val2 := true;
 
     setTime(0,0,0)  
     sched.execute(); assert(sched.out == schDefault)
@@ -130,13 +130,13 @@ class DailyScheduleBoolTest
     // 1200    off
     // 1500    on1
     // 1800    off      
-    sched.defVal = schDefault 
-    sched.start1 = (int)(15hr / 60sec)  
-    sched.dur1 = (int)(3hr / 60sec)
-    sched.val1 = schActive1;
-    sched.start2 = (int)(9hr / 60sec)  
-    sched.dur2 = (int)(3hr / 60sec)
-    sched.val2 = schActive2;
+    sched.defVal := schDefault 
+    sched.start1 := (int)(15hr / 60sec)  
+    sched.dur1 := (int)(3hr / 60sec)
+    sched.val1 := schActive1;
+    sched.start2 := (int)(9hr / 60sec)  
+    sched.dur2 := (int)(3hr / 60sec)
+    sched.val2 := schActive2;
 
     setTime(0,0,0)  
     sched.execute(); assert(sched.out == schDefault)
@@ -165,13 +165,13 @@ class DailyScheduleBoolTest
     // 1800                          off  
     // 2300    start1 dur 2hr        on
     
-    sched.defVal = schDefault 
-    sched.start1 = (int)(23hr / 60sec)  
-    sched.dur1 = (int)(2hr / 60sec)
-    sched.val1 = schActive1;
-    sched.start2 = (int)(15hr / 60sec)  
-    sched.dur2 = (int)(3hr / 60sec)
-    sched.val2 = schActive2;
+    sched.defVal := schDefault 
+    sched.start1 := (int)(23hr / 60sec)  
+    sched.dur1 := (int)(2hr / 60sec)
+    sched.val1 := schActive1;
+    sched.start2 := (int)(15hr / 60sec)  
+    sched.dur2 := (int)(3hr / 60sec)
+    sched.val2 := schActive2;
 
     setTime(0,0,0)  
     sched.execute(); assert(sched.out == schActive1)
@@ -200,13 +200,13 @@ class DailyScheduleBoolTest
     // 1200    start2 dur 1hr        on  
     // 1300                          off
     
-    sched.defVal = schDefault 
-    sched.start1 = (int)(9hr / 60sec)  
-    sched.dur1 = (int)(3hr / 60sec)
-    sched.val1 = schActive1;
-    sched.start2 = (int)(12hr / 60sec)  
-    sched.dur2 = (int)(1hr / 60sec)
-    sched.val2 = schActive2;
+    sched.defVal := schDefault 
+    sched.start1 := (int)(9hr / 60sec)  
+    sched.dur1 := (int)(3hr / 60sec)
+    sched.val1 := schActive1;
+    sched.start2 := (int)(12hr / 60sec)  
+    sched.dur2 := (int)(1hr / 60sec)
+    sched.val2 := schActive2;
 
     setTime(0,0,0)  
     sched.execute(); assert(sched.out == schDefault)
@@ -232,13 +232,13 @@ class DailyScheduleBoolTest
     // 1100    (end active2)         on
     // 1200                          off
 
-    sched.defVal = schDefault 
-    sched.start1 = (int)(9hr / 60sec)  
-    sched.dur1 = (int)(3hr / 60sec)
-    sched.val1 = schActive1;
-    sched.start2 = (int)(10hr / 60sec)  
-    sched.dur2 = (int)(1hr / 60sec)
-    sched.val2 = schActive2;
+    sched.defVal := schDefault 
+    sched.start1 := (int)(9hr / 60sec)  
+    sched.dur1 := (int)(3hr / 60sec)
+    sched.val1 := schActive1;
+    sched.start2 := (int)(10hr / 60sec)  
+    sched.dur2 := (int)(1hr / 60sec)
+    sched.val2 := schActive2;
 
     setTime(0,0,0)  
     sched.execute(); assert(sched.out == schDefault)
@@ -266,13 +266,13 @@ class DailyScheduleBoolTest
     // 1200                          on
     // 1400                          off
 
-    sched.defVal = schDefault 
-    sched.start1 = (int)(9hr / 60sec)  
-    sched.dur1 = (int)(3hr / 60sec)
-    sched.val1 = schActive1;
-    sched.start2 = (int)(11hr / 60sec)  
-    sched.dur2 = (int)(3hr / 60sec)
-    sched.val2 = schActive2;
+    sched.defVal := schDefault 
+    sched.start1 := (int)(9hr / 60sec)  
+    sched.dur1 := (int)(3hr / 60sec)
+    sched.val1 := schActive1;
+    sched.start2 := (int)(11hr / 60sec)  
+    sched.dur2 := (int)(3hr / 60sec)
+    sched.val2 := schActive2;
 
     setTime(0,0,0)  
     sched.execute(); assert(sched.out == schDefault)
@@ -305,13 +305,13 @@ class DailyScheduleBoolTest
     // 1200                          on
     // 1400                          off
 
-    sched.defVal = schDefault 
-    sched.start1 = (int)(11hr / 60sec)  
-    sched.dur1 = (int)(3hr / 60sec)
-    sched.val1 = schActive2;
-    sched.start2 = (int)(9hr / 60sec)  
-    sched.dur2 = (int)(3hr / 60sec)
-    sched.val2 = schActive1;
+    sched.defVal := schDefault 
+    sched.start1 := (int)(11hr / 60sec)  
+    sched.dur1 := (int)(3hr / 60sec)
+    sched.val1 := schActive2;
+    sched.start2 := (int)(9hr / 60sec)  
+    sched.dur2 := (int)(3hr / 60sec)
+    sched.val2 := schActive1;
 
 
     setTime(0,0,0)  

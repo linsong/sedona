@@ -64,8 +64,8 @@ class Freq
 
         if (period != 0.0f)
         {
-          pps = float1sec / period
-          ppm = pps * 60.0
+          pps := float1sec / period
+          ppm := pps * 60.0
         }
       }
       lastEdge = now

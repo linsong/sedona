@@ -63,17 +63,17 @@ class Hysteresis
     {
       //this is the "inverted case"
       if(in <= risingEdge)
-        out=true
+        out:=true
       else if (in >= fallingEdge)
-        out=false
+        out:=false
     }
     else
     {
       //this is the "normal" case
       if(in >= risingEdge)
-        out=true
+        out:=true
       else if (in <= fallingEdge)
-        out=false
+        out:=false
     }	
   }
 }

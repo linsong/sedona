@@ -26,16 +26,16 @@ class DlyOnOffTest
     dlyOn.start()
 
     // Set delay to 1 sec
-    dlyOn.delayTime = 1.0
+    dlyOn.delayTime := 1.0
 
     // Set input to untriggered value & verify output remains untriggered
-    dlyOn.in = false
+    dlyOn.in := false
     dlyOn.execute()
     assert(dlyOn.out == false)
 
     // Change input & loop until output changes, then 
     // check to make sure it didn't trigger early
-    dlyOn.in = true
+    dlyOn.in := true
 
     startTicks = Sys.ticks()
     dlyOn.execute()
@@ -50,16 +50,16 @@ class DlyOnOffTest
     // Now repeat the test for dlyOff
     //
     dlyOff.start()
-    dlyOff.delayTime = 1.0
+    dlyOff.delayTime := 1.0
 
     // Set input to triggered value & verify output remains triggered
-    dlyOff.in = true
+    dlyOff.in := true
     dlyOff.execute()
     assert(dlyOff.out == true)
 
     // Change input & loop until output changes, then 
     // check to make sure it didn't trigger early
-    dlyOff.in = false
+    dlyOff.in := false
 
     startTicks = Sys.ticks()
     dlyOff.execute()

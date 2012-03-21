@@ -144,6 +144,49 @@ public class PlatformManifest
     if (!(manifest.id.length() < 128))
       throw new Exception("platform id '" + manifest.id + "' must be less than 128 characters long: " + manifest.id.length());
   }
+
+//////////////////////////////////////////////////////////////////////////
+// Scheme metadata
+//////////////////////////////////////////////////////////////////////////
+
+  /**
+   * Checks the manifest includes to see if scheme information is present, and
+   * returns a list of schemes the platform declares that it implements.
+   *
+   * @return a non-null String[] listing all schemes the platform implements.
+   * The array may be empty if no schemes are declared.
+   */
+  public String[] getSchemes()
+  {
+    String[] schemes = new String[0];
+    if (manifestIncludes == null)
+      return schemes;
+
+    XElem xschemes = manifestIncludes.elem("schemes");
+    if (xschemes == null)
+      return schemes;
+
+    XElem[] xlist = xschemes.elems("scheme");
+    schemes = new String[xlist.length];
+    for (int i=0; i<xlist.length; ++i)
+      schemes[i] = xlist[i].get("id");
+    return schemes;
+  }
+
+  /**
+   * Return true if the platform declares that it implements the given scheme.
+   *
+   * @param scheme the scheme name to check
+   * @return true if the platform declares that it implements the given scheme.
+   */
+  public boolean implementsScheme(String scheme)
+  {
+    String[] schemes = getSchemes();
+    for (int i=0; i<schemes.length; ++i)
+      if (schemes[i].equals(scheme))
+        return true;
+    return false;
+  }
   
 //////////////////////////////////////////////////////////////////////////
 // Fields

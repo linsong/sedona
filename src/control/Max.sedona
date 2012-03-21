@@ -29,9 +29,9 @@ class Max
   virtual override void execute()
   {
     if(in1 > in2)
-      out = in1
+      out := in1
     else
-      out = in2
+      out := in2
   }
 }
 

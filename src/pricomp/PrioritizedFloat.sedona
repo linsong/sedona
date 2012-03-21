@@ -20,29 +20,29 @@ class PrioritizedFloat
 ////////////////////////////////////////////////////////////////
 
   @readonly   // unlinkable; must set via action
-  @summary=false property float in1 = NULLVAL
+  @summary=false property float in1 := NULLVAL
 
-  @summary=false property float in2 = NULLVAL
-  @summary=false property float in3 = NULLVAL
-  @summary=false property float in4 = NULLVAL
-  @summary=false property float in5 = NULLVAL
-  @summary=false property float in6 = NULLVAL
-  @summary=false property float in7 = NULLVAL
+  @summary=false property float in2 := NULLVAL
+  @summary=false property float in3 := NULLVAL
+  @summary=false property float in4 := NULLVAL
+  @summary=false property float in5 := NULLVAL
+  @summary=false property float in6 := NULLVAL
+  @summary=false property float in7 := NULLVAL
 
   @readonly   // unlinkable; must set via action
-  @summary=false property float in8 = NULLVAL
+  @summary=false property float in8 := NULLVAL
 
-  @summary=false property float in9 = NULLVAL
-  @summary=true  property float in10 = NULLVAL
-  @summary=false property float in11 = NULLVAL
-  @summary=false property float in12 = NULLVAL
-  @summary=false property float in13 = NULLVAL
-  @summary=false property float in14 = NULLVAL
-  @summary=false property float in15 = NULLVAL
-  @summary=true  property float in16 = NULLVAL
+  @summary=false property float in9 := NULLVAL
+  @summary=true  property float in10 := NULLVAL
+  @summary=false property float in11 := NULLVAL
+  @summary=false property float in12 := NULLVAL
+  @summary=false property float in13 := NULLVAL
+  @summary=false property float in14 := NULLVAL
+  @summary=false property float in15 := NULLVAL
+  @summary=true  property float in16 := NULLVAL
 
   @config 
-  @summary=false property float fallback = NULLVAL
+  @summary=false property float fallback := NULLVAL
 
   @readonly 
   @summary=true  property float out
@@ -54,7 +54,7 @@ class PrioritizedFloat
 
   action void emergencySet(float newValue)
   {
-    in1 = newValue
+    in1 := newValue
   }
 
   action void emergencyAuto()
@@ -66,15 +66,16 @@ class PrioritizedFloat
   //action void manualSet(float newValue)
   action void manualSet(long valAndExpTime)
   {
-    in8 = Sys.bitsToFloat((int)(valAndExpTime>>32))
-    overrideExpTime = (valAndExpTime & 0xffffffffL) * 1ms
-    if (overrideExpTime>0L) overrideExpTime += Sys.ticks()
+    in8 := Sys.bitsToFloat((int)(valAndExpTime>>32))
+    long overtime = (valAndExpTime & 0xffffffffL) * 1ms
+    if (overtime>0L) overtime += Sys.ticks()
+    overrideExpTime := overtime
   }
 
   action void manualAuto()
   {
     setToDefault(PrioritizedFloat.in8)
-    overrideExpTime = 0L
+    overrideExpTime := 0L
   }
 
 
@@ -119,8 +120,8 @@ class PrioritizedFloat
     else if (in16 != NULLVAL) {  value = in16;  level = 16 }
     
     // Update output value
-    out         = value
-    sourceLevel = level
+    out         := value
+    sourceLevel := level
   }
 
   

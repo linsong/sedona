@@ -16,8 +16,8 @@ class And2Test
 
   static bool initAndExec(bool in1, bool in2)
   {
-    and2.in1 = in1
-    and2.in2 = in2
+    and2.in1 := in1
+    and2.in2 := in2
     and2.execute()
     return and2.out  
   }  

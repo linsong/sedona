@@ -159,21 +159,21 @@ class LP
       {
         //we need to adjust out down
         if(out - pv > maxDelta)
-          out -= maxDelta
+          out := out - maxDelta
         else
-          out = pv
+          out := pv
       }
       else
       {
         //we need to adjust out up
         if(pv - out > maxDelta)
-          out += maxDelta
+          out := out + maxDelta
         else
-          out = pv
+          out := pv
       }
     }
     else
-      out = pv
+      out := pv
   }
 
 

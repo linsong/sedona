@@ -140,17 +140,17 @@ class LP
 
     //  Apply action
     if ( direct )
-      pv = - pv;
+      pv := - pv;
 
     //  Add bias if not PI
     if (ki == 0.0f)
-      pv = pv + bias
+      pv := pv + bias
 
     // Constrain the overall gain
     if (pv > max)
-      pv = max
+      pv := max
     else if (pv < min)
-      pv = min
+      pv := min
 
     //maxDelta = 0 disables max change check
     if(maxDelta != 0f)
@@ -159,21 +159,21 @@ class LP
       {
         //we need to adjust out down
         if(out - pv > maxDelta)
-          out -= maxDelta
+          out := out - maxDelta
         else
-          out = pv
+          out := pv
       }
       else
       {
         //we need to adjust out up
         if(pv - out > maxDelta)
-          out += maxDelta
+          out := out + maxDelta
         else
-          out = pv
+          out := pv
       }
     }
     else
-      out = pv
+      out := pv
   }
 
 

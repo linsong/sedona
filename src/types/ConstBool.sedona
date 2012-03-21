@@ -24,7 +24,7 @@ class ConstBool
   **
   action void setTrue()
   {           
-    out = true
+    out := true
   }
 
   **  
@@ -32,7 +32,7 @@ class ConstBool
   **
   action void setFalse()
   {           
-    out = false
+    out := false
   }
   
   **  
@@ -40,7 +40,7 @@ class ConstBool
   **
   action void setNull()
   {           
-    out = null
+    out := null
   }
 
 }

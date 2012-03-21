@@ -42,7 +42,7 @@ class TickTock
     // Assume waveform began at time==0, and determine which half of the cycle 
     // we are in now.  If first half, set out=true; if second half, set out=false.
 
-    out = ((Sys.ticks() / halfPeriod) % 2L) == 0L
+    out := ((Sys.ticks() / halfPeriod) % 2L) == 0L
   }
 
 

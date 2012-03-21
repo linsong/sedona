@@ -33,9 +33,9 @@ class Xor
   virtual override void execute()
   {
     if ((in1 == null) || (in2 == null)) 
-      out = null
+      out := null
     else
-      out = in1 ^ in2
+      out := in1 ^ in2
   }
 
 }

@@ -17,6 +17,7 @@ import java.util.*;
 import sedonac.*;
 import sedonac.Compiler;
 import sedonac.ast.*;
+import sedonac.ir.*;
 import sedonac.parser.*;
 import sedonac.namespace.*;
 import sedonac.scode.*;
@@ -207,6 +208,7 @@ public class ResolveExpr
       case Expr.ASSIGN_BIT_XOR:
       case Expr.ASSIGN_LSHIFT:
       case Expr.ASSIGN_RSHIFT:
+      case Expr.PROP_ASSIGN:
       case Expr.ELVIS:          expr.type = ((Expr.Binary)expr).lhs.type; break;
 
       // misc
@@ -358,12 +360,19 @@ public class ResolveExpr
         // check for TypeName.slot which is the syntax for slot literal
         if (slot != null && slot.isReflective())
           return new Expr.Literal(target.loc, ns, Expr.SLOT_LITERAL, slot);
-
       }
 
       // maps to a field access
       if (slot instanceof Field)
-        return new Expr.Field(loc, target, (Field)slot, expr.safeNav);
+      {
+        Field f = (Field)slot;
+
+        // Catch a slot ID literal... will treat it specially later
+        if ((target.id==Expr.SLOT_LITERAL) && slot.toString().equals("sys::Slot.id"))
+          return new Expr.Literal(loc, Expr.SLOT_ID_LITERAL, f.type(), target);
+
+        return new Expr.Field(loc, target, f, expr.safeNav);
+      }
 
       if (target.type != Namespace.error)
         err("Unknown field: " + base.signature() + "." + name, expr.loc);

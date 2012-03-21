@@ -91,7 +91,7 @@ public class NormalizeExpr
     // if we have assignment to a property field
     if (expr.isAssign() && isProp(((Expr.Binary)expr).lhs))
     {   
-      if (expr.id == Expr.ASSIGN) 
+      if ((expr.id == Expr.ASSIGN) || (expr.id == Expr.PROP_ASSIGN))
         return assign((Expr.Binary)expr);
       else
         return compoundAssign((Expr.Binary)expr);

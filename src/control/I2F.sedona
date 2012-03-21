@@ -25,7 +25,7 @@ class I2F
   **
   virtual override void execute()
   {
-    out = (float)in
+    out := (float)in
   }
 }
 

@@ -18,7 +18,7 @@ class ADemux2Test
   static void test()
   {
     // Test bool
-    demux.in = 23f
+    demux.in := 23f
     assert(demux.out1 == 0f)
     assert(demux.out2 == 0f)
     
@@ -26,8 +26,8 @@ class ADemux2Test
     assert(demux.out1 == 23f)
     assert(demux.out2 == 0f)
 
-    demux.in = -1.43f
-    demux.s1 = true
+    demux.in := -1.43f
+    demux.s1 := true
     assert(demux.out1 == 23f)
     assert(demux.out2 == 0f)
     

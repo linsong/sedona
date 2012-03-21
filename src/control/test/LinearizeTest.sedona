@@ -53,27 +53,27 @@ class LinearizeTest
       z += 1f
     }
 
-    l.x0 = -3f
-    l.x1 = -2f
-    l.x2 = -1f
-    l.x3 = 0f
-    l.x4 = 1f
-    l.x5 = 2f
-    l.x6 = 3f
-    l.x7 = 4f
-    l.x8 = 5f
-    l.x9 = 6f
+    l.x0 := -3f
+    l.x1 := -2f
+    l.x2 := -1f
+    l.x3 := 0f
+    l.x4 := 1f
+    l.x5 := 2f
+    l.x6 := 3f
+    l.x7 := 4f
+    l.x8 := 5f
+    l.x9 := 6f
 
-    l.y0 = multifunc(f, p, l.x0)
-    l.y1 = multifunc(f, p, l.x1)
-    l.y2 = multifunc(f, p, l.x2)
-    l.y3 = multifunc(f, p, l.x3)
-    l.y4 = multifunc(f, p, l.x4)
-    l.y5 = multifunc(f, p, l.x5)
-    l.y6 = multifunc(f, p, l.x6)
-    l.y7 = multifunc(f, p, l.x7)
-    l.y8 = multifunc(f, p, l.x8)
-    l.y9 = multifunc(f, p, l.x9)
+    l.y0 := multifunc(f, p, l.x0)
+    l.y1 := multifunc(f, p, l.x1)
+    l.y2 := multifunc(f, p, l.x2)
+    l.y3 := multifunc(f, p, l.x3)
+    l.y4 := multifunc(f, p, l.x4)
+    l.y5 := multifunc(f, p, l.x5)
+    l.y6 := multifunc(f, p, l.x6)
+    l.y7 := multifunc(f, p, l.x7)
+    l.y8 := multifunc(f, p, l.x8)
+    l.y9 := multifunc(f, p, l.x9)
   }
 
 
@@ -128,7 +128,7 @@ class LinearizeTest
         continue;
       }
 
-      l.in = k
+      l.in := k
       l.execute()
       cmpout = multifunc(f, p, l.in)
 

@@ -24,9 +24,9 @@ class SoxCert
   property double d = 256d
   property Buf(4) buf     
   
-  action void av() { this.z = !this.z }
-  action void ai(int i) { this.i += i }
-  action void ad(double d) { this.d += d }
+  action void av() { this.z := !this.z }
+  action void ai(int i) { this.i := this.i + i }
+  action void ad(double d) { this.d := this.d + d }
   action void abuf(Buf b) { buf.copyFromBuf(b) }
   action void name2buf() { buf.copyFromStr(name) }
   

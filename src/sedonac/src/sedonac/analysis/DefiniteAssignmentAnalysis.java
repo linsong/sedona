@@ -281,6 +281,7 @@ public class DefiniteAssignmentAnalysis extends CompilerStep
       case Expr.ASSIGN_MUL:
       case Expr.ASSIGN_RSHIFT:
       case Expr.ASSIGN_SUB:
+      case Expr.PROP_ASSIGN:
         Expr.Binary binary = (Expr.Binary)expr;
         doExpr(binary.lhs);
         doExpr(binary.rhs);

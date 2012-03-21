@@ -116,6 +116,10 @@ The following is an example platform definition file for a win32 platform.
   &lt;manifestInclude path="metadata.xml" />
   &lt;manifestInclude>
     &lt;contact email="jdoe@acme.com" url="http://www.acme.com/sedona/help.html" />
+    &lt;schemes>
+      &lt;!-- this platform implements the manifest transfer scheme -->
+      &lt;scheme id="m"/>
+    &lt;/schemes>
   &lt;/manifestInclude>
 
 &lt;/sedonaPlatform>
@@ -204,6 +208,10 @@ XML elements should not use any such namespace URI.</p>
   platform manifest. If the path starts with "/" then the path is relative to <i>sedona_home</i>.
   Otherwise, the path is relative to the directory containing the platform
   definition.</li>
+  <li><b>&lt;schemes></b> (optional) The schemes child of the manifest include
+  can be used to explicitly declare what schemes the platform supports. Each
+  implemented scheme has the format <code>&lt;scheme id="scheme"/></code>. See
+  the examples below for more details.</li>
 </ul>
 
 <!--/////////////////////////////////////////////////////////-->
@@ -249,6 +257,10 @@ might be generated for the platform definition above.</p>
 &lt;manifestIncludes>
   &lt;metadata foo="bar" />
   &lt;contact email="jdoe@acme.com" url="http://www.acme.com/sedona/help.html" />
+  &lt;schemes>
+    &lt;!-- this platform implements the manifest transfer scheme -->
+    &lt;scheme id="m"/>
+  &lt;/schemes>
 &lt;/manifestIncludes>
 
 &lt;/platformManifest>

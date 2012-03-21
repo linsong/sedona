@@ -17,7 +17,7 @@ import sedona.util.ArrayUtil;
 
 /**
  * SoxComponent represents a remote Sedona component
- * being access over a SoxClient session.
+ * being accessed over a SoxClient session.
  */
 public class SoxComponent
   extends Component
@@ -26,7 +26,7 @@ public class SoxComponent
 //////////////////////////////////////////////////////////////////////////
 // Constructor
 //////////////////////////////////////////////////////////////////////////
-  
+
   /**
    * Public constructor for testing only - always load from SoxClient.
    */
@@ -171,7 +171,7 @@ public class SoxComponent
 ////////////////////////////////////////////////////////////////
 // Security
 ////////////////////////////////////////////////////////////////
-  
+
   /**
    * Return the permissions bitmask which defines what the
    * current client has access to do on this component.  This
@@ -192,7 +192,7 @@ public class SoxComponent
     HashSet set = new HashSet(newChildren.length);
     for (int i=0; i<newChildren.length; ++i)
       set.add(new Integer(newChildren[i]));
-    
+
     if (children != null)
     {
       for (int i=0; i<children.length; ++i)
@@ -233,7 +233,7 @@ public class SoxComponent
   {
     return (this.subscription) | (client.allTreeEvents ? TREE : 0);
   }
-  
+
   /**
    * Fire a changed event on the listener.
    */
@@ -249,7 +249,7 @@ public class SoxComponent
       e.printStackTrace();
     }
   }
-  
+
 //////////////////////////////////////////////////////////////////////////
 // Debug
 //////////////////////////////////////////////////////////////////////////
@@ -292,4 +292,3 @@ public class SoxComponent
   int permissions;
 
 }
-

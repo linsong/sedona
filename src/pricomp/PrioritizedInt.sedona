@@ -23,29 +23,29 @@ class PrioritizedInt
 ////////////////////////////////////////////////////////////////
 
   @readonly 
-  @summary=false property int in1 = NULLVAL
+  @summary=false property int in1 := NULLVAL
 
-  @summary=false property int in2 = NULLVAL
-  @summary=false property int in3 = NULLVAL
-  @summary=false property int in4 = NULLVAL
-  @summary=false property int in5 = NULLVAL
-  @summary=false property int in6 = NULLVAL
-  @summary=false property int in7 = NULLVAL
+  @summary=false property int in2 := NULLVAL
+  @summary=false property int in3 := NULLVAL
+  @summary=false property int in4 := NULLVAL
+  @summary=false property int in5 := NULLVAL
+  @summary=false property int in6 := NULLVAL
+  @summary=false property int in7 := NULLVAL
 
   @readonly 
-  @summary=false property int in8 = NULLVAL
+  @summary=false property int in8 := NULLVAL
 
-  @summary=false property int in9 = NULLVAL
-  @summary=true  property int in10 = NULLVAL
-  @summary=false property int in11 = NULLVAL
-  @summary=false property int in12 = NULLVAL
-  @summary=false property int in13 = NULLVAL
-  @summary=false property int in14 = NULLVAL
-  @summary=false property int in15 = NULLVAL
-  @summary=true  property int in16 = NULLVAL
+  @summary=false property int in9 := NULLVAL
+  @summary=true  property int in10 := NULLVAL
+  @summary=false property int in11 := NULLVAL
+  @summary=false property int in12 := NULLVAL
+  @summary=false property int in13 := NULLVAL
+  @summary=false property int in14 := NULLVAL
+  @summary=false property int in15 := NULLVAL
+  @summary=true  property int in16 := NULLVAL
 
   @config 
-  @summary=false property int fallback = NULLVAL
+  @summary=false property int fallback := NULLVAL
 
   @readonly 
   @summary=true  property int out
@@ -57,7 +57,7 @@ class PrioritizedInt
 
   action void emergencySet(int newValue)
   {
-    in1 = newValue
+    in1 := newValue
   }
 
   action void emergencyAuto()
@@ -72,15 +72,16 @@ class PrioritizedInt
   **
   action void manualSet(long valAndExpTime)
   {
-    in8 = (int)(valAndExpTime>>32)
-    overrideExpTime = (valAndExpTime & 0xffffffffL) * 1ms
-    if (overrideExpTime>0L) overrideExpTime += Sys.ticks()
+    in8 := (int)(valAndExpTime>>32)
+    long overtime = (valAndExpTime & 0xffffffffL) * 1ms
+    if (overtime>0L) overtime += Sys.ticks()
+    overrideExpTime := overtime
   }
 
   action void manualAuto()
   {
     setToDefault(PrioritizedInt.in8)
-    overrideExpTime = 0L
+    overrideExpTime := 0L
   }
 
 
@@ -126,8 +127,8 @@ class PrioritizedInt
     
 
     // Update output value & level
-    out         = value
-    sourceLevel = level
+    out         := value
+    sourceLevel := level
   }
 
   

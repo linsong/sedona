@@ -72,7 +72,7 @@ class DateTimeService
  
     // if configured to use OS utc-offset, then read it
     if (osUtcOffset)
-      utcOffset = getUtcOffset()
+      utcOffset := getUtcOffset()
     
     dt.reset()
     dt.utcOffset = utcOffset
@@ -148,14 +148,14 @@ class DateTimeService
   ** 
   protected void updateProperties(long n)
   {   
-    nanos = n
-    year = dt.year
-    month = dt.month
-    day = dt.day
-    dayOfWeek = dt.dayOfWeek
-    hour = dt.hour
-    minute = dt.minute
-    second = dt.second            
+    nanos := n
+    year := dt.year
+    month := dt.month
+    day := dt.day
+    dayOfWeek := dt.dayOfWeek
+    hour := dt.hour
+    minute := dt.minute
+    second := dt.second            
   }
 
 ////////////////////////////////////////////////////////////////

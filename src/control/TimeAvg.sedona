@@ -75,7 +75,7 @@ class TimeAvg
 
     if( first || (execCount >= scansPerCalc) )
     {
-      out = sum/(float)execCount
+      out := sum/(float)execCount
     }
 
     if(execCount >= scansPerCalc)

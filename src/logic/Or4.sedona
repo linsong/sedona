@@ -37,7 +37,7 @@ class Or4
 
     if (allNull) tmp = null 
 
-    out = tmp
+    out := tmp
   }
 
 }

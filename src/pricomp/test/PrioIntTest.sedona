@@ -38,7 +38,7 @@ class PrioIntTest
     ////////////////////////////////////////////////////////////////
 
     // Set in1 directly
-    f.in1 = 1
+    f.in1 := 1
     f.execute()
     assert(f.out==1)
     assert(f.sourceLevel==1)
@@ -50,13 +50,13 @@ class PrioIntTest
     assert(f.sourceLevel==Prioritized.FB_LEVEL)
 
     // Set in16 directly
-    f.in16 = 16 
+    f.in16 := 16 
     f.execute()
     assert(f.out==16)
     assert(f.sourceLevel==16)
 
     // Set in9 directly
-    f.in9 = 9 
+    f.in9 := 9 
     f.execute()
     assert(f.out==9)
     assert(f.sourceLevel==9)

@@ -43,10 +43,10 @@ class DemuxI2B4
   **
   virtual override void execute()
   {  
-    out1= (in == startsAt)?true:false
-    out2= (in == startsAt + 1)?true:false
-    out3= (in == startsAt + 2)?true:false
-    out4= (in == startsAt + 3)?true:false
+    out1 := (in == startsAt)?true:false
+    out2 := (in == startsAt + 1)?true:false
+    out3 := (in == startsAt + 2)?true:false
+    out4 := (in == startsAt + 3)?true:false
   }
 
 }

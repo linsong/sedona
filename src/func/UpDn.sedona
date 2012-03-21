@@ -54,8 +54,8 @@ class UpDn
     // Clear count & overflow if reset input is true
     if (rst)
     {
-      ovr = false
-      out = 0.0
+      ovr := false
+      out := 0.0
       return
     }
 
@@ -77,12 +77,12 @@ class UpDn
          tmp = limit
 
       // Flag overflow
-      ovr = ( tmp >= limit )
+      ovr := ( tmp >= limit )
     }
 
     lastIn = in
 
-    out = tmp
+    out := tmp
   }
 
   private bool lastIn

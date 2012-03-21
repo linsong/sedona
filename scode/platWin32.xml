@@ -7,8 +7,8 @@
    blockSize="4"
    refSize="4"
    main="sys::Sys.main"
-   debug="true"
-   test="true"
+   debug="false"
+   test="false"
 >
 
   <!-- Kits -->

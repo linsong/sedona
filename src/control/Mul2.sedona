@@ -31,6 +31,6 @@ class Mul2
   **
   virtual override void execute()
   {
-    out = in1 * in2
+    out := in1 * in2
   }
 }
