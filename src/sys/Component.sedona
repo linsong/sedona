@@ -121,19 +121,19 @@ class Component
   //
 
   ** Set a bool property using reflection.
-  void setBool(Slot slot, bool val) { if (doSetBool(slot, val)) changed(slot) }
+  void setBool(Slot slot, bool val) { if (doSetBool(slot, val)) slotChanged(slot) }
 
   ** Set an integer (byte, short, or int) property using reflection.
-  void setInt(Slot slot, int val) { if (doSetInt(slot, val)) changed(slot) }
+  void setInt(Slot slot, int val) { if (doSetInt(slot, val)) slotChanged(slot) }
 
   ** Set a long property using reflection.
-  void setLong(Slot slot, long val) { if (doSetLong(slot, val)) changed(slot) }
+  void setLong(Slot slot, long val) { if (doSetLong(slot, val)) slotChanged(slot) }
 
   ** Set a float property using reflection.
-  void setFloat(Slot slot, float val) { if (doSetFloat(slot, val)) changed(slot) }
+  void setFloat(Slot slot, float val) { if (doSetFloat(slot, val)) slotChanged(slot) }
 
   ** Set a double property using reflection.
-  void setDouble(Slot slot, double val) { if (doSetDouble(slot, val)) changed(slot) }
+  void setDouble(Slot slot, double val) { if (doSetDouble(slot, val)) slotChanged(slot) }
 
   private native bool doSetBool(Slot slot, bool val)
   private native bool doSetInt(Slot slot, int val)
@@ -152,6 +152,12 @@ class Component
   virtual void changed(Slot slot)
   {
     Sys.orBytes(slot.watchEvent(), watchFlags, 0, Watch.max)
+  }
+  
+  private void slotChanged(Slot slot)
+  {
+    if (Sys.app.isRunning())
+      changed(slot)
   }
 
   **
@@ -428,7 +434,7 @@ class Component
         in.readBytes(b.bytes, 0, b.size)
         in.skip(size - b.size)
         if (slot.isAsStr()) b.bytes[b.bytesLen-1] = 0 // always cap with \0
-        changed(slot)  // must manually call changed
+        slotChanged(slot) // must explicitly call
         break
     }
   }
