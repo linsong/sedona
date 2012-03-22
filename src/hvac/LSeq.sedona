@@ -1,0 +1,185 @@
+//
+// Copyright (c) 2007-2011 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   18 Jan 2007  Andy Saunders  Creation
+//   27 Apr 2007  Brian Frank    Port from Java to Sedona
+//   22 Apr 2009  Elizabeth McKenney   Updated
+//   04 Aug 2011  Clif Turman    Add comments
+//   09 Aug 2011  Clif Turman    Fix functionality.  See issue 20422.
+//
+
+**
+** LSeq will provide a linear sequence of 1 to 16 loads.
+**
+** Analogous to a bar graph of the input value, where the delta represented by each 
+** output is (inMax-inMin)/(numOuts + 1).  So given an input value, outputs 1
+** through n will be set true, and any remaining outputs will be false.
+**
+** If 'in' > 'inMax', then 'numOuts' outputs will be set true, and 'ovfl' will be set true
+** The range of 'inMin' to 'inMax' is divided into 'numOuts+1' threshold
+** values (delta), where:
+**    'out1' is driven true if in > inMin + 1*delta,
+**    'out1' and 'out2' are driven true if in > inMin + 2*delta,
+**    'out1','out2', and 'out3' are driven true if in > inMin + 3*delta,
+**    etc
+**    delta = inMax-inMin/(numOuts + 1)
+**
+** A hysteresis of 1/2 delta is required to turn an output off.
+**
+@niagaraIcon="module://icons/x16/control/util/step.png"
+class LSeq
+  extends Component
+
+{
+  ** input will be divided into 'numOuts' sub ranges over the range inMin to inMax 
+  property float in
+
+  ** Expected input minimum
+  @config property float inMin = 0.0
+
+  ** Expected input maximum
+  @config property float inMax = 100.0f
+
+  ** The range of 'inMin' to 'inMax' is divided into 'numOuts' threshold
+  ** values, where:
+  **    delta = (inMax-inMin)/(numOuts + 1)
+  **    'out1' is driven true if in > inMin + 1*delta,
+  **    'out1' and 'out2' are driven true if in > inMin + 2*delta,
+  **    'out1','out2', and 'out3' are driven true if in > inMin + 3*delta,
+  **    etc
+  @min=1 @max=16
+  @config property int numOuts = 16
+  
+  ** Size of each output's range
+  ** delta = (inMax-inMin)/(numOuts+1)
+  @readonly property float delta
+
+  ** Number of outputs turned on
+  @readonly property byte dOn
+
+  ** output 1
+  @readonly property bool out1
+  ** output 2
+  @readonly property bool out2
+  ** output 3
+  @readonly property bool out3
+  ** output 4
+  @readonly property bool out4
+  ** output 5
+  @readonly property bool out5
+  ** output 6
+  @readonly property bool out6
+  ** output 7
+  @readonly property bool out7
+  ** output 8
+  @readonly property bool out8
+  ** output 9
+  @readonly property bool out9
+  ** output 10
+  @readonly property bool out10
+  ** output 11
+  @readonly property bool out11
+  ** output 12
+  @readonly property bool out12
+  ** output 13
+  @readonly property bool out13
+  ** output 14
+  @readonly property bool out14
+  ** output 15
+  @readonly property bool out15
+  ** output 16
+  @readonly property bool out16
+
+  ** Overflow is set when in > inMax
+  @readonly property bool ovfl
+
+
+  **
+  ** Callback when component is first started in an app.
+  **
+  virtual override void start()
+  {
+    updateDelta()
+  }
+
+  **
+  ** Execute is called once every scan.
+  **
+  virtual override void execute()
+  {
+    int requiredStages = (int)((in-min)/delta)
+    
+    //if we currently have more stages on than required, first
+    //apply hysteresis before turning a stage off
+    if(dOn > requiredStages && requiredStages >= 0)  //in must be trending down
+    {
+      if(in > min + (((float)requiredStages + 0.5) * delta))
+        requiredStages++
+    }
+
+    //limit the outputs to the number we have configured
+    if(requiredStages > numOuts)
+      requiredStages = numOuts
+
+    //set all outputs off if we have an invalid configuration
+    if(invalidConfig) requiredStages = 0
+
+
+    // Loop through out1 - out16 setting desired state for each
+    //  (Note assumption that output slot ids are consecutive)
+    for (int i = 0; i < 16; i++)
+    {
+      setBool(type.slots[LSeq.out1.id+i], ((i+1) <= requiredStages))
+    }
+
+    dOn  := requiredStages
+    ovfl := in > max
+  }
+
+
+  **
+  ** Behavior to execute when a property is changed externally
+  ** Update the delta value
+  ** 
+  override void changed(Slot slot)
+  {
+    super.changed(slot)
+
+    if ((slot == LSeq.inMin)  || (slot == LSeq.inMax) || (slot == LSeq.numOuts))
+    {
+      updateDelta()
+    }
+  }
+
+
+  **
+  ** Compute a delta value = (inMax-inMin)/numOuts
+  **
+  private void updateDelta()
+  {
+    if(inMax > inMin)
+    {
+      min = inMin
+      max = inMax
+      //upsideDown = false
+    }
+    else
+    {
+      min = inMax
+      max = inMin
+      //upsideDown = true
+    }
+
+    invalidConfig = false
+    if (numOuts==0 || min == max)
+      invalidConfig = true
+    delta := (max - min) / (float)(numOuts + 1)
+  }
+
+  float min
+  float max
+  //bool upsideDown
+  bool invalidConfig = false
+}

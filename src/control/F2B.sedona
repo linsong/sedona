@@ -1,0 +1,75 @@
+//
+// Copyright (c) 2007-2011 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   10 Jan 2007  Andy Saunders  Creation
+//   27 Apr 2007  Brian Frank    Port from Java to Sedona
+//   04 Aug 2011  Clif Turman    Add comments
+//
+
+**
+** F2b float 16 bit decoder object
+** The input float is cast to an int, which is then decoded to 16 bools of output
+** out1 to out16 = decode with out1 = LSB and out16 = MSB
+** ovrf is set if in > 65535
+**
+@niagaraIcon="module://icons/x16/control/util/switch.png"
+class F2B
+  extends Component
+{
+  ** input value to be decoded
+  property float in
+  ** out1 is set if bit 0 (LSB) is set
+  @readonly property bool out1
+  ** out2 is set if bit 1 is set
+  @readonly property bool out2
+  ** out2 is set if bit 2 is set
+  @readonly property bool out3
+  ** out2 is set if bit 3 is set
+  @readonly property bool out4
+  ** out2 is set if bit 4 is set
+  @readonly property bool out5
+  ** out2 is set if bit 5 is set
+  @readonly property bool out6
+  ** out2 is set if bit 6 is set
+  @readonly property bool out7
+  ** out2 is set if bit 7 is set
+  @readonly property bool out8
+  ** out2 is set if bit 8 is set
+  @readonly property bool out9
+  ** out2 is set if bit 9 is set
+  @readonly property bool out10
+  ** out2 is set if bit 10 is set
+  @readonly property bool out11
+  ** out2 is set if bit 11 is set
+  @readonly property bool out12
+  ** out2 is set if bit 12 is set
+  @readonly property bool out13
+  ** out2 is set if bit 13 is set
+  @readonly property bool out14
+  ** out2 is set if bit 14 is set
+  @readonly property bool out15
+  ** out2 is set if bit 15 (MSB) is set
+  @readonly property bool out16
+  ** ovrf is set if in > 65535
+  @readonly property bool ovrf
+
+  **
+  ** Execute is called once every scan.
+  **
+  virtual override void execute()
+  {
+    int value = (int)in
+    int mask = 1
+    ovrf := value > 0xffff
+
+    // Loop out1 to out16 setting values
+    for(int i = F2B.out1.id; i <= F2B.out16.id; i++)
+    {
+      setBool(type.slots[i], (value & mask) != 0)
+      mask = mask << 1
+    }
+  }
+
+}
