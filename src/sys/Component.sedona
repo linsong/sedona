@@ -232,8 +232,14 @@ class Component
   define int REMOVED = 0
 
   **
-  ** This gets called whenever a child is added to or removed from the 
-  ** component's child list.  Returns 0 on success, <0 on failure.
+  ** Called on parent when a child event occurs.  Defined event types are
+  **
+  ** ADDED - notification that child has been added to component.  Should
+  **   always return 0.   Called prior to loaded() / start() on child
+  ** REMOVED - notification that child has been removed from component.  
+  **   Should always return 0.  Called after stop() on child
+  **
+  ** Future event types may make use of return code  
   **
   virtual int childEvent(int eType, Component child)
   {
@@ -242,14 +248,19 @@ class Component
     if (eType==ADDED) Sys.out.print("added\n")
     else if (eType==REMOVED) Sys.out.print("removed\n")
 */
-
     return 0
   }
 
 
   **
-  ** This gets called whenever a component is added to or removed from 
-  ** a parent component's child list.  Returns 0 on success, <0 on failure.
+  ** Called on a child when a parent event occurs.  Defined event types are
+  **
+  ** ADDED - notification this child has been parented .  Should
+  **   always return 0.  Called prior to loaded() / start() on child
+  ** REMOVED - notification that child has been removed/unparented.  
+  **   Should always return 0.  Called after stop() on child
+  **
+  ** Future event types may make use of return code  
   **
   virtual int parentEvent(int eType, Component parent)
   {
@@ -265,8 +276,13 @@ class Component
 
 
   **
-  ** This gets called whenever a link is connected to or removed from one 
-  ** of the component's slots.  Returns 0 on success, <0 on failure.
+  ** Called on a component when a link event occurs.  Defined event types are
+  **
+  ** ADDED - link has been added to the component .  Should
+  **   always return 0. 
+  ** REMOVED - link has been removed.  Should always return 0
+  **
+  ** Future event types may make use of return code  
   **
   virtual int linkEvent(int eType, Link link)
   {
