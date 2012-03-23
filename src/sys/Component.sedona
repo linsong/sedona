@@ -121,19 +121,19 @@ class Component
   //
 
   ** Set a bool property using reflection.
-  void setBool(Slot slot, bool val) { if (doSetBool(slot, val)) changed(slot) }
+  void setBool(Slot slot, bool val) { if (doSetBool(slot, val)) slotChanged(slot) }
 
   ** Set an integer (byte, short, or int) property using reflection.
-  void setInt(Slot slot, int val) { if (doSetInt(slot, val)) changed(slot) }
+  void setInt(Slot slot, int val) { if (doSetInt(slot, val)) slotChanged(slot) }
 
   ** Set a long property using reflection.
-  void setLong(Slot slot, long val) { if (doSetLong(slot, val)) changed(slot) }
+  void setLong(Slot slot, long val) { if (doSetLong(slot, val)) slotChanged(slot) }
 
   ** Set a float property using reflection.
-  void setFloat(Slot slot, float val) { if (doSetFloat(slot, val)) changed(slot) }
+  void setFloat(Slot slot, float val) { if (doSetFloat(slot, val)) slotChanged(slot) }
 
   ** Set a double property using reflection.
-  void setDouble(Slot slot, double val) { if (doSetDouble(slot, val)) changed(slot) }
+  void setDouble(Slot slot, double val) { if (doSetDouble(slot, val)) slotChanged(slot) }
 
   private native bool doSetBool(Slot slot, bool val)
   private native bool doSetInt(Slot slot, int val)
@@ -152,6 +152,12 @@ class Component
   virtual void changed(Slot slot)
   {
     Sys.orBytes(slot.watchEvent(), watchFlags, 0, Watch.max)
+  }
+  
+  private void slotChanged(Slot slot)
+  {
+    if (Sys.app.isRunning())
+      changed(slot)
   }
 
   **
@@ -226,8 +232,14 @@ class Component
   define int REMOVED = 0
 
   **
-  ** This gets called whenever a child is added to or removed from the 
-  ** component's child list.  Returns 0 on success, <0 on failure.
+  ** Called on parent when a child event occurs.  Defined event types are
+  **
+  ** ADDED - notification that child has been added to component.  Should
+  **   always return 0.   Called prior to loaded() / start() on child
+  ** REMOVED - notification that child has been removed from component.  
+  **   Should always return 0.  Called after stop() on child
+  **
+  ** Future event types may make use of return code  
   **
   virtual int childEvent(int eType, Component child)
   {
@@ -236,8 +248,14 @@ class Component
 
 
   **
-  ** This gets called whenever a component is added to or removed from 
-  ** a parent component's child list.  Returns 0 on success, <0 on failure.
+  ** Called on a child when a parent event occurs.  Defined event types are
+  **
+  ** ADDED - notification this child has been parented .  Should
+  **   always return 0.  Called prior to loaded() / start() on child
+  ** REMOVED - notification that child has been removed/unparented.  
+  **   Should always return 0.  Called after stop() on child
+  **
+  ** Future event types may make use of return code  
   **
   virtual int parentEvent(int eType, Component parent)
   {
@@ -246,8 +264,13 @@ class Component
 
 
   **
-  ** This gets called whenever a link is connected to or removed from one 
-  ** of the component's slots.  Returns 0 on success, <0 on failure.
+  ** Called on a component when a link event occurs.  Defined event types are
+  **
+  ** ADDED - link has been added to the component .  Should
+  **   always return 0. 
+  ** REMOVED - link has been removed.  Should always return 0
+  **
+  ** Future event types may make use of return code  
   **
   virtual int linkEvent(int eType, Link link)
   {
@@ -409,7 +432,7 @@ class Component
         in.readBytes(b.bytes, 0, b.size)
         in.skip(size - b.size)
         if (slot.isAsStr()) b.bytes[b.bytesLen-1] = 0 // always cap with \0
-        changed(slot)  // must manually call changed
+        slotChanged(slot) // must explicitly call
         break
     }
   }

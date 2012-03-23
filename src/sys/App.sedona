@@ -366,10 +366,10 @@ class App
     }
 
     // call parent's callback function (before starting child)
-    if (parent.childEvent(Component.ADDED, c)<0) { remove(c); return null }
+    parent.childEvent(Component.ADDED, c)
 
     // call child's callback function (before starting child)
-    if (c.parentEvent(Component.ADDED, parent)<0) { remove(c); return null }
+    c.parentEvent(Component.ADDED, parent)
 
     // start child if app is running
     if (running) { c.loaded(); c.start() }
@@ -503,11 +503,11 @@ class App
       prev.nextSibling = c.nextSibling
     }
 
-    // call parent's callback function (before starting child)
-    if (parent.childEvent(Component.REMOVED, c)<0) { return false }
+    // call parent's callback function 
+    parent.childEvent(Component.REMOVED, c)
 
-    // call child's callback function (before starting child)
-    if (c.parentEvent(Component.REMOVED, parent)<0) { return false }
+    // call child's callback function
+    c.parentEvent(Component.REMOVED, parent)
 
     // fire config changed on parent
     parent.fireTreeChanged()
@@ -642,7 +642,7 @@ class App
     to.linksTo = link
 
     // call "to" component's callback function
-    if (to.linkEvent(Component.ADDED, link)<0) return false
+    to.linkEvent(Component.ADDED, link)
 
     // add into "from" component's linked list (unless
     // this is a link between the same component)
@@ -653,7 +653,7 @@ class App
     }
 
     // call "from" component's callback function
-    if (from.linkEvent(Component.ADDED, link)<0) return false
+    from.linkEvent(Component.ADDED, link)
 
     return true
   }
@@ -677,7 +677,7 @@ class App
         if (x.nextFrom == link) { x.nextFrom = link.nextFrom; break }
 
       // call "from" component's callback function
-      if (from.linkEvent(Component.REMOVED, link)<0) return false
+      from.linkEvent(Component.REMOVED, link);
 
       // fire link changes event
       from.fireLinksChanged()
@@ -702,7 +702,7 @@ class App
         to.setToDefault(toSlot)
 
       // call "to" component's callback function
-      if (to.linkEvent(Component.REMOVED, link)<0) return false
+      to.linkEvent(Component.REMOVED, link)
 
       // fire link changes event
       to.fireLinksChanged()

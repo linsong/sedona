@@ -108,6 +108,44 @@ class TestComp extends AbstractTestComp
   override void loaded() { wasLoaded = true }    
   override void start() { wasStarted = true }    
   
+  override int childEvent(int eType, Component child)
+  {
+    if (eType == Component.ADDED)
+      childAdded = true
+    else if (eType == Component.REMOVED)
+      childRemoved = true
+    
+    return 0
+  }
+
+  override int parentEvent(int eType, Component child)
+  {
+    if (eType == Component.ADDED)
+      parentAdded = true
+    else if (eType == Component.REMOVED)
+      parentRemoved = true
+          
+    return 0
+  }
+  
+  override int linkEvent(int eType, Link link)
+  {    
+    if (eType == Component.ADDED)
+      linkAdded = true
+    else if (eType == Component.REMOVED)
+      linkRemoved = true
+    
+    return 0;
+  }
+
+  bool parentAdded
+  bool parentRemoved
+  bool childAdded
+  bool childRemoved
+  bool linkAdded
+  bool linkRemoved
+  
+  
   bool wasLoaded
   bool wasStarted
 }

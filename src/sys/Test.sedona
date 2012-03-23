@@ -24,6 +24,9 @@ abstract class Test
   **
   static int main()
   {
+    // so that changed() callbacks will still be fired (issue 20667)
+    Sys.app.running = true
+    
     doMain()
     return 0
   }
