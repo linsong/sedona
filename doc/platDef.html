@@ -118,7 +118,10 @@ The following is an example platform definition file for a win32 platform.
     &lt;contact email="jdoe@acme.com" url="http://www.acme.com/sedona/help.html" />
     &lt;schemes>
       &lt;!-- this platform implements the manifest transfer scheme -->
-      &lt;scheme id="m"/>
+      &lt;!-- transfer attribute may be 'single' or 'multi'. Single (default) means
+           only transfer all manifests in a single zip, and multi means to
+           transfer each manifest as an individual zip file -->
+      &lt;scheme id="m" transfer="single" />
     &lt;/schemes>
   &lt;/manifestInclude>
 
@@ -259,7 +262,10 @@ might be generated for the platform definition above.</p>
   &lt;contact email="jdoe@acme.com" url="http://www.acme.com/sedona/help.html" />
   &lt;schemes>
     &lt;!-- this platform implements the manifest transfer scheme -->
-    &lt;scheme id="m"/>
+    &lt;!-- transfer attribute may be 'single' or 'multi'. Single (default) means
+         only transfer all manifests in a single zip, and multi means to
+         transfer each manifest as an individual zip file -->
+    &lt;scheme id="m" transfer="single" />
   &lt;/schemes>
 &lt;/manifestIncludes>
 
