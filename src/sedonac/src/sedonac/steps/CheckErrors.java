@@ -874,6 +874,7 @@ public class CheckErrors
     checkAssignable(expr.lhs.type, expr.rhs, expr.rhs.loc);
   }
 
+
   // Checks that prop assignment := is used appropriately
   private void checkPropAssign(Expr.Binary expr)
   {
@@ -891,7 +892,14 @@ public class CheckErrors
       if ( !f.field.isProperty() && (expr.op.toBinaryExprId()==Expr.PROP_ASSIGN) )
         err("Cannot apply ':=' operator to non-property", expr.loc);
     }
+    else
+    {
+      // If using PROP_ASSIGN for a non-field, throw compile error
+      if (expr.op.toBinaryExprId()==Expr.PROP_ASSIGN)
+        err("Cannot apply ':=' operator to non-property", expr.loc);
+    }
   }
+
 
   private void checkTernary(Expr.Ternary expr)
   {
