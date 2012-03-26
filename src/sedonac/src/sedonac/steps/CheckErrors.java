@@ -882,22 +882,19 @@ public class CheckErrors
     {
       Expr.Field f = (Expr.Field)expr.lhs;
 
-      // If NOT using PROP_ASSIGN for a property (except for initializer), throw compile warning
-      if ( f.field.isProperty() && 
-          (expr.op.toBinaryExprId()!=Expr.PROP_ASSIGN) &&
-          !curMethod.isInstanceInit() )
-        warn("Should use ':=' assignment operator for properties", expr.loc);
+      // If not using PROP_ASSIGN for a property (except for initializer), compile warning
+      if (f.field.isProperty())
+      {
+        if ( (expr.op.toBinaryExprId()!=Expr.PROP_ASSIGN) && !curMethod.isInstanceInit() )
+          warn("Should use ':=' assignment operator for properties", expr.loc);
+        return;
+      }
+      // If not property, drop through to error below
+    }
 
-      // If using PROP_ASSIGN for a non-property, throw compile error
-      if ( !f.field.isProperty() && (expr.op.toBinaryExprId()==Expr.PROP_ASSIGN) )
-        err("Cannot apply ':=' operator to non-property", expr.loc);
-    }
-    else
-    {
-      // If using PROP_ASSIGN for a non-field, throw compile error
-      if (expr.op.toBinaryExprId()==Expr.PROP_ASSIGN)
-        err("Cannot apply ':=' operator to non-property", expr.loc);
-    }
+    // If using PROP_ASSIGN for a non-property, compile error
+    if (expr.op.toBinaryExprId()==Expr.PROP_ASSIGN)
+      err("Cannot apply ':=' operator to non-property", expr.loc);
   }
 
 
