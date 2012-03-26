@@ -365,14 +365,14 @@ class App
       x.nextSibling = id
     }
 
-    // call parent's callback function (before starting child)
-    parent.childEvent(Component.ADDED, c)
-
-    // call child's callback function (before starting child)
-    c.parentEvent(Component.ADDED, parent)
-
-    // start child if app is running
-    if (running) { c.loaded(); c.start() }
+    // invoke callbacks if running
+    if (running) 
+    { 
+      parent.childEvent(Component.ADDED, c)
+      c.parentEvent(Component.ADDED, parent)
+      c.loaded()
+      c.start() 
+    }
 
     // fire tree changed on parent
     parent.fireTreeChanged()
@@ -503,15 +503,6 @@ class App
       prev.nextSibling = c.nextSibling
     }
 
-    // call parent's callback function 
-    parent.childEvent(Component.REMOVED, c)
-
-    // call child's callback function
-    c.parentEvent(Component.REMOVED, parent)
-
-    // fire config changed on parent
-    parent.fireTreeChanged()
-
     // remove all associated links to/from
     Link link = c.linksFrom
     while (link != null)
@@ -527,6 +518,16 @@ class App
       removeLink(link)
       link = next
     }
+
+    // call parent / child callback function 
+    if (running)
+    { 
+      parent.childEvent(Component.REMOVED, c)  
+      c.parentEvent(Component.REMOVED, parent)
+    }
+
+    // fire config changed on parent
+    parent.fireTreeChanged()
 
     // free component's memory
     delete c
@@ -618,6 +619,13 @@ class App
     // insert it into the from and to component's linked lists
     insertLink(link)
 
+    //  Invoke callbacks if running
+    if (running)
+    {
+      to.linkEvent(Component.ADDED, link)
+      from.linkEvent(Component.ADDED, link)
+    }
+  
     // fire links changed on both components
     from.fireLinksChanged()
     to.fireLinksChanged()
@@ -641,9 +649,6 @@ class App
     link.nextTo = to.linksTo
     to.linksTo = link
 
-    // call "to" component's callback function
-    to.linkEvent(Component.ADDED, link)
-
     // add into "from" component's linked list (unless
     // this is a link between the same component)
     if (to != from)
@@ -651,10 +656,7 @@ class App
       link.nextFrom = from.linksFrom
       from.linksFrom = link
     }
-
-    // call "from" component's callback function
-    from.linkEvent(Component.ADDED, link)
-
+    
     return true
   }
 
@@ -675,12 +677,6 @@ class App
       if (from.linksFrom == link) from.linksFrom = link.nextFrom
       for (Link x = from.linksFrom; x != null; x = x.nextFrom)
         if (x.nextFrom == link) { x.nextFrom = link.nextFrom; break }
-
-      // call "from" component's callback function
-      from.linkEvent(Component.REMOVED, link);
-
-      // fire link changes event
-      from.fireLinksChanged()
     }
 
     // remove it on "to"
@@ -700,13 +696,18 @@ class App
       Slot toSlot = to.type.slot(link.toSlot)
       if (toSlot != null && toSlot.isProp())
         to.setToDefault(toSlot)
-
-      // call "to" component's callback function
-      to.linkEvent(Component.REMOVED, link)
-
-      // fire link changes event
-      to.fireLinksChanged()
     }
+
+    // Invoke callbacks if running
+    if (running)
+    {  
+      from?.linkEvent(Component.REMOVED, link)
+      to?.linkEvent(Component.REMOVED, link)
+    }
+
+    // fire link changes event
+    from?.fireLinksChanged()
+    to?.fireLinksChanged()
 
     // free the link's memory
     delete link

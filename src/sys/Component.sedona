@@ -186,7 +186,7 @@ class Component
 
   **
   ** Callback when component is loaded into an app.  This occurs
-  ** before the start phase.
+  ** before the start phase.  Only called if app is running.
   **
   virtual void loaded()
   {
@@ -195,13 +195,15 @@ class Component
   **
   ** Callback when component is first started in an app.  This occurs
   ** only after all components have had their loaded callback invoked. 
+  ** Only called if app is running
   **
   virtual void start()
   {
   }
 
   **
-  ** Callback when component is first stopped in an app.
+  ** Callback when component is first stopped in an app.  Only called
+  ** if app is running.
   **
   virtual void stop()
   {
@@ -232,7 +234,10 @@ class Component
   define int REMOVED = 0
 
   **
-  ** Called on parent when a child event occurs.  Defined event types are
+  ** Called on parent when a child event occurs.  Only called if app is
+  ** running
+  **
+  ** Defined event types are
   **
   ** ADDED - notification that child has been added to component.  Should
   **   always return 0.   Called prior to loaded() / start() on child
@@ -248,7 +253,10 @@ class Component
 
 
   **
-  ** Called on a child when a parent event occurs.  Defined event types are
+  ** Called on a child when a parent event occurs.  Only called if app is
+  ** running
+  **
+  ** Defined event types are
   **
   ** ADDED - notification this child has been parented .  Should
   **   always return 0.  Called prior to loaded() / start() on child
@@ -264,7 +272,10 @@ class Component
 
 
   **
-  ** Called on a component when a link event occurs.  Defined event types are
+  ** Called on a component when a link event occurs.  Only called
+  ** if app is running
+  **
+  ** Defined event types are
   **
   ** ADDED - link has been added to the component .  Should
   **   always return 0. 
