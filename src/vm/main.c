@@ -300,7 +300,7 @@ static int printVersion()
 #endif
 
   printf("\n");
-  printf("Sedona VM 1.0\n");
+  printf("Sedona VM 1.2\n");
   printf("buildDate: %s %s\n", __DATE__, __TIME__);
   printf("endian:    %s\n", endian);
   printf("blockSize: %d\n", SCODE_BLOCK_SIZE);
