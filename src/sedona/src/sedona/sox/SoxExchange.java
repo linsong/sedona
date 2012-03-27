@@ -302,6 +302,7 @@ public class SoxExchange
     client.cache    = new SoxComponent[1024];
     client.allTreeEvents = false;
     client.util  = null;
+    client.close();
 
     // done closing
     this.closing = false;
