@@ -27,8 +27,7 @@ class App
 
   **
   ** Prepare the applications data structures to begin
-  ** configuration.  This method should not be used if
-  ** loading from an InStream.
+  ** configuration.  
   **
   bool initApp(int initCompsLen)
   {
