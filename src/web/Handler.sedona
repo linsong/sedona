@@ -1,0 +1,218 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   06 Sep 06  Brian Frank  Creation
+//   06 Jun 07  Brian Frank  Port from Java to Sedona
+//
+
+**
+** Handler is used to service a single reusable TcpSocket.
+**
+internal class Handler
+{
+
+////////////////////////////////////////////////////////////////
+// Methods
+////////////////////////////////////////////////////////////////
+
+  **
+  ** Is this handler free to service a request.
+  **
+  bool isFree()
+  {
+    return socket.isClosed()
+  }
+
+  **
+  ** Initialize this handler.
+  **
+  void start(WebService service)
+  {
+    this.service     = service
+    this.req.service = service
+    this.res.handler = this
+    this.res.service = service
+  }
+
+  **
+  ** Shutdown this handler.
+  **
+  void stop()
+  {
+    socket.close()
+  }
+
+////////////////////////////////////////////////////////////////
+// Service
+////////////////////////////////////////////////////////////////
+
+  **
+  ** Callback when this handler is used to accept
+  ** a new incoming socket connection.
+  **
+  void accepted()
+  {
+    pos = cur = 0
+  }
+
+  **
+  ** Service this request.  Return true if we do
+  ** any work or false if no work is pending.  We return
+  ** true if we can't process a complete HTTP request so
+  ** that on the next pass we read more into our buffer.
+  **
+  bool work()
+  {
+    // if closed, then no work pending
+    if (socket.isClosed()) return false
+
+    // if we've run out of buffer then bail
+    int left = bufLen - pos
+    if (left < 5) { socket.close(); return true }
+
+    // read request bytes
+    int read = socket.read(buf, pos, bufLen)
+    if (read <= 0) 
+    { 
+      res.writeStatus(HttpCode.badRequest).finishHeaders().close()
+      return true 
+    }
+
+    // update read offset
+    pos += read
+    
+    // start parsing from the beginning of the buffer
+    cur = 0
+
+    // parse request-line
+    if ((req.method  = token(' '))  == null ||
+        (req.uri     = token(' '))  == null ||
+        (req.version = token('\r')) == null ||
+        !consume('\n'))
+      return true
+
+    // parse parameters
+    WebParams params = req.params
+    params.size = 0
+    while (cur < pos && buf[cur] != '\r')
+    {
+      int idx = params.size
+      params.names[idx]  = token(':')
+      params.values[idx] = token('\r')
+        
+      if (params.names[idx]  == null || 
+          params.values[idx] == null || 
+          !consume('\n'))
+        return true
+
+      params.names[idx] = params.names[idx].trim()
+      params.values[idx] = params.values[idx].trim()
+        
+      if (params.size < WebParams.max) params.size++
+    }
+
+    // should be at end of request
+    if (!consume('\r') || !consume('\n'))
+      return true
+
+    // copy uri into uriBuf to use as a tokenizing
+    // buffer; we also use this loop to tokenize out
+    // the query string if we find a '?'
+    req.query = ""    
+    byte[] uri = req.uri.toBytes()
+    for (int i=0; true; ++i)
+    {
+      if (i >= uriBufLen) return true
+      int c = uri[i]
+      if (c == '?')
+      {
+        c = 0
+        req.query = Str.fromBytes(uri, i+1)
+      }
+      uriBuf[i] = c
+      if (c == 0) break
+    }
+
+    // tokenize the path
+    req.path.size = 0
+    req.path.names[0] = Str.fromBytes(uriBuf, 1)
+    for (int i=1; true; ++i)
+    {
+      if (uriBuf[i] == 0)
+      {
+        if (uriBuf[i-1] != 0) req.path.size++
+        break
+      }
+
+      if (uriBuf[i] == '/')
+      {
+        uriBuf[i] = 0
+        if (req.path.size+1 < Path.max)  
+        {
+          int pathIndex = ++req.path.size
+          req.path.names[pathIndex] = Str.fromBytes(uriBuf, i+1)
+        }
+      }
+    }
+
+    // find weblet to use for this reqest and route
+    Weblet weblet = service.findWeblet(req.path)
+    weblet.service(req, res)
+
+    // close request
+    res.flush()
+    socket.close()
+    return true
+  }
+
+  **
+  ** Tokenize up to the specified separator into the
+  ** the specified string by replacing the separator
+  ** character with '\0'.  Return null if we are out
+  ** of tokens.
+  **
+  ** In order for the handler to be re-entrant, the '0' 
+  ** character is always assumed to be a valid separator.
+  **
+  private Str token(int sep)
+  {
+    if (cur >= pos) return null
+    Str s = Str.fromBytes(buf, cur)
+    for (int start=cur; cur<pos; ++cur)
+    {
+      if (buf[cur] != sep && buf[cur] != 0) continue
+      buf[cur++] = 0
+      return s
+    }
+    return null
+  }
+
+  **
+  ** Consume the one character and return if
+  ** it is the specified char.
+  private bool consume(int ch)
+  {
+    if (cur >= pos || buf[cur] != ch) return false
+    cur++
+    return true
+  }
+
+////////////////////////////////////////////////////////////////
+// Fields
+////////////////////////////////////////////////////////////////
+
+  define int bufLen = 2048
+  define int uriBufLen = 256
+
+  WebService service       // parent web service
+  inline TcpSocket socket  // reusable socket
+  short pos                // offset for next read
+  inline byte[bufLen] buf  // reusable buffer
+  inline byte[uriBufLen] uriBuf  // buffer for tokenized uri
+  inline WebReq req        // reusable request
+  inline WebRes res        // reusable response
+  short cur                // tokenizing cur offset
+
+}

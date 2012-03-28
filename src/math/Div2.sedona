@@ -1,0 +1,45 @@
+//
+// Copyright (c) 2007-2011 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   10 Jan 2007  Andy Saunders  Creation
+//   27 Apr 2007  Brian Frank    Port from Java to Sedona
+//   04 Aug 2011  Clif Turman    Add comments
+//
+
+**
+** Div2 Two Input Division object
+**
+** out = in1 / in2
+**
+@niagaraIcon="module://icons/x16/control/math/divide.png"
+public class Div2
+  extends Component
+{
+
+  ** output value
+  @readonly property float out
+
+  ** numerator value
+  property float in1
+
+  ** denominator value
+  property float in2
+  
+  ** if in2 is 0, div0 is true and out gets set to 0.0
+  @readonly property bool div0
+
+  **
+  ** Execute is called once every scan.
+  **
+  virtual override void execute()
+  {
+    div0 := (in2 == 0.0f)
+
+    if (div0)
+      out := 0.0
+    else
+      out := in1 / in2
+  }
+}

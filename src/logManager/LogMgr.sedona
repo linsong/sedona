@@ -1,0 +1,123 @@
+**
+** The log manager exposes the logs present in the scode and allows for
+** persisting changes to log settings.
+**
+@niagaraIcon="module://icons/x16/wrench.png"
+final class LogMgr extends Component
+{
+  override virtual void start()
+  {
+    cleanupLogs()
+    addNewLogs()
+  }
+  
+  **
+  ** Remove all logs that are no longer in the Sys master list.  Also removes
+  ** all child Components that are not of type LogCfg.
+  **
+  private void cleanupLogs()
+  {
+    int cid = children
+    while (cid != Component.nullId)
+    {
+      Component c = Sys.app.lookup(cid)
+      cid = c.nextSibling
+      if (!c.type.is(LogCfg.type) || Sys.findLog(((LogCfg)c).logName.toStr()) == null)
+      {
+        Sys.app.remove(c)
+      }
+    }
+  }
+  
+  **
+  ** Scans all logs in Sys and adds a new LogCfg record if it is
+  ** a new log.
+  **
+  private void addNewLogs()
+  {
+    if (Sys.logsLen > 200) log.message("Too many logs in scode [$Sys.logsLen]. Only loading first 200.")
+    
+    foreach (Log log: Sys.logs, Sys.logsLen)
+    {
+      if (log.id >= 200) break
+      
+      LogCfg cfg = findCfg(log.qname)
+      if (cfg == null)
+      {
+        cfg = (LogCfg)Sys.app.add(this, genName(), LogCfg.type)
+        cfg.logName.copyFromStr(log.qname)
+        cfg.logLevel := Sys.logLevels[log.id]
+      }
+    }
+  }
+  
+  private LogCfg findCfg(Str qname)
+  {
+    int cid = children
+    while (cid != Component.nullId)
+    {
+      Component c = Sys.app.lookup(cid)
+      cid = c.nextSibling
+      if (c.type.is(LogCfg.type))
+      {
+        if (((LogCfg)c).logName.toStr().equals(qname))
+          return (LogCfg)c
+      }
+    }
+    return null
+  }
+
+  private Str genName()
+  {
+    // this algorithm only works based on the assumption that max number
+    // of children is 200
+    byte[] bytes = nextName.toBytes()
+    bytes[0] = 'a'
+    do
+    {
+      nameId = (nameId + 1) % 200
+      Str s = Sys.intStr(nameId)
+      int i = 1
+      while (i <= s.length())
+      {
+        bytes[i] = s.get(i-1);
+        ++i
+      }
+      bytes[i] = 0
+    } while (lookupByName(nextName) != null);
+    return nextName;
+  }
+  
+  define Log log
+  
+  private inline Str(nameLen) nextName
+  private int nameId = 0
+  
+}
+
+@palette=false
+final class LogCfg extends Component
+{
+  define Str logLevels = "none, error, warning, message, trace"
+  
+  @readonly
+  @config @asStr property Buf(64) logName
+  
+  @range=logLevels
+  @config property int logLevel = Log.MESSAGE
+  
+  override virtual void start()
+  {
+    changed(LogCfg.logLevel)
+  }
+  
+  override virtual void changed(Slot slot)
+  {
+    super.changed(slot)
+    if (slot == LogCfg.logLevel)
+    {
+      Log log = Sys.findLog(logName.toStr())
+      if (log != null) Sys.logLevels[log.id] = logLevel
+    }
+  }
+}

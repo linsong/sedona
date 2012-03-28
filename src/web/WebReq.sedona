@@ -1,0 +1,57 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   07 Sep 06  Brian Frank  Creation
+//   06 Jun 07  Brian Frank  Port from Java to Sedona
+//
+
+**
+** WebReq models the request side of an HTTP transaction.
+**
+class WebReq
+{
+
+////////////////////////////////////////////////////////////////
+// Methods
+////////////////////////////////////////////////////////////////
+
+  void dump(OutStream out)
+  {
+    out.print("WebReq").nl()
+    out.print("  method:  '").print(method).print("'").nl()
+    out.print("  uri:     '").print(uri).print("'").nl()
+    out.print("  version: '").print(version).print("'").nl()
+    out.print("  path:    "); path.dump(out); out.nl()
+    out.print("  query:   '").print(query).print("'").nl()
+    out.print("  params: ").nl()
+    params.dump(out)
+  }
+
+////////////////////////////////////////////////////////////////
+// Fields
+////////////////////////////////////////////////////////////////
+
+  ** Parent web service component
+  WebService service
+
+  ** HTTP method: "GET"
+  Str method
+
+  ** HTTP version: "HTTP/1.1"
+  Str version
+
+  ** The full request URI: "/a/b/c?query"
+  Str uri
+
+  ** The parsed path segments: "a", "b", "c"
+  inline Path path
+
+  ** The query part of uri or empty string: "query"
+  Str query
+
+  ** Request parameters
+  inline WebParams params
+
+}

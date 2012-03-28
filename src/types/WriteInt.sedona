@@ -1,0 +1,45 @@
+//
+// Copyright (c) 2009-2011 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   07 Oct 2009  Clif Turman    Creation
+//   12 Aug 2011  Clif Turman    Add comments
+//
+
+**
+** WriteInt can be used to link or set a integer value.  If in is unlinked, in values can be set
+** by actions.
+**
+@niagaraIcon="module://icons/x16/control/enumPointWr.png"
+class WriteInt
+  extends Component
+{
+  ** input property, persisted as config property
+  @summary
+  @config
+  property int in
+  
+  ** output property = in, runtime property
+  @summary
+  @readonly
+  property int out
+  
+  **  
+  ** action to in to a value
+  **
+  action void set(int x)
+  {           
+    in := x
+  }
+  
+  **
+  ** Execute is called once every scan.
+  **
+  virtual override void execute()
+  {
+    out := in
+  }
+  
+  
+}

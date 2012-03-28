@@ -1,0 +1,424 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   16 Aug 06  Brian Frank  Creatiion
+//   22 May 07  Brian Frank  Port from Java to Sedona
+//
+
+**
+** BufTest (tests general purpose InStream and OutStream too)
+**
+class BufTest
+  extends Test
+{
+
+//////////////////////////////////////////////////////////////////////////
+// Fields
+//////////////////////////////////////////////////////////////////////////
+
+  define int bufLen = 1024
+  static inline Buf(bufLen) buf
+  static inline Buf(4) copyBuf
+  static inline BufInStream(buf) in
+  static inline BufOutStream(buf) out
+  static inline byte[10] bytes
+  static inline Str(5) str
+  static Buf literalA = 0x[cafe babe 0003 dead beef]
+  static Buf literalB = 0x[cafe babe 0003 dead beef]
+
+////////////////////////////////////////////////////////////////
+// Copy
+////////////////////////////////////////////////////////////////
+
+  static void testCopy()
+  {
+    buf.copyFromStr("")
+    copyBuf.copyFromBuf(buf)
+    assert(copyBuf.size == 1)
+    assert(copyBuf.toStr().equals(""))
+    
+    buf.copyFromStr("a")
+    copyBuf.copyFromBuf(buf)
+    assert(copyBuf.size == 2)
+    assert(copyBuf.toStr().equals("a"))
+    
+    buf.copyFromStr("ab")
+    copyBuf.copyFromBuf(buf)
+    assert(copyBuf.size == 3)
+    assert(copyBuf.toStr().equals("ab"))
+    
+    buf.copyFromStr("abc")
+    copyBuf.copyFromBuf(buf)
+    assert(copyBuf.size == 4)
+    assert(copyBuf.toStr().equals("abc"))
+    
+    buf.copyFromStr("too big for copyBuf")
+    copyBuf.copyFromBuf(buf)
+    assert(copyBuf.size == 4)
+  }
+  
+////////////////////////////////////////////////////////////////
+// Write
+////////////////////////////////////////////////////////////////
+
+  static void testWrite()
+  {
+    assert(buf.bytesLen == bufLen)
+
+    buf.clear()
+
+    out.write(1)
+    assert(buf.bytes[0] == 1)
+    assert(buf.size == 1);
+
+    out.write(0xF1)
+    assert(buf.bytes[0] == 1)
+    assert(buf.bytes[1] == 0xF1)
+    assert(buf.size == 2);
+
+    buf.clear()
+    assert(buf.size == 0);
+
+    for (int i=0; i<300; ++i) out.write(i)
+    assert(buf.size == 300);
+    for (int i=0; i<300; ++i) assert(buf.bytes[i] == (i & 0xFF))
+
+		// overrun the buffer and verify behavior when that happens
+		int offset = bufLen - 150
+		buf.size = offset
+		for (int i=0; i<200; ++i) out.write(i)
+		assert(buf.size == bufLen)
+		for (int i=0; i<250; ++i) assert(buf.bytes[i] == i)
+		for (int i=offset; i<bufLen; ++i) assert(buf.bytes[i] == i-offset)
+  }
+
+////////////////////////////////////////////////////////////////
+// Write Bytes
+////////////////////////////////////////////////////////////////
+
+  static void testWriteBytes()
+  {
+    buf.clear()
+
+    bytes[0] = 10
+    bytes[1] = 20
+    bytes[2] = 30
+    out.writeBytes(bytes, 0, 3)
+    assert(buf.size == 3)
+    assert(buf.get(0) == 10)
+    assert(buf.get(1) == 20)
+    assert(buf.get(2) == 30)
+
+    bytes[0] = 0xaa
+    bytes[1] = 0xbb
+    bytes[2] = 0xcc
+    bytes[3] = 0xdd
+    bytes[4] = 0xee
+    bytes[5] = 0xff
+    out.writeBytes(bytes, 2, 3);
+    assert(buf.size == 6);
+    assert(buf.get(0) == 10)
+    assert(buf.get(1) == 20)
+    assert(buf.get(2) == 30)
+    assert(buf.get(3) == 0xcc)
+    assert(buf.get(4) == 0xdd)
+    assert(buf.get(5) == 0xee)
+  }
+
+////////////////////////////////////////////////////////////////
+// Binary Out
+////////////////////////////////////////////////////////////////
+
+  static void testBinaryOut()
+  {
+    buf.clear()
+    out.writeStr("hi")
+    assert(buf.size == 3)
+    assert(buf.get(0) == 'h')
+    assert(buf.get(1) == 'i')
+    assert(buf.get(2) == 0)
+
+    buf.clear()
+    out.writeI2(678)
+    assert(buf.size == 2)
+    assert(buf.get(0) == 0x02)
+    assert(buf.get(1) == 0xa6)
+
+    buf.clear()
+    out.writeI2(0xabcd)
+    assert(buf.size == 2)
+    assert(buf.get(0) == 0xab)
+    assert(buf.get(1) == 0xcd)
+
+    buf.clear()
+    out.writeI4(0xfedcba98)
+    assert(buf.size == 4)
+    assert(buf.get(0) == 0xfe)
+    assert(buf.get(1) == 0xdc)
+    assert(buf.get(2) == 0xba)
+    assert(buf.get(3) == 0x98)
+
+    buf.clear()
+    out.writeI8(0x1234_5678_abcd_eeffL)
+    assert(buf.size == 8)
+    assert(buf.get(0) == 0x12)
+    assert(buf.get(1) == 0x34)
+    assert(buf.get(2) == 0x56)
+    assert(buf.get(3) == 0x78)
+    assert(buf.get(4) == 0xab)
+    assert(buf.get(5) == 0xcd)
+    assert(buf.get(6) == 0xee)
+    assert(buf.get(7) == 0xff)
+
+    buf.clear()
+    out.writeF4(1234.5678f)
+    assert(buf.size == 4)
+    assert(buf.get(0) == 0x44)
+    assert(buf.get(1) == 0x9a)
+    assert(buf.get(2) == 0x52)
+    assert(buf.get(3) == 0x2b)
+
+    buf.clear()
+    out.writeF8(-4294967296.4d)
+    assert(buf.size == 8)
+    assert(buf.get(0) == 0xc1)
+    assert(buf.get(1) == 0xf0)
+    assert(buf.get(2) == 0x0)
+    assert(buf.get(3) == 0x0)
+    assert(buf.get(4) == 0x0)
+    assert(buf.get(5) == 0x6)
+    assert(buf.get(6) == 0x66)
+    assert(buf.get(7) == 0x66)
+  }
+
+////////////////////////////////////////////////////////////////
+// Binary In
+////////////////////////////////////////////////////////////////
+
+  static void testBinaryIn()
+  {
+    buf.clear()
+    out.write(1)
+    out.write(0xab)
+    out.writeI2(2)
+    out.writeI2(0xfedc)
+    out.writeI4(4)
+    out.writeI4(0xd011babe)
+    out.writeI8(-5min)
+    out.writeF4(-2.4f)
+    out.writeF4(8.240000f)
+    out.writeF8(256d)
+    out.writeStr("abc")
+    out.writeStr("foobar")
+
+    in.rewind()
+    assert(in.read() == 1)
+    assert(in.read() == 0xab)
+    assert(in.readU2() == 2)
+    assert(in.readU2() == 0xfedc)
+    assert(in.readS4() == 4)
+    assert(in.readS4() == 0xd011babe)
+    assert(in.readS8() == -300_000_000_000L)
+    assert(in.readF4() == -2.4f)
+    assert(in.readF4() == 8.240000f)
+    assert(in.readF8() == 256.0d)
+    assert(in.readStr(str, 5)); assert(str.equals("abc"))
+    assert(!in.readStr(str, 5)); assert(str.equals("foob"))
+    assert(in.read() == 'r')
+    assert(in.read() == 0)
+
+    // end of stream
+    assert(in.read()     == -1)
+    assert(in.readU2()   == -1)
+    assert(in.readS4()   == -1)
+
+    // reset pos, test read(byte[])
+    in.pos = 0
+    bytes[0] = bytes[1] = bytes[2] = bytes[3] = 0xff
+    int n = in.readBytes(bytes, 1, 2)
+    assert(n == 2)
+    assert(bytes[0] == 0xff)
+    assert(bytes[1] == 1)
+    assert(bytes[2] == 0xab)
+    assert(bytes[3] == 0xff)
+  }
+
+////////////////////////////////////////////////////////////////
+// Literals
+////////////////////////////////////////////////////////////////
+
+  static void testLiterals()
+  {
+    assert(literalA == literalB)
+    assert(literalB == 0x[cafe babe 0003 dead beef])
+    assert(literalA.bytes != bytes)
+
+    assert(literalA.bytesLen == 10)
+    assert(literalA.size == 10)
+    assert(literalA.bytes[0] == 0xca)
+    assert(literalA.bytes[1] == 0xfe)
+
+    Buf x = literalB
+    assert(x.bytes[4] == 0x00)
+    assert(x.bytes[5] == 0x03)
+    assert(x.bytes[8] == 0xbe)
+    assert(x.bytes[9] == 0xef)
+  }
+
+////////////////////////////////////////////////////////////////
+// Print
+////////////////////////////////////////////////////////////////
+
+  static void testPrint()
+  {
+    buf.clear()
+    out.print("abc").nl()
+    assert(buf.size == 4);
+    assert(buf.get(0) == 'a')
+    assert(buf.get(1) == 'b')
+    assert(buf.get(2) == 'c')
+    assert(buf.get(3) == '\n')
+
+    buf.clear()
+    out.printBool(true)
+    assert(buf.size == 4)
+    assert(buf.get(0) == 't')
+    assert(buf.get(1) == 'r')
+    assert(buf.get(2) == 'u')
+    assert(buf.get(3) == 'e')
+
+    buf.clear()
+    out.printBool(false)
+    assert(buf.size == 5)
+    assert(buf.get(0) == 'f')
+    assert(buf.get(1) == 'a')
+    assert(buf.get(2) == 'l')
+    assert(buf.get(3) == 's')
+    assert(buf.get(4) == 'e')
+  }
+
+////////////////////////////////////////////////////////////////
+// Print Int
+////////////////////////////////////////////////////////////////
+
+  static void testPrintInt()
+  {
+    // base 10
+    verifyPrintInt(0,   10, "0")
+    verifyPrintInt(1,   10, "1")
+    verifyPrintInt(2,   10, "2")
+    verifyPrintInt(9,   10, "9")
+    verifyPrintInt(10,  10, "10")
+    verifyPrintInt(99,  10, "99")
+    verifyPrintInt(123, 10, "123")
+    verifyPrintInt(123456,      10, "123456")
+    verifyPrintInt(2147483647,  10, "2147483647")
+    verifyPrintInt(-2147483647, 10, "-2147483647")
+    verifyPrintInt(-123456,     10, "-123456")
+    verifyPrintInt(-99, 10, "-99")
+    verifyPrintInt(-1,  10, "-1")
+
+    // base 16
+    verifyPrintInt(0xa0bc7, 16, "a0bc7")
+    verifyPrintInt(0xabcd0124, 16, "abcd0124")
+    verifyPrintInt(0xffffffff, 16, "ffffffff")
+  }
+
+  static void verifyPrintInt(int val, int radix, Str expected)
+  {
+    buf.clear()
+    if (radix == 10)
+      out.printInt(val)
+    else if (radix == 16)
+      out.printHex(val)
+    else
+      assert(false)
+
+    out.write(0)
+    Str actual = buf.toStr()
+    // Sys.out.print(actual).print(" ?= ").print(expected).nl();
+    assert(actual.equals(expected))
+  }
+
+////////////////////////////////////////////////////////////////
+// Print Long
+////////////////////////////////////////////////////////////////
+
+  static void testPrintLong()
+  {
+    verifyPrintLong(0L,   10, "0")
+    verifyPrintLong(1L,   10, "1")
+    verifyPrintLong(2L,   10, "2")
+    verifyPrintLong(9L,   10, "9")
+    verifyPrintLong(10L,  10, "10")
+    verifyPrintLong(99L,  10, "99")
+    verifyPrintLong(123L, 10, "123")
+    verifyPrintLong(123456L,  10, "123456")
+    verifyPrintLong(-123456L, 10, "-123456")
+    verifyPrintLong(-99L, 10, "-99")
+    verifyPrintLong(-1L,  10, "-1")
+    verifyPrintLong(2147483647L,  10,  "2147483647")
+    verifyPrintLong(2147483648L,  10,  "2147483648")
+    verifyPrintLong(-2147483647L, 10,  "-2147483647")
+    verifyPrintLong(-2147483648L, 10,  "-2147483648")
+    verifyPrintLong(1234567890123456789L,  10, "1234567890123456789")
+    verifyPrintLong(-1234567890123456789L, 10, "-1234567890123456789")
+    verifyPrintLong(9223372036854775807ns,  10, "9223372036854775807")
+    verifyPrintLong(-9223372036854775807ns, 10, "-9223372036854775807")
+
+    verifyPrintLong(0L, 16, "0")
+    verifyPrintLong(0x1234_5678_abcd_eeffL, 16, "12345678abcdeeff")
+  }
+
+  static void verifyPrintLong(long val, int radix, Str expected)
+  {
+    buf.clear()
+    if (radix == 10)
+      out.printLong(val)
+    else
+      out.printLongHex(val)
+    out.write(0)
+    Str actual = buf.toStr()
+    // Sys.out.print(actual).print(" ?= ").print(expected).nl();
+    assert(actual.equals(expected))
+  }
+
+////////////////////////////////////////////////////////////////
+// Print Float/Double
+////////////////////////////////////////////////////////////////
+
+  static void testPrintFloat()
+  {
+    verifyPrintFloat(0.0, "0.000000")
+    verifyPrintFloat(2.0, "2.000000")
+    verifyPrintFloat(-1.0, "-1.000000")
+    verifyPrintFloat(0.2, "0.200000")
+    verifyPrintFloat(-4.08, "-4.080000")
+    verifyPrintFloat(-0.006, "-0.006000")
+    verifyPrintFloat(123456f, "123456.000000")
+    // this test isn't very comphrensive b/c the
+    // formats differ across implementations
+  }
+
+  static void verifyPrintFloat(float val, Str expected)
+  {
+    buf.clear()
+    out.printFloat(val)
+    out.write(0)
+    Str actual = buf.toStr()
+    // Sys.out.print(actual).print("F ?= ").print(expected).print("F").nl();
+    assert(actual.equals(expected))
+
+    buf.clear()
+    out.printDouble((double)val)
+    out.write(0)
+    actual = buf.toStr()
+    // Sys.out.print(actual).print("D ?= ").print(expected).print("D").nl();
+    assert(actual.equals(expected))
+  }                                
+  
+}
+
+
