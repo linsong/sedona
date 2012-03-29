@@ -9,23 +9,12 @@
 ** Generic Win32 Platform Service
 **
 **
-class Win32PlatformService extends PlatformService
+class Win32PlatformService 
+  extends PlatformService
 {
-  **
-  ** Get the platform identifier which defines how
-  ** this Sedona device should be provisioned.
-  **
-  internal native Str doPlatformId()
   
-////////////////////////////////////////////////////////////////
-// Service
-////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////
+  // All overrides have been moved to base class PlatformService //
+  /////////////////////////////////////////////////////////////////
 
-  override virtual void start()
-  {
-    super.start()
-    updatePlatformId(doPlatformId())
-    // TODO: Win32Platform needs to dynamically update available memory???
-    memAvailable := 314159265L
-  }
 }

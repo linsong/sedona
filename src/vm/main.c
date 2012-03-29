@@ -291,6 +291,10 @@ static int printUsage(const char* exe)
 // Print Version
 ////////////////////////////////////////////////////////////////
 
+#ifndef PLAT_BUILD_VERSION
+ #error Must set PLAT_BUILD_VERSION
+#endif 
+
 static int printVersion()
 {
 #ifdef IS_BIG_ENDIAN
@@ -298,9 +302,8 @@ static int printVersion()
 #else
   const char* endian = "little";
 #endif
-
   printf("\n");
-  printf("Sedona VM 1.2\n");
+  printf("Sedona VM %s\n", PLAT_BUILD_VERSION);
   printf("buildDate: %s %s\n", __DATE__, __TIME__);
   printf("endian:    %s\n", endian);
   printf("blockSize: %d\n", SCODE_BLOCK_SIZE);

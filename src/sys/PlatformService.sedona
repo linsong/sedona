@@ -48,6 +48,16 @@ class PlatformService
   }
 
 
+  **
+  ** Convenience to set the platformId property, and call changed()
+  **
+  void updatePlatformVer(Str ver)
+  {
+    platformVer.copyFromStr(ver)
+    changed(PlatformService.platformVer)
+  }
+
+
 ////////////////////////////////////////////////////////////////
 // Service
 ////////////////////////////////////////////////////////////////
@@ -55,7 +65,9 @@ class PlatformService
   override virtual void start()
   {
     super.start()
-    updatePlatformId("unknown")
+    refreshMemory()
+    updatePlatformId( doPlatformId() )
+    updatePlatformVer( getPlatVersion() )
   }
 
   override virtual void execute()
@@ -86,6 +98,7 @@ class PlatformService
   **
   virtual void refreshMemory()
   {
+    memAvailable := getNativeMemAvailable()
   }
 
 
@@ -196,8 +209,27 @@ class PlatformService
   @readonly property long memAvailable = 0L
 
 
+
 ////////////////////////////////////////////////////////////////
 // Natives
 ////////////////////////////////////////////////////////////////
 
+  **
+  ** Get the platform identifier which defines how
+  ** this Sedona device should be provisioned.
+  **
+  internal native Str doPlatformId()
+
+
+  **
+  ** Get the platform SVM version. 
+  **
+  internal native Str getPlatVersion()
+
+
+  **
+  ** Returns number of bytes available on the native platform.
+  **
+  internal native long getNativeMemAvailable()
+  
 }

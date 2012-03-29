@@ -15,10 +15,12 @@ package sedonac.asm;
 import java.text.*;
 import java.util.*;
 import sedona.Env;
+import sedona.Facets;
 import sedona.util.*;
 import sedonac.*;
 import sedonac.ast.*;
 import sedonac.namespace.*;
+import sedonac.parser.Token;
 import sedonac.scode.*;
 import sedonac.ir.*;
 import sedonac.util.*;
@@ -742,10 +744,99 @@ public class CodeAsm
 //////////////////////////////////////////////////////////////////////////
 
   private void binary(Expr expr, int intOp, int longOp) { binary(expr, intOp, longOp, -1, -1, -1); }
-  private void binary(Expr expr, int intOp, int longOp, int floatOp, int doubleOp) { binary(expr, intOp, longOp, floatOp, doubleOp, -1); }
+  private void binary(Expr expr, int intOp, int longOp, int floatOp, int doubleOp) 
+  { 
+    binary(expr, intOp, longOp, floatOp, doubleOp, -1); 
+  }
+
   private void binary(Expr expr, int intOp, int longOp, int floatOp, int doubleOp, int objOp)
   {
     Expr.Binary binary = (Expr.Binary)expr;
+
+/*
+    boolean isSlotLit = (binary.lhs.id==Expr.SLOT_LITERAL) || (binary.rhs.id==Expr.SLOT_LITERAL);
+    boolean isSlotLitEq = isSlotLit && binary.lhs.type.qname().equals("sys::Slot") &&
+                          ((binary.op.type==Token.EQ) || (binary.op.type==Token.NOT_EQ));
+
+
+    if (isSlotLitEq)
+    {
+      // DEBUG
+      System.out.println();
+      System.out.println("------------------------------------------------------------------------------------");
+      System.out.println(" expr=" + expr + "  lhs.type=" + binary.lhs.type + 
+                                           "   isSlotLitEq=" + isSlotLitEq);
+      System.out.println("------------------------------------------------------------------------------------");
+      System.out.println();
+      System.out.print("  lhs=[" + binary.lhs.getClass() + "] "); binary.lhs.dump(); System.out.println();
+      System.out.print("  rhs=[" + binary.rhs.getClass() + "] "); binary.rhs.dump(); System.out.println();
+      // DEBUG
+
+      Expr.Literal exl;
+      Expr         exf;
+
+      // Which side is the slot literal?  (assume they can't both be)
+      if (binary.rhs.id==Expr.SLOT_LITERAL)
+      {
+        exl = (Expr.Literal)binary.rhs;
+        exf = binary.lhs;
+      }
+      else
+      {
+        exl = (Expr.Literal)binary.lhs;
+        exf = binary.rhs;
+      }
+
+      Field slotIdField = ns.resolveField("sys::Slot.id");
+      Type slotIdType = slotIdField==null ? null : slotIdField.type();
+
+      // Create slot ID literal from slot literal
+      Expr.Literal exl_id = new Expr.Literal(exl.loc, Expr.SLOT_ID_LITERAL, slotIdType, exl);
+
+      // Create slot ID field from slot local|param|field 
+      Type ft;
+      if (exf instanceof Expr.Local)
+      {
+        String fq = ((Expr.Local)exf).def.type().qname();
+        ft = ns.resolveType(fq);
+        //irftype = TypeUtil.ir(((Expr.Local)exf).def.type());
+      }
+      else if (exf instanceof Expr.Param)
+      {
+        String fq = ((Expr.Param)exf).def.type().qname();
+        ft = ns.resolveType(fq);
+        //irftype = TypeUtil.ir(((Expr.Param)exf).def.type());
+      }
+      else if (exf instanceof Expr.Field)
+      {
+        String fq = ((Expr.Field)exf).field.qname();
+        ft = ns.resolveField(fq).type();
+        //irftype = TypeUtil.ir(((Expr.Field)exf).field.type());
+      }
+      else 
+        throw err("Invalid expression " + exf, exf.loc);
+
+      IrType irftype = TypeUtil.ir(ft);
+
+      Expr.Field exf_id = new Expr.Field(exf.loc, exf, new IrField(irftype, 0, "id", 
+                                                                   Facets.empty, slotIdType));
+
+      // DEBUG
+      System.out.print("  exf_id=" + exf_id + "  class=[" + exf_id.getClass() + "] "); exf_id.dump(); System.out.println();
+      System.out.print("  exl_id=" + exl_id + "  class=[" + exl_id.getClass() + "] "); exl_id.dump(); System.out.println();
+      System.out.println();
+      // DEBUG
+
+
+      // assemble literal and field onto stack (order shouldn't matter)
+      expr(exf_id);
+      expr(exl_id);
+
+      op(intOp);   // use intOp since we know the operands are bytes
+      return;
+    }
+*/
+
     Type type = binary.lhs.type;
 
     // assemble lhs and rhs onto stack

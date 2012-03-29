@@ -67,6 +67,10 @@ def compile(exeFile, srcFiles, includes, libs, defs, opts=[]):
   for o in opts:
     cmd += " " + o
 
+  #print "----"
+  #print cmd
+  #print "----"
+
   # compile away
   status = os.system(cmd)
   
