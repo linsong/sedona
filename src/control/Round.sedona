@@ -1,0 +1,94 @@
+//
+// Copyright (c) 2010-2011 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   09 Jun 2010  Clif Turman    Creation
+//   04 Aug 2011  Clif Turman    Add comments
+//
+
+**
+** Rounds a float to nearest n places.  Uses the tie-breaker rule that positive number are
+** rounded up if a tie-break situation exists, and negative numbers are rounded down ("more negative")
+** if a tie-break situation exists.
+** 
+** Example:  123.456 with n = 0 : rounds to 123.000
+**                   with n = 1 : rounds to 123.500
+**                   with n = -1: rounds to 120.000
+** Example: -123.456 with n = 0 : rounds to -123.000
+**                   with n = 1 : rounds to -123.500
+**                   with n = -1: rounds to -120.000
+**
+**  Positive numbers:
+**  1) multiply by 10^n
+**  2) add 0.5 and truncate (convert to integer)
+**  3) divide by 10^n
+**
+**  Negative numbers:
+**  1) multiply by 10^n
+**  2) subtract 0.5 and truncate (convert to integer)
+**  3) divide by 10^n
+**
+**   where n = number of decimal places to round
+**
+**   out = round(in)
+**
+@niagaraIcon="module://icons/x16/control/numericPoint.png"
+class Round
+  extends Component
+{
+  ** out = in rounded to a precision
+  @precision=1
+  @readonly property float out
+  
+  ** input value
+  @precision=3
+  property float in
+  
+  ** number of decimal places to round
+  @min=-1 @max=3
+  @config property int decimalPlaces = 0
+  
+
+  **
+  ** Component override of start sets up a multiplier factor
+  ** 
+  virtual override void start()
+  {
+    factor = 1.0D
+    if(decimalPlaces > 0)
+      for(int i = 0; i < decimalPlaces; i++)
+        factor = factor * 10.0D
+    if(decimalPlaces < 0)
+      for(int i = decimalPlaces; i < 0; i++)
+        factor = factor / 10.0D
+  }
+
+  **
+  ** Execute
+  **
+  virtual override void execute()
+  {
+    double x = (double)in * factor
+    if(in >=0.0)
+      x = x + 0.5D
+    else
+      x = x - 0.5D
+
+    long xtruncated = (long)x
+    out := (float)(((double)xtruncated)/factor)
+  }
+  
+  **
+  ** Component override of changed
+  ** 
+  virtual override void changed(Slot slot)
+  {
+    if(slot == Round.decimalPlaces)
+      start()   //recompute the "factor"
+    super.changed(slot)
+  }
+
+  private double factor
+
+}

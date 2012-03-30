@@ -1,0 +1,53 @@
+//
+// Copyright (c) 2011 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   07 Dec 11  Elizabeth McKenney  Creation
+//
+
+**
+** HysterTest
+**
+class HysterTest
+  extends Test
+{
+  static inline Hysteresis h
+
+ 
+  static void test()
+  {
+    // "normal" case, rising > falling
+    h.risingEdge  := 10f
+    h.fallingEdge :=  2f
+
+    hysCheck(0f, false)
+    hysCheck(2f, false)
+    hysCheck(3f, false)
+    hysCheck(9f, false)
+    hysCheck(10f, true)
+    hysCheck(9f, true)
+    hysCheck(3f, true)
+    hysCheck(2f, false)
+
+    // "inverted" case, rising < falling
+    h.risingEdge  :=  2f
+    h.fallingEdge := 10f
+
+    hysCheck(0f, true)
+    hysCheck(2f, true)
+    hysCheck(3f, true)
+    hysCheck(9f, true)
+    hysCheck(10f, false)
+    hysCheck(9f, false)
+    hysCheck(3f, false)
+    hysCheck(2f, true)
+  }
+
+  static void hysCheck(float v, bool b)
+  {
+    h.in := v
+    h.execute()
+    assert(h.out == b)
+  }
+}

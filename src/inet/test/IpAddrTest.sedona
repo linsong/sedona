@@ -1,0 +1,111 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   05 Aug 06  Brian Frank  Creation
+//   08 May 07  Brian Frank  Port from Java to Sedona
+//
+
+**
+** IpAddrTest
+**
+class IpAddrTest
+  extends Test
+{
+
+  static inline IpAddr a
+  static inline IpAddr b
+  static inline Buf(16) buf
+
+////////////////////////////////////////////////////////////////
+// Test Parse
+////////////////////////////////////////////////////////////////
+
+  public static void testParse()
+  {
+    // IPv4
+    assert(a.parse("1.2.3.4"))
+    verifyNotation(a, "1.2.3.4")
+
+    // IPv4
+    assert(a.parse("255.128.69.200"))
+    verifyNotation(a, "255.128.69.200")
+
+    // IPv4
+    assert(a.parse("193.1.254.4"))
+    verifyNotation(a, "193.1.254.4")
+
+    // IPv6 (full)
+    assert(a.parse("1080:0:0:0:8:800:200C:417A"))
+    verifyNotation(a, "1080:0:0:0:8:800:200c:417a")
+
+    // IPv6 (compressed via ::)
+    assert(a.parse("1080::6:800:200c:417a"))
+    verifyNotation(a, "1080:0:0:0:6:800:200c:417a")
+    assert(a.parse("1000:200e:3000::4000:5000"))
+    verifyNotation(a, "1000:200e:3000:0:0:0:4000:5000")
+    assert(a.parse("::1234:ABCD"))
+    verifyNotation(a, "0:0:0:0:0:0:1234:abcd")
+    assert(a.parse("1234::ABCD"))
+    verifyNotation(a, "1234:0:0:0:0:0:0:abcd")
+    assert(a.parse("1::2:3:4"))
+    verifyNotation(a, "1:0:0:0:0:2:3:4")
+    assert(a.parse("1:2:3::4"))
+    verifyNotation(a, "1:2:3:0:0:0:0:4")
+
+    // Invalid
+    assert(!a.parse("tridium"))
+    assert(!a.parse("www.tridium.com"))
+    assert(!a.parse("1.2.3"))
+    assert(!a.parse("1.2.3.x"))
+    assert(!a.parse("1.2.3.4.5"))
+    assert(!a.parse("256.128.69.200"))
+    assert(!a.parse("1080:0:0:0:8:800:200C"))
+    assert(!a.parse("1080:0:0:0:8:800:200C:417A:88"))
+  }
+
+  public static void testSet()
+  {
+    assert(a.parse("1.2.3.4"))
+    assert(b.parse("0.0.0.0"))
+    verifyNotation(a, "1.2.3.4")
+    verifyNotation(b, "0.0.0.0")
+
+    b.set(a)
+    verifyNotation(a, "1.2.3.4")
+    verifyNotation(b, "1.2.3.4")
+  }
+  
+  public static void testLoad()
+  {
+  	// invalid (size not 4 or 16)
+  	assert(!b.loadBuf(buf))
+  	
+  	assert(a.parse("192.168.0.1"))
+  	buf.bytes[0] = 0xC0
+  	buf.bytes[1] = 0xA8
+  	buf.bytes[2] = 0x00
+  	buf.bytes[3] = 0x01
+  	buf.size = 4
+  	b.loadBuf(buf)
+  	assert(a.equals(b))
+  	
+  	assert(a.parse("1234::ABCD"))
+  	Sys.setBytes(0, buf.bytes, 0, 16)
+  	buf.size = 16
+  	buf.bytes[0] = 0x12
+  	buf.bytes[1] = 0x34
+  	buf.bytes[14] = 0xAB
+  	buf.bytes[15] = 0xCD
+  	b.loadBuf(buf)
+  	assert(a.equals(b))
+  }
+
+  public static void verifyNotation(IpAddr a, Str notation)
+  {
+    // Sys.out.print("verifyNotation: '").print(a.toStr()).print("' ?= '").print(notation).print("'").nl()
+    assert(a.toStr().equals(notation))
+  }
+
+}

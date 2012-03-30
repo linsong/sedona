@@ -1,0 +1,37 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   17 May 07  Andy Sunders  Creation
+//
+
+**
+** B2PTest
+**
+class B2PTest
+  extends Test
+{
+  static inline B2P b2p
+
+  static void test()
+  {
+    b2p.in := true
+    b2p.execute()
+    assert(b2p.out == true)
+    b2p.execute()
+    assert(b2p.out == false)
+    b2p.in := false
+    b2p.execute()
+    assert(b2p.out == false)
+    b2p.in := true
+    b2p.execute()
+    assert(b2p.out == true)
+    b2p.execute()
+    assert(b2p.out == false)
+    b2p.in := false
+    b2p.execute()
+    assert(b2p.out == false)
+  }
+
+}

@@ -1,0 +1,71 @@
+//
+// Copyright (c) 2011 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   07 Dec 11  Elizabeth McKenney  Creation
+//
+
+**
+** ConstTest
+**
+class ConstTest
+  extends Test
+{
+  static inline ConstBool  b
+  static inline ConstFloat f
+  static inline ConstInt   i
+
+ 
+  static void test()
+  {
+    // Test bool
+    b.setTrue() 
+    assert(b.out == true)
+    
+    b.setFalse() 
+    assert(b.out == false)
+    
+    b.setNull() 
+    assert(b.out == null)
+    
+
+    // Test float
+    f.set(0f) 
+    assert(f.out == 0f)
+    
+    f.set(-123f) 
+    assert(f.out == -123f)
+    
+    f.set(456.7f) 
+    assert(f.out == 456.7f)
+    
+    f.set(456.000007f) 
+    assert(f.out == 456.000007f)
+    
+    f.set(-456.000007f) 
+    assert(f.out == -456.000007f)
+    
+    // What is "null" for a float?
+    f.setNull() 
+    assert(f.out == null)
+    
+
+    // Test int
+    i.set(0) 
+    assert(i.out == 0)
+    
+    i.set(-123) 
+    assert(i.out == -123)
+    
+    i.set(456) 
+    assert(i.out == 456)
+    
+    i.set(Sys.minInt) 
+    assert(i.out == Sys.minInt)
+    
+    i.set(Sys.maxInt) 
+    assert(i.out == Sys.maxInt)
+    
+  }
+}

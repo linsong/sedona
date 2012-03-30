@@ -1,0 +1,54 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   16 May 07  Andy Sunders  Creation
+//
+
+**
+** ResetTest
+**
+class ResetTest
+  extends Test
+{
+  static inline Reset reset
+
+  static void test()
+  {
+    validateReset( 100.0);
+    validateReset( 4000.0);
+    reset.inMax := 2000.0
+    reset.inMin := 100.0
+    validateReset( 0.0);
+    validateReset( 1000.0);
+    validateReset( 1900.0);
+  }
+
+
+  static void validateReset(float value)
+  {
+    reset.start()     // not in an app, so call this explicitly
+
+    float inMax = reset.inMax
+    float inMin = reset.inMin
+    float outMax = reset.outMax
+    float outMin = reset.outMin
+    if(value > inMax)
+      value = inMax
+    if(value < inMin)
+      value = inMin
+    reset.in := value
+    reset.execute()
+    float cValue = (value - inMin)/(inMax - inMin)
+    cValue = outMin + cValue * (outMax - outMin)
+    //Sys.out.print("d=").printFloat(cValue).print(" a=").printFloat(reset.out).nl()
+    float diff = 0.0
+    if(cValue >= reset.out)
+      diff = cValue - reset.out
+    else
+      diff = reset.out - cValue
+    assert(diff < 0.00001 )
+  }
+
+}
