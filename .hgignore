@@ -1,0 +1,38 @@
+#
+# .hgignore
+# Files to ignore for version control
+#
+
+syntax: glob
+
+*.pyc
+*.kit
+*.scode
+*.jar
+*.class
+*.sab
+*libJar*
+*.swp
+src/sedona/src/version.txt
+bin/svm
+store/*
+
+# Ignore Eclipse metafiles
+*.classpath
+*.project
+*.settings
+
+# Ignore IntelliJ metafiles
+*.iml
+
+syntax: regexp
+
+^manifests/
+^platforms/src/tridium/
+^platforms/db
+^backup/
+^temp/
+^temp-provision/
+^test/
+^doc/.*/
+^sedona-cert/

@@ -1,0 +1,84 @@
+//
+// Copyright (c) 2007-2011 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   10 Jan 2007  Andy Saunders  Creation
+//   27 Apr 2007  Brian Frank    Port from Java to Sedona
+//   22 Apr 2009  Elizabeth McKenney   Updated
+//   04 Aug 2011  Clif Turman    Add comments.  Add units to pps and ppm.
+//   15 Aug 2011  Clif Turman    Fix issue 20486, freq output new value on every app cycle
+//
+
+**
+** Freq calculates instantaneous input pulse frequency (based on rising edges).
+** Result is output in pulses per second and pulses per minute.
+**
+** Note: since input is checked only once per app cycle, result cannot exceed 
+**       1/2 execute scan frequency.
+**
+@niagaraIcon="module://icons/x16/control/control.png"
+class Freq
+  extends Component
+{
+  ** frequency in pulses per second
+  @precision=3
+  @unit=Units.per_second
+  @readonly property float pps
+  
+  ** frequency in pulse per minute
+  @precision=3
+  @unit=Units.per_minute
+  @readonly property float ppm
+
+  ** input
+  property bool in
+
+  **
+  ** Callback when component is first started in an app.
+  **
+  virtual override void start()
+  {
+    lastIn = in 
+    completeCycle = false
+  }
+
+
+  **
+  ** Execute is called once every scan.
+  **
+  virtual override void execute()
+  {
+
+    if (in && !lastIn)  // rising edge detected
+    {
+      long now = Sys.ticks()
+
+      if(!completeCycle)  //startup boundary condition: we need 2 rising edges to compute
+      {
+        completeCycle = true
+      }
+      else // compute the period
+      {
+        float period = (float)(now - lastEdge)
+
+        if (period != 0.0f)
+        {
+          pps := float1sec / period
+          ppm := pps * 60.0
+        }
+      }
+      lastEdge = now
+    }
+
+    lastIn = in
+  }
+
+  private bool completeCycle
+  private bool lastIn
+  private long lastEdge = 0L
+
+  // const float version of 1sec long
+  private define float float1sec = (float)1sec
+
+}
