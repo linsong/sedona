@@ -163,19 +163,11 @@ class SendWindow
   ** If we have any unacked outgoing messages, then
   ** resend them.  Return if we did work.
   **
-  bool sendRetries(SoxService service, SoxSession session)
+  bool sendRetries(SoxService service, SoxSession session, int houseKeepingTicks)
   {
     if (numUnacked == 0) return false
 
     bool work = false
-    if (appScanPeriod != Sys.app.scanPeriod)
-    {
-    	// the goal is to send a retry approx. once per second
-    	retryAge = appScanPeriod = Sys.app.scanPeriod
-    	while (retryAge < SoxService.HouseKeepingFreq)
-    		retryAge += appScanPeriod
-    	retryAge = Sys.max(1, 1000 / retryAge)
-    }
     foreach (SendPacket p : packets, max)
     {
       // if age 0 this isn't an used, unacked packet
@@ -183,9 +175,10 @@ class SendWindow
 
       // increment age which is a counter
       // of house keeping ticks
-      p.age++
+      p.age += houseKeepingTicks
 
-      if (p.age > retryAge)
+      //  If more than one second has elapsed, send a retry
+      if (p.age > (1000 / SoxService.HOUSE_KEEPING_INTERVAL))
       {
         SoxCommands.send(service, session, p)
         p.age = 1
@@ -204,8 +197,7 @@ class SendWindow
   short seqNum        // Sending sequence number
   byte numUnacked     // how many pending unacked messages
   inline SendPacket[max] packets = {...}
-  private int appScanPeriod = 50  // cache the app scan period
-  private int retryAge = 10 // how often housekeeping is called in 1 sec
+
 }
 
 ****************************************************************
