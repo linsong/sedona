@@ -188,6 +188,7 @@ class App
     running = true
     runStatus = 0
     long deadline = Sys.ticks()
+    long nsUntilDeadline = 0L
     lastEndWork = deadline
 
     while (running)
@@ -223,11 +224,20 @@ class App
           canHibernate &= s.canHibernate()
         }
         if(canHibernate) runStatus = Err.hibernate
-        if (Sys.ticks() >= deadline - ((long)guardTime*1ms)) break
+
+        //  Determine how much idle time is left before the next 
+        //  execute cycle needs to start 
+        nsUntilDeadline = deadline - Sys.ticks()       
+        if (nsUntilDeadline < (long)guardTime*1ms) 
+          break
+
+        //  Allow platform to determine if we should spend
+        //  free time doing more Service work
+        if (platform.workDuringFreeTime(nsUntilDeadline))
+          more = true          
       }
 
       lastEndWork = Sys.ticks()
-      long nsUntilDeadline = deadline - lastEndWork
 
       //  If hibernating, inform services.
       //  Note that hibernation check must take place before yield since
@@ -853,8 +863,10 @@ class App
       if (kitid>=0) kit = Sys.kit( kitIdMap[kitid] )
       if (kit == null) return Err.invalidKitId
 
+Sys.out.print("compId $compId kitid $kitid\n");      
       // read type id
       Type t = kit.type(in.read())
+
       if (t == null) return Err.invalidTypeId
 
       // allocate component

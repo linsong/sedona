@@ -132,6 +132,34 @@ class PlatformService
   {
   }
 
+  **
+  ** Returns true if the platform wants to the App to invoke work() again on
+  ** all Services during free time before the next App execute needs to begin.
+  **
+  ** For Apps with long scanPeriods (greater than 50ms), this allows Services 
+  ** to respond to network traffic or other asynchronous events multiple times 
+  ** during a single scanPeriod - even if the service didn't have any immediate 
+  ** work to do.  
+  ** 
+  ** i.e. - Sox services responds to a poll request, but then has no further
+  ** work, nor doing any other services.  A few ms later, another poll request 
+  ** comes in.  If this method returns false, no further workd will be done 
+  ** until the beginning of the next scan period  If this method returns true, 
+  ** work() will be called on all services again and the poll request will
+  ** be handled before the next scanPeriod.  
+  ** 
+  ** nsUntilDeadline represents the time remaining before the next App 
+  ** execute() cycle again.  Depending on the underlying OS/system 
+  ** architecture, the platform may want to sleep or otherwise relinquish the 
+  ** CPU for some fraction of nsUntilDeadline before returning and
+  ** allowing App to call service work again.
+  ** 
+  ** See also the Apps chapter in Sedona docs
+  **
+  virtual bool workDuringFreeTime(long nsUntilDeadline)
+  {
+    return false
+  }
 
   ** Network state codes
   ** -1 to -100 reserved for standard Sedona error status
