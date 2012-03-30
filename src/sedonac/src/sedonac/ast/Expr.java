@@ -192,6 +192,13 @@ public abstract class Expr
   public void write(AstWriter out)
   {
     out.w(this);
+    out.nl();
+    out.w(" -Expr: ").nl();
+    out.w("   loc=" + loc).nl();
+    out.w("   id=" + id).nl();
+    out.w("   type=" + type);
+    if (type!=null) out.w("  [" + type.getClass() + "]");
+    out.nl();
   }
 
   public abstract String toString();
@@ -353,11 +360,23 @@ public abstract class Expr
 
     public void write(AstWriter out)
     {
-      out.w("Expr.Literal: ").nl();
-      out.w("  loc=" + loc).nl();
-      out.w("  id=" + id).nl();
-      out.w("  type=" + type).nl();
-      out.w("  value=" + value).nl();
+      super.write(out);
+      out.w(" --Expr.Literal: ").nl();
+      out.w("    value=" + value);
+      if (value!=null) 
+      {
+        out.w("  [" + value.getClass() + "]");
+        if (value instanceof FieldDef)
+        {
+          out.w(" type=" + ((FieldDef)value).type);
+          out.w(" init=" + ((FieldDef)value).init);
+        }
+        else if (value instanceof Expr.Literal)
+        {
+          out.nl();
+          ((Expr.Literal)value).write(out);
+        }
+      }
       out.nl();
     }
 
@@ -568,6 +587,16 @@ public abstract class Expr
       return maxStack;
     }
 
+    public void write(AstWriter out)
+    {
+      super.write(out);
+      out.w(" --Expr.Name: ").nl();
+      out.w("    name=" + name).nl();
+      out.w("    target=" + target);
+      if (target!=null) out.w("  [" + target.getClass() + "]");
+      out.nl();
+    }
+
     public Expr target;
     public String name;
     public boolean safeNav;  // is the ?. safe navigation operator
@@ -597,6 +626,16 @@ public abstract class Expr
     
     public VarDef def() { return def; }
 
+    public void write(AstWriter out)
+    {
+      super.write(out);
+      out.w(" ---Expr.Param: ").nl();
+      out.w("     def=" + def);
+      if (def!=null) out.w("  [" + def.getClass() + "]");
+      out.nl();
+    }
+
+
     public ParamDef def;
   }
 
@@ -618,6 +657,16 @@ public abstract class Expr
     public int maxStack() { return type.isWide() ? 2 : 1; }
     
     public VarDef def() { return def; }
+
+    public void write(AstWriter out)
+    {
+      super.write(out);
+      out.w(" ---Expr.Local: ").nl();
+      out.w("     def=" + def);
+      if (def!=null) out.w("  [" + def.getClass() + "]");
+      out.nl();
+    }
+
 
     public Stmt.LocalDef def;
   }
@@ -711,13 +760,10 @@ public abstract class Expr
 
     public void write(AstWriter out)
     {
-      out.w("Expr.Field: ").nl();
-      out.w("  loc=" + loc).nl();
-      out.w("  id=" + id).nl();
-      out.w("  type=" + type).nl();
-      out.w("  target=" + target).nl();
-      out.w("  name=" + name).nl();
-      out.w("  field=" + field).nl();
+      super.write(out);
+      out.w(" ---Expr.Field: ").nl();
+      out.w("     field=" + field);
+      if (field!=null) out.w("  [" + field.getClass() + "]");
       out.nl();
     }
 
