@@ -412,19 +412,32 @@ class SoxService
   private bool houseKeeping()
   {
     long now = Sys.ticks()
-    if (now - lastHouseKeeping < (long)HouseKeepingFreq)
+    long delta
+    long remainder
+    int houseKeepingTicks
+    delta = now - lastHouseKeeping
+    if (delta  < (long)HOUSE_KEEPING_INTERVAL)
       return false
+
+    //  In Apps with long scanPeriods, it's possible that multiple house 
+    //  keeping ticks have elapsed since the last time we ran housekeeping.  
+    //  Calculate the  elapsed of number of housekeeping ticks. 
+    //  If more than half an additional housekeeping tick has elapsed,
+    //  round up to avoid too much drift
+    houseKeepingTicks = (int)(delta / (long)HOUSE_KEEPING_INTERVAL)
+    if ((delta % (long)HOUSE_KEEPING_INTERVAL) > (long)(HOUSE_KEEPING_INTERVAL / 2))
+      houseKeepingTicks++
 
     // give each open session a chance to do house keeping
     bool worked = false
     foreach (SoxSession s : sessions, Watch.max)
     {
       if (s.closed) continue
-      worked |= s.houseKeeping(this, now)
+      worked |= s.houseKeeping(this, now, houseKeepingTicks)
     }
 
     // update last house keeping time
-    lastHouseKeeping = Sys.ticks()
+    lastHouseKeeping = now
     return worked
   }
 
@@ -461,7 +474,7 @@ class SoxService
 ////////////////////////////////////////////////////////////////
 
   define Log log
-	define int HouseKeepingFreq = 100 // (ms) do houskeeping no more frequently than this
+	define int HOUSE_KEEPING_INTERVAL = 100 // (ms) do houskeeping no more frequently than this
 
   inline SoxSession[Watch.max] sessions = {...}
   inline UdpSocket socket           // socket used for send/receive
