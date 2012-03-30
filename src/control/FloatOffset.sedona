@@ -1,0 +1,35 @@
+//
+// Copyright (c) 2007-2011 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   31 Aug 2007  Andy Saunders  Creation
+//   04 Aug 2011  Clif Turman    Add comments
+//
+
+**
+** FloatOffset: adds an offset value to the input value  
+**    out = in + offset
+**
+@niagaraIcon="module://icons/x16/control/math/add.png"
+class FloatOffset
+  extends Component
+{
+  ** out = in + offset
+  @readonly property float out
+
+  ** input value
+  property float in
+  
+  ** constant value to add to the input to get output
+  @config property float offset
+  
+  **
+  ** Execute is called once every scan.
+  **
+  virtual override void execute()
+  {
+    out := in + offset
+  }
+  
+}

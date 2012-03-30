@@ -1,0 +1,16 @@
+<!--  Niagara Build File -->
+  
+<module 
+ name = "sedonaPub"
+ bajaVersion = "0"
+ preferredSymbol = "sedonaPub"
+ description = "sedonaPub"
+ vendor = "Tridium"
+>
+
+  <!-- Sub Modules -->
+  <submodule name="sedona" />
+  <submodule name="sedonac" />
+    
+</module>
+

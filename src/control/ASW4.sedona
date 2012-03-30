@@ -1,0 +1,58 @@
+//
+// Copyright (c) 2009-2011 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   02 Jul 09  Clif Turman    Creation
+//   07 Aug 09  Clif Turman    Added checks for sel <> acceptable range
+//   04 Aug 11  Clif Turman    Add comments
+//
+
+**
+** Selects 1 of 4 inputs to route to output based on selector value
+**
+** if (sel - startsAt) <= 0, out = in1
+** if (sel - startsAt) == 1, out = in2
+** if (sel - startsAt) == 2, out = in3
+** if (sel - startsAt) >= 3, out = in4
+**
+@niagaraIcon="module://icons/x16/control/util/select.png"
+class ASW4
+  extends Component
+{
+  ** output
+  @readonly property float out
+
+  ** input 1
+  property float in1
+
+  ** input 2
+  property float in2
+
+  ** input 3
+  property float in3
+
+  ** input 4
+  property float in4
+
+  ** startsAt, the difference of sel - startsAt is used to select the output
+  @config property int startsAt = 0
+
+  ** sel, the difference of sel - startsAt is used to select the output
+  property int sel
+
+  **
+  ** Execute is called once every scan.
+  **
+  virtual override void execute()
+  {
+    if(sel <= startsAt)
+      out := in1
+    else if(sel == startsAt + 1)
+      out := in2
+    else if(sel == startsAt + 2)
+      out := in3
+    else 
+      out := in4
+  }
+}
