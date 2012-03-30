@@ -717,18 +717,26 @@ public class ImageGen
     }
     else if (op.opcode == SCode.LoadSlotId)
     {
-      // Optimization for code that refers to slot ID:
-      //    Since slot ID value is known at compile time, just subst LoadIntU1 <slot id value>
-      code.u1(SCode.LoadIntU1);
-      try
+      // LoadSlotId qname
+      // Optimize as constant integer load
+      IrSlot slot = (IrSlot)ns.resolveSlot(op.arg);
+      switch (slot.id)
       {
-        // Arg is slot id qname, write id's value instead of arg
-        IrSlot slot = (IrSlot)ns.resolveSlot(op.arg);
-        code.u1(slot.id);
-      }
-      catch (IllegalStateException e)
-      {
-        opArg(op);          // If any problems resolving slot, just treat arg normally
+        case 0:
+          code.u1(SCode.LoadI0); break;
+        case 1:
+          code.u1(SCode.LoadI1); break;
+        case 2:
+          code.u1(SCode.LoadI2); break;
+        case 3:
+          code.u1(SCode.LoadI3); break;
+        case 4:
+          code.u1(SCode.LoadI4); break;
+        case 5:
+          code.u1(SCode.LoadI5); break;
+        default:
+          code.u1(SCode.LoadIntU1);
+          code.u1(slot.id);
       }
     }
     else

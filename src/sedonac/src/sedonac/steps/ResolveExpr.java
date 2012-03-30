@@ -368,7 +368,7 @@ public class ResolveExpr
         Field f = (Field)slot;
 
         // Catch a slot ID literal... will treat it specially later
-        if ((target.id==Expr.SLOT_LITERAL) && slot.toString().equals("sys::Slot.id"))
+        if ((target.id==Expr.SLOT_LITERAL) && slot.qname().equals("sys::Slot.id"))
           return new Expr.Literal(loc, Expr.SLOT_ID_LITERAL, f.type(), target);
 
         return new Expr.Field(loc, target, f, expr.safeNav);

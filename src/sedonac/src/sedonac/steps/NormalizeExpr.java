@@ -103,6 +103,9 @@ public class NormalizeExpr
       return incrDecr((Expr.Unary)expr);
     }
     
+    if (expr.id == Expr.EQ)
+      return optimizeSlotLiteralComparison((Expr.Binary)expr);
+
     // no changes needed
     return expr;       
   }
@@ -110,6 +113,47 @@ public class NormalizeExpr
   private boolean isProp(Expr expr)
   {
     return expr.id == Expr.FIELD && ((Expr.Field)expr).field.isProperty();
+  }
+
+//////////////////////////////////////////////////////////////////////////
+// Slot Literal Optimization
+//////////////////////////////////////////////////////////////////////////
+  
+  private Expr optimizeSlotLiteralComparison(final Expr.Binary expr)
+  {
+    // optimizes conditional equality tests in the form
+    //    (slotRef == Type.slot)
+    // by changing to form
+    //    (slotRef.id == Type.slot.id)
+    // so that during scode image generation the RHS can be replaced with
+    // slot id integer constant.
+    
+    if (expr.id != Expr.EQ) throw new IllegalStateException("must be '==' expr");
+
+    Expr.Literal slotLiteral;
+    Expr slotExpr;
+    if (expr.lhs.id == Expr.SLOT_LITERAL)
+    {
+      slotLiteral = (Expr.Literal)expr.lhs;
+      slotExpr = expr.rhs;
+    }
+    else if (expr.rhs.id == Expr.SLOT_LITERAL)
+    {
+      slotLiteral = (Expr.Literal)expr.rhs;
+      slotExpr = expr.lhs;
+    }
+    else
+    {
+      return expr;
+    }
+
+    final VarDef def = ((Expr.NameDef)slotExpr).def();
+    final String idQname = def.type().slot("id").qname();
+    final Expr slotId =
+        new Expr.Field(slotExpr.loc, slotExpr, ns.resolveField(idQname));
+    final Expr slotIdLiteral =
+        new Expr.Literal(slotLiteral.loc, Expr.SLOT_ID_LITERAL, ns.byteType, slotLiteral);
+    return new Expr.Binary(expr.loc, expr.op, slotId, slotIdLiteral);
   }
 
 //////////////////////////////////////////////////////////////////////////

@@ -577,7 +577,12 @@ public abstract class Expr
 // ParamVar
 //////////////////////////////////////////////////////////////////////////
 
-  public static class Param extends Name
+  public static interface NameDef
+  {
+    VarDef def();
+  }
+  
+  public static class Param extends Name implements NameDef
   {
     public Param(Location loc, String name, ParamDef def)
     {
@@ -589,6 +594,8 @@ public abstract class Expr
     public boolean isAssignable() { return true; }
 
     public int maxStack() { return type.isWide() ? 2 : 1; }
+    
+    public VarDef def() { return def; }
 
     public ParamDef def;
   }
@@ -597,7 +604,7 @@ public abstract class Expr
 // Local
 //////////////////////////////////////////////////////////////////////////
 
-  public static class Local extends Name
+  public static class Local extends Name implements NameDef
   {
     public Local(Location loc, Stmt.LocalDef def)
     {
@@ -609,6 +616,8 @@ public abstract class Expr
     public boolean isAssignable() { return true; }
 
     public int maxStack() { return type.isWide() ? 2 : 1; }
+    
+    public VarDef def() { return def; }
 
     public Stmt.LocalDef def;
   }
