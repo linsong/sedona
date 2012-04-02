@@ -6,7 +6,7 @@
 
 <sedonaPlatform vendor="Tridium" id="tridium-generic-win32-${sedona.env.version}" >
 
-  <compile endian="little" blockSize="4" refSize="4" debug="true" test="true">
+  <compile endian="little" blockSize="4" refSize="4" debug="true" test="true" embedManifest="true">
   
     <!-- Native Kits -->
     <nativeKit depend="sys 1.0+" />

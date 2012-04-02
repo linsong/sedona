@@ -236,8 +236,6 @@ class PlatformService
   **
   @readonly property long memAvailable = 0L
 
-
-
 ////////////////////////////////////////////////////////////////
 // Natives
 ////////////////////////////////////////////////////////////////
@@ -250,7 +248,7 @@ class PlatformService
 
 
   **
-  ** Get the platform SVM version. 
+  ** Get the platform SVM version.
   **
   internal native Str getPlatVersion()
 
@@ -259,5 +257,5 @@ class PlatformService
   ** Returns number of bytes available on the native platform.
   **
   internal native long getNativeMemAvailable()
-  
+
 }

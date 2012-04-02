@@ -10,21 +10,29 @@
 #include "sedonaPlatform.h"
 #include <windows.h>
 
-/*
-// Str Win32PlatformService.doPlatformId()
-Cell platWin32_Win32PlatformService_doPlatformId(SedonaVM* vm, Cell* params)
-{         
-  Cell result;
-  result.aval = PLATFORM_ID;
-  return result;
-}                      
-*/
-
 extern int64_t yieldNs;
+extern unsigned int pmSize;
+extern uint8_t pmImage[];
 
 // void Win32YieldPlatformService.doYield()
 Cell platWin32_Win32YieldPlatformService_doYield(SedonaVM* vm, Cell* params)
-{         
-  yieldNs = *(int64_t*)params;   
+{
+  yieldNs = *(int64_t*)params;
   return nullCell;
-}                      
+}
+
+// int PlatformManifestServer_getPmSize()
+Cell platWin32_PlatformManifestServer_getPmSize(SedonaVM* vm, Cell* params)
+{
+  Cell result;
+  result.ival = pmSize;
+  return result;
+}
+
+// byte[] PlatformManifestServer_getPmBytes()
+Cell platWin32_PlatformManifestServer_getPmBytes(SedonaVM* vm, Cell* params)
+{
+  Cell result;
+  result.aval = pmImage;
+  return result;
+}

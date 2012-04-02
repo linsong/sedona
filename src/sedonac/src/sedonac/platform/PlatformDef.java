@@ -34,7 +34,8 @@ public class PlatformDef
   public int refSize;               // reference/pointer size of platform
   public int blockSize;             // block size to use for scode
   public boolean debug;             // include debug meta-data
-  public boolean test;              // include tests
+  public boolean test;              // include testsp
+  public boolean embedManifest;     // generate platformManifest.c
 
   public Depend[]  nativeKits;       // kits which supply native implementations
   public String[]  nativeFiles;      // source files for staging native code

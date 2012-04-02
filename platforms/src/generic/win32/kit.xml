@@ -20,6 +20,8 @@
 
   <!-- Natives -->
   <native qname="platWin32::Win32YieldPlatformService.doYield" id="1::0" />
+  <native qname="platWin32::PlatformManifestServer.getPmSize" id="1::1" />
+  <native qname="platWin32::PlatformManifestServer.getPmBytes" id="1::2" />
 
 </sedonaKit>
 

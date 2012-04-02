@@ -8,16 +8,22 @@
 package sedonac.steps;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Properties;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import sedona.Env;
 import sedona.platform.NativeManifest;
 import sedona.platform.PlatformManifest;
+import sedona.util.FileUtil;
 import sedona.xml.XWriter;
 import sedonac.Compiler;
 import sedonac.CompilerStep;
@@ -27,6 +33,7 @@ import sedonac.ir.IrMethod;
 import sedonac.namespace.NativeId;
 import sedonac.namespace.Slot;
 import sedonac.platform.PlatformDef;
+import sedonac.util.CStrGen;
 import sedonac.util.VarResolver;
 
 /**
@@ -45,6 +52,7 @@ public class StagePlatform extends CompilerStep
     makePlatformManifest(compiler.platform);
     writeCHeaders();
     writeManifest();
+    writeCPlatformManifest();
     quitIfErrors();
   }
 
@@ -178,17 +186,43 @@ public class StagePlatform extends CompilerStep
   private void writeManifest()
   {
     File parDir = new File(compiler.outDir, ".par");
-    File file = new File(parDir, "platformManifest.xml");
-    log.debug("    Writing [ " + file + " ]");
+    manifestFile = new File(parDir, "platformManifest.xml");
+    log.debug("    Writing [ " + manifestFile + " ]");
     try
     {
-      XWriter out = new XWriter(file);
+      XWriter out = new XWriter(manifestFile);
       manifest.encodeXml(out);
       out.close();
     }
     catch (Exception e)
     {
-      throw err("Cannot write platformManifest.xml", new Location(file), e);
+      throw err("Cannot write platformManifest.xml", new Location(manifestFile), e);
+    }
+  }
+  
+  private void writeCPlatformManifest()
+  {
+    if (!compiler.platform.embedManifest)
+      return;
+    try
+    {
+      // the platform manifest must be zipped when embedded in an svm
+      InputStream in = new FileInputStream(manifestFile);
+      File zipFile = new File(compiler.outDir, "pm.zip");
+      ZipOutputStream zout = new ZipOutputStream(new FileOutputStream(zipFile));
+      zout.putNextEntry(new ZipEntry("platformManifest.xml"));
+      FileUtil.pipe(in, zout);
+      in.close();
+      zout.closeEntry();
+      zout.close();
+
+      File out = new File(compiler.outDir, "platformManifest.c");
+      CStrGen.toCFile(zipFile, out, "pm");
+    }
+    catch (Exception e)
+    {
+      e.printStackTrace();
+      throw err("Failed to write platformManifest.c");
     }
   }
 
@@ -205,6 +239,7 @@ public class StagePlatform extends CompilerStep
   }
 
   PlatformManifest manifest;
+  File manifestFile;
   /** qname -> IrMethod */
   HashMap natives = new HashMap();
 
