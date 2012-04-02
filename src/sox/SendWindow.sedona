@@ -178,7 +178,7 @@ class SendWindow
       p.age += houseKeepingTicks
 
       //  If more than one second has elapsed, send a retry
-      if (p.age > (1000 / SoxService.HOUSE_KEEPING_INTERVAL))
+      if (p.age > (PKT_RETRY_INTERVAL / SoxService.HOUSE_KEEPING_INTERVAL))
       {
         SoxCommands.send(service, session, p)
         p.age = 1
@@ -192,7 +192,8 @@ class SendWindow
 // Fields
 ////////////////////////////////////////////////////////////////
 
-  define int max = 8  // max number of unacked messages we can store
+  define int PKT_RETRY_INTERVAL = 1000    // (ms) if a packet goes unacked this long, send retry
+  define int max = 8                      // max number of unacked messages we can store
 
   short seqNum        // Sending sequence number
   byte numUnacked     // how many pending unacked messages
