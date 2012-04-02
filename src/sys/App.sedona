@@ -863,7 +863,6 @@ class App
       if (kitid>=0) kit = Sys.kit( kitIdMap[kitid] )
       if (kit == null) return Err.invalidKitId
 
-Sys.out.print("compId $compId kitid $kitid\n");      
       // read type id
       Type t = kit.type(in.read())
 
