@@ -11,6 +11,7 @@
 import os
 import zipfile
 import re
+import shutil
 
 def ext(file):
   """ Return file extension or empty string """
@@ -81,7 +82,7 @@ def rmdir(path, exclude = [], log=1):
       rmdir(filepath, [], log)
     else:
       os.remove(filepath)
-  if len(exclude) == 0: os.rmdir(path)
+  if len(exclude) == 0: shutil.rmtree(path)
 
 def rmsubdirs(path, exclude = [], log=1):
   """ Recursively remove a sub directories - excludes are regular expressions """
