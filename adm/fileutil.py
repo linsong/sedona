@@ -82,7 +82,7 @@ def rmdir(path, exclude = [], log=1):
       rmdir(filepath, [], log)
     else:
       os.remove(filepath)
-  if len(exclude) == 0: shutil.rmtree(path)
+  if len(exclude) == 0: shutil.rmtree(path, True)
 
 def rmsubdirs(path, exclude = [], log=1):
   """ Recursively remove a sub directories - excludes are regular expressions """
