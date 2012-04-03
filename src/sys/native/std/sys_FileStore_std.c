@@ -8,9 +8,14 @@
 
 #include "sedona.h"
 
-#include "string.h"   // for errno, strerror
+#include <errno.h>       // for errno, strerror
+
+#ifndef _WIN32
+ #include <sys/stat.h>   // for file mode defns
+#endif
 
 // Define this to implement "scheme" convention for specifying kit/manifest DB locations
+// 2011-11-14 Moved scheme implementation hooks to FileStore.sedona
 //#define IMPL_SCHEME_CONVENTION
 
 // =========================================================================== //
@@ -198,7 +203,11 @@ Cell sys_FileStore_doOpen(SedonaVM* vm, Cell* params)
       *sep = '\0';           // replace sep with null term
 
       // create dir (should be NOP if dir exists)
+#ifdef _WIN32
       _mkdir((const char*)name);
+#else
+      mkdir((const char*)name, S_IRWXU | S_IRWXG | S_IRWXO);
+#endif
 
       *sep = sepch;          // restore sep char
       nxtdir = sep+1;        // starting point for next search

@@ -10,16 +10,26 @@ import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import sedona.*;
+import sedona.Buf;
+import sedona.Component;
+import sedona.Env;
+import sedona.Kit;
+import sedona.KitPart;
+import sedona.Link;
+import sedona.Schema;
+import sedona.Slot;
+import sedona.Str;
+import sedona.Type;
+import sedona.Value;
 import sedona.dasp.DaspSession;
 import sedona.dasp.DaspSocket;
 import sedona.dasp.DiscoveredNode;
 import sedona.manifest.KitManifest;
 import sedona.manifest.ManifestDb;
+import sedona.manifest.ManifestZipUtil;
 import sedona.sox.ISoxComm.TransferListener;
 import sedona.util.FileUtil;
 import sedona.util.Version;
-import sedona.xml.XParser;
 
 /**
  * SoxClient implements the client side functionality
@@ -181,42 +191,48 @@ public class SoxClient
     }
     catch (Schema.MissingKitManifestException missing)
     {
-      // Use m: scheme to try and get missing manifests from the remote device
-      for (int i=0; i<missing.parts.length; ++i)
-      {
-        final String uri = "m:" + missing.parts[i] + ".xml";
-        try
-        {
-          Buf b = new Buf();
-          getFile(uri, SoxFile.make(b), null, null);
-          if (b.size() > 0)
-          {
-            b = unzipManifest(b);
-            ManifestDb.save(KitManifest.fromXml(XParser.make("manifest", b.getInputStream()).parse()));
-          }
-        }
-        catch (Exception e1)
-        {
-        }
-      }
-
-      // retry
+      tryResolveMissing(missing.parts);
       return Schema.load(parts);
     }
   }
-
-  private Buf unzipManifest(Buf zipped) throws IOException
+  
+  private  void tryResolveMissing(KitPart[] missing) throws Exception
   {
-    // there should only be one zip entry (the manifest) in the zip file
-    zipped.seek(0);
-    ZipInputStream zin = new ZipInputStream(zipped.getInputStream());
-    ZipEntry m = zin.getNextEntry();
-    Buf unzipped = new Buf();
-    FileUtil.pipe(zin, unzipped.getOutputStream());
-    zin.closeEntry();
-    zin.close();
-    unzipped.seek(0);
-    return unzipped;
+    KitManifest[] resolved = null;
+    Buf b = new Buf();
+    try
+    {
+      // first try single zip transfer
+      getFile("m:m.zip", SoxFile.make(b), null ,null);
+      resolved = ManifestZipUtil.extract(b, missing);
+    }
+    catch (Exception e)
+    {
+      // maybe single zip transfer will work...
+    }
+    
+    if (resolved == null)
+    {
+      // now try single zip transfer
+      resolved = new KitManifest[missing.length];
+      for (int i=0; i<missing.length; ++i)
+      {
+        b = new Buf();
+        try
+        {
+          getFile("m:" + missing[i] + ".xml", SoxFile.make(b), null, null);
+          resolved[i] = ManifestZipUtil.extract(b, missing[i]);
+        }
+        catch (Exception e)
+        {
+          resolved[i] = null;
+        }
+      }
+    }
+
+    for (int i=0; i<resolved.length; ++i)
+      if (resolved[i] != null)
+        ManifestDb.save(resolved[i]);
   }
 
   /**

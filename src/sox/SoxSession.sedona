@@ -196,10 +196,17 @@ class SoxSession
 ////////////////////////////////////////////////////////////////
 
   **
-  ** House keeping is called every 100ms and is used to 
-  ** check for retries, acks, keep-alives, and timeouts.
+  ** House keeping is used to check for retries, acks, keep-alives, and 
+  ** timeouts.  Ideally it is called every SoxService.HOUSE_KEEPING_INTERVAL,
+  ** but call rate may very based on App scanPeriod.  It is never called
+  ** more often then HOUSE_KEEPING_INTERVAL ms, but it may be called less
+  ** frequently.  houseKeepingTicks represents the number of intervals
+  ** that have elapsed (rounded up) since the last time houseKeeping was called
   **
-  bool houseKeeping(SoxService service, long now)
+  ** For example, if HOUSE_KEEPING_INTERVAL is 100ms and 160 ms have elapsed
+  ** since the last time the method was called, houseKeepingTicks = 2   
+  **
+  bool houseKeeping(SoxService service, long now, int houseKeepingTicks)
   {
     // if we haven't heard from the remote endpoint in a 
     // while, then its curtains for this session     
@@ -210,7 +217,7 @@ class SoxSession
     }
 
     // check for retries
-    if (sendWindow.sendRetries(service, this))
+    if (sendWindow.sendRetries(service, this, houseKeepingTicks))
       return true
     
     // send keep-alive if we have pending acks or 

@@ -52,6 +52,33 @@ public final class PlatformDb
 //////////////////////////////////////////////////////////////////////////
 
   /**
+   * Convenience to install a platform into the database when only the
+   * platform manifest is available. Any platform matching the one specified
+   * by the given platform manifest will be deleted prior to installation.
+   *
+   * @param platformManifest the platform manifest to install into the database.
+   *
+   * @throws PlatformDbException Thrown if the installation fails for any reason.
+   */
+  public void install(final PlatformManifest platformManifest)
+  {
+    try
+    {
+      PlatformManifest.validate(platformManifest);
+      File installDir = initInstall(platformManifest);
+      File manifestFile = new File(installDir, "platformManifest.xml");
+      XWriter xout = new XWriter(manifestFile);
+      platformManifest.encodeXml(xout);
+      xout.flush();
+      xout.close();
+    }
+    catch (Exception e)
+    {
+      throw new PlatformDbException(e);
+    }
+  }
+
+  /**
    * Installs the given PAR file into the local platform database. If the PAR
    * is already present in the platform database, it is deleted before being
    * re-installed.

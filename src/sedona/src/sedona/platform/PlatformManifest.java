@@ -8,8 +8,10 @@
 package sedona.platform;
 
 import sedona.Depend;
-import sedona.util.*;
-import sedona.xml.*;
+import sedona.util.VendorUtil;
+import sedona.xml.XElem;
+import sedona.xml.XException;
+import sedona.xml.XWriter;
 
 /**
  * Platform manifest represents the platform information and metadata for 
@@ -186,6 +188,28 @@ public class PlatformManifest
       if (schemes[i].equals(scheme))
         return true;
     return false;
+  }
+
+  /**
+   * Get the XElem for the scheme with the given id, or null if the scheme
+   * is not implemented by this platform.
+   *
+   * @param id the scheme to check for
+   * @return the XElem for the given scheme, or null if it is not implemented
+   * by this platform
+   */
+  public XElem getSchemeElem(final String id)
+  {
+    if (manifestIncludes == null)
+      return null;
+    XElem xschemes = manifestIncludes.elem("schemes");
+    if (xschemes == null)
+      return null;
+    XElem[] xlist = xschemes.elems("scheme");
+    for (int i=0; i<xlist.length; ++i)
+      if (id.equals(xlist[i].get("id")))
+        return xlist[i];
+    return null;
   }
   
 //////////////////////////////////////////////////////////////////////////

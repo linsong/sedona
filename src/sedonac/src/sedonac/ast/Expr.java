@@ -351,16 +351,6 @@ public abstract class Expr
       return toCodeString();
     }
 
-    public void write(AstWriter out)
-    {
-      out.w("Expr.Literal: ").nl();
-      out.w("  loc=" + loc).nl();
-      out.w("  id=" + id).nl();
-      out.w("  type=" + type).nl();
-      out.w("  value=" + value).nl();
-      out.nl();
-    }
-
     public Object value;
   }
 
@@ -577,7 +567,12 @@ public abstract class Expr
 // ParamVar
 //////////////////////////////////////////////////////////////////////////
 
-  public static class Param extends Name
+  public static interface NameDef
+  {
+    VarDef def();
+  }
+  
+  public static class Param extends Name implements NameDef
   {
     public Param(Location loc, String name, ParamDef def)
     {
@@ -589,6 +584,8 @@ public abstract class Expr
     public boolean isAssignable() { return true; }
 
     public int maxStack() { return type.isWide() ? 2 : 1; }
+    
+    public VarDef def() { return def; }
 
     public ParamDef def;
   }
@@ -597,7 +594,7 @@ public abstract class Expr
 // Local
 //////////////////////////////////////////////////////////////////////////
 
-  public static class Local extends Name
+  public static class Local extends Name implements NameDef
   {
     public Local(Location loc, Stmt.LocalDef def)
     {
@@ -609,6 +606,8 @@ public abstract class Expr
     public boolean isAssignable() { return true; }
 
     public int maxStack() { return type.isWide() ? 2 : 1; }
+    
+    public VarDef def() { return def; }
 
     public Stmt.LocalDef def;
   }
@@ -698,18 +697,6 @@ public abstract class Expr
     public String toString()
     {
       return super.toString();
-    }
-
-    public void write(AstWriter out)
-    {
-      out.w("Expr.Field: ").nl();
-      out.w("  loc=" + loc).nl();
-      out.w("  id=" + id).nl();
-      out.w("  type=" + type).nl();
-      out.w("  target=" + target).nl();
-      out.w("  name=" + name).nl();
-      out.w("  field=" + field).nl();
-      out.nl();
     }
 
     public sedonac.namespace.Field field;      

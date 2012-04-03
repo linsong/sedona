@@ -51,7 +51,12 @@ public class CStrGen
     
     System.out.println("in:  " + inFile);
     System.out.println("out: " + outFile);
+    toCFile(inFile, outFile, scode ? "scode" : "sab");
 
+  }
+  public static void toCFile(final File inFile, final File outFile,
+                             final String varPrefix) throws Exception
+  {
     InputStream in = new BufferedInputStream(new FileInputStream(inFile));
     PrintWriter out = new PrintWriter(new FileWriter(outFile));
 
@@ -60,17 +65,10 @@ public class CStrGen
     out.print("\n");
     out.print("#include \"sedona.h\"\n");
     out.print("\n");
+    
+    out.print("const unsigned int " + varPrefix + "Size = " + inFile.length() + ";\n");
+    out.print("const uint8_t " + varPrefix + "Image[] = \n{\n");
 
-    if (scode)
-    {
-      out.print("const unsigned int scodeSize = " + inFile.length() + ";\n");
-      out.print("const uint8_t scodeImage[] =\n{\n");
-    }      
-    else
-    {
-      out.print("const unsigned int sabSize = " + inFile.length() + ";\n");
-      out.print("const uint8_t sabImage[] =\n{\n");           
-    }   
     String line = "";
     while ((c = in.read()) >= 0)
     {

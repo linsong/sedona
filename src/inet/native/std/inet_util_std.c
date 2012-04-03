@@ -11,10 +11,11 @@
 
 // this value is the third 32-bit in a masked IPv4 address
 #ifdef IS_BIG_ENDIAN
-#define MASKED_IPV4_3RD 0xffff
+ #define MASKED_IPV4_3RD 0xffff
 #else
-#define MASKED_IPV4_3RD 0xffff0000
+ #define MASKED_IPV4_3RD 0xffff0000
 #endif
+
 
 
 /**
@@ -63,7 +64,7 @@ int inet_bind(socket_t sock, int port)
   struct sockaddr_in addr;
   memset(&addr, 0, sizeof(addr));
   addr.sin_family      = AF_INET;
-  addr.sin_addr        = in4addr_any;
+  addr.sin_addr.s_addr = INADDR_ANY;
   addr.sin_port        = htons(port);
 
 #elif defined( SOCKET_FAMILY_INET6 )
@@ -77,7 +78,11 @@ int inet_bind(socket_t sock, int port)
 #endif
 
   rc = bind(sock, (SOCKADDR_PARAM*)&addr, sizeof(addr));
+#ifdef _WIN32
   if (rc!=0) printf(" bind() returned %d, errno = %d\n", rc, WSAGetLastError());   // DIAG
+#else
+  if (rc!=0) printf(" bind() returned %d, errno = %d\n", rc, errno);   // DIAG
+#endif
   return rc;
 }
 

@@ -83,6 +83,24 @@ public class KitPart
 // Methods
 //////////////////////////////////////////////////////////////////////////
 
+  public boolean equals(Object o)
+  {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+
+    KitPart kitPart = (KitPart)o;
+
+    if (key != null ? !key.equals(kitPart.key) : kitPart.key != null)
+      return false;
+
+    return true;
+  }
+
+  public int hashCode()
+  {
+    return key != null ? key.hashCode() : 0;
+  }
+
   /**
    * Return key which is "{name}-{checksum}".
    */

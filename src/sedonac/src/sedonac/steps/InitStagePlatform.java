@@ -134,6 +134,7 @@ public class InitStagePlatform
     plat.armDouble = xml.getb("armDouble", plat.armDouble);
     plat.debug     = xml.getb("debug", plat.debug);
     plat.test      = xml.getb("test", plat.test);
+    plat.embedManifest = xml.getb("embedManifest", false);
     
     XElem[] x = xml.elems("nativeKit");
     Depend[] kits = new Depend[x.length];

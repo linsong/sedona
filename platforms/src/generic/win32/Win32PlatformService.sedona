@@ -9,23 +9,45 @@
 ** Generic Win32 Platform Service
 **
 **
-class Win32PlatformService extends PlatformService
+class Win32PlatformService
+  extends PlatformService
 {
-  **
-  ** Get the platform identifier which defines how
-  ** this Sedona device should be provisioned.
-  **
-  internal native Str doPlatformId()
-  
-////////////////////////////////////////////////////////////////
-// Service
-////////////////////////////////////////////////////////////////
+	override virtual void start()
+	{
+		super.start()
+		FileStore.insert(pmServer)
+	}
 
-  override virtual void start()
-  {
-    super.start()
-    updatePlatformId(doPlatformId())
-    // TODO: Win32Platform needs to dynamically update available memory???
-    memAvailable := 314159265L
-  }
+	inline PlatformManifestServer pmServer
+}
+
+**
+** Reference implementation for an in-memory platform manifest file store
+**
+final class PlatformManifestServer extends MemoryFileStore
+{
+	override bool accept(Str name)
+	{
+		return name.startsWith("p:")
+	}
+
+	override int getMemorySize(File f)
+	{
+		MemoryFile m = (MemoryFile)f.fp
+		return (m == null) ? getPmSize() : m.size
+	}
+
+	override bool openMemoryFile(MemoryFile m)
+	{
+		if (m.writable())
+			return false
+		if (!m.file.name.equals("p:"))
+			return false
+		m.size = getPmSize()
+		m.mem = getPmBytes()
+		return true
+	}
+
+	private native int getPmSize()
+	private native byte[] getPmBytes()
 }

@@ -143,7 +143,7 @@ class AppTest
     assert(b.lookup(2) == null)
     assert(b.lookup(3) == y)
     assert(b.lookup(4) == null)
-    assert(b.lookup(5) == null)
+    assert(b.lookup(5) == null)  
     verifyChildren(b, s1, y, null)
     assert(y.id == 3)
     assert(b.services == s1)
@@ -177,7 +177,64 @@ class AppTest
     // cleanup
     a.cleanupApp()
     b.cleanupApp()
+
+    
+    verifyCallbacks()
+
   }
+
+//  Issue 19700 - lifecycle callbacks
+  static void verifyCallbacks()
+  {
+    // init original app
+    App a = appA
+    a.initApp(10)
+
+    // Component x (child of app)
+    TestComp x = (TestComp)a.add(a, "x", TestComp.type)    
+    assert(x.parentAdded == true)
+    assert(x.childAdded == false)
+    assert(x.parentRemoved == false)
+    assert(x.childRemoved == false)
+    assert(x.linkAdded == false)
+    assert(x.linkRemoved == false)
+
+    // Component y (child of x)
+    SubTestComp y = (SubTestComp)a.add(x, "y", SubTestComp.type)
+
+    assert(x.childAdded == true)    
+    assert(y.parentAdded == true)
+    assert(y.childAdded == false)
+    assert(y.parentRemoved == false)
+    assert(y.childRemoved == false)
+    assert(y.linkAdded == false)
+    assert(y.linkRemoved == false)
+
+
+    // link:  x.i1 -> y.i2
+    Link xylink = a.addLink(x, TestComp.i1, y, TestComp.i2)
+    assert(xylink != null)
+    assert(x.linkAdded == true)
+    assert(y.linkAdded == true)
+
+    //  verify link callbacks
+    assert(a.removeLink(xylink) == true)
+    assert(x.linkRemoved == true)
+    assert(y.linkRemoved == true)
+
+    // remove component
+    assert(a.remove(y))
+    assert(x.childRemoved == true)
+    assert(x.parentRemoved == false)
+    assert(y.parentRemoved == true)    
+    assert(y.childRemoved ==false)
+
+    // cleanup
+    a.cleanupApp()
+
+  }
+
+
 
   static void verifyTestApp(App a, TestService s1, TestComp x, TestComp y, SubTestComp z, TestService s2)
   {

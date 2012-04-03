@@ -7,6 +7,7 @@
 //
 
 #include "sedona.h"
+#include "float.h"
 
 //////////////////////////////////////////////////////////////////////////
 // Error Handling
@@ -103,7 +104,8 @@ Cell sys_Component_getFloat(SedonaVM* vm, Cell* params)
   if (typeId != FloatTypeId)
     return accessError(vm, "getFloat", self, slot);
 
-  ret.fval = getFloat(self, offset);
+  // get as int, to avoid NaN weirdnesses on some platforms
+  ret.ival = getInt(self, offset);
   return ret;
 }
 
@@ -218,27 +220,34 @@ Cell sys_Component_doSetLong(SedonaVM* vm, Cell* params)
   return trueCell;
 }
 
+
 // bool Component.doSetFloat(Slot, float)
 Cell sys_Component_doSetFloat(SedonaVM* vm, Cell* params)
 {
   uint8_t* self   = params[0].aval;
   uint8_t* slot   = params[1].aval;
-  float val       = params[2].fval;
+  Cell newval     = params[2];
   uint16_t typeId = getTypeId(vm, getSlotType(vm, slot));
   uint16_t offset = getSlotHandle(vm, slot);
   
+  Cell oldval;
+
   // type check
   if (typeId != FloatTypeId)
     return accessError(vm, "setFloat", self, slot);
 
-  // short circuit if no change
-  if (getFloat(self, offset) == val)
+  // get value as int, to avoid NaN weirdnesses on some platforms
+  oldval.ival = getInt(self, offset);
+
+  // short circuit if no change - compare bits so NaN==NaN (Sedona spec)
+  if (oldval.ival == newval.ival)
     return falseCell;
 
   // update memory location
-  setFloat(self, offset, val);
+  setFloat(self, offset, newval.fval);
   return trueCell;
 }
+
 
 // bool Component.doSetDouble(Slot, double)
 Cell sys_Component_doSetDouble(SedonaVM* vm, Cell* params)
@@ -253,7 +262,6 @@ Cell sys_Component_doSetDouble(SedonaVM* vm, Cell* params)
   if (typeId != DoubleTypeId)
     return accessError(vm, "setDouble", self, slot);
 
-  // short circuit if no change
   if (getWide(self, offset) == val)
     return falseCell;
 
@@ -261,6 +269,7 @@ Cell sys_Component_doSetDouble(SedonaVM* vm, Cell* params)
   setWide(self, offset, val);
   return trueCell;
 }
+
 
 //////////////////////////////////////////////////////////////////////////
 // Invokes

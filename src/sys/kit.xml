@@ -86,5 +86,9 @@
 
   <native qname="sys::Str.fromBytes"             id="0::56"  />        
 
+  <native qname="sys::PlatformService.doPlatformId"           id="0::57"  />        
+  <native qname="sys::PlatformService.getPlatVersion"         id="0::58"  />        
+  <native qname="sys::PlatformService.getNativeMemAvailable"  id="0::59"  />        
+
 </sedonaKit>
 
