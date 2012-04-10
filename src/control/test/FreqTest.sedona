@@ -1,0 +1,91 @@
+//
+// Copyright (c) 2011 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   07 Dec 11  Elizabeth McKenney  Creation
+//
+
+**
+** FreqTest
+**
+**    Note: the margins on the assert statements are very large, due to the fact that
+**          the actual resolution of Sys.ticks() and Sys.sleep() vary a great deal on
+**          different systems.  All this test will do is catch major errors, not fine
+**          variations in accuracy.
+**
+class FreqTest
+  extends Test
+{
+  static inline Freq f
+
+  static long   appPeriod  = 0L
+ 
+  static void test()
+  {
+    Sys.app.scanPeriod := 50
+    appPeriod = (long)Sys.app.scanPeriod*1ms
+
+    f.start()
+
+    doBurst(4, true)
+    //Sys.out.print("   pps=${f.pps}\tppm=${f.ppm}\n")
+    assert( isApprox(f.pps, 5.0, 1.0) )
+    assert( isApprox(f.ppm, 300.0, 60.0) )
+
+    f.start()
+
+    doBurst(4, false)
+    //Sys.out.print("   pps=${f.pps}\tppm=${f.ppm}\n")
+    assert( isApprox(f.pps, 2.5, 0.50) )
+    assert( isApprox(f.ppm, 150.0, 30.0) )
+  }
+
+
+  //
+  // doBurst - do a bunch of pulses in a row
+  //
+  static void doBurst(int n, bool doSquare)
+  {
+    for (int t=0; t<n; t++)
+    {
+      doCycle(true)
+      doCycle(true)
+      doCycle(false)
+      doCycle(false)
+
+      if (!doSquare)
+      {
+        doCycle(false)
+        doCycle(false)
+        doCycle(false)
+        doCycle(false)
+      }
+    }
+  }
+
+
+  //
+  // doCycle - one app cycle, including sleep
+  //
+  static void doCycle(bool inValue)
+  {
+    long deadline = Sys.ticks() + appPeriod
+
+    f.in := inValue
+    f.execute()
+
+    // sleep rest of cycle
+    Sys.sleep( deadline - Sys.ticks() )
+  }
+
+
+  //
+  // isApprox - approximate equality
+  //
+  static bool isApprox(float x, float v, float epsilon)
+  {
+    return (x >= v-epsilon) && (x <= v+epsilon) 
+  }
+
+}

@@ -1,0 +1,87 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   23 Aug 07  Andy Saunders  Creation
+//
+
+**
+** Models an analog output point in a Device.
+**
+class AoPoint
+  extends AiPoint 
+{
+  ////////////////////////////////////////////////////////////////
+  // Properties
+  ////////////////////////////////////////////////////////////////
+
+  ** Maximum input value allowed
+  @config property float inMax = 100f
+
+  ** Minimum input value allowed
+  @config property float inMin = 0f
+
+  ** Value to write to analog output
+  @config property float in  = 0.0
+
+  
+  ////////////////////////////////////////////////////////////////
+  // Life cycle
+  ////////////////////////////////////////////////////////////////
+
+  **
+  ** Calls super to propagate fault state from device;
+  ** writes 'in' to analog output on (a) value change 
+  ** or (b) first cycle after point status becomes 'up'.
+  ** While status is 'down', does nothing.
+  ** If 'in' exceeds inMax/inMin limits, it is clipped.
+  **
+  virtual override void execute()
+  {
+    super.execute()
+
+    if (isDown())
+    {
+      isFirstTime = true
+      return
+    }
+   
+    float value = in;
+
+    // Clip the input value as needed
+    if (value > inMax)
+      value = inMax;
+    else if (value < inMin)
+      value = inMin;
+        
+    // Write the value if it's new
+    if (isFirstTime || (value != lastValue))
+    {
+      lastValue = value
+      wrValue(value)
+      isFirstTime = false
+    }
+  }
+  
+  ////////////////////////////////////////////////////////////////
+  // Callback methods
+  ////////////////////////////////////////////////////////////////
+
+  **
+  ** wrValue call back when input changes
+  **
+  virtual void wrValue(float value)
+  {                
+    getDevice()?.setAoValue(address, value)
+  }
+
+
+  ////////////////////////////////////////////////////////////////
+  // Fields
+  ////////////////////////////////////////////////////////////////
+
+  float lastValue
+  bool isFirstTime = true
+
+}
