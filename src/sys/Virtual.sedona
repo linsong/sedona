@@ -1,0 +1,18 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   28 Mar 07  Brian Frank  Creation
+//
+
+**
+** Virtual is the base class for all classes which support virtual methods.
+**
+abstract class Virtual
+{
+
+  ** Reference to the virtual method table
+  private Obj vtable
+
+}

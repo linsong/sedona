@@ -1,0 +1,37 @@
+//
+// Copyright (c) 2011 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   02 Feb 2011  Clif Turman    Creation
+//
+
+**
+** Max selects the highest of 2 inputs to send to the output
+**
+@niagaraIcon="module://icons/x16/control/control.png"
+class Max
+  extends Component
+{
+  ** the minimum of in1 and in2
+  @readonly property float out
+
+  ** first value for comparison
+  property float in1
+  
+  ** second value for comparison
+  property float in2
+  
+
+  **
+  ** Execute the comparison
+  **
+  virtual override void execute()
+  {
+    if(in1 > in2)
+      out := in1
+    else
+      out := in2
+  }
+}
+

@@ -1,0 +1,53 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   06 Dec 11  Elizabeth McKenney  Creation
+//
+
+**
+** F2I_I2FTest
+**
+class F2I_I2FTest
+  extends Test
+{
+  static inline F2I f2i
+  static inline I2F i2f
+  static inline L2F l2f
+
+  static void test()
+  {
+    validate(0.0)
+    validate(1.0)
+    validate(-1.0)
+    validate(1.0/3.0)
+    validate(1.0/-3.0)
+    validate(Sys.bitsToFloat(Sys.minInt))
+    validate(Sys.bitsToFloat(Sys.maxInt))
+  }
+
+  static void validate(float value)
+  {
+    int ivalue = (int)value
+    f2i.in := value
+    f2i.execute()
+    i2f.in := f2i.out
+    i2f.execute()
+    assert(i2f.out == (float)ivalue)
+
+    i2f.in := ivalue
+    i2f.execute()
+    f2i.in := i2f.out
+    f2i.execute()
+    assert(f2i.out == ivalue)
+
+    long lvalue = (long)value
+    l2f.in := lvalue
+    l2f.execute()
+    assert(l2f.out == (float)lvalue)
+  }
+
+
+
+}

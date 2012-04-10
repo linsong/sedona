@@ -1,0 +1,170 @@
+//
+// Copyright (c) 2011 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   08 Dec 11  Elizabeth McKenney  Creation
+//
+
+**
+** LinearizeTest
+**
+class LinearizeTest
+  extends Test
+{
+  static inline Linearize  l
+
+  define int   NUM_FUNCS   = 5
+  define float PARAM_VALUE = 3.1415
+
+  // Table cache for loops
+  static inline float[10] x
+  static inline float[10] y
+
+
+  //
+  // Return y = f(x) for a variety of functions f
+  //
+  static float multifunc(int which, float param, float input)
+  {
+    switch (which)
+    {
+      case 0:  return param
+      case 1:  return param+input
+      case 2:  return param-input
+      case 3:  return param*input
+      case 4:  return param*input*input*input
+      default: return 0f
+    }
+  }
+ 
+
+  //
+  // Initialize the table of known values using a given function f & param p
+  //
+  static void initTable(int f, float p)
+  {
+    // Cache table in arrays for test loops
+    float z = -3f
+    for (int i=0; i<10; i++)
+    {
+      x[i] = z
+      y[i] = multifunc(f, p, x[i])
+      z += 1f
+    }
+
+    l.x0 := -3f
+    l.x1 := -2f
+    l.x2 := -1f
+    l.x3 := 0f
+    l.x4 := 1f
+    l.x5 := 2f
+    l.x6 := 3f
+    l.x7 := 4f
+    l.x8 := 5f
+    l.x9 := 6f
+
+    l.y0 := multifunc(f, p, l.x0)
+    l.y1 := multifunc(f, p, l.x1)
+    l.y2 := multifunc(f, p, l.x2)
+    l.y3 := multifunc(f, p, l.x3)
+    l.y4 := multifunc(f, p, l.x4)
+    l.y5 := multifunc(f, p, l.x5)
+    l.y6 := multifunc(f, p, l.x6)
+    l.y7 := multifunc(f, p, l.x7)
+    l.y8 := multifunc(f, p, l.x8)
+    l.y9 := multifunc(f, p, l.x9)
+  }
+
+
+  static void test()
+  {
+    // For each function we've defined, do tests
+    for (int func=0; func<NUM_FUNCS; func++)
+    {
+      //Sys.out.print("  /////// Test using function# $func ///////\n")
+
+      // Set up the table using function# func
+      initTable(func, PARAM_VALUE)
+
+      // First make sure that we get the table values back
+      checkValues(func, PARAM_VALUE, -3f, 6f, 1f)
+
+      // Now check values in between the table values
+      checkValues(func, PARAM_VALUE, -2.9, 6.0, 0.7)
+    }
+
+  }
+
+
+  //
+  // find adjacent table values - assume x0 <=k <= x9 already
+  //
+  static int getPrevIdx(float v)
+  {
+    for (int i=1; i<10; i++)
+      if (x[i]>v)
+        return i-1
+
+    // Should never get here!
+    return -1
+  }
+
+
+
+  //
+  // test series of values
+  //
+  static void checkValues(int f, float p, float start, float limit, float incr)
+  {
+    float cmpout 
+
+    for (float k=start; k<limit; k+=incr)
+    {
+      // Skip out of range inputs
+      if ( (k<l.x0) || (k>l.x9) ) 
+      {
+        //Sys.out.print("    (skipping out of range input $k)\n")
+        continue;
+      }
+
+      l.in := k
+      l.execute()
+      cmpout = multifunc(f, p, l.in)
+
+      int previdx = getPrevIdx(k)
+
+      float rmin = y[previdx]
+      float rmax = y[previdx+1]
+      if (rmin>rmax)
+      {
+        float a = rmin
+        rmin = rmax
+        rmax = a
+      }
+
+      // Round to 6 decimal places (which is all that prints, anyway)
+      float lo = round(l.out, 6)
+      float ri = round(rmin, 6)
+      float ra = round(rmax, 6)
+
+      assert( (lo>=ri) && (lo<=ra) )
+    }
+  }
+
+
+  //
+  // Round the value to 'places' decimal places
+  //   (does not check for float overflow)
+  //
+  static float round(float x, int places)
+  {
+    for (int i=0; i<places; i++)
+      x *= 10f
+    float y = (float)( (int)x )
+    for (int i=0; i<places; i++)
+      y /= 10f
+    return y
+  }
+
+}
