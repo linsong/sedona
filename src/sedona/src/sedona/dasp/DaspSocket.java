@@ -339,7 +339,7 @@ public class DaspSocket
     }
     else if (msg.msgType == DISCOVER) 
     {
-      System.out.println("  Received Discover response!  host=" + host + "  port=" + port);
+      System.out.println("  Discover response:  host=" + host + "  port=" + port);
 
       // Add response to list 
       DiscoveredNode info = new DiscoveredNode(host, msg.platformId());
@@ -457,25 +457,6 @@ public class DaspSocket
    */                         
   public void discover(int port)
   {
-/*
-    // test
-    boolean bIpv4OK = true;
-    try { InetAddress test4addr = InetAddress.getByName("127.0.0.1"); }
-    catch (UnknownHostException e) { bIpv4OK = false; }
-    if (bIpv4OK)
-      System.out.println("  IPv4 appears to be supported"); 
-    else
-      System.out.println("  IPv4 does NOT appear to be supported"); 
-
-    boolean bIpv6OK = true;
-    try { InetAddress test6addr = InetAddress.getByName("::1"); }
-    catch (UnknownHostException e) { bIpv6OK = false; }
-    if (bIpv6OK)
-      System.out.println("  IPv6 appears to be supported"); 
-    else
-      System.out.println("  IPv6 does NOT appear to be supported"); 
-*/
-
     // Select multicast address based on protocol choice
     InetAddress mcaddr = bSelectIpv6 ? ipv6AllHostsAddress : ipv4AllHostsAddress;
 

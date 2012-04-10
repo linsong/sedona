@@ -37,9 +37,14 @@ int64_t sys_PlatformService_getNativeMemAvailable(SedonaVM* vm, Cell* params)
   MEMORYSTATUSEX memstatus;
   GlobalMemoryStatusEx( &memstatus );
 
-  // Use MB resolution but report bytes (reduce event freq)
-  totalmem = (memstatus.ullAvailPhys + memstatus.ullAvailVirtual) >> 20;
-  return totalmem << 20;
+  // Use MB resolution but report bytes (to reduce event freq)
+  totalmem = memstatus.ullAvailPhys >> 20;
+  totalmem <<= 20;
+
+  // If mem exceeds max (positive) long value, just return max
+  if (totalmem<0) 
+    return 0x7fffffffffffffff;
+  return totalmem;
 }
 
 

@@ -12,13 +12,13 @@
 class Win32PlatformService
   extends PlatformService
 {
-	override virtual void start()
-	{
-		super.start()
-		FileStore.insert(pmServer)
-	}
+  override virtual void start()
+  {
+    super.start()
+    FileStore.insert(pmServer)
+  }
 
-	inline PlatformManifestServer pmServer
+  inline PlatformManifestServer pmServer
 }
 
 **
@@ -26,28 +26,28 @@ class Win32PlatformService
 **
 final class PlatformManifestServer extends MemoryFileStore
 {
-	override bool accept(Str name)
-	{
-		return name.startsWith("p:")
-	}
+  override bool accept(Str name)
+  {
+    return name.startsWith("p:")
+  }
 
-	override int getMemorySize(File f)
-	{
-		MemoryFile m = (MemoryFile)f.fp
-		return (m == null) ? getPmSize() : m.size
-	}
+  override int getMemorySize(File f)
+  {
+    MemoryFile m = (MemoryFile)f.fp
+    return (m == null) ? getPmSize() : m.size
+  }
 
-	override bool openMemoryFile(MemoryFile m)
-	{
-		if (m.writable())
-			return false
-		if (!m.file.name.equals("p:"))
-			return false
-		m.size = getPmSize()
-		m.mem = getPmBytes()
-		return true
-	}
+  override bool openMemoryFile(MemoryFile m)
+  {
+    if (m.writable())
+      return false
+    if (!m.file.name.equals("p:"))
+      return false
+    m.size = getPmSize()
+    m.mem = getPmBytes()
+    return true
+  }
 
-	private native int getPmSize()
-	private native byte[] getPmBytes()
+  private native int getPmSize()
+  private native byte[] getPmBytes()
 }
