@@ -19,7 +19,6 @@
   <source dir="."/>
 
   <!-- Natives -->
-  <native qname="platUnix::UnixPlatformService.doPlatformId" id="1::0" />
 
 </sedonaKit>
 
