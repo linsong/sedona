@@ -186,6 +186,44 @@ assignment:
 </pre>
 
 <!--/////////////////////////////////////////////////////////-->
+<h2 id="propassign">Assigning to Properties</h2>
+<!--/////////////////////////////////////////////////////////-->
+
+<p>
+If the left hand side of an assignment expression is a 
+<a href='Components.html#properties'>component property</a>
+then you must use the <b>:=</b> assignment operator instead of
+<b>=</b>.  This highlights the fact that assigning a new value
+to a property results in more than just the storage of the new
+value; it also has potential side effects that may not always be
+visible to the user.
+</p>
+<p>
+Note that there are no compound property assignment operators;
+increment, decrement, etc must be spelled out explicitly in the
+expression.</p>
+
+<pre>
+// Property px
+property int px
+
+// Non-property field ix
+int ix
+
+void myfunc()
+{
+  // Use := when lhs is a property
+  px := 3
+
+  // Use = when lhs is a non-property
+  ix = px
+
+  // No compound assignment operators
+  px := px + 1
+}
+</pre>
+
+<!--/////////////////////////////////////////////////////////-->
 <h1 id="casting">Casting</h1>
 <!--/////////////////////////////////////////////////////////-->
 

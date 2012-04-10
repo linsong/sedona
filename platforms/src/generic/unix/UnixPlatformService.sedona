@@ -12,21 +12,5 @@
 **
 class UnixPlatformService extends PlatformService
 {
-  **
-  ** Get the platform identifier which defines how
-  ** this Sedona device should be provisioned.
-  **
-  internal native Str doPlatformId()
-  
-////////////////////////////////////////////////////////////////
-// Service
-////////////////////////////////////////////////////////////////
-
-  override virtual void start()
-  {
-    super.start()
-    updatePlatformId(doPlatformId())
-    // TODO: UNIX  needs to dynamically update available memory???
-    memAvailable := 314159265L
-  }
+  // No plat-specific properties or methods
 }
