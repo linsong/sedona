@@ -1,0 +1,142 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   26 Apr 07  Brian Frank  Creation
+//
+
+**
+** Log is used to embed error, warning, message, and
+** trace logging into Sedona software. 
+**
+const class Log
+{
+
+////////////////////////////////////////////////////////////////
+// Methods
+////////////////////////////////////////////////////////////////
+
+  **
+  ** Get the currently configured severity level
+  ** enabled for this Log.  The level is NONE, ERROR,
+  ** WARNING, MESSAGE, and TRACE.
+  **
+  int level() 
+  {                              
+    return Sys.logLevels[id]
+  }          
+
+  **
+  ** Set the severity level for this Log.  
+  ** Possible levels are NONE, ERROR, WARNING, MESSAGE, 
+  ** and TRACE.  (no error checking on arg)
+  **
+  void setLevel(int newLevel) 
+  {                              
+    Sys.logLevels[id] = newLevel
+  }          
+
+  **
+  ** Is current level error or greater.
+  **  
+  bool isError() 
+  { 
+    return Sys.logLevels[id] >= ERROR
+  }
+
+  **
+  ** Is current level warning or greater.
+  **  
+  bool isWarning() 
+  { 
+    return Sys.logLevels[id] >= WARNING
+  }
+
+  **
+  ** Is current level message or greater.
+  **  
+  bool isMessage() 
+  {     
+    return Sys.logLevels[id] >= MESSAGE
+  }
+
+  **
+  ** Is current level trace or greater.
+  **  
+  bool isTrace() 
+  { 
+    return Sys.logLevels[id] >= TRACE
+  }
+
+////////////////////////////////////////////////////////////////
+// Logging methods
+////////////////////////////////////////////////////////////////
+  
+  **
+  ** Log an error record.
+  **
+  OutStream error(Str msg)
+  {                
+    return log("ERROR", msg)
+  }
+
+  **
+  ** Log a warning record.
+  **
+  OutStream warning(Str msg)
+  {
+    return log("WARNING", msg)
+  }
+
+  **
+  ** Log a message record.
+  **
+  OutStream message(Str msg)
+  {
+    return log("MESSAGE", msg)
+  }
+
+  **
+  ** Log a trace record.
+  **
+  OutStream trace(Str msg)
+  {
+    return log("TRACE", msg)
+  }
+  
+  private OutStream log(Str level, Str msg)
+  {
+    return Sys.out.print("-- $level [$qname] $msg") 
+  }
+
+////////////////////////////////////////////////////////////////
+// Level
+////////////////////////////////////////////////////////////////
+
+  ** Logging is disabled
+  define int NONE = 0
+  
+  ** Logging is enabled only for errors
+  define int ERROR = 1
+
+  ** Logging is enabled for errors and warning
+  define int WARNING = 2
+
+  ** Logging is enabled for errors, warning, and messages
+  define int MESSAGE = 3
+
+  ** Logging is enabled for all levels
+  define int TRACE = 4
+
+////////////////////////////////////////////////////////////////
+// Fields
+////////////////////////////////////////////////////////////////
+
+  ** Index of this log in the Sys.logs array.
+  const short id
+
+  ** Unique qualified name of this log in the VM.
+  const Str qname
+
+}

@@ -1,0 +1,113 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//    1 Aug 06  Brian Frank  Creation
+//    7 Jun 07  Brian Frank  Port from Java to Sedona (it's my birthday!)
+//
+
+**
+** Link models an execution relationship between a source
+** component's slot to a target component's slot.
+**
+class Link
+{
+
+////////////////////////////////////////////////////////////////
+// Propagate
+////////////////////////////////////////////////////////////////
+
+  **
+  ** Propage the link
+  **
+  void propagate()
+  {
+    Component from = Sys.app.lookup(this.fromComp)
+    Component to = Sys.app.lookup(this.toComp)
+    if (from == null || to == null) return
+
+    Slot fromSlot  = from.type.slot(this.fromSlot)
+    Slot toSlot    = to.type.slot(this.toSlot)
+    if (fromSlot == null || toSlot == null) return
+    
+    if (fromSlot.isProp())
+    {                    
+      if (toSlot.isProp())
+      {
+        switch (toSlot.type.id)
+        {
+          case Type.boolId:   to.setBool  (toSlot, from.getBool(fromSlot));   break
+          case Type.byteId:   to.setInt   (toSlot, from.getInt(fromSlot));    break
+          case Type.shortId:  to.setInt   (toSlot, from.getInt(fromSlot));    break
+          case Type.intId:    to.setInt   (toSlot, from.getInt(fromSlot));    break
+          case Type.longId:   to.setLong  (toSlot, from.getLong(fromSlot));   break
+          case Type.floatId:  to.setFloat (toSlot, from.getFloat(fromSlot));  break
+          case Type.doubleId: to.setDouble(toSlot, from.getDouble(fromSlot)); break
+          // TODO: buf props
+        }
+      }
+      else
+      {            
+        /* action links would currently get invoked on every scan cycle
+           right now; once we enable that functionality it will be tough
+           seamlessly integrate scan engines with event engines; so for
+           now let's keep this feature disabled
+        switch (toSlot.type.id)
+        {
+          case Type.voidId:   to.invokeVoid  (toSlot);  break
+          case Type.boolId:   to.invokeBool  (toSlot, from.getBool(fromSlot));   break
+          case Type.byteId:   to.invokeInt   (toSlot, from.getInt(fromSlot));    break
+          case Type.shortId:  to.invokeInt   (toSlot, from.getInt(fromSlot));    break
+          case Type.intId:    to.invokeInt   (toSlot, from.getInt(fromSlot));    break
+          case Type.longId:   to.invokeLong  (toSlot, from.getLong(fromSlot));   break
+          case Type.floatId:  to.invokeFloat (toSlot, from.getFloat(fromSlot));  break
+          case Type.doubleId: to.invokeDouble(toSlot, from.getDouble(fromSlot)); break
+          // TODO: buf props
+        }          
+        */
+      }
+    }
+  }
+
+////////////////////////////////////////////////////////////////
+// I/O
+////////////////////////////////////////////////////////////////
+
+  **
+  ** Save the link in binary format to the output stream.
+  **
+  void save(OutStream out)
+  {
+    out.writeI2(fromComp)
+    out.write(fromSlot)
+    out.writeI2(toComp)
+    out.write(toSlot)
+  }
+
+  ***
+  ** Load the link from a binary format input stream.
+  ** Return true on success, false on error.
+  **
+  bool load(InStream in, int fromComp)
+  {
+    this.fromComp = fromComp
+    this.fromSlot = in.read()
+    this.toComp   = in.readU2()
+    int x         = in.read()  // read into int for err checking
+    this.toSlot   = x
+    return x >= 0
+  }
+
+////////////////////////////////////////////////////////////////
+// Fields
+////////////////////////////////////////////////////////////////
+
+  short fromComp
+  byte  fromSlot
+  short toComp
+  byte  toSlot
+  Link  nextTo
+  Link  nextFrom
+
+}

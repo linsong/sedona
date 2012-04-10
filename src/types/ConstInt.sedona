@@ -1,0 +1,29 @@
+//
+// Copyright (c) 2007-2011 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   31 Aug 2007  Andy Saunders    Creation
+//   04 Aug 2011  Clif Turman      Add comments
+//
+
+**
+** ConstInt: int constant  
+**    out should never be a link destination.
+**
+@niagaraIcon="module://icons/x16/control/enumPoint.png"
+class ConstInt
+  extends Component
+{
+  ** out value is set by actions
+  @config @summary property int out
+  
+  **
+  ** action to set out value
+  **
+  action void set(int x)
+  {           
+    out := x
+  }
+  
+}

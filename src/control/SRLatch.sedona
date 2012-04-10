@@ -1,0 +1,64 @@
+//
+// Copyright (c) 2007-2011 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   18 Jan 2007  Andy Saunders  Creation
+//   27 Apr 2007  Brian Frank    Port from Java to Sedona
+//   22 Apr 2009  Elizabeth McKenney   Updated
+//   04 Aug 2011  Clif Turman    Add comments
+//
+
+**
+** SRLatch Set Reset Latch object
+**
+** if ^s out = true;
+** if ^r out = false;
+** If both inputs have rising edges, out becomes false
+**
+@niagaraIcon="module://icons/x16/control/control.png"
+class SRLatch
+  extends Component
+{
+  ** output
+  @readonly property bool out
+
+  ** On rising edge of s, out becomes true
+  property bool s
+
+  ** On rising edge of r, out becomes false
+  property bool r
+
+  **
+  ** Callback when component is first started in an app.
+  **
+  virtual override void start()
+  {
+    lastSet   = s
+    lastReset = r
+  }
+
+
+  **
+  ** Execute is called once every scan.
+  **
+  ** On rising edge of s, out becomes true
+  ** On rising edge of r, out becomes false
+  ** If both inputs have rising edges, out becomes false
+  **
+  virtual override void execute()
+  {
+    if (s && !lastSet)
+      out := true
+
+    if (r && !lastReset)
+      out := false
+
+    lastSet   = s
+    lastReset = r
+  }
+
+  bool lastSet
+  bool lastReset
+
+}

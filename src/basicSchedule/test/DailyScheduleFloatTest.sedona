@@ -1,0 +1,341 @@
+//
+// Copyright (c) 2009 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   30 Apr 09  Dan Giorgis   creation
+//
+
+**
+** DailyScheduleFloatTest
+**
+class DailyScheduleFloatTest
+  extends Test
+{  
+  static inline DailyScheduleFloat sched
+  static inline DateTimeService dtSrvc
+  static void setTime(int hour,
+                      int minute,
+                      int second)
+  {
+    dtSrvc.hour := (byte)hour
+    dtSrvc.minute := (byte)minute
+    dtSrvc.second := (byte)second
+  } 	                
+
+  define float schActive1 = 100.0
+  define float schActive2 = 200.0
+  define float schDefault = 1876.0
+                
+  static void test()
+  {
+    assert(dtSrvc != null)
+    sched.dtSrvc = dtSrvc;
+    
+    //  Simple case - no active time periods       
+    sched.defVal := 1001.0
+    sched.execute()
+    assert(sched.out == 1001.0)       
+
+    sched.defVal := -99.0
+    sched.execute()
+    assert(sched.out == -99.0)       
+    
+
+    // Case 1: Single active time not spanning midnight
+    //         Default off, active for one hour from 9am
+
+    //  0000
+    //  ....
+    //  0900  on
+    //  1000  off
+      
+        
+    sched.defVal := schDefault 
+    sched.start1 := (int)(9hr / 60sec)  
+    sched.dur1 := (int)(1hr / 60sec)
+    sched.val1 := schActive1;
+    setTime(8,0,0)
+    sched.execute(); assert(sched.out == schDefault)
+    setTime(9,0,0)
+    sched.execute(); assert(sched.out == schActive1)
+    setTime(9,30,0)
+    sched.execute(); assert(sched.out == schActive1)
+    setTime(9,59,59)
+    sched.execute(); assert(sched.out == schActive1)
+    setTime(10,0,0)
+    sched.execute(); assert(sched.out == schDefault)
+    setTime(10,0,1)
+    sched.execute(); assert(sched.out == schDefault)
+
+    // Case 2: Single active time spanning midnight
+    //         Default off, active for 6 hours from 21:00 to 03:00
+    sched.defVal := schDefault 
+    sched.start1 := (int)(21hr / 60sec)  
+    sched.dur1 := (int)(6hr / 60sec)
+    sched.val1 := schActive1;
+    setTime(0,0,0)  //  should be on midnight
+    sched.execute(); assert(sched.out == schActive1)
+    setTime(2,59,59)  //  on at 2:59:59
+    sched.execute(); assert(sched.out == schActive1)
+    setTime(3,0,0)    //  off at 3:00 
+    sched.execute(); assert(sched.out == schDefault)
+    setTime(12,0,0)    //  off at noon
+    sched.execute(); assert(sched.out == schDefault)
+    setTime(20,59,59)  //  off at 20:59:59
+    sched.execute(); assert(sched.out == schDefault)
+    setTime(21,0,0)    //  on at  21:00
+    sched.execute(); assert(sched.out == schActive1)
+
+    // Case 3a: Dual active schedules, not overlapping, not spanning midnight
+    //   
+    // 0900    on1
+    // 1200    off
+    // 1500    on2
+    // 1800    off      
+    sched.defVal := schDefault 
+    sched.start1 := (int)(9hr / 60sec)  
+    sched.dur1 := (int)(3hr / 60sec)
+    sched.val1 := schActive1;
+    sched.start2 := (int)(15hr / 60sec)  
+    sched.dur2 := (int)(3hr / 60sec)
+    sched.val2 := schActive2;
+
+    setTime(0,0,0)  
+    sched.execute(); assert(sched.out == schDefault)
+    setTime(8,59,59)  
+    sched.execute(); assert(sched.out == schDefault)
+    setTime(9,0,0)    
+    sched.execute(); assert(sched.out == schActive1)
+    setTime(11,59,59)  
+    sched.execute(); assert(sched.out == schActive1)
+    setTime(12,0,0)   
+    sched.execute(); assert(sched.out == schDefault)
+    setTime(14,59,59)  
+    sched.execute(); assert(sched.out == schDefault)
+    setTime(15,0,0)   
+    sched.execute(); assert(sched.out == schActive2)
+    setTime(17,59,59)  
+    sched.execute(); assert(sched.out == schActive2)
+    setTime(18,0,0)  
+    sched.execute(); assert(sched.out == schDefault)
+
+    // Case 3b: Dual active schedules, not overlapping, not spanning midnight
+    //         active period 2 before active period 1
+    //   
+    // 0900    on2
+    // 1200    off
+    // 1500    on1
+    // 1800    off      
+    sched.defVal := schDefault 
+    sched.start1 := (int)(15hr / 60sec)  
+    sched.dur1 := (int)(3hr / 60sec)
+    sched.val1 := schActive1;
+    sched.start2 := (int)(9hr / 60sec)  
+    sched.dur2 := (int)(3hr / 60sec)
+    sched.val2 := schActive2;
+
+    setTime(0,0,0)  
+    sched.execute(); assert(sched.out == schDefault)
+    setTime(8,59,59)  
+    sched.execute(); assert(sched.out == schDefault)
+    setTime(9,0,0)    
+    sched.execute(); assert(sched.out == schActive2)
+    setTime(11,59,59)  
+    sched.execute(); assert(sched.out == schActive2)
+    setTime(12,0,0)   
+    sched.execute(); assert(sched.out == schDefault)
+    setTime(14,59,59)  
+    sched.execute(); assert(sched.out == schDefault)
+    setTime(15,0,0)   
+    sched.execute(); assert(sched.out == schActive1)
+    setTime(17,59,59)  
+    sched.execute(); assert(sched.out == schActive1)
+    setTime(18,0,0)  
+    sched.execute(); assert(sched.out == schDefault)
+    
+    // Case 4: Dual active schedules, not overlapping, active 1 spans midnight
+    //   
+    // 0000                          on
+    // 0100                          off
+    // 1500    start2 dur 3hr        on   
+    // 1800                          off  
+    // 2300    start1 dur 2hr        on
+    
+    sched.defVal := schDefault 
+    sched.start1 := (int)(23hr / 60sec)  
+    sched.dur1 := (int)(2hr / 60sec)
+    sched.val1 := schActive1;
+    sched.start2 := (int)(15hr / 60sec)  
+    sched.dur2 := (int)(3hr / 60sec)
+    sched.val2 := schActive2;
+
+    setTime(0,0,0)  
+    sched.execute(); assert(sched.out == schActive1)
+    setTime(0,59,59)  
+    sched.execute(); assert(sched.out == schActive1)
+    setTime(1,0,0)    
+    sched.execute(); assert(sched.out == schDefault)
+    setTime(14,59,59)  
+    sched.execute(); assert(sched.out == schDefault)
+    setTime(15,0,0)   
+    sched.execute(); assert(sched.out == schActive2)
+    setTime(17,59,59)  
+    sched.execute(); assert(sched.out == schActive2)
+    setTime(18,0,0)   
+    sched.execute(); assert(sched.out == schDefault)
+    setTime(22,59,59)  
+    sched.execute(); assert(sched.out == schDefault)
+    setTime(23,0,0)  
+    sched.execute(); assert(sched.out == schActive1)
+    
+
+    // Case 5: Dual active schedules, back to back
+    //   
+    // 0000                          off
+    // 0900    start1 dur 3hr        on   
+    // 1200    start2 dur 1hr        on  
+    // 1300                          off
+    
+    sched.defVal := schDefault 
+    sched.start1 := (int)(9hr / 60sec)  
+    sched.dur1 := (int)(3hr / 60sec)
+    sched.val1 := schActive1;
+    sched.start2 := (int)(12hr / 60sec)  
+    sched.dur2 := (int)(1hr / 60sec)
+    sched.val2 := schActive2;
+
+    setTime(0,0,0)  
+    sched.execute(); assert(sched.out == schDefault)
+    setTime(8,59,59)  
+    sched.execute(); assert(sched.out == schDefault)
+    setTime(9,0,0)    
+    sched.execute(); assert(sched.out == schActive1)
+    setTime(11,59,59)  
+    sched.execute(); assert(sched.out == schActive1)
+    setTime(12,0,0)   
+    sched.execute(); assert(sched.out == schActive2)
+    setTime(12,59,59)  
+    sched.execute(); assert(sched.out == schActive2)
+    setTime(13,0,0)   
+    sched.execute(); assert(sched.out == schDefault)
+
+    // Case 6: Dual active schedules, active 1 period
+    //         entirely overlaps active2 period
+    //   
+    // 0000                          off
+    // 0900    start1 dur 3hr        on   
+    // 1000    start2 dur 1hr        on  
+    // 1100    (end active2)         on
+    // 1200                          off
+
+    sched.defVal := schDefault 
+    sched.start1 := (int)(9hr / 60sec)  
+    sched.dur1 := (int)(3hr / 60sec)
+    sched.val1 := schActive1;
+    sched.start2 := (int)(10hr / 60sec)  
+    sched.dur2 := (int)(1hr / 60sec)
+    sched.val2 := schActive2;
+
+    setTime(0,0,0)  
+    sched.execute(); assert(sched.out == schDefault)
+    setTime(8,59,59)  
+    sched.execute(); assert(sched.out == schDefault)
+    setTime(9,0,0)    
+    sched.execute(); assert(sched.out == schActive1)
+    setTime(10,0,0)    
+    sched.execute(); assert(sched.out == schActive1)
+    setTime(10,59,59)  
+    sched.execute(); assert(sched.out == schActive1)
+    setTime(11,0,0)    
+    sched.execute(); assert(sched.out == schActive1)
+    setTime(11,59,59)  
+    sched.execute(); assert(sched.out == schActive1)
+    setTime(12,0,0)   
+    sched.execute(); assert(sched.out == schDefault)
+
+    // Case 7: Dual active schedules, end of active 1 period
+    //         overlaps start of active2 period
+    //   
+    // 0000                          off
+    // 0900    start1 dur 3hr        on   
+    // 1100    start2 dur 3hr        on     
+    // 1200                          on
+    // 1400                          off
+
+    sched.defVal := schDefault 
+    sched.start1 := (int)(9hr / 60sec)  
+    sched.dur1 := (int)(3hr / 60sec)
+    sched.val1 := schActive1;
+    sched.start2 := (int)(11hr / 60sec)  
+    sched.dur2 := (int)(3hr / 60sec)
+    sched.val2 := schActive2;
+
+    setTime(0,0,0)  
+    sched.execute(); assert(sched.out == schDefault)
+    setTime(8,59,59)  
+    sched.execute(); assert(sched.out == schDefault)
+    setTime(9,0,0)    
+    sched.execute(); assert(sched.out == schActive1)
+    setTime(10,0,0)    
+    sched.execute(); assert(sched.out == schActive1)
+    setTime(10,59,59)  
+    sched.execute(); assert(sched.out == schActive1)
+    setTime(11,0,0)    
+    sched.execute(); assert(sched.out == schActive1)
+    setTime(11,59,59)  
+    sched.execute(); assert(sched.out == schActive1)
+    setTime(12,0,0)   
+    sched.execute(); assert(sched.out == schActive2)
+    setTime(13,59,59)  
+    sched.execute(); assert(sched.out == schActive2)
+    setTime(14,0,0)   
+    sched.execute(); assert(sched.out == schDefault)
+
+    // Case 8: Dual active schedules, end of active 2 period
+    //         overlaps start of active1 period.  Active1
+    //         has priority
+    //   
+    // 0000                          off
+    // 0900    start2 dur 3hr        on   
+    // 1100    start1 dur 3hr        on     
+    // 1200                          on
+    // 1400                          off
+
+    sched.defVal := schDefault 
+    sched.start1 := (int)(11hr / 60sec)  
+    sched.dur1 := (int)(3hr / 60sec)
+    sched.val1 := schActive1;
+    sched.start2 := (int)(9hr / 60sec)  
+    sched.dur2 := (int)(3hr / 60sec)
+    sched.val2 := schActive2;
+
+
+    setTime(0,0,0)  
+    sched.execute(); assert(sched.out == schDefault)
+    setTime(8,59,59)  
+    sched.execute(); assert(sched.out == schDefault)
+    setTime(9,0,0)    
+    sched.execute(); assert(sched.out == schActive2)
+    setTime(10,0,0)    
+    sched.execute(); assert(sched.out == schActive2)
+    setTime(10,59,59)  
+    sched.execute(); assert(sched.out == schActive2)
+    setTime(11,0,0)    
+    sched.execute(); assert(sched.out == schActive1)
+    setTime(11,59,59)  
+    sched.execute(); assert(sched.out == schActive1)
+    setTime(12,0,0)   
+    sched.execute(); assert(sched.out == schActive1)
+    setTime(13,59,59)  
+    sched.execute(); assert(sched.out == schActive1)
+    setTime(14,0,0)   
+    sched.execute(); assert(sched.out == schDefault)
+
+    
+   }
+
+
+}
+
+

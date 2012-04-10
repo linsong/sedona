@@ -1,0 +1,103 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   17 May 07  Andy Sunders  Creation
+//
+
+**
+** TickTockTest
+**
+class TickTockTest
+  extends Test
+{
+  static inline TickTock tickTock
+  static inline Freq freq
+
+  static void test()
+  {
+    // not in an app, so call this explicitly
+    tickTock.start()
+    freq.start()
+
+    validate(7)
+  }
+
+  static void validate(int pps)
+  {
+    bool curOut = tickTock.out
+    bool lastOut = curOut
+    int count = 0;
+    freq.in := curOut
+    tickTock.ticksPerSec := pps
+    
+    // Skip rest of current cycle, since we just changed ticksPerSec
+    //waitForNextRisingEdge(tickTock)
+    waitForNextFallingEdge(tickTock)
+
+    long startTime = Sys.ticks()
+    while(count < pps || curOut)
+    {
+      tickTock.execute()
+      curOut = tickTock.out
+      if(curOut)
+      {
+        if(curOut != lastOut)
+        {
+          count++
+          //Sys.out.printInt(count).print("-")
+        }
+      }
+      lastOut = curOut
+      freq.in := curOut
+      freq.execute()
+    }
+
+    long deltaTime = Sys.ticks() - startTime
+    freq.execute()
+
+    Sys.out.print("    ticks/sec = ").printInt(pps).nl()
+    Sys.out.print("    count = ").printInt(count).nl()
+    Sys.out.print("    time = ").printInt((int)deltaTime).nl()
+    Sys.out.print("    freq.pps = ").printFloat(freq.pps).nl()
+    Sys.out.print("    freq.ppm = ").printFloat(freq.ppm).nl()
+    assert(count == pps)
+    assert(deltaTime < 1050ms)
+    assert(deltaTime > 950ms)
+    //assert(freq.pps == 1.0f)
+    //assert(freq.ppm == 60.0f)
+
+  }
+
+  // Loop until TickTock.out changes from false to true
+  static void waitForNextRisingEdge(TickTock tt)
+  {
+    long timeout = Sys.ticks() + 2sec
+
+    // Wait for out to go false first (if not already)
+    while (tt.out && (Sys.ticks()<timeout))
+      tt.execute()
+
+    // Now wait for out to go true
+    while (!tt.out && (Sys.ticks()<timeout))
+      tt.execute()
+  } 
+
+
+  // Loop until TickTock.out changes from true to false
+  static void waitForNextFallingEdge(TickTock tt)
+  {
+    long timeout = Sys.ticks() + 2sec
+
+    // Wait for out to go true first (if not already)
+    while (!tt.out && (Sys.ticks()<timeout))
+      tt.execute()
+
+    // Now wait for out to go false
+    while (tt.out && (Sys.ticks()<timeout))
+      tt.execute()
+  } 
+
+
+}

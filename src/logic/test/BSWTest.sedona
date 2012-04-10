@@ -1,0 +1,60 @@
+//
+// Copyright (c) 2011 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   16 Feb 10  Dan Giorgis  creation
+//
+
+**
+** BSWTest
+**
+class BSWTest
+  extends Test
+{
+  static inline BSW bsw
+
+  static bool bswExec(bool in1, bool in2, bool s1)
+  {
+    bsw.in1 := in1
+    bsw.in2 := in2
+    bsw.s1 := s1
+    bsw.execute()
+    return bsw.out  
+  }  
+  static void test()
+  {
+    // output is null if switch input is null
+    assert(bswExec(null, null, null) == null)
+    assert(bswExec(true, true, null) == null)
+    assert(bswExec(true, false, null) == null)
+    assert(bswExec(false, true, null) == null)
+    assert(bswExec(false, false, null) == null)
+   
+    //  if s1 is true output should be in2
+    assert(bswExec(null, false, true) == false)
+    assert(bswExec(true, false, true) == false)
+    assert(bswExec(false, false, true) == false)
+    assert(bswExec(null, true, true) == true)
+    assert(bswExec(true, true, true) == true)
+    assert(bswExec(false, true, true) == true)
+    assert(bswExec(null, null, true) == null)
+    assert(bswExec(true, null, true) == null)
+    assert(bswExec(false, null, true) == null)
+
+    
+    //  if s1 is false output should be in1
+    assert(bswExec(null, false, false) == null)
+    assert(bswExec(true, false, false) == true)
+    assert(bswExec(false, false, false) == false)
+    assert(bswExec(null, true, false) == null)
+    assert(bswExec(true, true, false) == true)
+    assert(bswExec(false, true, false) == false)
+    assert(bswExec(null, null, false) == null)
+    assert(bswExec(true, null, false) == true)
+    assert(bswExec(false, null, false) == false)
+  }
+
+
+
+}
