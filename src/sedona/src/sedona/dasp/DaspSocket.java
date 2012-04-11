@@ -418,17 +418,14 @@ public class DaspSocket
 
   static
   {
-    String addrName = "(not set!)";
     try
     {
-      addrName = "224.0.0.1";    // IPv4 all-hosts multicast address
-      ipv4AllHostsAddress = InetAddress.getByName(addrName);
-      addrName = "ff02::1";      // IPv6 all-hosts multicast address 
-      ipv6AllHostsAddress = InetAddress.getByName(addrName);
+      ipv4AllHostsAddress = InetAddress.getByName(DaspConst.IPv4_MULTICAST_ADDR);
+      ipv6AllHostsAddress = InetAddress.getByName(DaspConst.IPv6_MULTICAST_ADDR);
     }
     catch (UnknownHostException e)
     {
-      System.out.println("ERROR: Unknown host '" + addrName + "': " + e.getMessage());
+      System.out.println("ERROR Creating multicast address: " + e.getMessage());
       e.printStackTrace();
     }
   }
