@@ -413,24 +413,6 @@ public class DaspSocket
 // IO Hooks
 ////////////////////////////////////////////////////////////////
   
-  static InetAddress ipv4AllHostsAddress;
-  static InetAddress ipv6AllHostsAddress;
-
-  static
-  {
-    try
-    {
-      ipv4AllHostsAddress = InetAddress.getByName(DaspConst.IPv4_MULTICAST_ADDR);
-      ipv6AllHostsAddress = InetAddress.getByName(DaspConst.IPv6_MULTICAST_ADDR);
-    }
-    catch (UnknownHostException e)
-    {
-      System.out.println("ERROR Creating multicast address: " + e.getMessage());
-      e.printStackTrace();
-    }
-  }
-
-
   /**
    * Return current list of discovered nodes   (not thread safe?)
    */        
@@ -439,23 +421,20 @@ public class DaspSocket
     return (DiscoveredNode[])discovered.toArray(new DiscoveredNode[0]);
   }
 
-  //-----------------------------------------------------------//
-  //         *** SELECT IPv4 vs. IPv6 HERE ***
-  //
-  // Is there a way to auto-detect whether to use ipv4 or ipv6?
-  // For now, just hardcode our selection...
-  //
-  boolean bSelectIpv6 = false;
-  //-----------------------------------------------------------//
-
-
   /**
    * Send device discovery multicast msg
    */                         
   public void discover(int port)
   {
-    // Select multicast address based on protocol choice
-    InetAddress mcaddr = bSelectIpv6 ? ipv6AllHostsAddress : ipv4AllHostsAddress;
+    InetAddress mcaddr;
+    try { mcaddr = InetAddress.getByName(DaspConst.USE_MULTICAST_GROUP); }
+    catch (UnknownHostException e)
+    { 
+      System.out.println("ERROR Creating multicast address (" + DaspConst.USE_MULTICAST_GROUP 
+                                                              + "): " + e.getMessage());
+      e.printStackTrace();
+      return;
+    }
 
     byte[] mbuf = new byte[DaspConst.ABS_MAX_VAL];
 
@@ -467,8 +446,7 @@ public class DaspSocket
     // Collect info into DatagramPacket for sending...
     DatagramPacket dgPacket = new DatagramPacket(mbuf, mlen, mcaddr, port);
 
-    String proto = bSelectIpv6 ? "IPv6" : "IPv4";
-    System.out.println("\n  Sending " + proto + " discover req to " + mcaddr + " on port " + port);
+    System.out.println("\n  Sending discover req to " + mcaddr + " on port " + port);
 
     // Find the right interface for the address...
     DaspSocketInterface iface = route(mcaddr, port);
