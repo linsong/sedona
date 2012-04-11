@@ -91,4 +91,11 @@ public interface DaspConst
   public static final int NOT_AUTHENTICATED    = 0xe4;
   public static final int TIMEOUT              = 0xe5;
   
+////////////////////////////////////////////////////////////////
+// Device Discovery
+///////////////////////////////////////////////////////////////
+
+  public static final String IPv4_MULTICAST_ADDR = "224.0.0.1";
+  public static final String IPv6_MULTICAST_ADDR = "FF02::1";
+
 }
