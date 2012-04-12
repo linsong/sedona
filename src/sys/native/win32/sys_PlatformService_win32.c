@@ -35,6 +35,8 @@ int64_t sys_PlatformService_getNativeMemAvailable(SedonaVM* vm, Cell* params)
 {
   int64_t totalmem;
   MEMORYSTATUSEX memstatus;
+
+  memstatus.dwLength = sizeof(MEMORYSTATUSEX);    // set dwLength before calling GlobalMemory fn
   GlobalMemoryStatusEx( &memstatus );
 
   // Use MB resolution but report bytes (to reduce event freq)
