@@ -39,9 +39,8 @@ int64_t sys_PlatformService_getNativeMemAvailable(SedonaVM* vm, Cell* params)
   memstatus.dwLength = sizeof(MEMORYSTATUSEX);    // set dwLength before calling GlobalMemory fn
   GlobalMemoryStatusEx( &memstatus );
 
-  // Use MB resolution but report bytes (to reduce event freq)
-  totalmem = memstatus.ullAvailPhys >> 20;
-  totalmem <<= 20;
+  // Use 4MB resolution but report bytes (to reduce event freq)
+  totalmem = memstatus.ullAvailPhys & 0xffffffffffc00000;
 
   // If mem exceeds max (positive) long value, just return max
   if (totalmem<0) 
