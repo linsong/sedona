@@ -211,9 +211,64 @@ local manifest database;</li>
 </ol>
 
 <p>
-Steps 1 and 2 are automatically implemented by the <code>ManifestDb</code>
+These steps are automatically implemented by the Sedona <code>ManifestDb</code>
 API.
 </p>
+
+<!-- /////////////////////////////////////////////////////// -->
+<h2 id="mfServer">Manifest Server</h2>
+<!-- /////////////////////////////////////////////////////// -->
+
+<p>
+Beginning with Sedona 1.2, the Sox client supports retrieving
+manifest files from the remote Sedona device, using a special
+filename prefix called a "scheme" to tell the device where to
+find the file in its local file system.  This allows the manifest 
+retrieval to be accomplished using the regular Sox file transfer
+protocol.  
+To make this feature work on a new Sedona platform, the following 
+things must be true:
+</p>
+
+<ul>
+  <li>The "<b>m:</b>" scheme must be implemented on the remote Sedona device 
+  (see below).</li>
+  <li>The required manifest file(s) must already be stored on the device.</li>
+  <li>The <code>sedonadev.autodownload</code> property in sedona.properties 
+  must be set to false (or omitted entirely).</li>
+</ul>
+
+<p>
+A <i>scheme</i> is simply a prefix to the filename, such as "m:", that is 
+translated behind the scenes into a local path where the file should be located.
+There are two ways to implement a scheme in Sedona:  
+</p>
+
+<ol>
+  <li>It can be implemented entirely at the native level, encapsulated in the
+  appropriate <code>sys::FileStore natives.</code></li>
+  <li>It can be implemented at the Sedona level using a platform-specific
+   FileStore subclass.</li>
+</ol>
+
+<p>
+If it is implemented at the native level, then at the Sedona level the device
+treats the prefix as part of the actual filename.  The appropriate FileStore
+native methods strip off the prefix and substitute the corresponding path.
+The resulting full path to the file is then passed to the local file system
+just like any other file transfer request.
+</p>
+
+<p>
+If it is implemented using a FileStore subclass, then the FileStore subclass
+should override the <code>accept()</code> method such that it returns true if 
+the filename begins with the desired prefix.  
+Then the <code>open()</code> method can be overridden to strip off the scheme 
+prefix and substitute the desired path, or the FileStore subclass may have an 
+additional native method that provides the appropriate path for all files in 
+that scheme.
+</p>
+
 
 <!-- /////////////////////////////////////////////////////// -->
 <h1 id="kitsVsManifests">Kits versus Manifests</h1>
