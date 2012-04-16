@@ -23,7 +23,6 @@
     <nativeSource path="/src/inet/native/std" />
     <nativeSource path="/src/inet/native/sha1" />
     <nativeSource path="/src/datetimeStd/native/std" />
-    <nativeSource path="/platforms/src/generic/unix/native" />
   </compile>    
   
   <manifestInclude>
