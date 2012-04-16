@@ -169,6 +169,12 @@ public class InitStagePlatform
           File[] dfiles = dir.listFiles();
           log.debug("    Copy '" + dir + "' [" + dfiles.length + " files]");
       
+
+          // Currently, it's a fatal error to list an empty directory
+          if (dfiles.length==0)
+            throw err("No files found in directory " + dir, new Location(xml));
+
+
           for (int j=0; j<dfiles.length; ++j)
           {
             File ff = dfiles[j];
