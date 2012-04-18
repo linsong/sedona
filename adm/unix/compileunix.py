@@ -31,6 +31,8 @@ def gcc(exeFile, srcFiles, includes, libs, defs):
   for d in defs:
     cmd += " -D" + d[0] + "=" + d[1]      
 
+  cmd += " -DPLAT_BUILD_VERSION=" + '\\"' + env.buildVersion() + '\\"'
+
   # libs     
   for lib in libs:
     cmd += " -L\"" + lib + "\""
