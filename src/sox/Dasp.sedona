@@ -82,4 +82,12 @@ class Dasp
   define int NOT_AUTHENTICATED     = 0xe4
   define int TIMEOUT               = 0xe5
   
+////////////////////////////////////////////////////////////////
+// Device Discovery
+///////////////////////////////////////////////////////////////
+
+  define Str IPv4_MULTICAST_ADDR = "224.0.0.1"
+  define Str IPv6_MULTICAST_ADDR = "FF02::1"
+  define Str USE_MULTICAST_GROUP = "224.0.0.1"  // use IPv4 for now
+
 }

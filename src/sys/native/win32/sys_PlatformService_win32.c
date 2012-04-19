@@ -33,13 +33,28 @@ Cell sys_PlatformService_getPlatVersion(SedonaVM* vm, Cell* params)
 // long PlatformService.getNativeMemAvailable()
 int64_t sys_PlatformService_getNativeMemAvailable(SedonaVM* vm, Cell* params)
 {
+/*   
+ *   This is the real way to get available physical mem under Windows.
+ *   However for Sedona purposes it is way overkill, we can just hardcode
+ *   a value instead.
+ *
   int64_t totalmem;
   MEMORYSTATUSEX memstatus;
+
+  memstatus.dwLength = sizeof(MEMORYSTATUSEX);    // set dwLength before calling GlobalMemory fn
   GlobalMemoryStatusEx( &memstatus );
 
-  // Use MB resolution but report bytes (reduce event freq)
-  totalmem = (memstatus.ullAvailPhys + memstatus.ullAvailVirtual) >> 20;
-  return totalmem << 20;
+  // Use 4MB resolution but report bytes (to reduce event freq)
+  totalmem = memstatus.ullAvailPhys & 0xffffffffffc00000;
+
+  // If mem exceeds max (positive) long value, just return max
+  if (totalmem<0) 
+    return 0x7fffffffffffffff;
+  return totalmem;
+*/
+
+  return 314159265L;     // Traditional fake-memory-size value for windows
+
 }
 
 

@@ -1,5 +1,5 @@
 <?xml version='1.0'?>
-<!-- This SAX file contains a platWin32::Win32PlatformService -->
+<!-- This SAX file contains a platWin32::Win32YieldPlatformService -->
 
 <sedonaApp>
 <schema>

@@ -57,47 +57,52 @@ distribution as a case study in creating a new Sedona Framework platform.</p>
 <!--/////////////////////////////////////////////////////////-->
 
 <p>Every app must have a <code>sys::PlatformService</code> component
-running in it. The platform service is intended to represent your unique
-OS/Hardware platform. One of the most important properties on the platform
+running in it. A platform service encapsulates the behavior of that 
+specific OS/Hardware platform. 
+</p>
+
+<p>
+The first step in porting Sedona to a new platform is the creation of
+a PlatformService subclass for the platform.
+As an example, the win32 platform service is defined in a kit called "platWin32" and
+the kit definition file is in 
+<code><i>sedona_home</i>/platforms/src/generic/win32/kit.xml</code>
+</p>
+
+<p>
+The base class <code>sys::PlatformService</code> defines three native methods 
+that must be implemented for every platform.  
+They are called by <code>PlatformService</code> as needed to populate
+the corresponding properties.
+</p>
+
+<ul>
+<li><code>doPlatformId()</code>: returns platform ID string</li>
+<li><code>getPlatVersion()</code>: returns platform version string</li>
+<li><code>getNativeMemAvailable()t</code>: returns number of bytes of physical memory available</li>
+</ul>
+
+<p>
+The open source includes win32 natives as an example, see
+<code><i>sedona_home </i>/src/sys/native/win32</code>.
+</p>
+
+<p id="doPlatformId">
+One of the most important properties on the platform
 service is the <code>platformId</code> property. This property uniquely
-identifies your platform, and should normally map to a platform stored in the
-platform database.</p>
-
-<p>The platform service provided in the sys kit is simply hard-coded to return
-a platform id of <code>"unknown"</code>.  You will need to provide a sub-class
-of the <code>sys::PlatformService</code> so that, at the very least, you can set the
-platformId properly.  Therefore, you will usually create a new kit for your
-platform service.  The win32 platform service is in a kit called "platWin32" and
-the kit definition file is in <code><i>sedona_home</i>/platforms/src/generic/win32/kit.xml</code></p>
-
-<p>The <code>Win32PlatformService.sedona</code> provides a common
-implementation of a platform service. You can find this file in <code><i>sedona_home</i>/platforms/src/generic/win32</code>.
-We override the start() method so that we can make a native call to the device
-to get the platform id for that device.</p>
-
-<pre>
-class Win32PlatformService extends PlatformService {
-
-  internal native Str doPlatformId()
-
-  override virtual void start() {
-    super.start()
-    updatePlatformId(doPlatformId())
-  }
-}
-
-</pre>
-
-<p id="doPlatformId">The native implementation of <code>doPlatformId()</code>
-for our win32 platform is</p>
+identifies your platform, and should map to a platform stored in the
+platform database.
+The native implementation of <code>doPlatformId()</code>
+for our win32 platform is
+</p>
 
 <pre>
 #include "sedona.h"
 #include "sedonaPlatform.h"
 #include &lt;windows.h>
 
-// Str Win32PlatformService.doPlatformId()
-Cell platWin32_Win32PlatformService_doPlatformId(SedonaVM* vm, Cell* params)
+// Str PlatformService.doPlatformId()
+Cell sys_PlatformService_doPlatformId(SedonaVM* vm, Cell* params)
 {
   Cell result;
   result.aval = PLATFORM_ID;
@@ -105,12 +110,15 @@ Cell platWin32_Win32PlatformService_doPlatformId(SedonaVM* vm, Cell* params)
 }
 </pre>
 
-<p>Notice that our native implementation makes use of the <code>sedonaPlatform.h</code>
+<p>
+Notice that our native implementation makes use of the <code>sedonaPlatform.h</code>
 header file that was generated based on our platform definition XML file. The
 benefit of this approach is that we can dynamically change the implementation of
 the underlying SVM without having to create distinct platform services for all
 those unique configurations. The next step describes how to create the
-platform definition for our win32 platform.</p>
+platform definition for our win32 platform.
+</p>
+
 
 <!--/////////////////////////////////////////////////////////-->
 <h1 id="step2">Step 2: Create a platform definition XML file</h1>

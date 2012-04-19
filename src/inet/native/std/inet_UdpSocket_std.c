@@ -58,46 +58,6 @@ static void setUdpDatagram(int8_t* sedona, struct UdpDatagram* c)
 }
 
 
-//////////////////////////////////////////////////////////////////////////
-// Multicast
-//////////////////////////////////////////////////////////////////////////
-
-//
-// Join the all-hosts multicast group for appropriate protocol
-//
-static int join_allnodes_multicast(socket_t sock)
-{
-
-#ifdef SOCKET_FAMILY_INET
-
-  struct ip_mreq mreq;
-  //inet_pton(AF_INET, "224.0.0.1", &(mreq.imr_multiaddr));    // all-nodes multicast address
-  //inet_aton("224.0.0.1", &(mreq.imr_multiaddr));    
-  mreq.imr_multiaddr.s_addr = inet_addr("224.0.0.1");
-  mreq.imr_interface.s_addr = INADDR_ANY;
-
-  printf("\nJoining IPv4 all-nodes multicast group (224.0.0.1)\n\n");
-
-  setsockopt(sock, IPPROTO_IP, IP_ADD_MEMBERSHIP, (char *)&mreq, sizeof(mreq));
-
-#elif defined( SOCKET_FAMILY_INET6 )
-
-  // Join the IPv6 all-nodes multicast group (FF02::1)
-  struct ipv6_mreq mreq;
-  //inet_pton(AF_INET6, "FF02::1", &(mreq.ipv6mr_multiaddr));  // all-nodes multicast address
-  inet_aton("FF02::1", &(mreq.ipv6mr_multiaddr));    
-  mreq.ipv6mr_interface = 0;
-
-  printf("\nJoining IPv6 all-nodes multicast group (FF02::1)\n\n");
-
-  setsockopt(sock, IPPROTO_IPV6, IPV6_ADD_MEMBERSHIP, (char *)&mreq, sizeof(mreq));
-
-#endif
-
-  return 0;
-}
-
-
 
 //////////////////////////////////////////////////////////////////////////
 // Native Methods
@@ -208,8 +168,50 @@ Cell inet_UdpSocket_bind(SedonaVM* vm, Cell* params)
 #endif
     return falseCell;
 
+  return trueCell;
+}
+
+//
+// Join this socket the specified multicast group address.
+// Return true on success, false on failure.
+//
+// bool join(Str groupaddr)
+//
+Cell inet_UdpSocket_join(SedonaVM* vm, Cell* params)
+{
+  void* self       = params[0].aval;
+  const char* addr = (const char*)params[1].aval;
+
+  bool closed   = getClosed(self);
+  socket_t sock = getSocket(self);
+
+  if (closed)
+    return falseCell;
+
+  //
   // Join all-hosts multicast address group (used for device discovery)
-  join_allnodes_multicast(sock);
+  //
+
+#if defined( SOCKET_FAMILY_INET6 )
+  if (strchr(addr, ':')==NULL)          // assume IPv4 if addr contains no ':' chars
+#endif
+
+  {
+    struct ip_mreq mreq;
+    mreq.imr_multiaddr.s_addr = inet_addr(addr);
+    mreq.imr_interface.s_addr = INADDR_ANY;
+    setsockopt(sock, IPPROTO_IP, IP_ADD_MEMBERSHIP, (char *)&mreq, sizeof(mreq));
+  }
+
+#if defined( SOCKET_FAMILY_INET6 )
+  else
+  {
+    struct ipv6_mreq mreq;
+    inet_aton(addr, &(mreq.ipv6mr_multiaddr));    
+    mreq.ipv6mr_interface = 0;
+    setsockopt(sock, IPPROTO_IPV6, IPV6_ADD_MEMBERSHIP, (char *)&mreq, sizeof(mreq));
+  }
+#endif 
 
   return trueCell;
 }

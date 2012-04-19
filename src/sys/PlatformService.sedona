@@ -49,7 +49,7 @@ class PlatformService
 
 
   **
-  ** Convenience to set the platformId property, and call changed()
+  ** Convenience to set the platformVer property, and call changed()
   **
   void updatePlatformVer(Str ver)
   {
@@ -219,7 +219,7 @@ class PlatformService
   ** Sedona device should be provisioned.
   **
   @summary=false
-  @readonly @asStr property Buf(128) platformId
+  @readonly @asStr property Buf(128) platformId = "unknown"
 
   **
   ** The platform version.  This should be a Dewey Decimal style
