@@ -1,0 +1,151 @@
+//
+// Copyright (c) 2011 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   11 Jan 12  Elizabeth McKenney  Creation
+//
+
+**
+** PrioFloatTest
+**
+class PrioFloatTest
+  extends Test
+{
+  static inline PrioritizedFloat  f
+ 
+
+  //
+  // Test sequence adapted from ControlTest.verifyPriorityAlgorithm()
+  //
+  static void test()
+  {
+    //int inull = Sys.floatToBits(PrioritizedFloat.NULLVAL)
+    //Sys.out.print("Check value of PrioritizedFloat.NULLVAL = ")
+    //Sys.out.print("${PrioritizedFloat.NULLVAL} (0x${Sys.hexStr(inull)})\n")
+
+    ////////////////////////////////////////////////////////////////
+    // Initial values
+    ////////////////////////////////////////////////////////////////
+
+    // Check output & sourceLevel for defaults
+    f.execute()
+    assert(f.out==PrioritizedFloat.NULLVAL)       // property should be init to null
+    assert(f.sourceLevel==Prioritized.FB_LEVEL)   // init level is FB_LEVEL
+
+
+    ////////////////////////////////////////////////////////////////
+    // Direct setting of input properties
+    ////////////////////////////////////////////////////////////////
+
+    // Set in1 directly
+    f.in1 := 1.0
+    f.execute()
+    assert(f.out==1.0)
+    assert(f.sourceLevel==1)
+
+    // Relinquish in1 
+    f.setToDefault(PrioritizedFloat.in1)
+    f.execute()
+    assert(f.out==PrioritizedFloat.NULLVAL)
+    assert(f.sourceLevel==Prioritized.FB_LEVEL)
+
+    // Set in16 directly
+    f.in16 := 16.0 
+    f.execute()
+    assert(f.out==16.0)
+    assert(f.sourceLevel==16)
+
+    // Set in9 directly
+    f.in9 := 9.0 
+    f.execute()
+    assert(f.out==9.0)
+    assert(f.sourceLevel==9)
+
+    // Relinquish in9 
+    f.setToDefault(PrioritizedFloat.in9)
+    f.execute()
+    assert(f.out==16.0)
+    assert(f.sourceLevel==16)
+
+    // Relinquish in16 
+    f.setToDefault(PrioritizedFloat.in16)
+    f.execute()
+    assert(f.out==PrioritizedFloat.NULLVAL)
+    assert(f.sourceLevel==Prioritized.FB_LEVEL)
+
+
+    ////////////////////////////////////////////////////////////////
+    // Actions
+    ////////////////////////////////////////////////////////////////
+
+    // Test emergency set action
+    f.emergencySet(1.5)
+    f.execute()
+    assert(f.out==1.5)
+    assert(f.sourceLevel==1)
+
+    // Test emergency auto action
+    f.emergencyAuto()
+    f.execute()
+    assert(f.out==PrioritizedFloat.NULLVAL)
+    assert(f.sourceLevel==Prioritized.FB_LEVEL)
+
+    // Test manual set action with expiration
+    verifyManualSet(8.5, 1000)
+    // Test manual set action with no expiration
+    verifyManualSet(8.5, 0)
+  }
+
+
+
+  //
+  // Test manual set and duration
+  //
+  static void verifyManualSet(float setval, int dur)
+  {
+    Sys.out.print("  Testing manual set to $setval")
+    if (dur==0) Sys.out.print(" ended by manualAuto action\n")
+    else Sys.out.print(" for $dur ms\n")
+
+    int   iv = Sys.floatToBits(setval)
+    long comboValue = ((long)iv<<32) | (long)dur   
+
+    f.manualSet(comboValue)
+
+    // Verify action succeeded
+    f.execute()
+    assert(f.out==setval)
+    assert(f.sourceLevel==8)
+
+    // Verify correct value for duration (or 2sec if Permanent)
+    long expTime 
+    if (dur==0) 
+      expTime = Sys.ticks() + 2sec
+    else
+      expTime = f.overrideExpTime
+
+    while (Sys.ticks() <= expTime)
+    {
+      f.execute()
+      assert(f.out==setval)
+      assert(f.sourceLevel==8)
+      Sys.sleep(100ms)
+    }
+
+    // If duration is Permanent, use manualAuto action to end immediately
+    if (dur==0) f.manualAuto()
+
+    // Call execute() once more to propagate state to output
+    f.execute()
+
+    // Either way, should be done now
+    //Sys.out.print("After loop, out = ${f.out} (should be ${PrioritizedFloat.NULLVAL})\n")
+    assert(f.out==PrioritizedFloat.NULLVAL)
+    assert(f.sourceLevel==Prioritized.FB_LEVEL)
+  }
+
+
+
+
+}

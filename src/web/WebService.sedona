@@ -1,0 +1,115 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   06 Sep 06  Brian Frank  Creation
+//   06 Jun 07  Brian Frank  Port from Java to Sedona
+//
+
+**
+** WebService
+**
+@niagaraIcon="module://icons/x16/web.png"
+class WebService
+  extends Service
+{
+
+////////////////////////////////////////////////////////////////
+// Slots
+////////////////////////////////////////////////////////////////
+
+  @config property short port = 80
+
+////////////////////////////////////////////////////////////////
+// Service
+////////////////////////////////////////////////////////////////
+
+  override void start()
+  {
+    // init handlers
+    foreach (Handler h : handlers)
+      h.start(this)
+
+    // open server socket
+    if (!serverSocket.bind(port))
+    {
+      log.error("failed to start port=$port")
+      return
+    }       
+    
+    log.message("started port=$port")
+    Sys.app.platform.notify("web", Sys.intStr(port))
+  }
+
+  override bool work()
+  {
+    // walk thru each of the handlers to see
+    // if they can process their request
+    Handler free = null
+    foreach (Handler h : handlers)
+    {
+      if (h.isFree())
+      {
+        free = h
+      }
+      else
+      {
+        if (h.work()) return true
+      }
+    }
+
+    // if we don't have any handlers ready to process and
+    // we have a free handler, then check for an accept
+    if (free != null)
+    {
+      if (serverSocket.accept(free.socket))
+      {
+        free.accepted()
+        return true
+      }
+    }
+
+    // no pending work
+    return false
+  }
+
+  override void stop()
+  {
+    serverSocket.close();
+    foreach (Handler h : handlers) h.stop()
+  }
+
+  **
+  ** Find the specified Weblet for the current request's URI
+  **
+  internal Weblet findWeblet(Path path)
+  {
+    // find a matching path prefix
+    if (path.size > 0)
+    {
+      Str prefix = path.names[0]
+      for (Weblet w = WebService.weblets; w != null; w = w.nextWeblet)
+        if (prefix.equals(w.prefix()))
+          return w
+    }
+
+    // use spy as fallback
+    return SpyWeblet.spy
+  }
+
+////////////////////////////////////////////////////////////////
+// Fields
+////////////////////////////////////////////////////////////////
+
+  define Log log
+
+  define int handlersLen = 4
+
+  internal inline Handler[handlersLen] handlers  = {...}
+  internal inline TcpServerSocket serverSocket
+  
+  ** Linked list of weblets
+  static Weblet weblets
+
+}

@@ -1,0 +1,36 @@
+//
+// Copyright (c) 2009 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   10 Feb 09  Dan Giorgis   creation
+//
+
+**
+**  Standard defines for months of the year
+** 
+final class Month
+{   
+  define int jan = 1
+  define int feb = 2
+  define int mar = 3
+  define int apr = 4
+  define int may = 5
+  define int jun = 6
+  define int jul = 7
+  define int aug = 8
+  define int sep = 9
+  define int oct = 10
+  define int nov = 11
+  define int dec = 12
+  
+}
+
+
+  
+ 
+  
+    
+
+
+

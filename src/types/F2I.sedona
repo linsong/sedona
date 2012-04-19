@@ -1,0 +1,31 @@
+//
+// Copyright (c) 2009-2011 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   05 May 2009  Brian Frank    Creation
+//   04 Aug 2011  Clif Turman    Add comments
+//
+
+**
+** F2I float-to-integer converter
+**
+@niagaraIcon="module://icons/x16/control/util/switch.png"
+class F2I
+  extends Component
+{
+  ** input to convert to integer
+  property float in
+  
+  ** input converted to an integer
+  @readonly property int out
+
+  **
+  ** Execute is called once every scan.
+  **
+  virtual override void execute()
+  {
+    out := (int)in
+  }
+}
+
