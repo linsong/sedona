@@ -32,14 +32,15 @@
 
   <native qname="inet::UdpSocket.open"            id="2::8"  />
   <native qname="inet::UdpSocket.bind"            id="2::9"  />
-  <native qname="inet::UdpSocket.join"            id="2::10"  />
-  <native qname="inet::UdpSocket.send"            id="2::11" />
-  <native qname="inet::UdpSocket.receive"         id="2::12" />
-  <native qname="inet::UdpSocket.close"           id="2::13" />
-  <native qname="inet::UdpSocket.maxPacketSize"   id="2::14"  />
-  <native qname="inet::UdpSocket.idealPacketSize" id="2::15"  />
+  <native qname="inet::UdpSocket.send"            id="2::10" />
+  <native qname="inet::UdpSocket.receive"         id="2::11" />
+  <native qname="inet::UdpSocket.close"           id="2::12" />
+  <native qname="inet::UdpSocket.maxPacketSize"   id="2::13"  />
+  <native qname="inet::UdpSocket.idealPacketSize" id="2::14"  />
 
-  <native qname="inet::Crypto.sha1"               id="2::16"  />
+  <native qname="inet::Crypto.sha1"               id="2::15"  />
+
+  <native qname="inet::UdpSocket.join"            id="2::16" />
 
 </sedonaKit>
 
