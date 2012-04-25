@@ -30,12 +30,9 @@ libs = [ "ws2_32.lib",  "uuid.lib", "kernel32.lib"]
 
 
 #
-# Default compiler args - may be overridden by cmd line
+# Default compiler args - may be added to by cmd line
 #
-defs     = [ ("PLAT_BUILD_VERSION",'\\"' + env.buildVersion() + '\\"'), 
-             ("SOCKET_FAMILY_INET","0")]            # un-comment for IPv4 default
-#             ("SOCKET_FAMILY_INET6","0")]           # un-comment for IPv6 default
-
+defs = [ ("WIN32",), ("_WIN32",) ]
 
 
 # initParser
@@ -71,7 +68,7 @@ def compile(cdefs=defs):
 # Main
 if __name__ == '__main__':
   global parser
-  config = []
+  config = defs
 
   # Parse command line arguments
   initParser()
@@ -79,17 +76,19 @@ if __name__ == '__main__':
 
   # Add command line arg to select ipv4 vs. ipv6 socket family
   if (options.ipv6):
-    config.append(("SOCKET_FAMILY_INET6","0"))              
+    config.append(("SOCKET_FAMILY_INET6",))              
     print " Building Sedona VM to use IPv6 protocol.\n"
 
   else:    # Defaults to IPv4
-    config.append(("SOCKET_FAMILY_INET","0"))              
+    config.append(("SOCKET_FAMILY_INET",))              
     print " Building Sedona VM to use IPv4 protocol.\n"
 
   # Add cmd line arg to set version string
   if options.ver:
     verstr = '\\"' + options.ver + '\\"'
-    config.append(("PLAT_BUILD_VERSION",verstr))
+  else:
+    verstr = '\\"' + env.buildVersion() + '\\"'
+  config.append(("PLAT_BUILD_VERSION",verstr))
 
   # Compile Sedona VM
   compile(config)

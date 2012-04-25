@@ -49,7 +49,9 @@ def compile(exeFile, srcFiles, includes, libs, defs, opts=[]):
     
   # defines (tuples)
   for d in defs:
-    cmd += " /D" + d[0] + "=" + d[1]      
+    cmd += " /D" + d[0]
+    if len(d)>1: 
+      cmd += "=" + d[1]      
 
   # libs     
   for lib in libs:
@@ -58,6 +60,9 @@ def compile(exeFile, srcFiles, includes, libs, defs, opts=[]):
   # libs     
   for src in srcFiles:
     cmd += " " + src
+  
+  # force 32-bit
+#  cmd += " /DWIN32 /D_WIN32"
   
   # remaining options  
   cmd += " /nologo"
