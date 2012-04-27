@@ -142,7 +142,6 @@ public class SoxTest
     throws Exception
   {
     VersionInfo v = client.readVersion();
-    verifyEq(v.platformId, "unknown");
     verifyEq(v.kits.length, schema.kits.length);
     for (int i=0; i<v.kits.length; ++i)
     {
