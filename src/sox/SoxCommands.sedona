@@ -796,32 +796,30 @@ class SoxCommands
     if (toComp == null) { res.error("bad compId"); return }
     if (!user.has(toComp, User.aw)) { res.error("denied"); return }
 
+    Component fromComp = app.lookup(fromCompId)
+    if (fromComp == null) { res.error("bad compId"); return }
+
+    Slot fromSlot = fromComp.type.slot(fromSlotId)
+    Slot toSlot   = toComp.type.slot(toSlotId)
+
     // add
     bool success = false
     if (command == 'a')
     {
-      Component fromComp = app.lookup(fromCompId)
-      if (fromComp != null)
-      {
-        // check adminRead on from component
-        if (!user.has(fromComp, User.ar)) { res.error("denied"); return }
+      // check adminRead on from component
+      if (!user.has(fromComp, User.ar)) { res.error("denied"); return }
 
-        Slot fromSlot = fromComp.type.slot(fromSlotId)
-        Slot toSlot   = toComp.type.slot(toSlotId)
-        success = app.addLink(fromComp, fromSlot, toComp, toSlot) != null // handles null slots
-
-        if (!success) { res.error("could not add link"); return }
-      }
+      success = app.addLink(fromComp, fromSlot, toComp, toSlot) != null // handles null slots
+      if (!success) { res.error("could not add link"); return }
     }
 
     // delete
     else if (command == 'd')
     {
-      Link link = app.lookupLink(fromCompId, fromSlotId, toCompId, toSlotId)
-      if (link != null)
-        success = app.removeLink(link)
-      else { res.error("could not find link"); return }
+      Link link = app.lookupLink(fromComp, fromSlot, toComp, toSlot)
+      if (link == null) { res.error("could not find link"); return }
 
+      success = app.removeLink(link)
       if (!success) { res.error("could not delete link"); return }
     }
 

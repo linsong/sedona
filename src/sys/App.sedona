@@ -582,16 +582,16 @@ class App
   ** Find a link with the specified from and to
   ** ids or return null if not found.
   **
-  Link lookupLink(int fromCompId, int fromSlotId, int toCompId, int toSlotId)
+  //Link lookupLink(int fromCompId, int fromSlotId, int toCompId, int toSlotId)
+  Link lookupLink(Component fromComp, Slot fromSlot, Component toComp, Slot toSlot)
   {
-    Component to = lookup(toCompId)
-    if (to != null)
+    if (toComp != null)
     {
-      for (Link x = to.linksTo; x != null; x = x.nextTo)
+      for (Link x = toComp.linksTo; x != null; x = x.nextTo)
       {
-        if (x.toSlot   == toSlotId   &&
-            x.fromComp == fromCompId &&
-            x.fromSlot == fromSlotId)
+        if (x.toSlot   == toSlot   &&
+            x.fromComp == fromComp &&
+            x.fromSlot == fromSlot)
           return x
       }
     }
@@ -609,21 +609,18 @@ class App
       return null
 
     // no duplicate links
-    if (lookupLink(from.id, fromSlot.id, to.id, toSlot.id) != null)
+    if (lookupLink(from, fromSlot, to, toSlot) != null)
       return null
 
     // toSlot must not already be linked to (no "fan-in")
     for (Link x = to.linksTo; x != null; x = x.nextTo)
     {
-      if (x.toSlot == toSlot.id) return null
+      if (x.toSlot == toSlot) return null
     }
 
     // create link
     Link link = new Link()
-    link.fromComp = from.id
-    link.fromSlot = fromSlot.id
-    link.toComp   = to.id
-    link.toSlot   = toSlot.id
+    link.configure(from, fromSlot, to, toSlot)
 
     // insert it into the from and to component's linked lists
     insertLink(link)
@@ -650,8 +647,8 @@ class App
   private bool insertLink(Link link)
   {
     // lookup components
-    Component from = lookup(link.fromComp)
-    Component to = lookup(link.toComp)
+    Component from = link.fromComp
+    Component to = link.toComp
     if (from == null || to == null) return false
 
     // add into "to" component's linked list
@@ -679,7 +676,7 @@ class App
     if (link == null) return false
 
     // remove it on "from"
-    Component from = lookup(link.fromComp)
+    Component from = link.fromComp
     if (from != null)
     {
       // remove it from component's linked list
@@ -689,7 +686,7 @@ class App
     }
 
     // remove it on "to"
-    Component to = lookup(link.toComp)
+    Component to = link.toComp
     if (to != null)
     {
       // remove it from component's linked list
@@ -697,12 +694,8 @@ class App
       for (Link x = to.linksTo; x != null; x = x.nextTo)
         if (x.nextTo == link) { x.nextTo = link.nextTo; break }
 
-      // default input - we can't really do this using the
-      // actual property default because we don't have that
-      // information available at runtime - but we can default
-      // things to zero which seems better than just leaving
-      // a dangling value
-      Slot toSlot = to.type.slot(link.toSlot)
+      // Return 'to' slot to default value 
+      Slot toSlot = link.toSlot
       if (toSlot != null && toSlot.isProp())
         to.setToDefault(toSlot)
     }
