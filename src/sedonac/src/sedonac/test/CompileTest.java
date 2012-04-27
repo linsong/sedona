@@ -56,7 +56,7 @@ public abstract class CompileTest
     try
     {
       FileWriter out = new FileWriter(xml);
-      out.write("<sedonaKit name='sedonacCompileTest' vendor='Tridium' description=''><depend on='sys 1.0' /><source dir='.' /></sedonaKit>");
+      out.write("<sedonaKit name='sedonacCompileTest' vendor='Tridium' description=''><depend on='sys 1.0+' /><source dir='.' /></sedonaKit>");
       out.close();
     }
     catch (IOException e)
