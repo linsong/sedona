@@ -1,0 +1,71 @@
+//
+// Copyright (c) 2010-2011 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   20 Apr 2010  Clif Turman   Creation, adapted from Ramp.sedona
+//   04 Aug 2011  Clif Turman    Add comments
+//
+
+**
+** Ramp
+**   Triangle wave between min & max
+**   Slope is "delta" per "secs" seconds
+**   'max' must be configured greater than 'min'
+**
+@niagaraIcon="module://icons/x16/control/util/sine.png"
+class IRamp
+  extends Component
+{
+  @readonly property int out
+
+  ** min out value of the ramp object.  Once min is reached, out will start ramping up
+  @config property int min   = 0
+
+  ** max out value of the ramp object.  Once max is reached, out will start ramping down
+  @config property int max   = 100
+
+  ** delta is added or subtracted from out every "secs" seconds
+  @min=1
+  @config property int delta = 1
+
+  ** determines how often delta is added/subtracted from out
+  @min = 1
+  @unit=Units.second
+  @config property long secs = 1L
+
+
+  **
+  ** Start initializes the output
+  **
+  virtual override void start()
+  {
+    out := min
+    lastUpdate = 0L
+  }
+  
+
+  **
+  ** Execute is called once every scan.
+  **
+  virtual override void execute()
+  {
+    long now = Sys.ticks()
+    if (now - lastUpdate < secs * 1sec) return
+    lastUpdate = now
+
+    int tmp = out
+    if (firstHalf)
+      tmp += delta
+    else
+      tmp -= delta
+
+    if (tmp < min) { tmp = min; firstHalf = true }
+    if (tmp > max) { tmp = max; firstHalf = false }
+
+    out := tmp
+  }
+
+  private bool firstHalf = true
+  private long lastUpdate
+}

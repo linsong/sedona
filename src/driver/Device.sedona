@@ -1,0 +1,192 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   23 Aug 07  Andy Saunders  Creation
+//
+
+**
+** Models a device as a collection of I/O points.  Provides access to child components
+** of type Point or a subclass of it.
+**
+class Device
+  extends Component
+{
+  ////////////////////////////////////////////////////////////////
+  // Properties
+  ////////////////////////////////////////////////////////////////
+
+  ** Whether the device is in fault.
+  property bool fault = false
+
+  ** Status bitmask for device.
+  property int status = 0
+
+  ** Whether the device is enabled.
+  @config property bool enable = true
+
+
+  ////////////////////////////////////////////////////////////////
+  // Life cycle
+  ////////////////////////////////////////////////////////////////
+
+  **
+  ** Sets up pointers and timestamps.
+  **
+  virtual override void start()
+  {
+    app = Sys.app
+    net = getNetwork()
+    if(net == null)
+      return
+    lastUpTime = Sys.ticks()
+
+    // Calc next ping time first to ensure a small startup delay
+    nextPingTime = lastUpTime + pingTime
+    pingTime = 1sec * (long)net.pingTimeSec
+  }
+
+  **
+  ** Updates fault state, posts ping at appropriate time.
+  **
+  virtual override void execute()
+  {
+    long now = Sys.ticks()
+    if(now > nextPingTime)
+    {
+      pingTime = 1sec * (long)net.pingTimeSec
+      nextPingTime = now + pingTime
+      postPing()
+    }
+    fault := status != 0
+  }
+
+  ////////////////////////////////////////////////////////////////
+  // App support
+  ////////////////////////////////////////////////////////////////
+
+  **
+  ** Returns a reference to the parent network.
+  **
+  DeviceNetwork getNetwork()
+  {
+    for (Component c = app.lookup(parent); c != null; c = app.lookup(c.parent))
+      if (c.type.is(DeviceNetwork.type))
+        return (DeviceNetwork)c
+    return null
+  }
+
+  **
+  ** Adds a point to this device.
+  **
+  void addPoint(Str name, int address, Type type)
+  {
+    if(lookupByName(name) == null)
+    {
+      Point c = (Point)app.add(this, name, type)
+      if(c == null)
+        Sys.out.print("   add ").print(name).print(" failed").nl()
+      else
+      {
+        c.address := address
+      }
+    }
+  }
+
+  **
+  ** Gets point by type and address.
+  **
+  Point getPoint(Type type, int address)
+  {
+    for (Component c = app.lookup(children); c != null; c = app.lookup(c.nextSibling))
+      if (c.type.is(type) && ((Point)c).address == address)
+        return (Point)c
+    return null
+
+  }
+
+  **
+  ** Gets first child component of type Point (or subclass).
+  ** Returns null if no Point objects found.
+  **
+  Point getFirstPoint()
+  {
+    for (Component c = app.lookup(children); c != null; c = app.lookup(c.nextSibling))
+      if (c.type.is(Point.type))
+        return (Point)c
+    return null
+  }
+
+  **
+  ** Gets next child component after 'point' that is of type Point (or subclass).
+  ** Returns null if end of child list is reached without finding one.
+  **
+  Point getNextPoint(Point point)
+  {
+    for (Component c = app.lookup(point.id); c != null; c = app.lookup(c.nextSibling))
+      if (c.id != point.id && c.type.is(Point.type))
+        return (Point)c
+    return null
+  }
+
+
+  ////////////////////////////////////////////////////////////////
+  // Callback methods
+  ////////////////////////////////////////////////////////////////
+
+  **
+  ** Method invoked when time to ping device.
+  **
+  virtual void postPing() {}
+
+  **
+  ** Callback to write a DO point value.
+  **
+  virtual void setDoValue(int address, bool value) { }
+
+  **
+  ** Callback to write a AO point value.
+  **
+  virtual void setAoValue(int address, float value) { }
+
+
+  ////////////////////////////////////////////////////////////////
+  // Status
+  ////////////////////////////////////////////////////////////////
+
+  **
+  ** Test down status flag.
+  **
+  virtual bool isDown()
+  {
+    return (status & Status.DOWN) != 0
+  }
+
+  **
+  ** Sets/clears the down status flag.
+  **
+  virtual void setDown(bool isDown)
+  {
+    if(isDown)
+      status := status | Status.DOWN
+    else
+    {
+      status := status & ~Status.DOWN
+      lastUpTime = Sys.ticks()
+      nextPingTime = lastUpTime + pingTime
+    }
+  }
+
+
+  ////////////////////////////////////////////////////////////////
+  // Fields
+  ////////////////////////////////////////////////////////////////
+
+  DeviceNetwork net
+  App app
+  long lastUpTime   = 0L
+  long nextPingTime = 0L
+  long pingTime     = 1sec * 20L
+
+}

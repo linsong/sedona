@@ -1,0 +1,144 @@
+//
+// Copyright (c) 2009-2011 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   10 Aug 2009  Clif Turman    Creation
+//   02 Feb 2011  Clif Turman    Added ability to handle negative slopes
+//   02 Feb 2011  Clif Turman    output set to 'nan' if input not in conversion range x0 to x9
+//   04 Aug 2011  Clif Turman    Add comments
+//
+
+**
+** Converts a table of values into a curve using linear interpolation between
+** the values.  Individual slope/intercept constants are computed between the x's and y's
+** using the formula y = mx + b, where m = ym - yn/xm - xn
+**
+** If in is not in the range of x0 to x9, then output is set to "nan"
+**
+** Note that slope may be positive or negative, and is indicated by comparison
+** of x1 and x0 (positive if x1 > x0, negitive if x1 < x0)
+**
+@niagaraIcon="module://icons/x16/control/util/xy.png"
+class Linearize
+  extends Component
+{
+  ** linearized output
+  @readonly property float out
+
+  ** input
+  property float in
+
+  ** linear interpolation x0 point
+  @config property float x0
+  ** linear interpolation y0 point
+  @config property float y0
+  ** linear interpolation x1 point
+  @config property float x1
+  ** linear interpolation y1 point
+  @config property float y1
+  ** linear interpolation x2 point
+  @config property float x2
+  ** linear interpolation y2 point
+  @config property float y2
+  ** linear interpolation x3 point
+  @config property float x3
+  ** linear interpolation y3 point
+  @config property float y3
+  ** linear interpolation x4 point
+  @config property float x4
+  ** linear interpolation y4 point
+  @config property float y4
+  ** linear interpolation x5 point
+  @config property float x5
+  ** linear interpolation Y5 point
+  @config property float y5
+  ** linear interpolation x6 point
+  @config property float x6
+  ** linear interpolation Y6 point
+  @config property float y6
+  ** linear interpolation x7 point
+  @config property float x7
+  ** linear interpolation Y7 point
+  @config property float y7
+  ** linear interpolation x8 point
+  @config property float x8
+  ** linear interpolation Y8 point
+  @config property float y8
+  ** linear interpolation x9 point
+  @config property float x9
+  ** linear interpolation Y9 point
+  @config property float y9
+
+  **
+  ** Execute is called once every scan to
+  ** convert 'in'  to 'out' using linear 
+  ** interpolation between inflection points (x,y)
+  **
+  virtual override void execute()
+  {
+    tmp = Sys.bitsToFloat(0x7FFFFFFF) // IEEE-754 +NaN
+  
+    if(x1 > x0)
+    {
+      //positive slope
+      if((in >= x0) && (in <= x1))
+        convert(y1,y0,x1,x0)
+      if((in > x1) && (in <= x2))
+        convert(y2,y1,x2,x1)
+      if((in > x2) && (in <= x3))
+        convert(y3,y2,x3,x2)
+      if((in > x3) && (in <= x4))
+        convert(y4,y3,x4,x3)
+      if((in > x4) && (in <= x5))
+        convert(y5,y4,x5,x4)
+      if((in > x5) && (in <= x6))
+        convert(y6,y5,x6,x5)
+      if((in > x6) && (in <= x7))
+        convert(y7,y6,x7,x6)
+      if((in > x7) && (in <= x8))
+        convert(y8,y7,x8,x7)
+      if((in > x8) && (in <= x9))
+        convert(y9,y8,x9,x8)
+    }
+    else if(x1 < x0)
+    {
+      //negative slope
+      if((in > x9) && (in <= x8))
+        convert(y9,y8,x9,x8)
+      if((in > x8) && (in <= x7))
+        convert(y8,y7,x8,x7)
+      if((in > x7) && (in <= x6))
+        convert(y7,y6,x7,x6)
+      if((in > x6) && (in <= x5))
+        convert(y6,y4,x6,x5)
+      if((in > x5) && (in <= x4))
+        convert(y5,y4,x5,x4)
+      if((in > x4) && (in <= x3))
+        convert(y4,y3,x4,x3)
+      if((in > x3) && (in <= x2))
+        convert(y3,y2,x3,x2)
+      if((in > x2) && (in <= x1))
+        convert(y2,y1,x2,x1)
+      if((in > x1) && (in <= x0))
+        convert(y1,y0,x1,x0)
+    }
+
+    // update output 
+    out := tmp
+  }
+
+
+  **
+  **  Convert value in to value out by using linear interpolation
+  **  between point1 and point2 using formula y=mx + b
+  **
+  virtual void convert(float Y2, float Y1, float X2, float X1)
+  {
+    float m = (Y2 - Y1) / (X2- X1)
+    float b = Y1 - (m * X1)
+    tmp = (m * in) + b
+  }
+  
+  float tmp    // use this to avoid setting 'out' more than once
+}

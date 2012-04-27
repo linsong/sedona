@@ -1,0 +1,33 @@
+//
+// Copyright (c) 2007-2011 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   10 Jan 2007  Andy Saunders  Creation
+//   27 Apr 2007  Brian Frank    Port from Java to Sedona
+//   04 Aug 2011  Clif Turman    Add comments
+//
+
+**
+** Mul4 Four Input Multiplication object
+**
+** out = in1 * in2 * in3 * in4
+**
+class Mul4
+  extends Mul2
+{
+  ** input 3
+  property float in3
+  
+  ** input 4
+  property float in4
+
+  **
+  ** Execute is called once every scan.
+  **
+  virtual override void execute()
+  {
+    out := in1 * in2 * in3 * in4
+  }
+
+}

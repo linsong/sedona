@@ -1,0 +1,214 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   22 Aug 06  Brian Frank  Creation
+//   08 May 07  Brian Frank  Port from Java to Sedona
+//
+
+**
+** TcpSocketTest
+**
+class TcpSocketTest
+  extends Test
+{
+
+  static inline TcpServerSocket server
+  static inline TcpSocket c
+  static inline TcpSocket s
+  static inline byte[128] out
+  static inline byte[128] in
+  static IpAddr addr = UdpSocketTest.addr
+
+////////////////////////////////////////////////////////////////
+// Test Socket
+////////////////////////////////////////////////////////////////
+
+  static void testSocket()
+  {
+    // check server socket
+    assert(server.isClosed())
+
+    // bind server socket
+    if (!server.bind(1972)) { assert(false); return }
+    assert(!server.isClosed())
+
+    // open connection to myself
+    assert(c.isClosed())
+    addr.parse("127.0.0.1")
+    if (!c.connect(addr, 1972)) { assert(false); return }
+
+    // create incoming server socket
+    assert(s.isClosed())
+
+    // wait until we have both sides connected
+    Sys.out.print("  Connecting to myself...")
+    bool cConnected = false
+    bool sConnected = false
+    while (!cConnected || !sConnected)
+    {
+      if (!cConnected) cConnected = c.finishConnect()
+      if (!sConnected) sConnected = server.accept(s)
+      delay()
+    }
+    Sys.out.print("\n  Connected.\n")
+
+    // verify connection
+    assert(!c.isClosed())
+    assert(!s.isClosed())
+
+    // verify neither socket has anything to read
+    assert(c.read(in, 0, 1) == 0)
+    assert(s.read(in, 0, 1) == 0)
+
+    // write single byte
+    out[0] = 'x'
+    assert(c.write(out, 0, 1) == 1)
+    delay()
+
+    // read single byte
+    int n = s.read(in, 0, 128)
+    assert(n == 1)
+    assert(in[0] == 'x')
+
+    // write multiple bytes
+    for (int i=0; i<5; ++i) out[i] = '0'+i
+    c.write(out, 0, 5)
+    delay()
+
+    // read bytes
+    assert(s.read(in, 0, 128) == 5)
+    for (int i=0; i<5; ++i) assert(in[i] == '0'+i)
+
+    // verify non-blocking read
+    assert(s.read(in, 0, 128) == 0)
+
+    // write multiple bytes with offset
+    c.write(out, 2, 2)
+    delay()
+
+    // read bytes
+    assert(s.read(in, 100, 10) == 2)
+    in[100] = '2'
+    in[101] = '3'
+
+    // verify sockets still open
+    assert(!server.isClosed())
+    assert(!c.isClosed())
+    assert(!s.isClosed())
+
+    // close client
+    c.close()
+    assert(c.isClosed())
+    delay()
+
+    // try to read on server side and verify closed
+    assert(s.read(in, 0, 128) == -1)
+    assert(s.isClosed())
+
+    // verify both reads/writes on both closed sockets return -1
+    assert(c.write(out, 0, 128) == -1)
+    assert(c.read(out, 0, 128)  == -1)
+    assert(s.write(out, 0, 128) == -1)
+    assert(s.read(out, 0, 128)  == -1)
+
+    // cleanup server socket
+    server.close()
+    Sys.out.print("testSocket done").nl()
+  }
+
+////////////////////////////////////////////////////////////////
+// Connect Error
+////////////////////////////////////////////////////////////////
+
+  static void testConnectError()
+  {
+    assert(c.isClosed())
+
+    // try host which does not exist
+    Sys.out.print("  Connect to unknown host...\n")
+    addr.parse("255.255.255.80")
+    if (c.connect(addr, 7383))
+    {
+      while (!c.finishConnect()) delay()
+      Sys.out.nl()
+    }
+    assert(c.isClosed())
+    assert(c.read(in, 0, 1) < 0)
+    assert(c.isClosed())
+
+    // try port which is not open
+    Sys.out.print("  Connect to known host, inactive port...\n")
+    addr.parse("127.0.0.1")
+    if (c.connect(addr, 1234))
+    {
+      while (!c.finishConnect()) delay()
+      Sys.out.nl()
+    }
+    assert(c.isClosed())
+    assert(c.read(in, 0, 1) < 0)
+    assert(c.isClosed())
+    Sys.out.print("testConnectError done").nl()
+  }
+
+////////////////////////////////////////////////////////////////
+// Utils
+////////////////////////////////////////////////////////////////
+
+  static void delay()
+  {
+    Sys.out.print(".")
+    Sys.sleep(100ms)
+  }
+
+////////////////////////////////////////////////////////////////
+// Client/Server Loops
+////////////////////////////////////////////////////////////////
+
+  /*
+  static void runServer()
+  {
+    ServerSocket server = ServerSocket.make()
+    server.bind(1972)
+
+    Sys.out.print("Waiting...").nl()
+    Socket s = Socket.make()
+    while (!server.accept(s)) Sys.sleep(1000000000L)
+    Sys.out.print("Accepted!").nl()
+
+    while (s.select() != 0)
+    {
+      int r = s.in.read()
+      if (r < 0) { Sys.out.print("CLOSED").nl() return }
+      Sys.out.writeChar(r)
+    }
+  }
+
+  static void runClient()
+  {
+    Socket client = Socket.make()
+    if (!client.connect(s("foo"), 1972)) return
+    while (client.isClosed())
+    {
+      int sel = client.select()
+      Sys.out.print("Connecting... ").print(sel).nl()
+      if (sel != 0) client.finishConnect()
+      else Sys.sleep(1000000000L)
+    }
+    Sys.out.print("Connected!\n")
+    client.out.print("hello server\n")
+    client.out.print("I am alive! Alive!!!\n")
+    client.close()
+  }
+
+  public static void main(String[] args)
+  {
+    if (args.length == 0)
+      runServer()
+    else
+      runClient()
+  }
+  */
+
+}

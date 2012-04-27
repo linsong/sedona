@@ -1,0 +1,49 @@
+//
+// Copyright (c) 2011 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   12 Dec 11  Elizabeth McKenney  Creation
+//
+
+**
+** TimeAvgTest
+**
+class TimeAvgTest
+  extends SSTest
+{
+  static inline TimeAvg  ta
+
+ 
+  static void test()
+  {
+    ta.in := 1f
+    ta.time := 500
+    ta.start()
+
+    waitForSteadyState()
+
+    // Const input
+    for (int k=0; k<5; k++) ta.execute()
+    assert( ta.out==1f )
+
+    ta.reset()
+
+    // Sawtooth input - avg over 3 cycles
+    for (int c=0; c<3; c++)
+    {
+      // One cycle
+      for (float f=-5f; f<5f; f+=1f)
+      {
+        ta.in := f
+        ta.execute()
+      }
+
+      assert( ta.out==-0.5 )
+    }
+    
+    assert( ta.out==-0.5 )
+  }
+
+
+}

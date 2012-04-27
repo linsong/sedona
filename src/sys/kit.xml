@@ -1,0 +1,94 @@
+<!--
+  -  Sedona Kit
+  -  Copyright (c) 2007 Tridium, Inc.
+  -  Licensed under the Academic Free License version 3.0
+  -->
+
+<sedonaKit
+ name = "sys"
+ vendor = "Tridium"
+ description = "Sedona core system module"
+ includeSource = "true"  
+ doc = "true"
+>
+
+  <!-- Source Directories -->
+  <source dir="." />
+  <source dir="test" testonly="true"/>
+  <source dir="debug" testonly="true"/>
+
+ 
+
+  
+
+  <!-- Natives -->
+  <native qname="sys::Sys.platformType"          id="0::0"  />
+  <native qname="sys::Sys.copy"                  id="0::1"  />
+  <native qname="sys::Sys.malloc"                id="0::2"  />
+  <native qname="sys::Sys.free"                  id="0::3"  />
+  <native qname="sys::Sys.intStr"                id="0::4"  />
+  <native qname="sys::Sys.hexStr"                id="0::5"  />
+  <native qname="sys::Sys.longStr"               id="0::6"  />
+  <native qname="sys::Sys.longHexStr"            id="0::7"  />
+  <native qname="sys::Sys.floatStr"              id="0::8"  />
+  <native qname="sys::Sys.doubleStr"             id="0::9"  />
+  <native qname="sys::Sys.floatToBits"           id="0::10" />
+  <native qname="sys::Sys.doubleToBits"          id="0::11" />
+  <native qname="sys::Sys.bitsToFloat"           id="0::12" />
+  <native qname="sys::Sys.bitsToDouble"          id="0::13" />
+  <native qname="sys::Sys.ticks"                 id="0::14" />
+  <native qname="sys::Sys.sleep"                 id="0::15" />
+  <native qname="sys::Sys.compareBytes"          id="0::16" />
+  <native qname="sys::Sys.setBytes"              id="0::17" />
+  <native qname="sys::Sys.andBytes"              id="0::18" />
+  <native qname="sys::Sys.orBytes"               id="0::19" />
+  <native qname="sys::Sys.scodeAddr"             id="0::20" />
+  <native qname="sys::Sys.rand"                  id="0::21" />
+
+  <native qname="sys::Component.invokeVoid"      id="0::22"  />
+  <native qname="sys::Component.invokeBool"      id="0::23"  />
+  <native qname="sys::Component.invokeInt"       id="0::24"  />
+  <native qname="sys::Component.invokeLong"      id="0::25"  />
+  <native qname="sys::Component.invokeFloat"     id="0::26"  />
+  <native qname="sys::Component.invokeDouble"    id="0::27"  />
+  <native qname="sys::Component.invokeBuf"       id="0::28"  />
+  <native qname="sys::Component.getBool"         id="0::29"  />
+  <native qname="sys::Component.getInt"          id="0::30"  />
+  <native qname="sys::Component.getLong"         id="0::31"  />
+  <native qname="sys::Component.getFloat"        id="0::32"  />
+  <native qname="sys::Component.getDouble"       id="0::33"  />
+  <native qname="sys::Component.getBuf"          id="0::34"  />
+  <native qname="sys::Component.doSetBool"       id="0::35"  />
+  <native qname="sys::Component.doSetInt"        id="0::36"  />
+  <native qname="sys::Component.doSetLong"       id="0::37"  />
+  <native qname="sys::Component.doSetFloat"      id="0::38"  />
+  <native qname="sys::Component.doSetDouble"     id="0::39"  />
+
+  <native qname="sys::Type.malloc"               id="0::40"  />
+
+  <native qname="sys::StdOutStream.doWrite"      id="0::41"  />
+  <native qname="sys::StdOutStream.doWriteBytes" id="0::42"  />
+  <native qname="sys::StdOutStream.doFlush"      id="0::43"  />
+
+  <native qname="sys::FileStore.doSize"          id="0::44"  />
+  <native qname="sys::FileStore.doOpen"          id="0::45"  />
+  <native qname="sys::FileStore.doRead"          id="0::46"  />
+  <native qname="sys::FileStore.doReadBytes"     id="0::47"  />
+  <native qname="sys::FileStore.doWrite"         id="0::48"  />
+  <native qname="sys::FileStore.doWriteBytes"    id="0::49"  />
+  <native qname="sys::FileStore.doTell"          id="0::50"  />
+  <native qname="sys::FileStore.doSeek"          id="0::51"  />
+  <native qname="sys::FileStore.doFlush"         id="0::52"  />
+  <native qname="sys::FileStore.doClose"         id="0::53"  />
+  <native qname="sys::FileStore.rename"          id="0::54"  />
+
+  <native qname="sys::Test.doMain"               id="0::55"  />        
+
+  <native qname="sys::Str.fromBytes"             id="0::56"  />        
+
+  <native qname="sys::PlatformService.doPlatformId"           id="0::57"  />        
+  <native qname="sys::PlatformService.getPlatVersion"         id="0::58"  />        
+  <native qname="sys::PlatformService.getNativeMemAvailable"  id="0::59"  />        
+
+</sedonaKit>
+

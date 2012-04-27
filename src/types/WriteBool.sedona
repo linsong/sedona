@@ -1,0 +1,62 @@
+//
+// Copyright (c) 2009-2011 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   07 Oct 2009  Clif Turman    Creation
+//   12 Aug 2011  Clif Turman    Add setNull action, add comments
+//
+
+**
+** WriteBool can be used to link or set a boolean.  If in is unlinked, in values can be set
+** by actions.
+**
+@niagaraIcon="module://icons/x16/control/booleanPointWr.png"
+class WriteBool
+  extends Component
+{
+
+  ** input property, persisted as config property
+  @summary
+  @config
+  property bool in
+  
+  ** output property = in, runtime property
+  @summary
+  @readonly
+  property bool out
+  
+  **  
+  ** action to set in to true
+  **
+  action void setTrue()
+  {           
+    in := true
+  }
+  
+  **  
+  ** action to set in to false
+  **
+  action void setFalse()
+  {           
+    in := false
+  }
+  
+  **  
+  ** action to set out to null
+  **
+  action void setNull()
+  {           
+    in := null
+  }
+
+  **
+  ** Execute is called once every scan.
+  **
+  virtual override void execute()
+  {
+    out := in
+  }
+  
+  
+}
