@@ -24,9 +24,11 @@ class DlyOn
   property bool in
 
   ** Specified hold time in sec
+  @unit = Units.second
   @config @summary property float delayTime  // specified hold time in sec
 
   ** Remaining hold time in msec
+  @unit = Units.millisecond
   @readonly property int hold                // remaining hold time in ms
 
   **
