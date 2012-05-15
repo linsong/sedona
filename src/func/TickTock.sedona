@@ -23,6 +23,7 @@ class TickTock
 
   ** can configure 1 to 10 pulses per second
   @min=1 @max=10 
+  @unit=Units.per_second
   @config property int ticksPerSec = 1 
 
   **
