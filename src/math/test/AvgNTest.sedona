@@ -1,0 +1,98 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   06 Dec 11  Elizabeth McKenney   Lifted from MathTest
+//
+
+**
+** AvgNTest
+**
+class AvgNTest
+  extends Test
+{
+  static inline AvgN avgN
+
+
+  static void doAvgN(float value)
+  {
+    avgN.in := value
+    avgN.execute()
+  }
+
+
+  static bool isApprox(float x, float v, float epsilon)
+  {
+    return (x >= v-epsilon) && (x <= v+epsilon) 
+  }
+
+  define float VAL1   = 6.0
+  define float VAL2   = 5.0
+
+  define int MAX_WAIT = 1000   // don't wait forever!
+
+
+  static void test()
+  {
+    avgN.reset := false
+    avgN.numSamplesToAvg := 4
+
+    avgN.start()     // not in an app, so call this explicitly
+
+    doAvgN(VAL1)
+    assert(avgN.out == VAL1)
+
+    // Repeat same input - should get same output every time
+    for (int i=0; i<10; i++)
+    {
+      doAvgN(VAL1)
+      assert( avgN.out == VAL1 )
+    }
+
+    //assert( isApprox(avgN.out, VAL2, 1e-6) )
+
+    // Change input; output should change
+    doAvgN(VAL2)
+    assert(avgN.out != VAL1)
+    assert(avgN.out != VAL2)
+
+
+    // Repeat new input; output should approach new value
+    float diff = avgN.out-VAL2
+    for (int i=0; i<10; i++)
+    {
+      doAvgN(VAL2)
+      assert ( diff > avgN.out-VAL2 )
+      diff = avgN.out-VAL2
+    }
+
+    // Keep repeating new input; output should "eventually" get there
+    int c = 0
+    while (!isApprox(avgN.out, VAL2, 1e-6))
+    {
+      c++
+      doAvgN(VAL2)
+      if (c>MAX_WAIT) break
+    }
+    assert( isApprox(avgN.out, VAL2, 1e-6) )
+    
+
+    // Trigger reset via rising edge on reset slot - should get new value
+    avgN.reset := true
+    doAvgN(10.0)
+    assert(avgN.out == 10.0)
+
+    // Trigger reset again - should get new value
+    avgN.reset := false
+    avgN.reset := true
+    doAvgN(1.0)
+    assert(avgN.out == 1.0)
+
+    // Don't trigger reset, but change input - should work normally now
+    doAvgN(4.0)
+    assert(avgN.out != 1.0)
+
+  }
+
+}

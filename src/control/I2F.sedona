@@ -1,0 +1,31 @@
+//
+// Copyright (c) 2009-2011 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   05 May 2009  Brian Frank    Creation
+//   04 Aug 2011  Clif Turman    Add comments
+//
+
+**
+** I2F integer-to-float converter
+**
+@niagaraIcon="module://icons/x16/control/util/switch.png"
+class I2F
+  extends Component
+{
+  ** input to convert to float
+  property int in
+  
+  ** input converted to an float
+  @readonly property float out
+
+  **
+  ** Execute is called once every scan.
+  **
+  virtual override void execute()
+  {
+    out := (float)in
+  }
+}
+

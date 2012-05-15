@@ -1,0 +1,116 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//    1 Aug 06  Brian Frank  Creation
+//    7 Jun 07  Brian Frank  Port from Java to Sedona (it's my birthday!)
+//
+
+**
+** Link models an execution relationship between a source
+** component's slot to a target component's slot.
+**
+class Link
+{
+
+////////////////////////////////////////////////////////////////
+// Propagate
+////////////////////////////////////////////////////////////////
+
+  **
+  ** Propage the link
+  **
+  void propagate()
+  {
+    if (typeId==Type.errorId) return
+    switch (typeId)
+    {
+      case Type.boolId:   toComp.setBool  (toSlot, fromComp.getBool(fromSlot));   break
+      case Type.byteId:   toComp.setInt   (toSlot, fromComp.getInt(fromSlot));    break
+      case Type.shortId:  toComp.setInt   (toSlot, fromComp.getInt(fromSlot));    break
+      case Type.intId:    toComp.setInt   (toSlot, fromComp.getInt(fromSlot));    break
+      case Type.longId:   toComp.setLong  (toSlot, fromComp.getLong(fromSlot));   break
+      case Type.floatId:  toComp.setFloat (toSlot, fromComp.getFloat(fromSlot));  break
+      case Type.doubleId: toComp.setDouble(toSlot, fromComp.getDouble(fromSlot)); break
+      // TODO: buf props
+    }
+  }
+
+////////////////////////////////////////////////////////////////
+// I/O
+////////////////////////////////////////////////////////////////
+
+  **
+  ** Save the link in binary format to the output stream.
+  **
+  void save(OutStream out)
+  {
+    out.writeI2(fromComp.id)
+    out.write(fromSlot.id)
+    out.writeI2(toComp.id)
+    out.write(toSlot.id)
+  }
+
+  ***
+  ** Load the link from a binary format input stream.
+  ** Return true on success, false on error.
+  **
+  bool load(InStream in, int fromCompId)
+  {
+    // Read compIds & populate Link object
+    int fromSlotId = in.read()
+    int toCompId   = in.readU2()
+    int toSlotId   = in.read()  
+
+    Component fromComp = Sys.app.lookup(fromCompId)
+    Component toComp = Sys.app.lookup(toCompId)
+    if (fromComp == null || toComp == null) return false
+
+    return configure(fromComp, fromComp.type.slot(fromSlotId), toComp, toComp.type.slot(toSlotId))
+  }
+
+
+  ***
+  ** Load the link from a binary format input stream.
+  ** Return true on success, false on error.
+  **
+  bool configure(Component from, Slot fromSlot, Component to, Slot toSlot)
+  {
+    this.typeId = Type.errorId     // ensure invalid Link if we return false
+
+    if (fromSlot == null || toSlot == null) return false
+    if (!fromSlot.isProp() || !toSlot.isProp()) return false
+
+    if (fromSlot.type.id != toSlot.type.id) return false
+
+    // Everything checks out... populate fields
+    this.fromComp = from
+    this.fromSlot = fromSlot
+    this.toComp   = to
+    this.toSlot   = toSlot
+    this.typeId   = fromSlot.type.id
+
+    return true
+  }
+
+////////////////////////////////////////////////////////////////
+// Fields
+////////////////////////////////////////////////////////////////
+
+  Component fromComp
+  Slot      fromSlot
+  Component toComp
+  Slot      toSlot
+  byte      typeId
+
+  /*
+  short fromComp
+  byte  fromSlot
+  short toComp
+  byte  toSlot
+  */
+  Link  nextTo
+  Link  nextFrom
+
+}

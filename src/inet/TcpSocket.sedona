@@ -1,0 +1,89 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   21 Aug 06  Brian Frank  Creation
+//   07 May 07  Brian Frank  Port from Java to Sedona
+//
+
+**
+** TcpSocket models a bi-directional TCP stream.  Client side
+** sockets are opened using TcpSocket.connect().  Server side
+** sockets opened via TcpServerSocket.bind() and accept().
+** The Sedona socket APIs are all asynchronous to be used
+** in a single threaded environment.
+**
+@javaPeer
+class TcpSocket
+{
+
+////////////////////////////////////////////////////////////////
+// Methods
+////////////////////////////////////////////////////////////////
+
+  **
+  ** Connect this socket to the specified IP address and port.
+  ** This method is non-blocking.  Poll the socket using
+  ** finishConnect() to determine when the connection been
+  ** completed (either successfully or not).  Return false
+  ** if there is an immediate failure, or true if this call
+  ** succeeds.
+  **
+  native bool connect(IpAddr addr, int port)
+
+  **
+  ** Poll the socket to see if the connection has completed.
+  ** Return false if the connection is still in-progress.  If
+  ** the connection attempt has completed then return true and
+  ** check isClosed() for success.
+  **   - Pending: return false
+  **   - Success: return true, closed=false
+  **   - Failed:  return true, closed=true
+	**
+	** In the case that the state after a finishConnect() call is Failed, you
+	** must still call close() to properly free the socket that was opened in the
+	** connect() call.
+  **
+  native bool finishConnect()
+
+  **
+  ** Send the specified bytes over the socket.  Return the
+  ** number of bytes actually written which may be equal to
+  ** or less than len.  If the connection is terminated or
+  ** there is any other error close the socket and return -1.
+  **
+  native int write(byte[] b, int off, int len);
+
+  **
+  ** Receive the specified bytes from the socket.  Return the
+  ** number of bytes actually read which may be equal to
+  ** or less than len.  If the connection is terminated or
+  ** there is any other error close the socket and return -1.
+  **
+  native int read(byte[] b, int off, int len)
+
+  **
+  ** Is this socket closed.
+  **
+  bool isClosed() { return closed }
+
+  **
+  ** Shutdown and close this socket.
+  **
+  native void close()
+
+////////////////////////////////////////////////////////////////
+// Fields
+////////////////////////////////////////////////////////////////
+
+  ** Bitmask for select when socket is readable
+  define int READ = 0x01
+
+  ** Bitmask for select when socket is writable
+  define int WRITE = 0x02
+
+  // these fields must match layout used in C code
+  @javaPublic private bool closed = true
+  private int socket  = -1
+}

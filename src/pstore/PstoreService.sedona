@@ -1,0 +1,101 @@
+//
+// Copyright (c) 2009 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   27 Apr 09  Brian Frank  Creation
+//
+
+**
+** PstoreService is used to manage a block of random access
+** persistent storage.  Pstores are typically backed by
+** EEPROM, static-RAM, or a file system.  PstoreFiles are
+** added as direct children of the service to reserve a range
+** of bytes for application functionality.
+**
+@niagaraIcon="module://icons/x16/database.png"
+class PstoreService
+  extends Service
+{
+
+////////////////////////////////////////////////////////////////
+// Properties
+////////////////////////////////////////////////////////////////
+
+  **
+  ** File name used as the backing store.
+  **
+  @defaultOnClone
+  @asStr
+  @config property Buf(32) filename = "data.pstore"
+  
+  **
+  ** Configured size of file made available for storage.
+  ** If the backing file store has a fixed size, then this
+  ** configuration value is ignored.
+  **
+  @defaultOnClone
+  @config property int fileSize = 32768
+    
+  **     
+  ** Size in bytes of storage available.  A zero or negative value
+  ** indicates an error condition or that the no storage is available.
+  **
+  ** This value must be initialized by the service in the 
+  ** loaded() callback so that is available for error checking
+  ** in the PStoreFile.start callback.
+  **
+  @readonly 
+  property int size = 0
+
+////////////////////////////////////////////////////////////////
+// Methods
+////////////////////////////////////////////////////////////////
+
+  override void loaded()
+  {                                 
+    file.name = filename.toStr()  
+    if (!file.open("m")) return                             
+    this.size := file.size() 
+    if (this.size < fileSize)
+    {
+      file.seek(fileSize)
+      file.out.write(0)
+      file.out.flush()
+      this.size := file.size() 
+    }
+  }      
+  
+  override void stop()
+  { 
+    file.close()
+  }                       
+  
+  **
+  ** Validate all my child PstoreFiles
+  **
+  action void validateAll()
+  {               
+    Component c = Sys.app.lookup(children)
+    while (c != null)
+    {
+      if (c.type.is(PstoreFile.type)) ((PstoreFile)c).validate()
+      c = Sys.app.lookup(c.nextSibling)
+    }
+  }
+      
+////////////////////////////////////////////////////////////////
+// Fields
+////////////////////////////////////////////////////////////////
+  
+  ** File instance used to manage this PstoreService.  Most
+  ** developers should access the backing store through the 
+  ** methods on PstoreFile.
+  inline File file
+  
+  ** Current owner of the backing store file for IO. This 
+  ** field is managed by PstoreFile.claim.
+  internal PstoreFile owner
+  
+} 
+
