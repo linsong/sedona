@@ -203,22 +203,22 @@ class SpyWeblet
       // links from
       for (Link link = c.linksFrom; link != null; link = link.nextFrom)
       {
-        Component to = app.lookup(link.toComp)
+        Component to = link.toComp
         res.w("<tr>")
-           .td().w(t.slot(link.fromSlot).name)
+           .td().w(link.fromSlot.name)
            .w("</td>").w("<td>-&gt;</td>")
-           .td(); href(res, to, to.name).w(".").w(to.type.slot(link.toSlot).name)
+           .td(); href(res, to, to.name).w(".").w(link.toSlot.name)
            .w("</td></tr>\n")
       }
 
       // links to
       for (Link link = c.linksTo; link != null; link = link.nextTo)
       {
-        Component from = app.lookup(link.fromComp)
+        Component from = link.fromComp
         res.w("<tr>")
-           .td(); href(res, from, from.name).w(".").w(from.type.slot(link.fromSlot).name)
+           .td(); href(res, from, from.name).w(".").w(link.fromSlot.name)
            .w("</td>").w("<td>-&gt;</td>")
-           .td().w(t.slot(link.toSlot).name)
+           .td().w(link.toSlot.name)
            .w("</td></tr>\n")
       }
 
@@ -586,12 +586,12 @@ class SpyWeblet
   private void backupLink(App app, WebRes res, Link link)
   {
     // TODO: path based links not really supported correctly
-    Component from = app.lookup(link.fromComp);
-    Component to   = app.lookup(link.toComp);
+    Component from = link.fromComp;
+    Component to   = link.toComp;
     if (from == null || to == null) return;
 
-    Slot fromSlot = from.type.slot(link.fromSlot);
-    Slot toSlot   = to.type.slot(link.toSlot);
+    Slot fromSlot = link.fromSlot;
+    Slot toSlot   = link.toSlot;
     if (fromSlot == null || toSlot == null) return;
 
     res.spaces(2).w("<link from=\"")

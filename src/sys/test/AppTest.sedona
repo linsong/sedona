@@ -326,8 +326,8 @@ class AppTest
     Link link = null
     for (link = to.linksTo; link != null; link = link.nextTo)
     {
-      if (link.fromComp == from.id && link.fromSlot == fromSlot.id &&
-          link.toComp   == to.id   && link.toSlot   == toSlot.id)
+      if (link.fromComp == from && link.fromSlot == fromSlot &&
+          link.toComp   == to   && link.toSlot   == toSlot)
         break
     }
     assert(link != null)
