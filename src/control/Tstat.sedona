@@ -1,0 +1,85 @@
+//
+// Copyright (c) 2007-2011 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   30 Nov 2007  Andy Saunders  Creation
+//   04 Aug 2011  Clif Turman    Add comments
+//
+
+**
+** Tstat Provides On/Off or Floating Thermostat control
+**
+**   raise & lower outputs operate independently of isHeating mode.
+**     lower will be set to true if cv > (sp + diff/2) and will
+**           remain set until cv < (sp - diff/2).
+**     raise will be set to true if cv < (sp - diff/2) and will
+**           remain set until CV > (sp + diff/2).
+**
+**   out will be set based on isHeating mode.
+**     if isHeating
+**        out = raise
+**     else
+**        out = lower
+**
+@niagaraIcon="module://icons/x16/control/util/switch.png"
+class Tstat
+  extends Component
+{
+
+  ** deadband centered around sp
+  @config @summary property float diff = 0.0f
+
+  ** set true to put into heating mode, false for cooling mode
+  @config @summary property bool  isHeating = false
+
+  ** the setpoint
+  @config @summary property float sp
+
+  ** actual
+  property float cv
+
+  ** calls for cooling or heating as required by sp/cv/isheating
+  @readonly property bool out
+
+  ** need to raise
+  @readonly property bool raise
+
+  ** need to lower
+  @readonly property bool lower
+
+  **
+  ** Execute is called once every scan.
+  **
+  virtual override void execute()
+  {
+    float delta   = diff/2.0f
+    float hiValue = sp + delta
+    float loValue = sp - delta
+    
+    if (cv > hiValue) 
+    {
+      lower := true
+      raise := false
+    }
+    else if ( cv < loValue )
+    {
+      lower := false
+      raise := true
+    }
+    else if ( lower && cv < sp )
+    {
+      lower := false
+    }
+    else if ( raise && cv > sp )
+    {
+      raise := false
+    }
+
+    if (isHeating)
+      out := raise
+    else 
+      out := lower
+  }
+
+}

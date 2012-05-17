@@ -1,0 +1,70 @@
+//
+// Copyright (c) 2010-2011 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   15 Feb 2010  Clif Turman  Creation
+//
+
+**
+** Min/Max object computes min and max of an input value every execute cycle
+** Resets min/max to input value if r == true
+**
+@niagaraIcon="module://icons/x16/control/control.png"
+class MinMax
+  extends Component
+{
+  ** the computed min of all in's
+  @readonly property float minOut
+
+  ** the computed max of all in's
+  @readonly property float maxOut
+
+  ** the value on which to track the min and max value
+  property float in
+  
+  ** reset input.  If r = true, then minOut and maxOut are forced to "in" value
+  property bool r
+
+  **
+  ** reset action sets the initial values
+  **
+  action void reset()
+  {
+    first = true
+  }
+
+  **
+  ** Start sets the initial values
+  **
+  virtual override void start()
+  {
+    reset()
+  }
+
+  **
+  ** Execute computes the min/max
+  **
+  virtual override void execute()
+  {
+    if(!Sys.app.isSteadyState())
+      return
+    if(r)
+      first = true
+    if(first)
+    {
+      minOut := in
+      maxOut := in
+      first = false
+    }
+    else
+    {
+      minOut := in < minOut ? in : minOut
+      maxOut := in > maxOut ? in : maxOut
+    }
+  }
+  
+  private bool first
+
+}
+

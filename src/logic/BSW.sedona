@@ -1,0 +1,45 @@
+//
+// Copyright (c) 2007-2011 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   10 Jan 2007  Andy Saunders  Creation
+//   27 Apr 2007  Brian Frank    Port from Java to Sedona
+//   04 Aug 2011  Clif Turman    Add comments
+//
+
+**
+** BSW: Boolean Switch object
+**
+** if s1 is null output is null
+** if (s1) out = in2 else out = in1
+**
+@niagaraIcon="module://icons/x16/control/util/switch.png"
+class BSW
+  extends Component
+{
+  ** boolean output
+  @readonly property bool out
+
+  ** boolean input 1
+  property bool in1
+  
+  ** boolean input 2
+  property bool in2
+  
+  ** if s1 is null output is null
+  ** if (s1) out = in2 else out = in1
+  property bool s1
+
+  **
+  ** Execute is called once every scan.
+  **
+  virtual override void execute()
+  {
+    if (s1 == null)
+      out := null
+    else
+      out := s1 ? in2 : in1
+  }
+
+}

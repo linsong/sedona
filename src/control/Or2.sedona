@@ -1,0 +1,43 @@
+//
+// Copyright (c) 2007-2011 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   10 Jan 2007  Andy Saunders  Creation
+//   27 Apr 2007  Brian Frank    Port from Java to Sedona
+//   04 Aug 2011  Clif Turman    Add comments
+//
+
+**
+** Or2 Two input Or logic object
+** null inputs ignored.  If all inputs null, output is null
+** out = in1 || in2
+**
+@niagaraIcon="module://icons/x16/control/logic/or.png"
+class Or2
+  extends Component
+{
+  ** output = in1 || in2
+  @readonly property bool out
+
+  ** input 1
+  property bool in1
+
+  ** input 2
+  property bool in2
+
+  **
+  ** Execute is called once every scan.
+  **
+  virtual override void execute()
+  {    
+    bool allNull = true;
+    bool tmp = false
+    if (in1 != null) { tmp |= in1; allNull = false; }
+    if (in2 != null) { tmp |= in2; allNull = false; }      
+    if (allNull) tmp = null 
+
+    out := tmp
+  }
+
+}

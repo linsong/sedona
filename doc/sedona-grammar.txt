@@ -1,0 +1,401 @@
+(*
+  Copyright (c) 2009 Tridium, Inc
+  Licensed under the Academic Free License version 3.0
+  
+  Author: Matthew Giannini
+   
+  Sedona EBNF Definition. 
+  Based on ISO/IEC 14977 : 1996(E) specification.
+  
+  NOTES:
+  
+  1) According to the spec (Section 5.8), the proper (albeit cryptic) way to
+  convey "one or more" is:
+  
+  oneOrMoreFoos = {FOO}- ;
+  
+  The above represents a sequence of one or more FOO's because it is a 
+  syntactic-term with an empty syntactic-exception.  See the spec for more
+  details. (FOO+ is a lot nicer, but, alas, is not part of the spec).
+  
+  2) I am using range notation "A".."Z" which, for some reason, is not
+  part of the spec.
+  
+  3) The Sedona grammar cannot be expressed using standard EBNF because
+  of the end-of-statement (eos) problem.  The '}' character is overloaded
+  in some instances to mean both 1) eos, and 2) end of a block/method body.
+  Therefore, I am defining the following grammar function:
+  
+  peek(<rule>)
+  
+  to mean that the given "<rule>" would match if we were to actually consume
+  the characters in the rule - BUT, we don't actually match them.
+  
+*)
+
+S = compilationUnit ;
+
+compilationUnit = 
+  {typeDeclaration} ;
+
+typeDeclaration = 
+  classDeclaration ;
+
+classDeclaration = 
+  facets, classFlags, "class", id, ["extends", id], classBody ;
+  
+classFlags =
+  {"abstract" | "const" | "final" | "internal" | "public"} ;
+  
+classBody =
+  "{", slotDefs, "}" ;
+
+slotDefs = 
+  {slotDef} ;
+  
+slotDef = 
+  methodDef | fieldDef ;
+  
+(* 
+ * MethodDef
+ *)
+ 
+methodDef = 
+  facets, methodFlags, (ctorDecl, methodDecl), methodBody ;
+  
+methodFlags = 
+  {
+    "abstract" | "action" | "native" | "override" | "static" | "virtual" |
+    slotScopeFlags
+  } ;
+  
+ctorDecl = 
+  id, "(", params, ")" ;
+  
+methodDecl = 
+  type, id, "(", params, ")" ;
+  
+params = 
+  [param, {",", param}] ;
+  
+param = 
+  type, id ;
+  
+methodBody =
+  eos | "{", stmts, "}" ;
+  
+(*
+ * Statements
+ *)
+ 
+block = 
+  stmt | "{", stmts, "}" ;
+  
+stmts = 
+  {[id, ":"], stmt} ;
+  
+stmt = 
+    expr, eos     (* expression statement *)
+  | localDef, eos (* local variable definition *)
+  | assert | break | continue | do | for | foreach | goto | if 
+  | return | switch | while ;
+  
+localDef =
+  type, id, ["=", expr] ;
+  
+assert =
+  "assert", "(", expr, ")", eos ;
+  
+break = 
+  "break", eos ;
+
+continue = 
+  "continue", eos ;
+
+do = 
+  "do", block, "while", "(", expr, ")", eos ;
+  
+for =
+  "for", "(", [expr | localDef], ";", [expr], ";", [expr], ")", (";" | block) ;
+  
+foreach =
+  "foreach", "(", type, id, ":", expr, [",", expr], ")", block ;
+  
+goto = 
+  "goto", id, eos ;
+  
+if = 
+  "if", "(", expr, ")", block, ["else", block] ;
+  
+return = 
+  "return", eos ;
+
+switch =
+  "switch", "(", expr, ")", "{", {case}, ["default", ":", stmts], "}" ;
+  
+case = 
+  "case", expr, ":", stmts ;
+  
+while = 
+  "while", "(", expr, ")", (";" | block) ;
+  
+(*
+ * FieldDef
+ *)
+  
+fieldDef = 
+  facets, fieldFlags,
+    ((primitiveType | objectTypetype), [callExpr]) | arrayType,
+    id, ["=", fieldInit], eos ;
+  
+fieldFlags =
+  {"const" | "define" | "inline" | "property" | "static" | slotScopeFlags} ; 
+  
+slotScopeFlags = 
+  {"public" | "internal" | "protected" | "private"} ;
+   
+fieldInit = 
+  arrayInitializer | arrayLiteral | expr ;
+
+arrayInitializer =
+  "{", 3 * ".", "}" ;
+
+arrayLiteral =
+  "{", 
+    (  ","
+    |  arrayLiteralElement, {",", arrayLiteralElement} 
+    ), 
+  "}" ;
+ 
+arrayLiteralElement = 
+  number | string ;
+  
+facets = 
+  {facet} ;
+  
+facet =
+  "@", id, ["=", expr] ;
+  
+(* 
+  NOTE: "}" is not technically eos because the following are not valid:
+  property int x = 1 }
+    or
+  native void myNative() }
+*)
+eos =
+  ";" | eol | peek('}');
+  
+eol =
+  "\n" ;
+
+(* 
+ * Expressions
+ *)
+
+expr = 
+  assignExpr ;
+
+assignExpr =
+  ternaryExpr, 
+  {
+   ("=" | ":=" | "+=" | "-=" | "*=" | "/=" | "%=" | "&=" | "|=" | "^=" | "<<=" | ">>="),
+   assignExpr
+  } ;
+  
+ternaryExpr =
+  condOrExpr, ["?", condOrExpr, ":", condOrExpr] ;
+
+condOrExpr =
+  condAndExpr, {"||", condAndExpr} ;
+  
+condAndExpr =
+  bitOrExpr, {"&&", bitOrExpr} ;
+  
+bitOrExpr =
+  bitXorExpr, {"|", bitXOrExpr} ;
+  
+bitXorExpr =
+  bitAndExpr, {"^", bitAndExpr} ;
+  
+bitAndExpr =
+  equalityExpr, {"&", equalityExpr} ;
+  
+equalityExpr =
+  relationalExpr, {("==" | "!="), relationalExpr} ;
+  
+relationalExpr =
+  elvisExpr, {("<" | "<=" | ">" | ">="), elvisExpr} ;
+  
+elvisExpr =
+  shiftExpr, {"?:", shiftExpr} ;
+  
+shiftExpr =
+  addExpr, {("<<" | ">>"), addExpr} ;
+  
+addExpr =
+  multExpr, {("+" | "-"), multExpr} ;
+  
+multExpr =
+  parenExpr, {("*" | "/" | "%"), parenExpr} ;
+  
+parenExpr =
+    unaryExpr | castExpr | groupedExpr ;
+    
+unaryExpr =
+    "+", parenExpr
+  | newExpr
+  | deleteExpr
+  | ("!" | "-" | "~" | "++" | "--"), parenExpr
+  | termExpr, ["--" | "++"] ;
+  
+castExpr =
+  "(", type, ")", postCastUnaryExpr ;
+  
+postCastUnaryExpr =
+  parenExpr | termExpr | ("!" | "~"), parenExpr ;
+  
+groupedExpr =
+  "(", expr, ")", {termSuffixExpr} ;
+
+(* 
+  Note: When constructing an array using "new", the array length may
+  be an arbitrary expression.  However, when defining array fields,
+  the array length must be an (integer) literal, or a define.
+  
+  Hence, the following (partial) rule production is NOT valid
+  newExpr = 
+    "new", type
+*)
+newExpr = 
+  "new", (primitiveType | objType), 
+  (
+    "(", ")"
+  | "[", expr, "]"
+  ) ;
+  
+deleteExpr =
+  "delete", expr ;
+  
+termExpr =
+  termBaseExpr, {termSuffixExpr} ;
+ 
+termBaseExpr =
+    literal 
+  | idExpr 
+  | "this" 
+  | "super" 
+  | primitiveType, ".", ("sizeof" | "type") ;
+  
+termSuffixExpr =
+    ("." | "?."), idExpr 
+  | "[", expr, "]" ;
+
+literal = 
+  unsignedNumber | "true" | false" | "null" | string | buffer ;
+  
+idExpr = 
+    id, callExpr
+  | objectType ;
+  
+callExpr =
+  "(", [expr, {"," expr}], ")" ;
+  
+id = 
+  ((letter | "_"), {letter | digit | "_"})-keyword ;
+  
+type = 
+  primitiveType | objectType | arrayType ;
+  
+primitiveType =
+  "bool" | "byte" | "short" | "int" | "long" | "float" | "double" | "void" ;
+  
+objectType =
+  id, ["::", id] ;
+
+(* See note for newExpr *)
+arrayType = 
+  (primitiveType | objectType), "[", [arraySize], "]" ;
+  
+arraySize = 
+  unsignedNumber | hexLiteral | definedId ;
+  
+defineId =
+  [objectType, "."], id ;
+  
+keyword = 
+    "abstract" | "action" | "assert" | "bool" | "break" | "byte" | "case" 
+  | "class" | "const" | "continue" | "default" | "define" | "delete" | "double"
+  | "do" | "else" | "enum" | "extends" | "false" | "final" | "float" | "for"
+  | "foreach" | "function" | "goto" | "if" | "inline" | "int" | "internal" 
+  | "long" | "native" | "new" | "null" | "override" | "private" | "property"
+  | "protected" | "public" | "return" | "short" | "static" | "super" | "switch"
+  | "this" | "true" | "virtual" | "void" | "while" ;
+  
+(* 
+ * Numbers
+ *)
+
+number =
+    charLiteral
+  | hexLiteral
+  | unsignedNumber, [timeLong | floatOrDouble] ;
+  | unsignedNumber, ".", [unsignedNumber], [scientificNoatation], [timeLong | floatOrDouble]
+  | unsignedNumber, scientificNotation, [timeLong | floatOrDouble] ;
+  
+hexLiteral = 
+  "0x", hexDigit, {hexDigit | "_"}, [longSuffix] ;
+  
+unsignedNumber =
+  digit, {digit | "_"} ;
+  
+scientificNotation = 
+  ('E' | 'e'), ["+" | "-"], unsignedNumber ;
+    
+timeSuffix = 
+  "ns" | "ms" | "sec" | "min" | "hr" | "days" ;
+
+longSuffix =
+  "l" | "L" ;
+  
+timeLong =
+  (timeSuffix, [longSuffix]) | longSuffix ;
+  
+floatSuffix = 
+  "f" | "F" ;
+ 
+doubleSuffix =
+  "d" | "D" ;
+  
+floatOrDouble = 
+  floatSuffix | doublSuffix ;
+
+(* 
+ * Strings
+ *)
+
+string = 
+  '"', {allValidChars-('"' | eol)}, '"' ;
+
+allValidChars = 
+  ? any 7-bit ASCII character ? ;
+  
+charLiteral = 
+  "'", escapeSequence | allValidChars-("'" | mustEscapeChar), "'" ;
+  
+buffer =
+  "0x[", {hexDigit, hexDigit, [" "]}, "]" ;
+  
+escapeSequence =
+  "\", ("0" | "n" | "r" | "t" | '"' | "'" | "\" | "$") ;
+  
+mustEscapeChar = 
+  '\' | '\0' | '\t' | '$' | '\r' | '\n' ;
+
+letter =
+    'a'..'z' | 'A'..'Z' ;
+  
+digit = 
+  '0'..'9' ;
+  
+hexDigit = 
+  digit | 'a'..'f' | 'A'..'F' ;
