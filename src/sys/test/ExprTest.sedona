@@ -68,5 +68,11 @@ class ExprTest
     assert((s ?: "xyz")?.length() == 5)
     assert((sx ?: "xyz")?.length() == 3)     
   }
-  
+
+  static void test_23145()
+  {
+    TestComp c = new TestComp()
+    assert(c.m2() == 2)
+    delete c
+  }
 }

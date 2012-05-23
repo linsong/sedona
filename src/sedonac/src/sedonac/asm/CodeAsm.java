@@ -1597,7 +1597,12 @@ public class CodeAsm
     int ignore = IrOp.IGNORE_JAVA;         
     if (expr.arrayLength == null)
     {                      
-      op(SCode.SizeOf, expr.of).flags = ignore;    
+      op(SCode.SizeOf, expr.of).flags = ignore;
+      op(SCode.CallNative, ns.sysType.slot("malloc")).type = expr.type;
+
+      // call constructor for newly allocated object
+      op(SCode.Dup);
+      op(SCode.Call, expr.of.slot(MethodDef.INSTANCE_INIT));
     }
     else
     {
@@ -1607,8 +1612,8 @@ public class CodeAsm
         op(SCode.SizeOf, expr.of).flags = ignore;
       expr(expr.arrayLength);
       op(SCode.IntMul).flags = ignore;
-    }                    
-    op(SCode.CallNative, ns.sysType.slot("malloc")).type = expr.type;
+      op(SCode.CallNative, ns.sysType.slot("malloc")).type = expr.type;
+    }
   }
 
   private void deleteExpr(Expr.Delete expr)

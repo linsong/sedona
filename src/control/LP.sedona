@@ -32,32 +32,42 @@ class LP
   @readonly property float out
 
   ** proportional constant
-  @config @precision=6 @min=0f property float kp = 1.0f
+  @precision=6 @min=0f 
+  @config property float kp = 1.0f
   
   ** integral constant
-  @config @precision=6 @min=0f property float ki = 0.0f  // units repeats / minute
+  @precision=6 @min=0f 
+  @unit = Units.per_minute
+  @config property float ki = 0.0f  // units repeats / minute
 
   ** derivative constant
-  @config @precision=6 @min=0f property float kd = 0.0f
+  @precision=6 @min=0f 
+  @unit = Units.second
+  @config property float kd = 0.0f
 
   ** max out value
-  @config @precision=6 property float max   = 100.0f
+  @precision=6 
+  @config property float max   = 100.0f
 
   ** min out value
-  @config @precision=6 property float min   = 0.0f
+  @precision=6 
+  @config property float min   = 0.0f
   
   ** bias is applied directly to output if ki equals 0
-  @config @precision=6 property float bias  = 0.0f
+  @precision=6 
+  @config property float bias  = 0.0f
 
   ** the max amount out is allowed to change in exTime ms
   ** A setting of 0 disables this function
-  @config @precision=6 @min=0f property float maxDelta = 0f
+  @precision=6 @min=0f 
+  @config property float maxDelta = 0f
   
   ** direct acting or reverse acting process
   @config property bool direct = true 
 
   ** loop is executed every exTime ms
-  @config @min=0 @unit=Units.millisecond property int exTime  = 1000
+  @min=0 @unit=Units.millisecond 
+  @config property int exTime  = 1000
 
   **
   ** Callback when component is first started in an app.

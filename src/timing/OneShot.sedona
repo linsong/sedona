@@ -4,7 +4,7 @@
 //
 // History:
 //   22 Apr 2009  Elizabeth McKenney  Creation
-//   09 Aug 2011  Added @min and @units facets to pulseWidth property
+//   09 Aug 2011  Added @min and @unit facets to pulseWidth property
 //
 
 **
@@ -23,8 +23,8 @@ class OneShot
   property bool in
   
   ** Width of desired output pulse, in seconds
-  @unit = Units.second
-  @min = 0
+  @unit=Units.second
+  @min=0
   @config property float pulseWidth
 
   ** If true, subsequent edges on input will restart pulse width measurement

@@ -159,19 +159,23 @@ class PrioritizedBool
 
 
     // Start min active/inactive timer if appropriate
-    if ((value!=prevOut) && (value!=NULLVAL))
+    if (value!=prevOut) 
     {
-      if (value && (minActiveTime>0))
+      if (value!=NULLVAL)
       {
-        in6 := true
-        minActiveEndTime = Sys.ticks() + ((long)minActiveTime * 1ms)
+        if (value && (minActiveTime>0))
+        {
+          in6 := true
+          minActiveEndTime = Sys.ticks() + ((long)minActiveTime * 1ms)
+        }
+        else if (!value && (minInactiveTime>0))
+        {
+          in6 := false
+          minInactiveEndTime = Sys.ticks() + ((long)minInactiveTime * 1ms)
+        }
       }
-      else if (!value && (minInactiveTime>0))
-      {
-        in6 := false
-        minInactiveEndTime = Sys.ticks() + ((long)minInactiveTime * 1ms)
-      }
-      prevOut = value
+
+      prevOut = value  // always update prevOut when value changes
     }
 
     // Update output value
@@ -186,7 +190,7 @@ class PrioritizedBool
 // Fields
 ////////////////////////////////////////////////////////////////
 
-  bool prevOut = false
+  bool prevOut = NULLVAL
 
   long minActiveEndTime   = 0L
   long minInactiveEndTime = 0L
