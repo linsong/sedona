@@ -15,13 +15,11 @@ class AppTest
 {
 
   static App appA = Sys.app
-  static inline App appB
 
   /* LOOPTEST
   static void testReset()
   {
     appA.cleanupApp()
-    appB.cleanupApp()
   }
   */
 
@@ -30,6 +28,7 @@ class AppTest
     // init original app
     App a = appA
     a.initApp(10)
+    a.appName.copyFromStr("App_A")
     assert(a.id == 0)
     assert(a.lookup(0) == a)
 
@@ -96,7 +95,18 @@ class AppTest
     // sanity check what we just built
     verifyTestApp(a, s1, x, y, z, s2)
 
+
+    // DEBUG
+    //dumpApp(a, "Dump app A")
+    // DEBUG
+
+
     // serialize
+    Sys.out.print("--> serialize/deserialize app\n")
+    
+    // Rename app A for serialization
+    a.appName.copyFromStr("App_ser")
+
     Buf buf = BufTest.buf
     BufOutStream out = BufTest.out
     BufInStream in = BufTest.in
@@ -106,82 +116,99 @@ class AppTest
     // fixed size. Save off the schema size in case serialization fails.
     a.saveSchema(out)
     int schemaSize = buf.size
-  	buf.clear()
-  	if (a.saveApp(out) != 0)
-  	{
-  		Sys.out.print("Failed to serialize. buf.size = $buf.size, schema size = $schemaSize\n")
-  		       .print("If the schema is too large, there may not be enough room to serialize the app.\n")
-  		assert(false)
-  	}
-  	else
-  		assert(true)
+    buf.clear()
+    int saveOk = a.saveApp(out)
+    if (saveOk != 0)
+    {
+      Sys.out.print("Failed to serialize, err = $saveOk\n")
+             .print("  buf.size = $buf.size, schema size = $schemaSize\n")
+             .print("(If schema is too large, may not have enough room to serialize app.)\n")
+      assert(false)
+    }
+    else
+      assert(true)
 
-  	// deserialize
-  	in.rewind()
-  	App b = appB
-  	b.initApp(10)
-  	assert(b.loadApp(in) == 0)
+    // deserialize
+    in.rewind()
+
+    // Rename app A to differentiate from B
+    a.appName.copyFromStr("App_old")
+
+    a.cleanupApp()
+    a.initApp(10)
+    int loadOk = a.loadApp(in) 
+    if (loadOk != 0)
+    {
+      Sys.out.print("Failed to de-serialize, err = $loadOk\n")
+      assert(false)
+    }
+    else
+      assert(true)
+
+    a.appName.copyFromStr("App_new")
+
 
     // verify what we serialized/deserialized is what we built
-    s1 = (TestService)b.lookup(1);
-    x  = (TestComp)b.lookup(2);
-    y  = (TestComp)b.lookup(3);
-    z  = (SubTestComp)b.lookup(4);
-    s2 = (TestService)b.lookup(5);
-    verifyTestApp(b, s1, x, y, z, s2)
+    s1 = (TestService)a.lookup(1);
+    x  = (TestComp)a.lookup(2);
+    y  = (TestComp)a.lookup(3);
+    z  = (SubTestComp)a.lookup(4);
+    s2 = (TestService)a.lookup(5);
+    verifyTestApp(a, s1, x, y, z, s2)
 
     // verify remove
-    assert(b.lookup(1) == s1)
-    assert(b.lookup(2) == x)
-    assert(b.lookup(3) == y)
-    assert(b.lookup(4) == z)
-    assert(b.lookup(5) == s2)
+    assert(a.lookup(1) == s1)
+    assert(a.lookup(2) == x)
+    assert(a.lookup(3) == y)
+    assert(a.lookup(4) == z)
+    assert(a.lookup(5) == s2)
 
     // remove x (which also removes z and s)
-    assert(b.remove(x))
-    assert(b.lookup(1) == s1)
-    assert(b.lookup(2) == null)
-    assert(b.lookup(3) == y)
-    assert(b.lookup(4) == null)
-    assert(b.lookup(5) == null)  
-    verifyChildren(b, s1, y, null)
+    assert(a.remove(x))
+    assert(a.lookup(1) == s1)
+    assert(a.lookup(2) == null)
+    assert(a.lookup(3) == y)
+    assert(a.lookup(4) == null)
+    assert(a.lookup(5) == null)  
+    verifyChildren(a, s1, y, null)
     assert(y.id == 3)
-    assert(b.services == s1)
-    assert(b.services.nextService == null)
-    assert(b.lookupService(TestService.type) == s1)
+    assert(a.services == s1)
+    assert(a.services.nextService == null)
+    assert(a.lookupService(TestService.type) == s1)
 
     // remove s1
-    assert(b.remove(s1))
-    assert(b.lookup(1) == null)
-    assert(b.lookup(2) == null)
-    assert(b.lookup(3) == y)
-    assert(b.lookup(4) == null)
-    assert(b.lookup(5) == null)
-    verifyChildren(b, y, null, null)
+    assert(a.remove(s1))
+    assert(a.lookup(1) == null)
+    assert(a.lookup(2) == null)
+    assert(a.lookup(3) == y)
+    assert(a.lookup(4) == null)
+    assert(a.lookup(5) == null)
+    verifyChildren(a, y, null, null)
     assert(y.id == 3)
-    assert(b.services == null)
+    assert(a.services == null)
 
     // remove y
-    assert(b.remove(y))
-    assert(b.lookup(1) == null)
-    assert(b.lookup(2) == null)
-    assert(b.lookup(3) == null)
-    assert(b.lookup(4) == null)
-    assert(b.lookup(5) == null)
-    verifyChildren(b, null, null, null)
-    assert(b.services == null)
+    assert(a.remove(y))
+    assert(a.lookup(1) == null)
+    assert(a.lookup(2) == null)
+    assert(a.lookup(3) == null)
+    assert(a.lookup(4) == null)
+    assert(a.lookup(5) == null)
+    verifyChildren(a, null, null, null)
+    assert(a.services == null)
 
     // remove y
-    assert(!b.remove(b))
+    assert(!a.remove(y))
 
     // cleanup
     a.cleanupApp()
-    b.cleanupApp()
 
     
+    // Test callbacks (unrelated to preceding tests)
     verifyCallbacks()
 
   }
+
 
 //  Issue 19700 - lifecycle callbacks
   static void verifyCallbacks()
@@ -318,7 +345,7 @@ class AppTest
 
   static void verifyLink(Component from, Slot fromSlot, Component to, Slot toSlot)
   {
-    //Sys.out.print("-- verifyLink ")
+    //Sys.out.print("--- verifyLink ")
     //   .print(from.name).print(".").print(fromSlot.name).print(" -> ")
     //   .print(to.name).print(".").print(toSlot.name).nl()
 
@@ -404,6 +431,28 @@ class AppTest
     Sys.out.print("      ").print(name).print(".parent   = ").printInt(c.parent).nl()
     Sys.out.print("      ").print(name).print(".children = ").printInt(c.children).nl()
     Sys.out.print("      ").print(name).print(".nextSib  = ").printInt(c.nextSibling).nl()
+  }
+  */
+
+  /*
+  static void dumpApp(App a, Str title)
+  {
+    Sys.out.print("\n$title: name=${a.name}  appName=${a.appName.toStr()}\n")
+    for (int cid=0; cid<a.compsLen; cid++)
+    {
+      Component c = a.comps[cid]
+      if (c==null)
+      {
+        Sys.out.print("  Comp#$cid: null\n")
+        continue
+      }
+      
+      Sys.out.print("  Comp#$cid:\tname=${c.name}\ttype=${c.type.name}")
+      if (c.linksTo==null)   Sys.out.print("\t${c.name}.linksTo=null")
+      if (c.linksFrom==null) Sys.out.print("\t${c.name}.linksFrom=null")
+      Sys.out.nl()
+    }
+    Sys.out.nl()
   }
   */
 
