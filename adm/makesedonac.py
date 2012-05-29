@@ -41,6 +41,7 @@ def compile():
     print "**"
     print "** FAILED [" + jarFile + "]"
     print "**"
+    return 1
     
 # Main
 if __name__ == '__main__': 

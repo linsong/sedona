@@ -12,12 +12,22 @@
 
 package sedonac.parser;
 
-import java.io.*;
-import java.util.*;
 import sedona.Buf;
-import sedona.util.*;
-import sedonac.*;
+import sedona.util.TextUtil;
 import sedonac.Compiler;
+import sedonac.CompilerException;
+import sedonac.CompilerSupport;
+import sedonac.Location;
+
+import java.io.BufferedReader;
+import java.io.CharArrayWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 /**
  * Tokenizer for sedona program parser
@@ -51,20 +61,19 @@ public class Tokenizer
    * Read a file into a normalized char array
    * with all newlines represented as '\n'
    */
+  private static final CharArrayWriter chars = new CharArrayWriter(1024);
+  private static final char[] charBuf = new char[1024];
   public static char[] readFile(Location loc, InputStream inputStream)
   {
     BufferedReader in = null;
     try
     {
-      CharArrayWriter out = new CharArrayWriter();
+      chars.reset();
       in = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
-      String line;
-      while ((line = in.readLine()) != null)
-      {
-        out.write(line);
-        out.write('\n');
-      }
-      return out.toCharArray();
+      int n;
+      while ((n = in.read(charBuf)) != -1)
+        chars.write(charBuf, 0, n);
+      return chars.toCharArray();
     }
     catch(IOException e)
     {
@@ -777,6 +786,7 @@ public class Tokenizer
     charMap[' ']  = SPACE;
     charMap['\t'] = SPACE;
     charMap['\n'] = SPACE;
+    charMap['\r'] = SPACE;
   }
 
 ////////////////////////////////////////////////////////////////

@@ -42,6 +42,7 @@ def compile():
     print "**"
     print "** FAILED [" + jarFile + "]"
     print "**"
+    return 1
     
 # Write Version File
 def writeVerFile(dir):  

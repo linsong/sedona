@@ -63,6 +63,7 @@ def compile(cdefs=defs):
     print "**"
     print "** FAILED [" + exeFile + "]"
     print "**"
+    return 1
 
 
 
