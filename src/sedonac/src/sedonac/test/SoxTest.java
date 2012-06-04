@@ -87,7 +87,7 @@ public class SoxTest
     options.put("dasp.test", new DaspTest.TestHooks());
 
     // connect bad username
-    trace("Connect bad username...");      
+    trace("Connect with bad username...");      
     int errorCode = -1;
     try
     {
@@ -101,7 +101,7 @@ public class SoxTest
     verifyEq(errorCode, DaspConst.NOT_AUTHENTICATED);
 
     // connect bad password
-    trace("Connect bad password...");      
+    trace("Connect with bad password...");      
     errorCode = -1;
     try
     {
@@ -115,7 +115,7 @@ public class SoxTest
     verifyEq(errorCode, DaspConst.NOT_AUTHENTICATED);
 
     // connect
-    trace("Connect...");
+    trace("Connect with good username and password...");
     client = new SoxClient(sock, addr, 1876, "admin", "pw");
     client.connect(options);
     verify(!client.isClosed());
