@@ -101,7 +101,7 @@ public class SoxTest
     verifyEq(errorCode, DaspConst.NOT_AUTHENTICATED);
 
     // connect bad password
-    trace("Connect bad username...");      
+    trace("Connect bad password...");      
     errorCode = -1;
     try
     {
