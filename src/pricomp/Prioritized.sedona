@@ -29,6 +29,7 @@ abstract class Prioritized
   @summary=false property int sourceLevel := FB_LEVEL
 
   @readonly 
+  @unit = Units.nanosecond
   @summary=false property long overrideExpTime := 0L        // 0 indicates no timeout ("permanent")
 
 
