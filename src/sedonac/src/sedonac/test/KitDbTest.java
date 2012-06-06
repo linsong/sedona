@@ -291,7 +291,7 @@ public class KitDbTest
   {
     File f = new File(dir, dir.getName() + "-" + 
       Integer.toHexString(checksum) + "-" + version + ".kit");
-    PrintWriter out = new PrintWriter(new FileWriter(f));
+    PrintWriter out = new PrintWriter( openFileWriter(f) );
     out.print("dummy test file");
     out.close();
   }  

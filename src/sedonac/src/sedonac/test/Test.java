@@ -159,6 +159,39 @@ public class Test extends Verifies
     return System.getProperty("os.name").toLowerCase().indexOf("linux") > -1;
   }
 
+  /**
+   * Open a FileWriter instance.
+   * Allow for temporary OS conditions that might cause FileWriter cstr to fail.
+   */
+  public FileWriter openFileWriter(File f)
+  {
+    FileWriter fw = null;
+    final int maxAttempts = 10;            // max # attempts to open before giving up
+
+    // Retry to avoid test failure due to transient OS issue (file in use, etc).
+    // Give it maxAttempts chances to succeed before throwing exception. 
+    for (int t=0; t<maxAttempts-1; t++)
+    {
+      try { fw = new FileWriter(f); } catch (IOException e) { }
+      if (fw!=null) break;
+      try { Thread.sleep(10); } catch (InterruptedException e) { }
+    }
+
+    // Try once more (if necessary), this time catch exception if any & fail
+    if (fw==null) try
+    {
+      fw = new FileWriter(f);
+    }
+    catch (IOException e)
+    {
+      e.printStackTrace();
+      fail("   Failed to open file " + f + " after " + maxAttempts + " attempts");
+    }
+    
+    return fw;
+  }
+
+
 //////////////////////////////////////////////////////////////////////////
 // Fields
 //////////////////////////////////////////////////////////////////////////

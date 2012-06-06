@@ -1085,7 +1085,7 @@ public class SoxTest
       
     // write test file to app's directory
     File f = new File(testDir(), "transfer.txt");
-    PrintWriter out = new PrintWriter(new FileWriter(f));
+    PrintWriter out = new PrintWriter( openFileWriter(f) );
     out.print(data);
     out.close();
 

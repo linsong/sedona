@@ -28,7 +28,7 @@ public abstract class CompileTest
     File source = new File("sedona-test.sedona");
     try
     {
-      FileWriter out = new FileWriter(source);
+      FileWriter out = openFileWriter(source);
       out.write(src);
       out.close();
     }
@@ -55,26 +55,12 @@ public abstract class CompileTest
   {
     try
     {
-      FileWriter out = null;
-
-      // Goofy loop to avoid failure due to transient OS issue (file in use, etc)
-      // Let it fail up to N times w/o throwing exception; break out & continue
-      // if it succeeds
-      for (int t=0; t<4; t++)
-      {
-        try { out = new FileWriter(xml); } catch (IOException e) { }
-        if (out!=null) break;
-      }
-
-      // Try once more if necessary, this time catch exception if any & fail
-      if (out==null) out = new FileWriter(xml); 
-
+      FileWriter out =  openFileWriter(xml);
       out.write("<sedonaKit name='sedonacCompileTest' vendor='Tridium' description=''><depend on='sys 1.0+' /><source dir='.' /></sedonaKit>");
       out.close();
     }
     catch (IOException e)
     {
-      System.out.println();
       e.printStackTrace();
       fail();
     }

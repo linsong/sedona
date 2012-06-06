@@ -124,8 +124,8 @@ public abstract class AbstractSoxTest
     BufferedReader trdr = new BufferedReader(new InputStreamReader(tlist.getInputStream()));
     String line;
     while ((line = trdr.readLine()) != null)
-      if (line.contains("svm.exe"))
-        throw new TestException("Cannot continue; svm.exe already running!");
+      if (line.indexOf(getSvmName())>=0)
+        throw new TestException("Cannot continue; " + getSvmName() + " already running!");
 
 
     // copy svm.exe to tempDir (so we mimic a live installation)
