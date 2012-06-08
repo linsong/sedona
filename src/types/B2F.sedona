@@ -1,0 +1,85 @@
+//
+// Copyright (c) 2007-2011 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   10 Jan 2007  Andy Saunders  Creation
+//   27 Apr 2007  Brian Frank    Port from Java to Sedona
+//   04 Aug 2011  Clif Turman    Add comments
+//
+
+**
+** B2F 16 bit binary to float encoder object
+**
+** out   = encoded value of inputs, with in16 the MSB and in1 as the LSB.
+** count = sum of the inputs that are active.
+**
+@niagaraIcon="module://icons/x16/control/util/switch.png"
+public class B2F
+  extends Component
+{
+  ** out = encoded value of inputs, with in16 the MSB and in1 as the LSB.
+  @readonly property float out
+
+  ** count = sum of the inputs that are active.
+  @readonly property float count
+  
+  ** in1
+  property bool in1
+  ** in2
+  property bool in2
+  ** in3
+  property bool in3
+  ** in4
+  property bool in4
+  ** in5
+  property bool in5
+  ** in6
+  property bool in6
+  ** in7
+  property bool in7
+  ** in8
+  property bool in8
+  ** in9
+  property bool in9
+  ** in10
+  property bool in10
+  ** in11
+  property bool in11
+  ** in12
+  property bool in12
+  ** in13
+  property bool in13
+  ** in14
+  property bool in14
+  ** in15
+  property bool in15
+  ** in16
+  property bool in16
+
+  **
+  ** Execute is called once every scan.
+  **
+  virtual override void execute()
+  {
+    int value = 0
+    int icount = 0
+    int mask = 1
+
+    // reflective loop from in1 to in16
+    for(int i = B2F.in1.id; i <= B2F.in16.id; i++)
+    {
+      if (getBool(type.slots[i]))
+      {
+        value = value | mask
+        icount++
+      }
+
+      mask = mask << 1
+    }
+
+    out   := (float)value
+    count := (float)icount
+  }
+
+}

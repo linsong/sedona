@@ -1,0 +1,122 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   17 May 07  Andy Sunders  Creation
+//   07 Aug 09  Clif Turman   Added tests for ISW and ASW4
+//
+
+**
+** SwTest
+**
+class SwTest
+  extends Test
+{
+  static inline ASW asw
+  static inline BSW bsw
+  static inline ISW isw
+  static inline ASW4 asw4
+
+  static void test()
+  {
+    //ASW test
+    asw.in1 := 1.0
+    asw.in2 := 2.0
+    asw.s1 := true
+    asw.execute()
+    assert(asw.out == 2.0)
+    asw.s1 := false
+    asw.execute()
+    assert(asw.out == 1.0)
+    asw.in1 := 50.0
+    asw.execute()
+    assert(asw.out == 50.0)
+    asw.in2 := 100.0
+    asw.s1 := true
+    asw.execute()
+    assert(asw.out == 100.0)
+
+    //BSW test
+    bsw.in1 := false
+    bsw.in2 := true
+    bsw.s1 := true
+    bsw.execute()
+    assert(bsw.out == true)
+    bsw.s1 := false
+    bsw.execute()
+    assert(bsw.out == false)
+    bsw.in1 := true
+    bsw.execute()
+    assert(bsw.out == true)
+    bsw.in2 := false
+    bsw.s1 := true
+    bsw.execute()
+    assert(bsw.out == false)
+    
+    //ISW test
+    isw.in1 := 1
+    isw.in2 := 2
+    isw.s1 := true
+    isw.execute()
+    assert(isw.out == 2)
+    isw.s1 := false
+    isw.execute()
+    assert(isw.out == 1)
+    isw.in1 := 50
+    isw.execute()
+    assert(isw.out == 50)
+    isw.in2 := 100
+    isw.s1 := true
+    isw.execute()
+    assert(isw.out == 100)
+
+    //ASW4 test
+    for(int i = -4; i < 5; i++)
+    {
+      float in1 = (float)i * 3.0
+      float in2 = (float)i + 2000.0
+      float in3 = (float)i * -3.0
+      float in4 = (float)i - 4000.0
+      //Sys.out.print("  startsAt:$i in1:$in1 in2:$in2 in3:$in3 in4:$in4").nl()
+      asw4.in1 := in1
+      asw4.in2 := in2
+      asw4.in3 := in3
+      asw4.in4 := in4
+      asw4.startsAt := i
+      
+      asw4.sel := i - 1         //selector less than startsAt, selects 1st output
+      asw4.execute()
+      //Sys.out.print("    sel:$asw4.sel out:$asw4.out").nl()
+      assert(asw4.out == in1)
+      
+      asw4.sel := i
+      asw4.execute()
+      //Sys.out.print("    sel:$asw4.sel out:$asw4.out").nl()
+      assert(asw4.out == in1)
+      
+      asw4.sel := i + 1
+      asw4.execute()
+      //Sys.out.print("    sel:$asw4.sel out:$asw4.out").nl()
+      assert(asw4.out == in2)
+      
+      asw4.sel := i + 2
+      asw4.execute()
+      //Sys.out.print("    sel:$asw4.sel out:$asw4.out").nl()
+      assert(asw4.out == in3)
+      
+      asw4.sel := i + 3
+      asw4.execute()
+      //Sys.out.print("    sel:$asw4.sel out:$asw4.out").nl()
+      assert(asw4.out == in4)
+      
+      asw4.sel := i + 4         //selector greater than startsAt, selects 4th output
+      asw4.execute()
+      //Sys.out.print("    sel:$asw4.sel out:$asw4.out").nl()
+      assert(asw4.out == in4)
+    }
+
+  }
+
+
+}

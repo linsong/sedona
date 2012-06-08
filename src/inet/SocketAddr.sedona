@@ -1,0 +1,29 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   21 Jun 07  Brian Frank  Creation
+//
+
+**
+** SocketAddr is a combination of the IpAddr host and 16-bit port number.
+**
+class SocketAddr
+{
+
+  **
+  ** Return if this address is equivalent to that address.
+  **
+  bool equals(SocketAddr that)
+  {                
+    return this.port == that.port && this.addr.equals(that.addr)
+  }
+
+  ** IP host address
+  inline IpAddr addr
+
+  ** IP port number
+  short port
+
+}

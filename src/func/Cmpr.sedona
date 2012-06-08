@@ -1,0 +1,48 @@
+//
+// Copyright (c) 2007-2011 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   10 Jan 2007  Andy Saunders  Creation
+//   27 Apr 2007  Brian Frank    Port from Java to Sedona
+//   04 Aug 2011  Clif Turman    Add comments
+//
+
+**
+** Cmpr comparison math object
+**
+** xgy = x > y;
+** xey = x = y;
+** xly = x < y;
+**
+@niagaraIcon="module://icons/x16/control/logic/lessThan.png"
+class Cmpr
+  extends Component
+{
+
+  ** xgy is true if x > y
+  @readonly property bool  xgy 
+
+  ** xey is true if x == y
+  @readonly property bool  xey 
+
+  ** xly is true if x < y
+  @readonly property bool  xly 
+
+  ** input x
+  property float x
+
+  ** input y
+  property float y  
+
+  **
+  ** Execute is called once every scan.
+  **
+  virtual override void execute()
+  {
+    xgy := x > y
+    xey := x == y
+    xly := x < y
+  }
+
+}

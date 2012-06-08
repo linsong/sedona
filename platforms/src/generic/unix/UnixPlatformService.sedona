@@ -1,0 +1,16 @@
+//
+// Copyright (c) 2009 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+// 12/8/2009 - Matthew Giannini - creation
+
+
+**
+** Generic Unix Platform Service
+**
+**
+class UnixPlatformService extends PlatformService
+{
+  // No plat-specific properties or methods
+}
