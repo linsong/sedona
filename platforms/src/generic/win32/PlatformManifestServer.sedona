@@ -15,8 +15,7 @@ final class PlatformManifestServer extends MemoryFileStore
 
   override int getMemorySize(File f)
   {
-    MemoryFile m = (MemoryFile)f.fp
-    return (m == null) ? getPmSize() : m.size
+    return getPmSize()
   }
 
   override bool openMemoryFile(MemoryFile m)
