@@ -304,6 +304,16 @@ public class SoxExchange
     client.util  = null;
     client.close();
 
+    // notify listener if registered
+    try
+    {
+      client.closed();
+    }
+    catch(Throwable  e)
+    {
+      e.printStackTrace();
+    }
+
     // done closing
     this.closing = false;
   }

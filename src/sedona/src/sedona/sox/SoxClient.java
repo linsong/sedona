@@ -3,24 +3,9 @@ package sedona.sox;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.InetAddress;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Properties;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
+import java.util.*;
 
-import sedona.Buf;
-import sedona.Component;
-import sedona.Env;
-import sedona.Kit;
-import sedona.KitPart;
-import sedona.Link;
-import sedona.Schema;
-import sedona.Slot;
-import sedona.Str;
-import sedona.Type;
-import sedona.Value;
+import sedona.*;
 import sedona.dasp.DaspSession;
 import sedona.dasp.DaspSocket;
 import sedona.dasp.DiscoveredNode;
@@ -28,7 +13,6 @@ import sedona.manifest.KitManifest;
 import sedona.manifest.ManifestDb;
 import sedona.manifest.ManifestZipUtil;
 import sedona.sox.ISoxComm.TransferListener;
-import sedona.util.FileUtil;
 import sedona.util.Version;
 
 /**
@@ -135,18 +119,8 @@ public class SoxClient
   public void close()
   {
     comm().close();
-
-    // notify listener if registered
-    try
-    {
-      if (listener != null) listener.soxClientClosed(this);
-    }
-    catch(Throwable  e)
-    {
-      e.printStackTrace();
-    }
   }
-
+  
 //////////////////////////////////////////////////////////////////////////
 // Read Schema
 //////////////////////////////////////////////////////////////////////////
@@ -1359,6 +1333,33 @@ public class SoxClient
     public void soxClientClosed(SoxClient client);
   }
 
+  public void addListener(Listener listener)
+  {
+    synchronized (listeners)
+    {
+      listeners.add(listener);
+    }
+  }
+  
+  public void removeListener(Listener listener)
+  {
+    synchronized (listeners)
+    {
+      listeners.remove(listener);
+    }
+  }
+
+  public void closed()
+  {
+    synchronized (listeners)
+    {
+      for (int i=0; i<listeners.size(); i++)
+      {
+        ((Listener)listeners.get(i)).soxClientClosed(this);
+      }
+    }
+  }
+  
 ////////////////////////////////////////////////////////////////
 // Tuning Options
 ////////////////////////////////////////////////////////////////
@@ -1399,7 +1400,7 @@ public class SoxClient
   public final int port;
   public final String username;
   final String password;
-  public Listener listener;
+  private Vector listeners = new Vector();
   
   boolean allTreeEvents;
   SoxComponent[] cache = new SoxComponent[1024];
