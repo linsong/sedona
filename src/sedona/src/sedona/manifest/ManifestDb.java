@@ -8,12 +8,6 @@
 
 package sedona.manifest;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-
 import sedona.Depend;
 import sedona.Env;
 import sedona.KitPart;
@@ -23,6 +17,12 @@ import sedona.util.Log;
 import sedona.util.sedonadev.Download;
 import sedona.xml.XParser;
 import sedona.xml.XWriter;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 /**
  * ManifestDb manages the cache of kit manifests on disk under
@@ -93,15 +93,11 @@ public class ManifestDb
       if (km != null) return km;
       
       // check sedonadev.org websites
-      boolean enable = Env.getProperty("sedonadev.autodownload", false);
-      if (enable)
+      km = Download.fetchManifest(part);
+      if (km != null)
       {
-        km = Download.fetchManifest(part);
-        if (km != null) 
-        {
-          save(km);
-          return km;
-        }
+        save(km);
+        return km;
       }
 
       // no dice

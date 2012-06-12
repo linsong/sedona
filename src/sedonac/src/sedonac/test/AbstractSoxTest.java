@@ -116,6 +116,18 @@ public abstract class AbstractSoxTest
   private void spawnApp(File scode, File sab)
     throws Exception
   { 
+    //
+    // First check to make sure an 'svm.exe' isn't already running;
+    // abort if it is!  (No way to select which one to connect to.)
+    //
+    Process tlist = Runtime.getRuntime().exec("tasklist");   // Windows only!
+    BufferedReader trdr = new BufferedReader(new InputStreamReader(tlist.getInputStream()));
+    String line;
+    while ((line = trdr.readLine()) != null)
+      if (line.indexOf(getSvmName())>=0)
+        throw new TestException("Cannot continue; " + getSvmName() + " already running!");
+
+
     // copy svm.exe to tempDir (so we mimic a live installation)
     File exe = new File(Env.home, "bin"+File.separator+getSvmName());
     FileUtil.copyFile(exe, new File(testDir(), exe.getName()));                       

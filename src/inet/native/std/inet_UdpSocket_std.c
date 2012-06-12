@@ -207,7 +207,7 @@ Cell inet_UdpSocket_join(SedonaVM* vm, Cell* params)
   else
   {
     struct ipv6_mreq mreq;
-    inet_aton(addr, &(mreq.ipv6mr_multiaddr));    
+    inet_pton( AF_INET6, addr, &(mreq.ipv6mr_multiaddr) );
     mreq.ipv6mr_interface = 0;
     setsockopt(sock, IPPROTO_IPV6, IPV6_ADD_MEMBERSHIP, (char *)&mreq, sizeof(mreq));
   }

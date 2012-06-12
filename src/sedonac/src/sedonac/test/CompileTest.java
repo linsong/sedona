@@ -28,7 +28,7 @@ public abstract class CompileTest
     File source = new File("sedona-test.sedona");
     try
     {
-      FileWriter out = new FileWriter(source);
+      FileWriter out = openFileWriter(source);
       out.write(src);
       out.close();
     }
@@ -55,7 +55,7 @@ public abstract class CompileTest
   {
     try
     {
-      FileWriter out = new FileWriter(xml);
+      FileWriter out =  openFileWriter(xml);
       out.write("<sedonaKit name='sedonacCompileTest' vendor='Tridium' description=''><depend on='sys 1.0+' /><source dir='.' /></sedonaKit>");
       out.close();
     }

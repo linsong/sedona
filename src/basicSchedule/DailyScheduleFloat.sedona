@@ -13,12 +13,12 @@ class DailyScheduleFloat extends DailySchedule
 {    
 
   **
-  **  Output value for active period 1, expressed in seconds after midnight
+  **  Output value for active period 1
   ** 
   @config property float val1
 
   **
-  **  Output value for active period 2, expressed in seconds after midnight
+  **  Output value for active period 2
   ** 
   @config property float val2  
 

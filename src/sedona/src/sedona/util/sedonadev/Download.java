@@ -4,6 +4,13 @@
 //
 package sedona.util.sedonadev;
 
+import sedona.Env;
+import sedona.KitPart;
+import sedona.manifest.KitManifest;
+import sedona.util.Log;
+import sedona.util.TextUtil;
+import sedona.xml.XParser;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,27 +23,24 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.zip.ZipInputStream;
 
-import sedona.Env;
-import sedona.KitPart;
-import sedona.manifest.KitManifest;
-import sedona.util.Log;
-import sedona.util.TextUtil;
-import sedona.xml.XParser;
-
 /**
  * Utility for downloading files from a website implementing the sedonadev.org
  * RESTful API.
- * <p>
+ * <p/>
  * All operations in this class will check the {@code sedona.Env} to see if a
  * property called {@code sedonadev.org} is defined. If so, it assumes the
  * values for that property are a comma separated list of failover websites to
  * try when attempting to download the file. For example:
- * <p>
+ * <p/>
  * <code>sedonadev.org=http://sedonadev.org, http://localhost</code>
- * <p>
+ * <p/>
  * Note: No trailing '/' on the url! If the property is not defined,
  * <code>http://sedonadev.org</code> is the default.
- * 
+ * <p/>
+ * You must set sedona property {@code sedonadev.autodownload} to true
+ * to enable auto-fetching from sedonadev.org. If not enabled (the default),
+ * then all fetching operations will immediately return null.
+ *
  * @author Matthew Giannini
  * @creation Jun 25, 2009
  * 
@@ -49,7 +53,7 @@ public final class Download
   
   /**
    * Get the kit manifest for the given kit part.
-   * 
+   *
    * @return the KitManifest for the given part, or {@code null} if one could
    *         not be found.
    */
@@ -66,6 +70,8 @@ public final class Download
   }
   
   /**
+   * Get the PAR file with the given platform id.
+   *
    * @return a ZipInputStream for the PAR file with the platform id, or {@code
    *         null} if one could not be found.
    */
@@ -82,7 +88,7 @@ public final class Download
   /**
    * Read a URL on the website as an in-memory string.  
    * Return null if the URL does exist on website.
-   */ 
+   */
   public static String fetchString(final String path) throws Exception
   {
     URLConnection conn = open(path);
@@ -113,6 +119,10 @@ public final class Download
    */
   private static URLConnection open(final String path)
   {
+    // must have this property set to attempt auto-download
+    if (!Env.getProperty("sedonadev.autodownload", false))
+      return null;
+
     for (int i=0; i<sites.length; ++i)
     {
       HttpURLConnection conn = null;
