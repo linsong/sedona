@@ -98,6 +98,14 @@ public interface ISoxComm
                      TransferListener listener)
     throws Exception;
 
+  /**
+   * Does this ISoxComm have an underlying subscription for this
+   * SoxComponent?
+   * @param c
+   * @return true if a subscription exists
+   */
+  boolean isSubscribed(SoxComponent c);
+  
 
 //////////////////////////////////////////////////////////////////////////
 // TransferListener

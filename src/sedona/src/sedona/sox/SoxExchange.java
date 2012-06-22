@@ -42,8 +42,22 @@ public class SoxExchange
   }
 
 //////////////////////////////////////////////////////////////////////////
-// Send
+// ISoxComm
 //////////////////////////////////////////////////////////////////////////
+
+  /**
+   * Send a single message and do not wait for any response.
+   */
+  public void send(Msg buf)
+    throws Exception
+  {
+    checkOpen();
+
+    if (client.traceMsg)
+      System.out.println("--> [send] " + (char)buf.command() + " replyNum=" + buf.replyNum());
+
+    session.send(buf.bytes, 0, buf.size);
+  }
 
   /**
    * Send a single request and wait for the response.
@@ -118,79 +132,6 @@ public class SoxExchange
   }
 
   /**
-   * Break a big request into 255 request chunks since 
-   * we only have a one byte reply number.
-   */
-  private Msg[] chunkRequests(Msg[] req)
-    throws Exception
-  {                       
-    int total = req.length;
-    Msg[] res = new Msg[total];
-    for (int i=0; i < total;)
-    {
-      Msg[] chunkReq = new Msg[Math.min(0xff, total-i)];
-      System.arraycopy(req, i, chunkReq, 0, chunkReq.length);
-      Msg[] chunkRes = request(chunkReq);
-      System.arraycopy(chunkRes, 0, res, i, chunkRes.length);      
-      i += chunkReq.length;
-    } 
-    return res;
-  }                   
-  
-//////////////////////////////////////////////////////////////////////////
-// Receiver
-//////////////////////////////////////////////////////////////////////////
-
-  /**
-   * Receive a response message.
-   */
-  void receive(Msg msg)
-  {
-    try
-    {             
-      synchronized (this)
-      {
-        // parse command and reply number
-        int cmd = msg.bytes[0];
-        int replyNum = msg.bytes[1] & 0xFF;
-        int index = replyNum;
-
-        // check if replyNum is inside my current window
-        if (requests == null || responses == null ||
-            index < 0 || index >= requests.length)
-          return;
-
-        // verify response command code (capital of req command)
-        Msg req = requests[index];       
-        if (cmd != '!' && cmd != (req.bytes[0] & ~0x20))
-          throw new SoxException("Invalid response code " + cmd + " for " + req.bytes[0]);
-
-        // store response and notify requestor thread
-        this.responses[index] = msg;
-        notify();           
-      }
-    }
-    catch(Exception e)
-    {
-      e.printStackTrace();
-      close();
-    }
-  }
-
-//////////////////////////////////////////////////////////////////////////
-// ISoxComm
-//////////////////////////////////////////////////////////////////////////
-
-  /**
-   * Convenience for <code>connect(null)</code>.
-   */
-  public synchronized void connect()
-    throws Exception
-  {
-    connect(null);
-  }
-
-  /**
    * Connect to the remote sedona server using the
    * parameters passed to the constructor.
    */
@@ -219,20 +160,20 @@ public class SoxExchange
   }
 
   /**
+   * Return the SoxClient for interpreting the object model.
+   */
+  public SoxClient client()
+  {
+    return client;
+  }
+
+  /**
    * Return the underlying DaspSession or null if closed.
    * The DaspSession should never be used directly for messaging.
    */
   public DaspSession session()
   {
     return session;
-  }
-
-  /**
-   * Return the SoxClient for interpreting the object model.
-   */
-  public SoxClient client()
-  {
-    return client;
   }
 
   /**
@@ -318,6 +259,61 @@ public class SoxExchange
     this.closing = false;
   }
 
+  /**
+   * Does this ISoxComm have an underlying subscription for this
+   * SoxComponent?
+   * SoxExchange always returns false; this is only used for socket-queued
+   * connections.
+   * @param c
+   * @return false always
+   */
+  public boolean isSubscribed(SoxComponent c)
+  {
+    return false;
+  }
+
+
+//////////////////////////////////////////////////////////////////////////
+// Receiver
+//////////////////////////////////////////////////////////////////////////
+
+  /**
+   * Receive a response message.
+   */
+  void receive(Msg msg)
+  {
+    try
+    {             
+      synchronized (this)
+      {
+        // parse command and reply number
+        int cmd = msg.bytes[0];
+        int replyNum = msg.bytes[1] & 0xFF;
+        int index = replyNum;
+
+        // check if replyNum is inside my current window
+        if (requests == null || responses == null ||
+            index < 0 || index >= requests.length)
+          return;
+
+        // verify response command code (capital of req command)
+        Msg req = requests[index];       
+        if (cmd != '!' && cmd != (req.bytes[0] & ~0x20))
+          throw new SoxException("Invalid response code " + cmd + " for " + req.bytes[0]);
+
+        // store response and notify requestor thread
+        this.responses[index] = msg;
+        notify();           
+      }
+    }
+    catch(Exception e)
+    {
+      e.printStackTrace();
+      close();
+    }
+  }
+
+  
 //////////////////////////////////////////////////////////////////////////
 // File Transfer
 //////////////////////////////////////////////////////////////////////////
@@ -391,18 +387,33 @@ public class SoxExchange
 ////////////////////////////////////////////////////////////////
 
   /**
-   * Send a single message and do not wait for any response.
+   * Convenience for <code>connect(null)</code>.
    */
-  public void send(Msg buf)
+  public synchronized void connect()
     throws Exception
   {
-    checkOpen();
-
-    if (client.traceMsg)
-      System.out.println("--> [send] " + (char)buf.command() + " replyNum=" + buf.replyNum());
-
-    session.send(buf.bytes, 0, buf.size);
+    connect(null);
   }
+
+  /**
+   * Break a big request into 255 request chunks since 
+   * we only have a one byte reply number.
+   */
+  private Msg[] chunkRequests(Msg[] req)
+    throws Exception
+  {                       
+    int total = req.length;
+    Msg[] res = new Msg[total];
+    for (int i=0; i < total;)
+    {
+      Msg[] chunkReq = new Msg[Math.min(0xff, total-i)];
+      System.arraycopy(req, i, chunkReq, 0, chunkReq.length);
+      Msg[] chunkRes = request(chunkReq);
+      System.arraycopy(chunkRes, 0, res, i, chunkRes.length);      
+      i += chunkReq.length;
+    } 
+    return res;
+  }                   
 
   Msg receive(long timeout)
     throws Exception
