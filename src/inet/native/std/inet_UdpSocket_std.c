@@ -184,6 +184,8 @@ Cell inet_UdpSocket_join(SedonaVM* vm, Cell* params)
 
   bool closed   = getClosed(self);
   socket_t sock = getSocket(self);
+  
+  int rc = -1;
 
   if (closed)
     return falseCell;
@@ -192,28 +194,27 @@ Cell inet_UdpSocket_join(SedonaVM* vm, Cell* params)
   // Join all-hosts multicast address group (used for device discovery)
   //
 
-#if defined( SOCKET_FAMILY_INET6 )
-  if (strchr(addr, ':')==NULL)          // assume IPv4 if addr contains no ':' chars
-#endif
-
+#if defined( SOCKET_FAMILY_INET )
   {
     struct ip_mreq mreq;
     mreq.imr_multiaddr.s_addr = inet_addr(addr);
     mreq.imr_interface.s_addr = INADDR_ANY;
-    setsockopt(sock, IPPROTO_IP, IP_ADD_MEMBERSHIP, (char *)&mreq, sizeof(mreq));
+    rc = setsockopt(sock, IPPROTO_IP, IP_ADD_MEMBERSHIP, (char *)&mreq, sizeof(mreq));
   }
-
-#if defined( SOCKET_FAMILY_INET6 )
-  else
+#elif defined( SOCKET_FAMILY_INET6 )
   {
     struct ipv6_mreq mreq;
     inet_pton( AF_INET6, addr, &(mreq.ipv6mr_multiaddr) );
     mreq.ipv6mr_interface = 0;
-    setsockopt(sock, IPPROTO_IPV6, IPV6_ADD_MEMBERSHIP, (char *)&mreq, sizeof(mreq));
+    rc = setsockopt(sock, IPPROTO_IPV6, IPV6_ADD_MEMBERSHIP, (char *)&mreq, sizeof(mreq));
   }
 #endif 
 
-  return trueCell;
+  if (rc==0) 
+    return trueCell;
+
+  printf("  setsockopt error %d joining multicast group %s\n", WSAGetLastError(), addr);
+  return falseCell;
 }
 
 //

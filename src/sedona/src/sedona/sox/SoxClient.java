@@ -667,16 +667,19 @@ public class SoxClient
     ArrayList arr = new ArrayList();
     for (int i=0; i<comps.length; ++i)
     {
+      if (comm().isSubscribed(comps[i])) continue;
       if ((comps[i].subscription & mask) != 0)
         arr.add(comps[i]);
     }
-    if (arr.size() == 0) return;
 
-    SoxComponent[] toUnsubscribe = (SoxComponent[])arr.toArray(new SoxComponent[arr.size()]);
-    if (getSoxVersion() != null)
-      batchUnsubscribe(toUnsubscribe, mask);
-    else
-      doUnsubscribe(toUnsubscribe, mask);
+    if (arr.size() > 0)
+    {
+      SoxComponent[] toUnsubscribe = (SoxComponent[])arr.toArray(new SoxComponent[arr.size()]);
+      if (getSoxVersion() != null)
+        batchUnsubscribe(toUnsubscribe, mask);
+      else
+        doUnsubscribe(toUnsubscribe, mask);
+    }
 
     // update subscription mask on each component
     for (int i=0; i<comps.length; ++i)

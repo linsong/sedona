@@ -128,6 +128,28 @@ public class DaspSocket
     throw new IllegalStateException(); 
   }
 
+  
+  /**
+   * Get ALL network interfaces able to route packets
+   * to the specified address.
+   */
+  public DaspSocketInterface[] allRoutes(InetAddress addr, int port)
+  {                           
+    DaspSocketInterface[] interfaces = interfaces();
+    ArrayList routefaces = new ArrayList();
+
+    for (int i=interfaces.length-1; i>=0; --i)
+    {                  
+      DaspSocketInterface iface = interfaces[i];   
+      if (iface.routes(addr, port)) routefaces.add(iface);
+    }
+
+    if (routefaces.isEmpty()) throw new IllegalStateException(); 
+
+    return (DaspSocketInterface[])routefaces.toArray(new DaspSocketInterface[0]);
+  }
+
+
   /**
    * Bind the specified interface to this socket.
    */
@@ -449,7 +471,7 @@ public class DaspSocket
     System.out.println("\n  Sending discover req to " + mcaddr + " on port " + port);
 
     // Find the right interface for the address...
-    DaspSocketInterface iface = route(mcaddr, port);
+    DaspSocketInterface[] iface = allRoutes(mcaddr, port);
 
     // Clear list of discovered nodes (create if necessary)
     if (discovered==null) discovered = new ArrayList();
@@ -458,7 +480,9 @@ public class DaspSocket
     // Send the message...
     try
     {
-      iface.send(dgPacket);    
+      System.out.println(" === Found " + iface.length + " interfaces for discover multicast");
+      for (int i=0; i<iface.length; i++)
+        iface[i].send(dgPacket);    
     }
     catch (IOException e)
     {
