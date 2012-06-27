@@ -318,8 +318,10 @@
 #define MetaSlot            236
 #define Cast                237
 #define LoadArrayLiteral    238
+#define LoadSlotId          239     // only used for IR; never in scode image
 
-#define NumOpcodes          239
+
+#define NumOpcodes          240
 
 #endif
 
@@ -818,6 +820,7 @@ const char* OpcodeNames[] =
   "MetaSlot",           // 236
   "Cast",               // 237
   "LoadArrayLiteral",   // 238
+  "LoadSlotId",         // 239 - only used for IR
 };
 
 // pointer offset used for null pointer check
@@ -1062,6 +1065,7 @@ const int8_t OpcodePointerOffsets[] =
    -1,   // 236 MetaSlot
    -1,   // 237 Cast
    -1,   // 238 LoadArrayLiteral
+   -1,   // 239 LoadSlotId - only used for IR
 };
 
 #endif
