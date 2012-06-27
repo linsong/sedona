@@ -678,6 +678,10 @@ public class SoxTest
     client.reorder(cb, new int[] { t.id(), s.id(), r.id() });
     client.update(cb, SoxComponent.TREE|SoxComponent.CONFIG|SoxComponent.RUNTIME|SoxComponent.LINKS);
     
+    // verify server side
+    verifyServer("verifyReorderCallback", Int.make(b.id()));
+
+
     // new order
     verifyEq(cb.childrenIds().length, 3);
     verifyEq(cb.childrenIds()[0], t.id());
@@ -690,6 +694,9 @@ public class SoxTest
     // order again
     client.reorder(cb, new int[] { t.id(), r.id(), s.id() });
     client.update(cb, SoxComponent.TREE|SoxComponent.CONFIG|SoxComponent.RUNTIME|SoxComponent.LINKS);
+    
+    // verify server side again
+    verifyServer("verifyReorderCallback", Int.make(b.id()));
     
     // new order 
     verifyEq(cb.childrenIds().length, 3);
