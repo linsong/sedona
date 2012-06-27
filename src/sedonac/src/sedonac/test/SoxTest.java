@@ -1033,8 +1033,10 @@ public class SoxTest
     System.out.println("]]]]]]]]]]]]]]]]]>>> TEST BINARY GET " + getProps);
     if ((binDropCount++ % 3) == 0)
       setupBinaryDrops();
-    
-    Properties respProps = client.getFile("blob.txt", SoxFile.make(b), getProps, null);
+
+    Properties respProps = tryTransfer(GETFILE, client, "blob.txt", SoxFile.make(b), getProps);
+    //Properties respProps = client.getFile("blob.txt", SoxFile.make(b), getProps, null);
+
     verifyEq(expected.length(), b.size);
     String s = new String(b.trim());
     System.out.println("Verify: " + expected + " == " + s);
@@ -1100,7 +1102,10 @@ public class SoxTest
     System.out.println();
     System.out.println("]]]]]]]]]]]]]]]]]>>> TEST FILE GET " + reqProps + " " + data.length());
     File g = new File(testDir(), "get.txt");
-    Properties resProps = client.getFile("transfer.txt", SoxFile.make(g), reqProps, null);
+
+    Properties resProps = tryTransfer(GETFILE, client, "transfer.txt", SoxFile.make(g), reqProps);
+    //Properties resProps = client.getFile("transfer.txt", SoxFile.make(g), reqProps, null);
+
     verify(g.exists());
     verifyEq(g.length(), f.length());
     verifyEq(data, readToStr(g));        
@@ -1109,7 +1114,10 @@ public class SoxTest
     System.out.println("]]]]]]]]]]]]]]]]]>>> TEST FILE PUT " + reqProps);
     // put/write out test file
     File p = new File(testDir(), "put.txt");
-    resProps = client.putFile("put.txt", SoxFile.make(f), reqProps, null);
+
+    resProps = tryTransfer(PUTFILE, client, "put.txt", SoxFile.make(f), reqProps);
+    //resProps = client.putFile("put.txt", SoxFile.make(f), reqProps, null);
+
     Thread.sleep(100); // give server a chance to close
     verify(p.exists());
     verifyEq(p.length(), f.length());
@@ -1298,6 +1306,62 @@ public class SoxTest
     verifyEq(link.toCompId,   to.id());
     verifyEq(link.toSlotId,   toSlot.id);
   }
+
+
+  /**
+   * Do a Sox file transfer, with a few retries if necessary.
+   * Allows for OS conditions that might cause file I/O to fail temporarily.
+   */
+  private final static int GETFILE = 0;
+  private final static int PUTFILE = 1;
+
+  private Properties tryTransfer(int which, SoxClient c, String fname, SoxFile f, Properties props)
+    throws Exception
+  {
+    Properties respProps = null;
+    final int maxAttempts = 10;
+    String fn = which==GETFILE ? "get" : "put";
+
+    // Retry to avoid test failure due to transient OS issue (file in use, etc).
+    // Give it maxAttempts chances to succeed before throwing exception. 
+    int t;
+    for (t=0; t<maxAttempts-1; t++)
+    {
+      try 
+      {  
+        if (which==GETFILE)      respProps = c.getFile(fname, f, props, null); 
+        else if (which==PUTFILE) respProps = c.putFile(fname, f, props, null); 
+        else throw new Exception("Error in test!");
+      }
+      catch (Exception e) { }
+
+      if (respProps!=null) break;
+      try { Thread.sleep(10); } catch (InterruptedException e) { }
+    }
+
+
+    // Try once more (if necessary), this time catch exception if any & fail
+    if (respProps==null) 
+    {
+      try 
+      {  
+        if (which==GETFILE)      respProps = c.getFile(fname, f, props, null); 
+        else if (which==PUTFILE) respProps = c.putFile(fname, f, props, null); 
+        else throw new Exception("Error in test!");
+      } 
+      catch (Exception e)
+      {
+        e.printStackTrace();
+        fail("\nFailed to " + fn + " file " + fname + " after " + maxAttempts + " attempts");
+      }
+    }
+    else
+      System.out.println("\t" + fn + "file(" + fname + ") succeeded after " + t + " failures.");
+    
+    return respProps;
+  }
+
+
 
 //////////////////////////////////////////////////////////////////////////
 // Listener
