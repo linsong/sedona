@@ -114,7 +114,8 @@ class TestComp extends AbstractTestComp
       childAdded = true
     else if (eType == Component.REMOVED)
       childRemoved = true
-    
+    else if (eType == Component.REORDERED)
+      childReordered = true
     return 0
   }
 
@@ -142,6 +143,7 @@ class TestComp extends AbstractTestComp
   bool parentRemoved
   bool childAdded
   bool childRemoved
+  bool childReordered
   bool linkAdded
   bool linkRemoved
   

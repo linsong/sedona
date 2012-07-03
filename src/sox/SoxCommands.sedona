@@ -698,6 +698,7 @@ class SoxCommands
     }
     if (last != null) last.nextSibling = Component.nullId
 
+    parent.childEvent(Component.REORDERED, null)
     parent.fireTreeChanged()
 
     res.cmd = 'O'

@@ -230,8 +230,9 @@ class Component
 // Component event callbacks
 //////////////////////////////////////////////////////////////////////////
 
-  define int ADDED   = 1
-  define int REMOVED = 0
+  define int REORDERED = 2
+  define int ADDED     = 1
+  define int REMOVED   = 0
 
   **
   ** Called on parent when a child event occurs.  Only called if app is
@@ -239,10 +240,13 @@ class Component
   **
   ** Defined event types are
   **
+  ** REORDERED - notification that a component's children have been reordered.  
+  **   Should always return 0.   Called by SoxCommands.reorderReq() after it
+  **   completes the reordering.
   ** ADDED - notification that child has been added to component.  Should
-  **   always return 0.   Called prior to loaded() / start() on child
+  **   always return 0.   Called prior to loaded() / start() on child.
   ** REMOVED - notification that child has been removed from component.  
-  **   Should always return 0.  Called after stop() on child
+  **   Should always return 0.  Called after stop() on child.
   **
   ** Future event types may make use of return code  
   **
@@ -258,10 +262,10 @@ class Component
   **
   ** Defined event types are
   **
-  ** ADDED - notification this child has been parented .  Should
-  **   always return 0.  Called prior to loaded() / start() on child
+  ** ADDED - notification this child has been parented.  Should
+  **   always return 0.  Called prior to loaded() / start() on child.
   ** REMOVED - notification that child has been removed/unparented.  
-  **   Should always return 0.  Called after stop() on child
+  **   Should always return 0.  Called after stop() on child.
   **
   ** Future event types may make use of return code  
   **

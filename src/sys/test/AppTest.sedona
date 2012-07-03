@@ -223,6 +223,7 @@ class AppTest
     assert(x.childAdded == false)
     assert(x.parentRemoved == false)
     assert(x.childRemoved == false)
+    assert(x.childReordered == false)
     assert(x.linkAdded == false)
     assert(x.linkRemoved == false)
 
@@ -230,6 +231,7 @@ class AppTest
     SubTestComp y = (SubTestComp)a.add(x, "y", SubTestComp.type)
 
     assert(x.childAdded == true)    
+    assert(x.childReordered == false)
     assert(y.parentAdded == true)
     assert(y.childAdded == false)
     assert(y.parentRemoved == false)
@@ -252,6 +254,7 @@ class AppTest
     // remove component
     assert(a.remove(y))
     assert(x.childRemoved == true)
+    assert(x.childReordered == false)
     assert(x.parentRemoved == false)
     assert(y.parentRemoved == true)    
     assert(y.childRemoved ==false)

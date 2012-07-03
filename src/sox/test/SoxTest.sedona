@@ -126,6 +126,12 @@ class SoxTest
     verify(c.name.equals("foobar"))
   }
 
+  action void verifyReorderCallback(int compId)
+  {
+    TestComp tc = (TestComp)Sys.app.lookup(compId)
+    verify(tc.childReordered)
+  }
+
   action void verifyDelete(int compId)
   {
     verify(Sys.app.lookup(compId) == null)
