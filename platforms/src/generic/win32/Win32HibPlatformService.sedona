@@ -1,0 +1,28 @@
+//
+// Copyright (c) 2010 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+// History:
+// 6/4/2010 - Dan Giorgis - creation
+
+
+**
+** Win32 Platform Service demonstrating use of hibernate.  
+** App will hibernate once per execute cycle.
+**
+class Win32HibPlatformService extends Win32PlatformService
+{  
+////////////////////////////////////////////////////////////////
+// Service
+////////////////////////////////////////////////////////////////
+  
+  ***
+  ** Perform a chunk of background work.  Return true
+  ** is there is pending work or false if the Service is
+  ** done working this cycle.
+  **
+  override bool work()
+  {
+    Sys.app.hibernate()
+    return false
+  }
+}

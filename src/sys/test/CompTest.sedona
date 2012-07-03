@@ -1,0 +1,458 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   24 Mar 07  Brian Frank  Creation
+//
+
+**
+** CompTest
+**
+class CompTest
+  extends Test
+{
+
+  static TestComp a = InheritTest.testComp
+  static SubTestComp b = InheritTest.subTestComp
+  
+  /* LOOPTEST
+  static void testReset()
+  {
+    a.reset()
+    b.reset()
+  }
+  */
+
+  static void testPrimitives()
+  {
+    Kit sys = Component.type.kit
+
+    assert(sys.types[0].name.equals("void"))
+    assert(sys.types[1].name.equals("bool"))
+    assert(sys.types[2].name.equals("byte"))
+    assert(sys.types[3].name.equals("short"))
+    assert(sys.types[4].name.equals("int"))
+    assert(sys.types[5].name.equals("long"))
+    assert(sys.types[6].name.equals("float"))
+    assert(sys.types[7].name.equals("double"))
+    assert(sys.types[8].name.equals("Buf"))
+
+    assert(sys.types[0] == void.type)
+    assert(sys.types[1] == bool.type)
+    assert(sys.types[2] == byte.type)
+    assert(sys.types[3] == short.type)
+    assert(sys.types[4] == int.type)
+    assert(sys.types[5] == long.type)
+    assert(sys.types[6] == float.type)
+    assert(sys.types[7] == double.type)
+    assert(sys.types[8] == Buf.type)
+
+    for (int i=0; i<9; ++i)
+    {
+      Type type = sys.types[i]
+      assert(type.kit == sys)
+      assert(type.slotsLen == 0)
+    }
+  }
+
+  static void testKitAndTypes()
+  {
+    Kit sys = Component.type.kit
+
+    // assert type literals
+    assert(a == InheritTest.testComp)
+    assert(a.type == TestComp.type)
+    assert(b.type == SubTestComp.type)
+
+    // assert type
+    assert(TestComp.type.name.equals("TestComp"))
+    assert(TestComp.type.kit.name.equals("sys"))
+    assert(b.type.name.equals("SubTestComp"))
+    assert(b.type.kit == TestComp.type.kit)
+
+    // assert Kit.types
+    assert(sys.typesLen >= 5)
+    assert(sys.findType("AbstractTestComp") == AbstractTestComp.type)
+    assert(sys.findType("TestComp") == TestComp.type)
+    assert(sys.findType("SubTestComp") == SubTestComp.type)
+    assert(sys.findType("TestService") == TestService.type)
+    assert(sys.findType("foobar") == null)
+
+    // assert Sys.kits
+    assert(Sys.kitsLen >= 1)
+    assert(Sys.findKit("sys") == sys)
+    assert(Sys.kits[sys.id] == sys)
+    assert(sys.name.equals("sys"))
+    assert(sys.version.get(0) == '1')
+    assert(sys.version.get(1) == '.')
+    assert(sys.version.get(2) == '2')        // open source minor version - may change!
+    
+    // assert Sys.findType
+    assert(Sys.findType("sys::TestComp") == TestComp.type)
+    assert(Sys.findType("foo::TestComp") == null)
+    assert(Sys.findType("sys::Foo")      == null)
+
+    // assert type ids
+    assert(sys.types[TestComp.type.id] == a.type)
+    assert(sys.types[b.type.id] == SubTestComp.type)
+  }
+
+  static void testTypeIs()
+  {
+    assert(Component.type.base == null)
+    assert(App.type.base == Component.type)
+    assert(Service.type.base == Component.type)
+    assert(SubTestComp.type.base == TestComp.type)
+    assert(AbstractTestComp.type.base == Component.type)
+
+    Type aType = a.type
+    assert(aType.is(TestComp.type))
+    assert(aType.is(AbstractTestComp.type))
+    assert(aType.is(Component.type))
+    assert(!aType.is(Service.type))
+    assert(!aType.is(SubTestComp.type))
+  }
+
+  @javaSkip    
+  static void testTypeSizeof()
+  {
+    // Sys.out.print("-- AbstractTestComp ").printInt(AbstractTestComp.type.sizeof).nl()
+    // Sys.out.print("-- TestComp         ").printInt(TestComp.type.sizeof).nl()
+    // Sys.out.print("-- SubTestComp      ").printInt(SubTestComp.type.sizeof).nl()
+
+    // we only test known mins independent of alignment issues
+    int overhead = 30
+    assert(AbstractTestComp.type.sizeof > overhead+5)
+    assert(TestComp.type.sizeof > overhead+5+24)
+    assert(TestComp.type.sizeof > AbstractTestComp.type.sizeof)
+  }           
+
+  static void testSlots()
+  {               
+    slots(a, false)
+    slots(b, true)
+  }
+
+  static void slots(TestComp c, bool isSubTestComp)
+  {
+    Type t = c.type     
+
+    /*
+    Sys.out.print("=== slots: ").print(t.name).nl()
+    Sys.out.print("  slots.length = ").printInt(t.slotsLen).nl()
+    for (int i=0; i<t.slotsLen; ++i)
+      Sys.out.print("  slots[").printInt(t.slots[i].id).print("]  ").print(t.slots[i].name).nl()
+    */
+
+    // check that slot ids match their position
+    // in slots array and check find by name
+    for (int i=0; i<t.slotsLen; ++i)
+    {
+      Slot slot = t.slots[i]
+      assert(slot.id == i)
+      assert(t.findSlot(slot.name) == slot)
+    }
+    assert(t.findSlot("yuck") == null)
+
+    // lookup slots
+    assert(t.slotsLen == (isSubTestComp ? 33 : 28))
+    int n = 0
+    Slot meta  = t.slots[n++]
+    Slot az    = t.slots[n++]
+    Slot ai    = t.slots[n++]
+    Slot z1    = t.slots[n++]
+    Slot z2    = t.slots[n++]
+    Slot b1    = t.slots[n++]
+    Slot b2    = t.slots[n++]
+    Slot s1    = t.slots[n++]
+    Slot s2    = t.slots[n++]
+    Slot i1    = t.slots[n++]
+    Slot i2    = t.slots[n++]
+    Slot j1    = t.slots[n++]
+    Slot j2    = t.slots[n++]
+    Slot f1    = t.slots[n++]
+    Slot f2    = t.slots[n++]
+    Slot d1    = t.slots[n++]
+    Slot d2    = t.slots[n++]
+    Slot bufA  = t.slots[n++]
+    Slot bufB  = t.slots[n++]
+    Slot str   = t.slots[n++]
+    Slot incI1 = t.slots[n++]
+    Slot setZ1 = t.slots[n++]
+    Slot addI1 = t.slots[n++]
+    Slot addJ1 = t.slots[n++]
+    Slot addF1 = t.slots[n++]
+    Slot addD1 = t.slots[n++]
+    Slot actionBuf = t.slots[n++]
+    Slot actionStr = t.slots[n++]
+
+    // slot literals
+    assert(meta == Component.meta)
+    assert(AbstractTestComp.az == az)
+    assert(TestComp.b2 == b2)
+    assert(addF1 == TestComp.addF1)
+    assert(TestComp.addF1.name.equals("addF1"))
+
+    // check names
+    assert(meta.name.equals("meta"))
+    assert(az.name.equals("az"))
+    assert(ai.name.equals("ai"))
+    assert(z1.name.equals("z1"))
+    assert(z2.name.equals("z2"))
+    assert(b1.name.equals("b1"))
+    assert(b2.name.equals("b2"))
+    assert(s1.name.equals("s1"))
+    assert(s2.name.equals("s2"))
+    assert(i1.name.equals("i1"))
+    assert(i2.name.equals("i2"))
+    assert(j1.name.equals("j1"))
+    assert(j2.name.equals("j2"))
+    assert(f1.name.equals("f1"))
+    assert(f2.name.equals("f2"))
+    assert(d1.name.equals("d1"))
+    assert(d2.name.equals("d2"))
+    assert(bufA.name.equals("bufA"))
+    assert(bufB.name.equals("bufB"))
+    assert(str.name.equals("str"))
+    assert(incI1.name.equals("incI1"))
+    assert(setZ1.name.equals("setZ1"))
+    assert(addI1.name.equals("addI1"))
+    assert(addF1.name.equals("addF1"))
+
+    // check types
+    assert(meta.type == int.type)
+    assert(az.type == bool.type)
+    assert(ai.type == int.type)
+    assert(z1.type == bool.type)
+    assert(z2.type == bool.type)
+    assert(b1.type == byte.type)
+    assert(b2.type == byte.type)
+    assert(s1.type == short.type)
+    assert(s2.type == short.type)
+    assert(i1.type == int.type)
+    assert(i2.type == int.type)
+    assert(j1.type == long.type)
+    assert(j2.type == long.type)
+    assert(f1.type == float.type)
+    assert(f2.type == float.type)
+    assert(d1.type == double.type)
+    assert(d2.type == double.type)
+    assert(bufA.type == Buf.type)
+    assert(c.bufA.bytesLen == 4)
+    assert(bufB.type == Buf.type)
+    assert(c.bufB.bytesLen == 2)
+    assert(str.type == Buf.type)
+    assert(c.str.bytesLen == 5)
+    assert(incI1.type == void.type)
+    assert(setZ1.type == bool.type)
+    assert(addI1.type == int.type)
+    assert(addJ1.type == long.type)
+    assert(addF1.type == float.type)
+    assert(addD1.type == double.type)
+
+    // check reflection getters
+    assert(c.getInt(meta) == 1)
+    assert(c.getBool(az) == true)
+    assert(c.getInt(ai) == 747)
+    assert(c.getBool(z1) == null)
+    assert(c.getBool(z2) == true)
+    assert(c.getInt(b1) == 0)
+    assert(c.getInt(b2) == 0xab)
+    assert(c.getInt(s1) == 0)
+    assert(c.getInt(s2) == 0xbeef)
+    assert(c.getInt(i1) == 0)
+    assert(c.getInt(i2) == -123456789)
+    assert(c.getLong(j1) == 0L)
+    assert(c.getLong(j2) == -3sec)
+    assert(c.getFloat(f1) == null)
+    assert(c.getFloat(f2) == 2.04)
+    assert(c.getDouble(d1) == 0.0d)
+    assert(c.getDouble(d2) == 256d)
+    assert(c.getBuf(bufA).toStr().equals(""))
+    assert(c.getBuf(bufB).toStr().equals(""))
+    assert(c.getBuf(str).toStr().equals("foo"))
+
+    // check reflection setters
+    clear(c); c.setInt(meta, 0xe0d); assert(c.meta == 0xe0d); verifyEvent(c, 'c')
+    clear(c); c.setBool(az, false); assert(c.az == false);  verifyEvent(c, 'r')
+    clear(c); c.setInt(ai, 303);    assert(c.ai == 303);    verifyEvent(c, 'r')
+    clear(c); c.setBool(z1, true);  assert(c.z1);           verifyEvent(c, 'c')
+    clear(c); c.setInt(b1, 0xe7);   assert(c.b1 == 0xe7);   verifyEvent(c, 'c')
+    clear(c); c.setInt(s1, 1234);   assert(c.s1 == 1234);   verifyEvent(c, 'c')
+    clear(c); c.setInt(i1, -77);    assert(c.i1 == -77);    verifyEvent(c, 'c')
+    clear(c); c.setLong(j1, 0x1234_5678_abcd_eeffL); assert(c.j1 == 0x1234_5678_abcd_eeffL); verifyEvent(c, 'c')
+    clear(c); c.setFloat(f1, 8.0);  assert(c.f1 == 8.0);    verifyEvent(c, 'c')
+    clear(c); c.setDouble(d1, -2.4d);  assert(c.d1 == -2.4d); verifyEvent(c, 'c')
+
+    // check short circuit sets when on change
+    clear(c);
+    c.setInt(meta, 0xe0d); verifyEvent(c, 0)
+    c.setBool(az, false); verifyEvent(c, 0)
+    c.setInt(ai, 303);    verifyEvent(c, 0)
+    c.setBool(z1, true);  verifyEvent(c, 0)
+    c.setInt(b1, 0xe7);   verifyEvent(c, 0)
+    c.setInt(s1, 1234);   verifyEvent(c, 0)
+    c.setInt(i1, -77);    verifyEvent(c, 0)
+    c.setLong(j1, 0x1234_5678_abcd_eeffL);  verifyEvent(c, 0)
+    c.setFloat(f1, 8.0);  verifyEvent(c, 0)
+    c.setDouble(d1, -2.4d);  verifyEvent(c, 0)
+
+    // check buf prop
+    clear(c);
+    c.getBuf(bufA).copyFromStr("abc");
+    c.changed(bufA)
+    assert(c.bufA.toStr().equals("abc"))
+    verifyEvent(c, 'c')
+
+    // check buf overrun
+    c.bufA.copyFromStr("0123");
+    c.bufB.copyFromStr("0123");
+    assert(c.bufA.toStr().equals("012"))
+    assert(c.bufB.toStr().equals("0"))
+
+    // check direct sets
+    clear(c); c.meta := 0305;                      verifyEvent(c, 'c')
+    clear(c); c.z2  := false;                      verifyEvent(c, 'r')
+    clear(c); assert((c.b2  := 101) == 101);       verifyEvent(c, 'r')
+    clear(c); c.s2  := 62013;                      verifyEvent(c, 'r')
+    clear(c); c.i2  := 0xdeadbabe;                 verifyEvent(c, 'r')
+    clear(c); c.j2  := 0xdead0000babeL;            verifyEvent(c, 'r')
+    clear(c); assert(801.4f == (c.f2  := 801.4f)); verifyEvent(c, 'r')    
+    clear(c); c.d2  := 45d;                        verifyEvent(c, 'r')
+    
+    // check flags
+    assert(meta.isProp());   assert(!meta.isAction()); assert(meta.isConfig());
+    assert(az.isProp());     assert(!az.isAction());   assert(!az.isConfig());
+    assert(i1.isProp());     assert(!i1.isAction());   assert(i1.isConfig());  assert(!i1.isOperator());
+    assert(i2.isProp());     assert(!i2.isAction());   assert(!i2.isConfig()); assert(i2.isOperator());
+    assert(!incI1.isProp()); assert(incI1.isAction()); assert(!incI1.isConfig());
+
+    // check reflection invokes  
+    
+    c.i1 := -77; c.j1 := 0x1234_5678_abcd_eeffL; c.f1 := 8.0f; c.d1 := -2.4d;
+    c.invokeVoid(incI1);        assert(c.i1 == -76)
+    c.invokeBool(setZ1, false); assert(c.z1 == false)
+    c.invokeInt(addI1, 78);     assert(c.i1 == 2)
+    c.invokeLong(addJ1, 0x1000_0000_0001_0000L);  assert(c.j1 == 0x2234_5678_abce_eeffL)
+    c.invokeFloat(addF1, 2.0);  assert(c.f1 == 10.0)
+    c.invokeDouble(addD1, 0.4d);  assert(c.d1 == -2d)
+
+    // if sub component check declared slots
+    if (isSubTestComp)
+    {
+      // lookup slots
+      Slot sb    = t.slots[n++]
+      Slot si    = t.slots[n++]
+      Slot sf    = t.slots[n++]
+      Slot sd    = t.slots[n++]
+      Slot addSI = t.slots[n++]
+
+      // check names
+      assert(sb.name.equals("sb"))
+      assert(si.name.equals("si"))
+      assert(sf.name.equals("sf"))
+      assert(sd.name.equals("sd"))
+      assert(addSI.name.equals("addSI"))
+
+      // check types
+      assert(sb.type == byte.type)
+      assert(si.type == int.type)
+      assert(sf.type == float.type)
+      assert(sd.type == double.type)
+      assert(addSI.type == int.type)
+
+      // check reflection getters
+      assert(c.getInt(sb) == 45)
+      assert(c.getInt(si) == 0)
+      assert(c.getFloat(sf) == 7.2)
+      assert(c.getDouble(sd) == null)
+
+      // check reflection setters
+      SubTestComp x = (SubTestComp)c
+      c.setInt(sb, 3);           assert(x.sb == 3)
+      c.setInt(si, 0xcafebabe);  assert(x.si == 0xcafebabe)
+      c.setFloat(sf, 1004.008);    assert(x.sf == 1004.008)
+
+      // check reflection invokes
+      x.si := 7; c.invokeInt(addSI, -5); assert(x.si == 2)
+    }
+  }
+
+  static void testImplicitSets()
+  {
+    verifyImplicitSets(0, a)
+  }
+
+  static void verifyImplicitSets(int dummy, TestComp c)
+  {
+    int dummy1 = dummy
+    int dummy2 = dummy
+    int dummy3 = dummy + dummy1 + dummy2
+    TestComp local = c
+    
+/*
+ *   This part of test moot since compound assgns for props not currently supported 
+ *
+    // prop sets via compound assignment (with and without leaves)      
+    c.b2 = c.s2 = c.i1 = 10; c.j1 = 0xABL; c.f1 = 3F; c.d2 = 8D;
+    int vi; long vj; double vd;
+    clear(c); local.b2  += 2;   verifyEvent(c, 'r'); assert(c.b2 == 12)
+    clear(c); vi = c.s2 -= 2;   verifyEvent(c, 'r'); assert(c.s2 == 8); assert(vi == 8)
+    clear(c); c.f1  *= 2F;      verifyEvent(c, 'c'); assert(c.f1 == 6F)
+    clear(c); vd = c.d2 /= 2D;  verifyEvent(c, 'r'); assert(c.d2 == 4D); assert(vd == 4D)
+    clear(c); local.i1 &= 7;    verifyEvent(c, 'c'); assert(c.i1 == 2)    
+    clear(c); c.j1  |= 0xCD00L; verifyEvent(c, 'c'); assert(c.j1 == 0xCDABL)
+    clear(c); vj = c.j1  >>= 4; verifyEvent(c, 'c'); assert(c.j1 == 0xCDAL); assert(vj == 0xCDAL)
+    clear(c); c.j1  ^= 0xFFL;   verifyEvent(c, 'c'); assert(c.j1 == 0xC25L);
+    clear(c); vi = c.i1 <<= 8;  verifyEvent(c, 'c'); assert(c.i1 == 0x200); assert(vi == 0x200);
+    
+    // prop sets via ++/-- (with and without leaves)      
+    clear(c); vi = ++c.b2;      verifyEvent(c, 'r'); assert(c.b2 == 13); assert(vi == 13);
+    clear(c); c.s2--;           verifyEvent(c, 'r'); assert(c.s2 == 7)
+    clear(c); ++c.i1;           verifyEvent(c, 'c'); assert(c.i1 == 0x201)
+    clear(c); vj = --c.j1;      verifyEvent(c, 'c'); assert(c.j1 == 0xC24L); assert(vj == 0xC24L);
+    clear(c); local.f1++;       verifyEvent(c, 'c'); assert(c.f1 == 7F);
+    clear(c); --local.d2;       verifyEvent(c, 'r'); assert(c.d2 == 3D);
+*/
+
+  }
+
+  static void clear(Component c)
+  {
+    for (int i=0; i<Watch.max; ++i)
+      c.watchFlags[i] = 0
+  }
+
+  static void verifyEvent(Component c, int kind)
+  {
+    int mask = 0
+    if (kind == 'c') mask = Watch.eventConfig
+    if (kind == 'r') mask = Watch.eventRuntime
+
+    for (int i=0; i<Watch.max; ++i)
+      assert(c.watchFlags[i] == mask)
+  }
+
+  /*
+  static void dump(Component c)
+  {
+    Type t = c.type
+    Sys.out.print("--- ").print(t.name).nl()
+    for (int i=0; i<t.slotsLen; ++i)
+    {
+      Slot slot = t.slots[i]
+      Sys.out.print("  ").print(slot.name).print(" = ")
+      if (slot.type == bool.type)      Sys.out.printBool(c.getBool(slot))
+      else if(slot.type == byte.type)  Sys.out.printInt(c.getInt(slot))
+      else if(slot.type == short.type) Sys.out.printInt(c.getInt(slot))
+      else if(slot.type == int.type)   Sys.out.printInt(c.getInt(slot))
+      else if(slot.type == float.type) Sys.out.printFloat(c.getFloat(slot))
+      else                             Sys.out.print("???")
+
+      Sys.out.nl()
+    }
+  }
+  */
+
+}

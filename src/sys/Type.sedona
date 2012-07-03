@@ -1,0 +1,119 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   28 Mar 07  Brian Frank  Creation
+//
+
+**
+** Type models the meta-data of a Component including its
+** virtual method tables and slot definitions.
+**
+const class Type
+{
+
+//////////////////////////////////////////////////////////////////////////
+// Type
+//////////////////////////////////////////////////////////////////////////
+
+  **
+  ** Return if this type is or extends from the specified type.
+  **
+  bool is(Type t)
+  {
+    Type x = this
+    while (x != null)
+    {
+      if (x == t) return true
+      x = x.base
+    }
+    return false
+  }                 
+  
+  **
+  ** Return if this one of the primitive types.
+  **
+  bool isPrimitive()
+  {                                            
+    return kit.id == 0 && id <= maxPrimitiveId
+  }
+
+  **
+  ** Allocate the memory required to store an instance of
+  ** this type and execute the type's instance initializer.
+  ** NOTE: this method is currently for sys use only!
+  **
+  internal native Obj malloc()
+
+//////////////////////////////////////////////////////////////////////////
+// Slots
+//////////////////////////////////////////////////////////////////////////
+
+  **
+  ** Get the slot for the specified id or return null if out of range.
+  **
+  Slot slot(int id)
+  {
+    if (0 <= id && id < slotsLen)
+      return slots[id]
+    return null
+  }
+
+  **
+  ** Find a slot by its simple name within this Type or
+  ** return null if not found.
+  **
+  Slot findSlot(Str name)
+  {
+    foreach (Slot slot : slots, slotsLen)
+      if (slot.name.equals(name)) return slot
+    return null
+  }
+
+//////////////////////////////////////////////////////////////////////////
+// Predefined Type Ids
+//////////////////////////////////////////////////////////////////////////
+
+  define int voidId   = 0
+  define int boolId   = 1
+  define int byteId   = 2
+  define int shortId  = 3
+  define int intId    = 4
+  define int longId   = 5
+  define int floatId  = 6
+  define int doubleId = 7
+  define int maxPrimitiveId = 7
+  define int bufId   = 8
+  define int errorId = 0xff
+
+//////////////////////////////////////////////////////////////////////////
+// Fields
+//////////////////////////////////////////////////////////////////////////
+
+  ** Unique id within this type's kit; index into kit.types.
+  const byte id
+
+  ** Simple name string of this type which unique within the kit.
+  const Str name
+
+  ** Reference to the Kit which contains this type.
+  const Kit kit
+
+  ** Reference to the base class type or null if Component itself.
+  const Type base
+
+  ** Number of bytes in memory an instance of this type requires.
+  const short sizeof
+
+  ** Block index of the type's instance initializer method.
+  private const short instanceInitMethod
+
+  ** The list of this type's reflective slots (properties
+  ** and actions) including inherited slots.
+  const inline Slot[] slots
+
+  ** The number of slots in the slots array.
+  const byte slotsLen
+
+}

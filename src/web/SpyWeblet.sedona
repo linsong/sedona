@@ -1,0 +1,627 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   11 Sep 06  Brian Frank  Creation
+//   06 Jun 07  Brian Frank  Port from Java to Sedona
+//
+
+**
+** SpyWeblet is a built-in weblet which provides diagnostics
+** visibility to the Sedona runtime.
+**
+class SpyWeblet
+  extends Weblet
+{
+
+////////////////////////////////////////////////////////////////
+// Weblet Registration
+////////////////////////////////////////////////////////////////
+
+  static void _sInit()
+  {
+    spy.register()
+  }
+  static internal inline SpyWeblet spy
+
+////////////////////////////////////////////////////////////////
+// Weblet
+////////////////////////////////////////////////////////////////
+
+  override Str prefix() { return "spy" }
+  
+  override Str description() { return "Sedona runtime diagnostics" }
+
+  override void get(WebReq req, WebRes res)
+  {
+    // route to non-html pages
+    Str p = ""
+    if (req.path.size > 1) p = req.path.names[1]
+    if (p.equals("backup")) { backupApp(req, res); return }
+
+    // start header
+    res.html()
+    nav(req, res)
+
+    // route to html pages
+    if (p.equals("app")) app(req, res)
+    else if (p.equals("kits"))  kits(req, res)
+    else if (p.equals("sox"))   sox(req, res)
+    else if (p.equals("echo"))  echo(req, res)
+    else if (p.equals("logs"))  logs(req, res)
+    else index(req, res)
+
+    // standard footer
+    res.htmlEnd()
+  }
+
+  private void nav(WebReq req, WebRes res)
+  {
+    Path path = req.path
+    res.w("<a href='/spy'>spy</a>")
+    for (int i=1; i<path.size; ++i)
+    {
+      res.w(" | <a href='")
+      for (int j=0; j<=i; ++j) res.w("/").w(path.names[j])
+      res.w("'>").w(path.names[i]).w("</a>")
+    }
+    res.w("<hr/>")
+  }
+
+////////////////////////////////////////////////////////////////
+// Index
+////////////////////////////////////////////////////////////////
+
+  public void index(WebReq req, WebRes res)
+  {
+    App app = Sys.app   
+    PlatformService plat = app.platform
+    res.w("Summary:\n");
+    res.w("<table border='0'>\n")                                                  
+    
+    res.w("  <tr>").td().w("platformType: ").td().w(plat.type.kit.name).w("::").w(plat.type.name).w("</td></tr>\n");
+    res.w("  <tr>").td().w("platformId: ").td().w(plat.platformId.toStr()).w("</td></tr>\n");
+    res.w("  <tr>").td().w("name: ").td().w(app.name).w("</td></tr>\n");
+    res.w("  <tr>").td().w("uptime: ").td().printElapsed(Sys.bootTime).w("</td></tr>\n");
+    res.w("  <tr>").td().w("cycleCount: ").td().printLong(app.cycleCount).print("</td></tr>\n");
+    res.w("</table><hr/>\n")
+
+    res.w("IndexSpy:\n")
+    res.w("<ul>\n")
+    res.w(" <li><a href='/spy/app'>App</a></li>\n")
+    res.w(" <li><a href='/spy/kits'>Kits</a></li>\n")
+    res.w(" <li><a href='/spy/logs'>Logging</a></li>\n")
+    res.w(" <li><a href='/spy/sox'>SoxService</a></li>\n")
+    res.w(" <li><a href='/spy/echo'>Echo Request</a></li>\n")
+    res.w(" <li><a href='/spy/backup'>Backup</a></li>\n")
+    res.w("</ul><hr/>\n")
+
+    res.w("Weblets:\n")
+    res.w("<ul>\n")
+    for (Weblet w = WebService.weblets; w != null; w = w.nextWeblet)
+    {
+      res.w(" <li><a href='/").w(w.prefix()).w("'>").w(w.prefix())
+         .w("</a> - ").w(w.description()).w("</li>\n")
+    }
+    res.w("</ul>\n")
+  }
+
+////////////////////////////////////////////////////////////////
+// App
+////////////////////////////////////////////////////////////////
+
+  void app(WebReq req, WebRes res)
+  {
+    Path path = req.path
+    if (req.path.size > 2)
+    {
+      int id = req.path.names[2].parseInt()
+      Component c = Sys.app.lookup(id)
+      if (c != null)
+      {
+        appComponent(req, res, c)
+        return
+      }
+    }
+
+    appComponent(req, res, Sys.app)
+  }
+
+  void appComponent(WebReq req, WebRes res, Component c)
+  {
+    App app = Sys.app
+    Type t = c.type
+
+    // table
+    res.w("<table border='0'>\n")
+    res.trTitle("Component", 2)
+
+    // path
+    res.w("<tr>").th("path").td()
+    res.w("<a href='/spy/app'>App</a>")
+    Component[] path = c.path()
+    if (path != null)
+    {
+      for (int i=0; path[i] != null; ++i)
+      {
+        Component x = path[i]
+        res.w(" / <a href='/spy/app/").wi(x.id).w("'>").w(x.name).w("</a>")
+      }
+    }
+    res.w("</td></tr>\n")
+
+    // meta-data
+    res.w("<tr>").th("id").td().wi(c.id).w("</td></tr>\n")
+    res.w("<tr>").th("name").td().w(c.name).w("</td></tr>\n")
+    res.w("<tr>").th("type").td().w(t.kit.name).w("::").w(t.name).w("</td></tr>\n")
+/* TODO
+    res.w("<tr>").th("watches").td()
+     res.w("subs = 0x").printHex(c.sessionSubscriptions)
+     res.w(" | config = 0x").printHex(c.sessionConfigChanges)
+     res.w(" | rt = 0x").printHex(c.sessionRuntimeChanges)
+     res.w("</td></tr>\n")
+*/
+
+    // slots
+    res.trTitle("Slots", 2)
+    res.w("<tr><td colspan='2'><table border='1'>\n")
+    res.w("<tr>").th("Id").th("Name").th("Type").th("Value").w("</tr>\n")
+    foreach (Slot slot : t.slots, t.slotsLen)
+    {
+      res.w("<tr>")
+      res.td().wi(slot.id).w("</td>")
+      res.td().w(slot.name).w("</td>")
+      res.td().w(slot.type.name).w("</td>")
+      if (slot.isProp())
+      {
+        res.td().printProp(c, slot).w("</td>")
+      }
+      else
+      {
+        res.w("<td>-</td>")
+      }
+      res.w("</tr>\n")
+    }
+    res.w("</table></td></tr>\n")
+
+    // children
+    res.trTitle("Children", 2)
+    res.w("<tr><td colspan='2'><table border='1'>\n")
+    componentTitle(req, res)
+    for (Component kid = app.lookup(c.children); kid != null; kid = app.lookup(kid.nextSibling))
+      componentRow(req, res, kid, true)
+    res.w("</table></td></tr>\n")
+
+    // links
+    if (c.linksFrom != null || c.linksTo != null)
+    {
+      res.trTitle("Links", 2)
+      res.w("<tr><td colspan='2'><table border='1'>\n")
+      res.w("<tr>").th("From").th("-&gt;").th("To").w("</tr>\n")
+
+      // links from
+      for (Link link = c.linksFrom; link != null; link = link.nextFrom)
+      {
+        Component to = app.lookup(link.toComp)
+        res.w("<tr>")
+           .td().w(t.slot(link.fromSlot).name)
+           .w("</td>").w("<td>-&gt;</td>")
+           .td(); href(res, to, to.name).w(".").w(to.type.slot(link.toSlot).name)
+           .w("</td></tr>\n")
+      }
+
+      // links to
+      for (Link link = c.linksTo; link != null; link = link.nextTo)
+      {
+        Component from = app.lookup(link.fromComp)
+        res.w("<tr>")
+           .td(); href(res, from, from.name).w(".").w(from.type.slot(link.fromSlot).name)
+           .w("</td>").w("<td>-&gt;</td>")
+           .td().w(t.slot(link.toSlot).name)
+           .w("</td></tr>\n")
+      }
+
+      res.w("</table></td></tr>\n")
+    }
+
+    res.w("</table>")
+  }
+
+  void componentTitle(WebReq req, WebRes res)
+  {
+    res.w("<table border='1'>\n")
+    res.w("<tr>")
+       .th("Id")
+       .th("Name")
+       .th("Type")
+       .w("</tr>\n")
+  }
+
+  void componentRow(WebReq req, WebRes res, Component c, bool tr)
+  {
+    if (c == null) return
+    if (tr) res.w("<tr>")
+    res.td(); href(res, c, Sys.intStr(c.id)).w("</td>")
+    res.td(); href(res, c, c.name).w("</td>")
+    res.td().w(c.type.kit.name).w("::").w(c.type.name).w("</td>")
+    if (tr) res.w("</tr>\n")
+  }
+
+  WebRes href(WebRes res, Component c, Str caption)
+  {
+    if (c == null) return res.w("null")
+    return res.w("<a href='/spy/app/").wi(c.id).w("'>").w(caption).w("</a>")
+  }
+
+////////////////////////////////////////////////////////////////
+// Kits
+////////////////////////////////////////////////////////////////
+
+  public void kits(WebReq req, WebRes res)
+  {
+    Path path = req.path
+    if (path.size > 2)
+    {
+      Kit kit = Sys.findKit(path.names[2])
+      if (kit != null)
+      {
+        if (path.size > 3)
+        {
+          Type t = kit.findType(path.names[3])
+          if (t != null)
+          {
+            kitsType(req, res, t)
+            return
+          }
+        }
+
+        kitsKit(req, res, kit)
+        return
+      }
+    }
+
+    kitsIndex(req, res)
+  }
+
+  public void kitsIndex(WebReq req, WebRes res)
+  {
+    res.w("<table border='1'>\n")
+    res.w("<tr>").th("Id").th("Name").th("Version").th("Checksum").w("</tr>\n")
+    foreach (Kit k : Sys.kits)
+    {
+      res.w("<tr>")
+      res.td().wi(k.id).w("</a></td>")
+      res.td().w("<a href='/spy/kits/").w(k.name).w("'>").w(k.name).w("</a></td>")
+      res.td().w(k.version).w("</td>")
+      res.td().w("0x").printHex(k.checksum).print("</td>")
+      res.w("</tr>\n")
+    }
+    res.w("</table>\n")
+  }
+
+  public void kitsKit(WebReq req, WebRes res, Kit k)
+  {
+    // meta-data
+    res.w("<table border='1'>\n")
+    res.trTitle("Kit", 2)
+    res.w("<tr>").th("id").td().wi(k.id).w("</td></tr>")
+    res.w("<tr>").th("name").td().w(k.name).w("</td></tr>")
+    res.w("<tr>").th("version").td().w(k.version).w("</td></tr>")
+    res.w("<tr>").th("checksum").td().w("0x").printHex(k.checksum); res.w("</td></tr>")
+
+    // types
+    res.trTitle("Types", 2)
+    res.w("<tr>").th("Id").th("Name").w("</tr>\n")
+    foreach (Type t : k.types, k.typesLen)
+    {
+      res.w("<tr>")
+      res.td().wi(t.id).w("</a></td>")
+      res.td().w("<a href='/spy/kits/").w(k.name).w("/").w(t.name).w("'>").w(t.name).w("</a></td>")
+      res.w("</tr>\n")
+    }
+    res.w("</table>\n")
+  }
+
+  public void kitsType(WebReq req, WebRes res, Type t)
+  {
+    Type base = t.base
+
+    // meta-data
+    res.w("<table border='0'>\n")
+    res.trTitle("Type", 2)
+    res.w("<tr>").th("id").td().wi(t.kit.id).w("::").wi(t.id).w("</td></tr>")
+    res.w("<tr>").th("qname").td().w(t.kit.name).w("::").w(t.name).w("</td></tr>")
+    res.w("<tr>").th("base").td()
+    if (base != null) res.w("<a href='/spy/kits/").w(base.kit.name).w("/").w(base.name).w("'>").w(base.kit.name).w("::").w(base.name).w("</a>")
+    res.w("</td></tr>")
+    res.w("<tr>").th("sizeof").td().wi(t.sizeof).w("</td></tr>")
+
+    // slots
+    res.trTitle("Slots", 2)
+    res.w("<tr><td colspan='2'><table border='1' width='100%'>\n")
+    res.w("<tr>").th("Id").th("Name").th("Type").w("</tr>\n")
+    foreach (Slot slot : t.slots, t.slotsLen)
+    {
+      res.w("<tr>")
+      res.td().wi(slot.id).w("</td>")
+      res.td().w(slot.name).w("</td>")
+      res.td().w(slot.type.name).w("</td>")
+      res.w("</tr>\n")
+    }
+    res.w("</table></td></tr>\n")
+
+    res.w("</table>")
+  }
+
+////////////////////////////////////////////////////////////////
+// Sox
+////////////////////////////////////////////////////////////////
+
+  void sox(WebReq req, WebRes res)
+  {
+    SoxService sox = (SoxService)Sys.app.lookupService(SoxService.type)
+    if (sox == null)
+    {
+      res.w("SoxService not installed")
+      return
+    }
+
+    Path path = req.path
+    if (path.size > 2)
+    {
+      int id =  path.names[2].parseInt()
+      if (0 <= id && id < Watch.max)
+      {
+//        soxWatch(req, res, sox.watches[id])
+        return
+      }
+    }
+
+    soxIndex(req, res, sox)
+  }
+
+  void soxIndex(WebReq req, WebRes res, SoxService sox)
+  {
+    res.w("<table border='1'>\n")
+    res.trTitle("SoxSessions", 5)
+    res.w("<tr>").th("Id").th("Closed").th("Address").th("Port").th("Last Receive").w("</tr>\n")
+    int i = 0                
+/* TODO    
+    foreach (SoxWatch w : sox.watches, Watch.max)
+    {
+      res.w("<tr>")
+      res.td().w("<a href='/spy/sox/").wi(i).w("'>Session ").wi(i).w("</a></td>")
+      res.td().printBool(w.closed).print("</td>")
+      res.td().w(w.addr.host.toStr()).w("</td>")
+      res.td().wi(w.addr.port).print("</td>")
+      res.td().printElapsed(w.lastReceiveTicks).print("</td>")
+      res.w("</tr>\n")
+      i++
+    }                          
+*/    
+    res.w("</table>\n")
+  }
+
+/* TODO
+  public void soxWatch(WebReq req, WebRes res, SoxWatch watch)
+  {
+    int index = watch.index
+
+    res.w("<b>Sox Session ").wi(watch.id()).w("</b>\n")
+
+    res.w("<table border='1'>\n")
+    res.trTitle("Subscriptions", 5).nl()
+    res.w("<tr>").th("Id").th("Name").th("Type").th("Subs").th("Events").w("</tr>\n")
+    foreach (Component c : Sys.app.comps, Sys.app.compsLen)
+      if  (c != null && (c.watchFlags[index] & Watch.subAll) != 0)
+        soxWatchRow(req, res, watch, c)
+    res.w("</table>")
+
+    res.w("<br/><br/>")
+    res.w("<table border='1'>\n")
+    res.trTitle("Event Queue", 2).nl()
+    res.w("<tr>").th("Component Id").th("Config/Runtime").w("</tr>")
+    for (int i=0; i<32; ++i)
+    {
+      int id = session.unackedEventCompIds[i]
+      if (id < 0) continue
+      bool cfg = (session.unackedEventTypes & i) != 0
+      res.w("<tr>")
+      res.td().wi(id).w("</td>")
+      res.td()
+        if (cfg) res.w("config")
+        else res.w("runtime")
+        res.w("</td>")
+      res.w("</tr>\n")
+    }
+    res.w("</table>")
+  }
+
+  public void soxWatchRow(WebReq req, WebRes res, SoxWatch w, Component c)
+  {
+    int flags = c.watchFlags[w.index]
+    res.w("<tr>")
+    componentRow(req, res, c, false)
+    tdWatchFlags(res, flags >> 4)
+    tdWatchFlags(res, flags & 0x4)
+    res.w("</tr>\n")
+  }
+*/
+/*
+  private void tdWatchFlags(WebRes res, int flags)
+  {
+    res.td()
+    if ((flags & Watch.eventTree)    != 0) res.writeChar('t')
+    if ((flags & Watch.eventConfig)  != 0) res.writeChar('c')
+    if ((flags & Watch.eventRuntime) != 0) res.writeChar('r')
+    if ((flags & Watch.eventLinks)   != 0) res.writeChar('l')
+    res.w("</td>")
+  }
+*/
+
+////////////////////////////////////////////////////////////////
+// Logs
+////////////////////////////////////////////////////////////////
+
+  public void logs(WebReq req, WebRes res)
+  {                              
+    if (req.path.size >= 4)
+    {
+      int id    = req.path.names[2].parseInt()
+      int level = req.path.names[3].parseInt()
+      Log log = Sys.log(id)
+      if (log != null) Sys.logLevels[id] = level
+    }
+  
+    res.w("<table border='1'>\n")
+    res.w("<tr>").th("Id").th("Name").th("None").th("Error")
+       .th("Warning").th("Message").th("Trace").w("</tr>\n")
+    foreach (Log log : Sys.logs, Sys.logsLen)
+    {
+      res.w("<tr>").td().wi(log.id).w("</td>").td().w(log.qname).w("</td>")
+      logLevel(res, log, Log.NONE)
+      logLevel(res, log, Log.ERROR)
+      logLevel(res, log, Log.WARNING)
+      logLevel(res, log, Log.MESSAGE)
+      logLevel(res, log, Log.TRACE)
+    }
+    res.w("</table>\n")
+  }                                     
+  
+  private void logLevel(WebRes res, Log log, int level)
+  { 
+    if (log.level() == level)
+      res.w("<td>X</td>")
+    else                      
+      res.w("<td><a href='/spy/logs/").wi(log.id).w("/").wi(level).w("'>O</a></td>")
+  }
+
+
+////////////////////////////////////////////////////////////////
+// Backup
+////////////////////////////////////////////////////////////////
+
+  public void backupApp(WebReq req, WebRes res)
+  {
+    // Write app contents as XML text to web page
+    res.writeStatus(200)
+    res.writeContentType("text/plain")
+    res.finishHeaders()
+
+    res.w("<?xml version='1.0'?>\n")
+    res.w("<sedonaApp>\n")
+    res.nl()
+
+    // List kits in schema
+    res.w("  <schema>\n")
+    foreach (Kit kit : Sys.kits, Sys.kitsLen)
+      res.w("    <kit name='").w(kit.name).w("' checksum='").printHex(kit.checksum).print("'/>\n")
+    res.w("  </schema>\n")
+    res.nl()
+
+    // Recursive backup starting with app
+    backupComp(res, Sys.app, 0)
+
+    res.nl()
+
+    // Backup links (walk linksTo on each component)
+    res.w("<links>\n")
+    foreach (Component c : Sys.app.comps, Sys.app.compsLen)
+    {
+      if (c == null) continue
+      for (Link link = c.linksTo; link != null; link = link.nextTo)
+        backupLink(Sys.app, res, link)
+    }
+    res.w("</links>\n")
+    res.nl()
+
+    res.w("</sedonaApp>\n")
+  }
+
+  private void backupComp(WebRes res, Component c, int indent)
+  {
+    Str tag = "comp"
+    if (c.name.equals("app"))
+    {
+      tag = "app"
+      res.spaces(indent).w("<").w(tag).w(">").nl()
+    }
+    else
+    {
+      res.spaces(indent).w("<").w(tag)
+      res.w(" name=\"").w(c.name).w("\" id=\"").w("${c.id}")
+      res.w("\" type=\"").w(c.type.kit.name).w("::").w(c.type.name)
+      res.w("\">").nl();
+    }
+
+    // config properties
+    foreach (Slot slot : c.type.slots, c.type.slotsLen)
+    {
+      if (slot.isProp() && slot.isConfig())
+      {
+        res.spaces(indent+2).w("<prop name=\"").w(slot.name).w("\" val=\"")
+        res.printProp(c, slot)
+        res.w("\" />").nl();
+      }
+    }
+
+    // children
+    int nextKid = c.children
+    while (nextKid != nullId)
+    {
+      res.nl();
+      Component kid = Sys.app.lookup(nextKid);
+      if (kid == null) continue;
+      backupComp(res, kid, indent+2);
+      nextKid = kid.nextSibling
+    }
+
+    // close component
+    res.spaces(indent).w("</").w(tag).w(">")
+  }
+
+
+
+  private void backupLink(App app, WebRes res, Link link)
+  {
+    // TODO: path based links not really supported correctly
+    Component from = app.lookup(link.fromComp);
+    Component to   = app.lookup(link.toComp);
+    if (from == null || to == null) return;
+
+    Slot fromSlot = from.type.slot(link.fromSlot);
+    Slot toSlot   = to.type.slot(link.toSlot);
+    if (fromSlot == null || toSlot == null) return;
+
+    res.spaces(2).w("<link from=\"")
+    recurPrint(res, from, "/")
+    res.w(".").w(fromSlot.name).w("\" to=\"")
+    recurPrint(res, to, "/")
+    res.w(".").w(toSlot.name).w("\" />").nl();
+  }
+
+
+
+  // Print component names with given delimiter d
+  private void recurPrint(WebRes res, Component c, Str d)
+  {
+    if (c==null) return
+    if ((c.parent!=nullId) && (c.parent!=0))
+      recurPrint(res, Sys.app.lookup(c.parent), d)
+    res.w(d).w(c.name)
+  }
+
+
+////////////////////////////////////////////////////////////////
+// Echo
+////////////////////////////////////////////////////////////////
+
+  public void echo(WebReq req, WebRes res)
+  {
+    res.w("<pre>\n")
+    req.dump(res)
+    res.w("</pre>\n")
+  }
+
+}

@@ -1,0 +1,34 @@
+**
+** Reference implementation for an in-memory platform manifest file store
+**
+final class PlatformManifestServer extends MemoryFileStore
+{
+  PlatformManifestServer()
+  {
+    FileStore.insert(this)
+  }
+  
+  override bool accept(Str name)
+  {
+    return name.startsWith("p:")
+  }
+
+  override int getMemorySize(File f)
+  {
+    return getPmSize()
+  }
+
+  override bool openMemoryFile(MemoryFile m)
+  {
+    if (m.writable())
+      return false
+    if (!m.file.name.equals("p:"))
+      return false
+    m.size = getPmSize()
+    m.mem = getPmBytes()
+    return true
+  }
+
+  private native int getPmSize()
+  private native byte[] getPmBytes()
+}

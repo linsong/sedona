@@ -1,0 +1,253 @@
+//
+// Copyright (c) 2007-2011 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   10 Jan 2007  Andy Saunders  Creation
+//   27 Apr 2007  Brian Frank    Port from Java to Sedona
+//   22 Apr 2009  Elizabeth McKenney   Updated
+//   29 Jul 2009  Clif Turman     Refactored to add computeConstants private method to fix scaledMin/scaledMax
+//                not being recomputed whenever ki or kp changed.
+//   07 Jul 2011  Clif Turman     Added maxDelta property, kp/ki changes cause errorSum to be recomputed to prevent
+//                jumps in output value, changed precision to 6 for all k's 
+//
+
+**
+** Pid Loop object
+**
+@niagaraIcon="module://icons/x16/control/numericPoint.png"
+class LP
+  extends Component
+{
+  ** loop enable.  If false, output is held constant at previous value
+  @config property bool enable = true
+
+  ** setpoint
+  @config @summary property float sp    = 0.0f
+
+  ** process feedback
+  @precision=3 property float cv    = 0.0f
+ 
+  ** out value, constrained to be between min and max
+  @readonly property float out
+
+  ** proportional constant
+  @precision=6 @min=0f 
+  @config property float kp = 1.0f
+  
+  ** integral constant
+  @precision=6 @min=0f 
+  @unit = Units.per_minute
+  @config property float ki = 0.0f  // units repeats / minute
+
+  ** derivative constant
+  @precision=6 @min=0f 
+  @unit = Units.second
+  @config property float kd = 0.0f
+
+  ** max out value
+  @precision=6 
+  @config property float max   = 100.0f
+
+  ** min out value
+  @precision=6 
+  @config property float min   = 0.0f
+  
+  ** bias is applied directly to output if ki equals 0
+  @precision=6 
+  @config property float bias  = 0.0f
+
+  ** the max amount out is allowed to change in exTime ms
+  ** A setting of 0 disables this function
+  @precision=6 @min=0f 
+  @config property float maxDelta = 0f
+  
+  ** direct acting or reverse acting process
+  @config property bool direct = true 
+
+  ** loop is executed every exTime ms
+  @min=0 @unit=Units.millisecond 
+  @config property int exTime  = 1000
+
+  **
+  ** Callback when component is first started in an app.
+  **
+  virtual override void start()
+  {
+    kiOld = ki
+    kpOld = kp
+    computeConstants()
+  }
+
+
+  **
+  ** Execute is called once every scan.
+  **
+  virtual override void execute()
+  {
+    if (!enable) return
+
+    long now = Sys.ticks()
+        
+    // return if not time to execute
+    //long executeTime = (1ms *  (long)exTime)
+    long deltaTime = now - lastExecTime
+    if ( deltaTime < executeTime)
+      return;
+
+    lastExecTime = now
+
+    if (kp == 0.0f)
+      return;
+
+    // Note this does not check for valid setpoint and cv
+
+    // calculate execution time as a float in seconds
+    float deltaSecs = (float)deltaTime / float1sec
+
+    //  Calculate the current error
+    float error = sp - cv
+
+    //  Accumulate the error for integral control
+    if (ki != 0.0)
+    {
+      float iError = deltaSecs * error
+      errorSum += iError
+
+      // Constrain the error sum to prevent integral windup
+      if (direct)
+      {
+        if (-errorSum > scaledMax)
+          errorSum = -scaledMax
+        else if (-errorSum < scaledMin)
+          errorSum = -scaledMin
+      }
+      else
+      {
+        if (errorSum > scaledMax)
+          errorSum = scaledMax
+        else if (errorSum < scaledMin)
+          errorSum = scaledMin
+      }
+    }
+
+    //  Calculate the proportional gain
+    float proportionalGain = error * kp
+
+    //  Calculate the integral gain
+    //  All gain values are calculated in seconds.  Convert integral
+    //  term (resets per minute) to resets per second
+    float integralGain = kp * ki * errorSum / 60.0f
+
+    //  Calculate the derivative gain
+    float derivativeGain = kp * kd * (error - lastError) / deltaSecs
+
+    //  Store the last error for derivative gain
+    lastError = error
+
+    //  Calculate the overall gain
+    float pv = proportionalGain + integralGain + derivativeGain
+
+    //  Apply action
+    if ( direct )
+      pv = - pv;
+
+    //  Add bias if not PI
+    if (ki == 0.0f)
+      pv = pv + bias
+
+    // Constrain the overall gain
+    if (pv > max)
+      pv = max
+    else if (pv < min)
+      pv = min
+
+    //maxDelta = 0 disables max change check
+    if(maxDelta != 0f)
+    {
+      if(out > pv)
+      {
+        //we need to adjust out down
+        if(out - pv > maxDelta)
+          out := out - maxDelta
+        else
+          out := pv
+      }
+      else
+      {
+        //we need to adjust out up
+        if(pv - out > maxDelta)
+          out := out + maxDelta
+        else
+          out := pv
+      }
+    }
+    else
+      out := pv
+  }
+
+
+  **
+  ** Behavior to execute when a property is changed externally
+  ** 
+  virtual override void changed(Slot slot)
+  {
+    if ((slot == LP.kp) ||
+        (slot == LP.ki) ||
+        (slot == LP.kd) ||
+        (slot == LP.max) ||
+        (slot == LP.min) ||
+        (slot == LP.exTime))
+    {
+      computeConstants()
+    }
+    
+    //prevent output jump if kp is changed
+    if(slot == LP.kp)
+    {
+      if(kp != 0f && kpOld != 0f)
+        errorSum = errorSum*kpOld/kp
+      kpOld = kp
+    }
+
+    //prevent output jump if ki is changed
+    if(slot == LP.ki)
+    {
+      if(ki != 0f && kiOld != 0f)
+        errorSum = errorSum*kiOld/ki
+      kiOld = ki
+    }
+      
+    super.changed(slot)    
+  }
+
+  private void computeConstants()
+  {
+    executeTime = (long)exTime * 1ms  //convert exTime into ticks
+    kPkIconst   = kp * ki / 60.0f
+    if (kPkIconst==0.0f)
+    {
+      scaledMax = 0.0f
+      scaledMin = 0.0f
+    }
+    else
+    {
+      scaledMax = max / kPkIconst
+      scaledMin = min / kPkIconst
+    }
+  }
+
+  private long  executeTime
+  private float kPkIconst
+  private float kpOld
+  private float kiOld
+  private float scaledMax
+  private float scaledMin
+
+  private define float float1sec = (float)1sec
+  
+  // Values cached between executions
+  private long  lastExecTime = 0L
+  private float errorSum     = 0.0
+  private float lastError    = 0.0
+}

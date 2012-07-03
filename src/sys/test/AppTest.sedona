@@ -1,0 +1,463 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   16 Aug 06  Brian Frank  Creatiion
+//   22 May 07  Brian Frank  Port from Java to Sedona
+//
+
+**
+** AppTest
+**
+class AppTest
+  extends Test
+{
+
+  static App appA = Sys.app
+
+  /* LOOPTEST
+  static void testReset()
+  {
+    appA.cleanupApp()
+  }
+  */
+
+  static void test()
+  {
+    // init original app
+    App a = appA
+    a.initApp(10)
+    a.appName.copyFromStr("App_A")
+    assert(a.id == 0)
+    assert(a.lookup(0) == a)
+
+    // TestService s1 (child of a)
+    assert(a.services == null)
+    assert(a.lookupService(TestService.type) == null)
+    TestService s1 = (TestService)a.add(a, "s1", TestService.type)
+    assert(s1 != null)
+    assert(a.services == s1)
+    assert(a.lookupService(TestService.type) == s1)
+    assert(a.lookupService(TestComp.type) == null)
+
+    // Component x (child of app)
+    TestComp x = (TestComp)a.add(a, "x", TestComp.type)
+    assert(x != null)
+    x.z1 := true
+    x.b1 := 0x98
+    x.i1 := 1972
+    x.f1 := 0.0002467
+    x.str.copyFromStr("bar")
+
+    // Issue 19880: don't allow siblings with duplicate names
+    assert(a.add(a, "x", TestComp.type) == null)
+
+    // Component y (child of app)
+    TestComp y = (TestComp)a.add(a, "y", TestComp.type)
+    assert(y != null)
+
+    // Component z (child of x)
+    SubTestComp z = (SubTestComp)a.add(x, "z", SubTestComp.type)
+    assert(z != null)
+    z.i1 := 70_001
+    z.si := 70_002
+
+    // TestService s2 (child of z)
+    TestService s2 = (TestService)a.add(z, "s2", TestService.type)
+    assert(s2 != null)
+    assert(a.services == s2)
+    assert(a.services.nextService == s1)
+    assert(a.lookupService(TestService.type) == s2)
+    assert(a.lookupService(TestComp.type) == null)
+
+    Slot i1 = TestComp.i1
+    Slot i2 = TestComp.i2
+    // link:  x.i1 -> y.i2
+    assert(a.addLink(x, i1, y, i2) != null)
+    // link:  x.i1 -> z.i1
+    assert(a.addLink(x, i1, z, i1) != null)
+    // link:  y.i2 -> x.i2
+    assert(a.addLink(y, i2, z, i2) != null)
+    // link:  z.i1 -> y.i1
+    assert(a.addLink(z, i1, y, i1) != null)
+
+    // duplicate links should fail
+    assert(a.addLink(x, i1, y, i2) == null)
+    assert(a.addLink(x, i1, z, i1) == null)
+    assert(a.addLink(y, i2, z, i2) == null)
+    assert(a.addLink(z, i1, y, i1) == null)
+
+    // we do not allow multiple links into the same slot
+    assert(a.addLink(x, i1, z, i2) == null)
+    assert(a.addLink(y, i2, z, i1) == null)
+
+    // sanity check what we just built
+    verifyTestApp(a, s1, x, y, z, s2)
+
+
+    // DEBUG
+    //dumpApp(a, "Dump app A")
+    // DEBUG
+
+
+    // serialize
+    Sys.out.print("--> serialize/deserialize app\n")
+    
+    // Rename app A for serialization
+    a.appName.copyFromStr("App_ser")
+
+    Buf buf = BufTest.buf
+    BufOutStream out = BufTest.out
+    BufInStream in = BufTest.in
+    buf.clear()
+
+    // The schema for an App could be arbitrarily large, but our buf is
+    // fixed size. Save off the schema size in case serialization fails.
+    a.saveSchema(out)
+    int schemaSize = buf.size
+    buf.clear()
+    int saveOk = a.saveApp(out)
+    if (saveOk != 0)
+    {
+      Sys.out.print("Failed to serialize, err = $saveOk\n")
+             .print("  buf.size = $buf.size, schema size = $schemaSize\n")
+             .print("(If schema is too large, may not have enough room to serialize app.)\n")
+      assert(false)
+    }
+    else
+      assert(true)
+
+    // deserialize
+    in.rewind()
+
+    // Rename app A to differentiate from B
+    a.appName.copyFromStr("App_old")
+
+    a.cleanupApp()
+    a.initApp(10)
+    int loadOk = a.loadApp(in) 
+    if (loadOk != 0)
+    {
+      Sys.out.print("Failed to de-serialize, err = $loadOk\n")
+      assert(false)
+    }
+    else
+      assert(true)
+
+    a.appName.copyFromStr("App_new")
+
+
+    // verify what we serialized/deserialized is what we built
+    s1 = (TestService)a.lookup(1);
+    x  = (TestComp)a.lookup(2);
+    y  = (TestComp)a.lookup(3);
+    z  = (SubTestComp)a.lookup(4);
+    s2 = (TestService)a.lookup(5);
+    verifyTestApp(a, s1, x, y, z, s2)
+
+    // verify remove
+    assert(a.lookup(1) == s1)
+    assert(a.lookup(2) == x)
+    assert(a.lookup(3) == y)
+    assert(a.lookup(4) == z)
+    assert(a.lookup(5) == s2)
+
+    // remove x (which also removes z and s)
+    assert(a.remove(x))
+    assert(a.lookup(1) == s1)
+    assert(a.lookup(2) == null)
+    assert(a.lookup(3) == y)
+    assert(a.lookup(4) == null)
+    assert(a.lookup(5) == null)  
+    verifyChildren(a, s1, y, null)
+    assert(y.id == 3)
+    assert(a.services == s1)
+    assert(a.services.nextService == null)
+    assert(a.lookupService(TestService.type) == s1)
+
+    // remove s1
+    assert(a.remove(s1))
+    assert(a.lookup(1) == null)
+    assert(a.lookup(2) == null)
+    assert(a.lookup(3) == y)
+    assert(a.lookup(4) == null)
+    assert(a.lookup(5) == null)
+    verifyChildren(a, y, null, null)
+    assert(y.id == 3)
+    assert(a.services == null)
+
+    // remove y
+    assert(a.remove(y))
+    assert(a.lookup(1) == null)
+    assert(a.lookup(2) == null)
+    assert(a.lookup(3) == null)
+    assert(a.lookup(4) == null)
+    assert(a.lookup(5) == null)
+    verifyChildren(a, null, null, null)
+    assert(a.services == null)
+
+    // remove y
+    assert(!a.remove(y))
+
+    // cleanup
+    a.cleanupApp()
+
+    
+    // Test callbacks (unrelated to preceding tests)
+    verifyCallbacks()
+
+  }
+
+
+//  Issue 19700 - lifecycle callbacks
+  static void verifyCallbacks()
+  {
+    // init original app
+    App a = appA
+    a.initApp(10)
+
+    // Component x (child of app)
+    TestComp x = (TestComp)a.add(a, "x", TestComp.type)    
+    assert(x.parentAdded == true)
+    assert(x.childAdded == false)
+    assert(x.parentRemoved == false)
+    assert(x.childRemoved == false)
+    assert(x.childReordered == false)
+    assert(x.linkAdded == false)
+    assert(x.linkRemoved == false)
+
+    // Component y (child of x)
+    SubTestComp y = (SubTestComp)a.add(x, "y", SubTestComp.type)
+
+    assert(x.childAdded == true)    
+    assert(x.childReordered == false)
+    assert(y.parentAdded == true)
+    assert(y.childAdded == false)
+    assert(y.parentRemoved == false)
+    assert(y.childRemoved == false)
+    assert(y.linkAdded == false)
+    assert(y.linkRemoved == false)
+
+
+    // link:  x.i1 -> y.i2
+    Link xylink = a.addLink(x, TestComp.i1, y, TestComp.i2)
+    assert(xylink != null)
+    assert(x.linkAdded == true)
+    assert(y.linkAdded == true)
+
+    //  verify link callbacks
+    assert(a.removeLink(xylink) == true)
+    assert(x.linkRemoved == true)
+    assert(y.linkRemoved == true)
+
+    // remove component
+    assert(a.remove(y))
+    assert(x.childRemoved == true)
+    assert(x.childReordered == false)
+    assert(x.parentRemoved == false)
+    assert(y.parentRemoved == true)    
+    assert(y.childRemoved ==false)
+
+    // cleanup
+    a.cleanupApp()
+
+  }
+
+
+
+  static void verifyTestApp(App a, TestService s1, TestComp x, TestComp y, SubTestComp z, TestService s2)
+  {
+    // ids
+    assert(a.id  == 0)
+    assert(s1.id == 1)
+    assert(x.id  == 2)
+    assert(y.id  == 3)
+    assert(z.id  == 4)
+    assert(s2.id == 5)
+
+    // lookup
+    assert(a.lookup(0) == a)
+    assert(a.lookup(1) == s1)
+    assert(a.lookup(2) == x)
+    assert(a.lookup(3) == y)
+    assert(a.lookup(4) == z)
+    assert(a.lookup(5) == s2)
+    assert(a.lookup(6)   == null)
+    assert(a.lookup(100) == null)
+    assert(a.lookup(-1)  == null)
+
+    // paths
+    if (a == Sys.app)
+    {
+      verifyPath(a,  null, null, null)
+      verifyPath(s1, s1, null, null)
+      verifyPath(x,  x, null, null)
+      verifyPath(z,  x, z, null)
+      verifyPath(s2, x, z, s2)
+      verifyPath(y,  y, null, null)
+    }
+
+    assert(s1.id == 1)
+    assert(x.id  == 2)
+    assert(y.id  == 3)
+    assert(z.id  == 4)
+    assert(s2.id == 5)
+
+    // parent/children:
+    //  a
+    //  +- s1
+    //  +- x
+    //  |  +- z
+    //  |     + -s2
+    //  +- y
+    verifyChildren(a, s1, x, y)
+    verifyChildren(x, z, null, null)
+    verifyChildren(z, s2, null, null)
+    verifyChildren(y, null, null, null)
+
+    // verify Component x
+    assert(x.z1 == true)
+    assert(x.b1 == 0x98)
+    assert(x.i1 == 1972)
+    assert(x.f1 == 0.0002467)
+    assert(x.str.toStr().equals("bar"))
+    verifyRuntimeDefaults(x)
+
+    // Component y (child of app)
+    assert(y.str.toStr().equals("foo"))
+    verifyRuntimeDefaults(y)
+
+    // Component z (child of x)
+    assert(z.i1 == 70_001)
+    assert(z.si == 70_002)
+    verifyRuntimeDefaults(z)
+
+    // verify links
+    //   x.i1 -> y.i2
+    //   x.i1 -> z.i1
+    //   y.i2 -> x.i2
+    //   z.i1 -> y.i1
+    Slot i1 = TestComp.i1
+    Slot i2 = TestComp.i2
+    verifyLink(x, i1, y, i2)
+    verifyLink(x, i1, z, i1)
+    verifyLink(y, i2, z, i2)
+    verifyLink(z, i1, y, i1)
+  }
+
+  static void verifyLink(Component from, Slot fromSlot, Component to, Slot toSlot)
+  {
+    //Sys.out.print("--- verifyLink ")
+    //   .print(from.name).print(".").print(fromSlot.name).print(" -> ")
+    //   .print(to.name).print(".").print(toSlot.name).nl()
+
+    // find link in "to" component
+    Link link = null
+    for (link = to.linksTo; link != null; link = link.nextTo)
+    {
+      if (link.fromComp == from.id && link.fromSlot == fromSlot.id &&
+          link.toComp   == to.id   && link.toSlot   == toSlot.id)
+        break
+    }
+    assert(link != null)
+
+    // find that same link in "from" component
+    Link toFind = link
+    for (link = from.linksFrom; link != null; link = link.nextFrom)
+      if (link == toFind) break
+    assert(link != null)
+  }
+
+
+  static void verifyPath(Component c, Component p0, Component p1, Component p2)
+  {
+    Component[] path = c.path()
+    assert(path != null)
+    assert(path[0] == p0)
+    if (p0 != null)
+    {
+      assert(path[1] == p1)
+      if (p1 != null)
+      {
+        assert(path[2] == p2)
+      }
+    }
+  }
+
+  static void verifyChildren(Component p, Component c1, Component c2, Component c3)
+  {
+    /*
+    Sys.out.print("--  verifyChildren ").print((Str)p.name).nl()
+    dumpTreeInfo(p)
+    dumpTreeInfo(c1)
+    dumpTreeInfo(c2)
+    dumpTreeInfo(c3)
+    */
+
+    if (c1 == null) assert(p.children == Component.nullId)
+    else
+    {
+      assert(c1.parent == p.id)
+      assert(p.children == c1.id)
+      if (c2 == null) assert(c1.nextSibling == Component.nullId)
+      else
+      {
+        assert(c2.parent == p.id)
+        assert(c1.nextSibling == c2.id)
+        if (c3 == null) assert(c2.nextSibling == Component.nullId)
+        else
+        {
+          assert(c3.parent == p.id)
+          assert(c2.nextSibling == c3.id)
+          assert(c3.nextSibling == Component.nullId)
+        }
+      }
+    }
+  }
+
+  static void verifyRuntimeDefaults(TestComp c)
+  {
+    assert(c.z2 == true)
+    assert(c.ai == 747)
+    assert(c.b2 == 0xab)
+    assert(c.i2 == -123456789)
+    assert(c.f2 == 2.04)
+  }
+
+  /*
+  static void dumpTreeInfo(Component c)
+  {
+    if (c == null) return
+    Str name = (Str)c.name
+    Sys.out.print("      ").print(name).print(".id       = ").printInt(c.id).nl()
+    Sys.out.print("      ").print(name).print(".parent   = ").printInt(c.parent).nl()
+    Sys.out.print("      ").print(name).print(".children = ").printInt(c.children).nl()
+    Sys.out.print("      ").print(name).print(".nextSib  = ").printInt(c.nextSibling).nl()
+  }
+  */
+
+  /*
+  static void dumpApp(App a, Str title)
+  {
+    Sys.out.print("\n$title: name=${a.name}  appName=${a.appName.toStr()}\n")
+    for (int cid=0; cid<a.compsLen; cid++)
+    {
+      Component c = a.comps[cid]
+      if (c==null)
+      {
+        Sys.out.print("  Comp#$cid: null\n")
+        continue
+      }
+      
+      Sys.out.print("  Comp#$cid:\tname=${c.name}\ttype=${c.type.name}")
+      if (c.linksTo==null)   Sys.out.print("\t${c.name}.linksTo=null")
+      if (c.linksFrom==null) Sys.out.print("\t${c.name}.linksFrom=null")
+      Sys.out.nl()
+    }
+    Sys.out.nl()
+  }
+  */
+
+}
+
