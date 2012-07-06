@@ -72,7 +72,7 @@ public abstract class DaspSocketInterface
   /**
    * Start interface - called by DaspSocket.addInterface
    */
-  void start(DaspSocket s)
+  public void start(DaspSocket s)
   {
     daspSocket = s;
 
@@ -86,7 +86,7 @@ public abstract class DaspSocketInterface
   /**
    * Stop and close down interface - called by DaspSocket.close
    */
-  void stop()
+  public void stop()
   {
     // kill background threads
     try { receiver.interrupt(); receiver = null; } catch (Exception e) {}
