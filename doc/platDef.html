@@ -118,10 +118,9 @@ The following is an example platform definition file for a win32 platform.
     &lt;contact email="jdoe@acme.com" url="http://www.acme.com/sedona/help.html" />
     &lt;schemes>
       &lt;!-- this platform implements the manifest transfer scheme -->
-      &lt;!-- transfer attribute may be 'single' or 'multi'. Single (default) means
-           only transfer all manifests in a single zip, and multi means to
-           transfer each manifest as an individual zip file -->
-      &lt;scheme id="m" transfer="single" />
+      &lt;!-- If the packed attribute is 'true' (default), then all the kit manifests
+           will be sent in a single zip file. If the packed attribute is anything else
+           then each manifest will be zipped and sent one at a time.-->
     &lt;/schemes>
   &lt;/manifestInclude>
 
@@ -262,10 +261,10 @@ might be generated for the platform definition above.</p>
   &lt;contact email="jdoe@acme.com" url="http://www.acme.com/sedona/help.html" />
   &lt;schemes>
     &lt;!-- this platform implements the manifest transfer scheme -->
-    &lt;!-- transfer attribute may be 'single' or 'multi'. Single (default) means
-         only transfer all manifests in a single zip, and multi means to
-         transfer each manifest as an individual zip file -->
-    &lt;scheme id="m" transfer="single" />
+    &lt;!-- If the packed attribute is 'true' (default), then all the kit manifests
+         will be sent in a single zip file. If the packed attribute is anything else
+         then each manifest will be zipped and sent one at a time.-->
+    &lt;scheme id="m" packed="true" />
   &lt;/schemes>
 &lt;/manifestIncludes>
 

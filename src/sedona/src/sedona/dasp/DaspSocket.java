@@ -144,7 +144,8 @@ public class DaspSocket
       if (iface.routes(addr, port)) routefaces.add(iface);
     }
 
-    if (routefaces.isEmpty()) throw new IllegalStateException(); 
+    if (routefaces.isEmpty()) 
+      throw new IllegalStateException(" no interfaces to send Discover request"); 
 
     return (DaspSocketInterface[])routefaces.toArray(new DaspSocketInterface[0]);
   }
@@ -458,6 +459,10 @@ public class DaspSocket
       return;
     }
 
+    // Clear list of discovered nodes (create if necessary)
+    if (discovered==null) discovered = new ArrayList();
+    discovered.clear();
+
     byte[] mbuf = new byte[DaspConst.ABS_MAX_VAL];
 
     // Encode DASP msg...
@@ -472,10 +477,6 @@ public class DaspSocket
 
     // Find the right interface for the address...
     DaspSocketInterface[] iface = allRoutes(mcaddr, port);
-
-    // Clear list of discovered nodes (create if necessary)
-    if (discovered==null) discovered = new ArrayList();
-    discovered.clear();
 
     // Send the message...
     try

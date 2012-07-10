@@ -213,7 +213,11 @@ Cell inet_UdpSocket_join(SedonaVM* vm, Cell* params)
   if (rc==0) 
     return trueCell;
 
+#ifdef _WIN32
   printf("  setsockopt error %d joining multicast group %s\n", WSAGetLastError(), addr);
+#else
+  printf("  setsockopt error %d joining multicast group %s\n", errno, addr);
+#endif
   return falseCell;
 }
 
