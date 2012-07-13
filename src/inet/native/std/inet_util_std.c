@@ -17,6 +17,16 @@
 #endif
 
 
+/*
+void printAddr(const char* label, void* loc, int len)
+{
+  int n;
+  printf("  %s ptr = 0x%x, value = %04x", label, (uint32_t)loc, *(uint16_t*)loc);
+  for (n=1; n<len; n++) printf(":%04x", *((uint16_t*)loc+n));
+  printf("\n");
+}
+*/
+
 
 /**
  * Configure specified socket as non-blocking.
@@ -67,6 +77,8 @@ int inet_bind(socket_t sock, int port)
   addr.sin_addr.s_addr = INADDR_ANY;
   addr.sin_port        = htons(port);
 
+  //printAddr(" Bound to IPv4 addr: ", &(addr.sin_addr.s_addr), 2);
+
 #elif defined( SOCKET_FAMILY_INET6 )
 
   struct sockaddr_in6 addr;
@@ -74,6 +86,8 @@ int inet_bind(socket_t sock, int port)
   addr.sin6_family = AF_INET6;
   addr.sin6_addr   = in6addr_any;
   addr.sin6_port   = htons(port);
+
+  //printAddr(" Bound to IPv6 addr: ", &(addr.sin6_addr), 8);
 
 #endif
 
@@ -83,16 +97,21 @@ int inet_bind(socket_t sock, int port)
 #else
   if (rc!=0) printf(" bind() returned %d, errno = %d\n", rc, errno);   // DIAG
 #endif
+
   return rc;
 }
 
 /**
  * Return if the the inet::IpAddr is a masked IPv4 address.
- */
+ * NOTE: this is no longer necessary; SVM only has to support one protocol,
+ * selected at compile time.
+ *
 int inet_isIPv4(uint32_t* ipAddr)
 {
   return ipAddr[0] == 0 && ipAddr[1] == 0 && ipAddr[2] == MASKED_IPV4_3RD;
 }
+ */
+
 
 /**
  * Copy a inet::IpAddr and port to a struct sockaddr.
@@ -100,26 +119,31 @@ int inet_isIPv4(uint32_t* ipAddr)
 int inet_toSockaddr(struct sockaddr_in* addr, uint32_t* ipAddr, int port)
 {
   addr->sin_port = htons(port);
+
   if (ipAddr == NULL)
   {
-    addr->sin_family = AF_INET;
     addr->sin_addr.s_addr = INADDR_ANY;
   }
-  else if (inet_isIPv4(ipAddr))
+  else 
+#if defined( SOCKET_FAMILY_INET )
   {
-    addr->sin_family = AF_INET;
     addr->sin_addr.s_addr = ipAddr[3];
     // printf("   -> %s\n", inet_ntoa(addr->sin_addr));
   }
-  else
+  addr->sin_family = AF_INET;
+
+#elif defined( SOCKET_FAMILY_INET6 )
   {
     uint32_t* x = (uint32_t*)(&((struct sockaddr_in6*)addr)->sin6_addr);
-    addr->sin_family = AF_INET6;
     x[0] = ipAddr[0];
     x[1] = ipAddr[1];
     x[2] = ipAddr[2];
     x[3] = ipAddr[3];
   }
+  addr->sin_family = AF_INET6;
+
+#endif
+
   return 0;
 }
 
@@ -128,22 +152,25 @@ int inet_toSockaddr(struct sockaddr_in* addr, uint32_t* ipAddr, int port)
  */
 int inet_fromSockaddr(struct sockaddr_in* addr, uint32_t* ipAddr, int* port)
 {
+#if defined( SOCKET_FAMILY_INET )
+
+  ipAddr[0] = 0;
+  ipAddr[1] = 0;
+  ipAddr[2] = MASKED_IPV4_3RD;
+  ipAddr[3] = (uint32_t)addr->sin_addr.s_addr;
+
+#elif defined( SOCKET_FAMILY_INET6 )
+
+  uint32_t* x = (uint32_t*)(&((struct sockaddr_in6*)addr)->sin6_addr);
+  ipAddr[0] = x[0];
+  ipAddr[1] = x[1];
+  ipAddr[2] = x[2];
+  ipAddr[3] = x[3];
+
+#endif
+
   *port = ntohs(addr->sin_port);
-  if (addr->sin_family == AF_INET)
-  {
-    ipAddr[0] = 0;
-    ipAddr[1] = 0;
-    ipAddr[2] = MASKED_IPV4_3RD;
-    ipAddr[3] = (uint32_t)addr->sin_addr.s_addr;
-  }
-  else
-  {
-    uint32_t* x = (uint32_t*)(&((struct sockaddr_in6*)addr)->sin6_addr);
-    ipAddr[0] = x[0];
-    ipAddr[1] = x[1];
-    ipAddr[2] = x[2];
-    ipAddr[3] = x[3];
-  }
+
   return 0;
 }
 
