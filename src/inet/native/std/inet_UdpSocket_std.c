@@ -9,6 +9,11 @@
 
 #include "inet_util_std.h"
 
+
+// defined in inet_util_std.c (may be commented out)
+extern void printAddr(const char* label, void* loc, int len);
+
+
 //////////////////////////////////////////////////////////////////////////
 // Datagram
 //////////////////////////////////////////////////////////////////////////
@@ -56,6 +61,7 @@ static void setUdpDatagram(int8_t* sedona, struct UdpDatagram* c)
     printf("UdpSocket unsupported pointer size\n");
   }
 }
+
 
 
 
@@ -142,6 +148,7 @@ Cell inet_UdpSocket_open(SedonaVM* vm, Cell* params)
   // udate UdpSocket instance
   setClosed(self, 0);
   setSocket(self, sock);
+
   return trueCell;
 }
 
@@ -247,19 +254,17 @@ Cell inet_UdpSocket_send(SedonaVM* vm, Cell* params)
   if (closed) return falseCell;
   if (sDatagram == NULL) return falseCell;
 
+  // Copy shared struct into local var
   getUdpDatagram(sDatagram, &datagram);
   if (datagram.buf == NULL) return falseCell;
   if (datagram.addr == 0) return falseCell;
 
-  // Issue 18436 - the inet natives currently only create ipv4 sockets,
-  // so we need to fail-fast if the addr is not ipv4.
-  // Issue 17030 - Support ipv4 & ipv6 sockets
-  // so we need to NOT fail if addr is not ipv4...
-  //if (!inet_isIPv4(datagram.addr)) return falseCell;
-
+  // Set up args for sendto()
   inet_toSockaddr(&addr, datagram.addr, datagram.port);
   buf = datagram.buf + datagram.off;
   len = datagram.len;
+
+  //printAddr("send: datagram.addr", datagram.addr, 8);
 
   r = sendto(sock, buf, len, 0, (SOCKADDR_PARAM*)&addr, sizeof(addr));
 
@@ -302,6 +307,7 @@ Cell inet_UdpSocket_receive(SedonaVM* vm, Cell* params)
   int r;
   void* receiveIpAddr;
 
+
   // we store an inline IpAddr in UdpSocket to use as the
   // storage location for the address to return in the datagram
   // the compiler lays it out at offset 8 (after closed and socket)
@@ -310,14 +316,17 @@ Cell inet_UdpSocket_receive(SedonaVM* vm, Cell* params)
   if (closed) return falseCell;
   if (sDatagram == NULL) return falseCell;
 
+  // Copy shared struct into local var
   getUdpDatagram(sDatagram, &datagram);
   if (datagram.buf == NULL) return falseCell;
 
+  // Set up args for recvfrom() 
   buf = datagram.buf + datagram.off;
   len = datagram.len;
 
   r = recvfrom(sock, buf, len, 0, (SOCKADDR_PARAM*)&addr, &addrLen);
 
+  // Update shared struct from contents of local var
   if (r == SOCKET_ERROR)
   {
     datagram.len  = 0;
@@ -332,6 +341,9 @@ Cell inet_UdpSocket_receive(SedonaVM* vm, Cell* params)
     datagram.len  = r;
     datagram.addr = receiveIpAddr;
     setUdpDatagram(sDatagram, &datagram);
+
+    //printAddr("recv: receiveIpAddr", receiveIpAddr, 8);
+
     return trueCell;
   }
 }
