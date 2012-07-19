@@ -1,0 +1,32 @@
+//
+// Copyright (c) 2011 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   16 Feb 10  Dan Giorgis  creation
+//
+
+**
+** NotTest
+**
+class NotTest
+  extends Test
+{
+  static inline Not n
+
+ 
+  static void test()
+  {
+    n.in := null
+    n.execute()
+    assert(n.out == null)
+    
+    n.in := false
+    n.execute()
+    assert(n.out == true)
+
+    n.in := true
+    n.execute()
+    assert(n.out == false)
+  }
+}

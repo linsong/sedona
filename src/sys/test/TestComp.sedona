@@ -1,0 +1,189 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   28 Mar 07  Brian Frank  Creation
+//
+
+abstract class AbstractTestComp extends Component
+{
+  property bool az = true
+  property int ai = 747
+
+  abstract int m1()
+  virtual int m2() { return 2 }
+  virtual int m3() { return 3 }
+  virtual int m4() { return 3 }
+}
+
+@testStr="roger\nroger"
+class TestComp extends AbstractTestComp 
+{                                         
+  define int thirtyFive = 35
+  define Str helloStr   = "hello"
+  
+  @config @bTrue=true @bFalse=false 
+  @i=thirtyFive @f=3.8f @s=helloStr
+  property bool  z1 = null
+  property bool  z2 = true
+  @config property byte  b1
+  property byte  b2 = 0xab
+  @config property short s1
+  property short s2 = 0xbeef
+  @config property int i1
+  @operator property int i2 = -123456789
+  @operator @config property long j1
+  property long j2 = -3sec
+  @config property float f1 = null
+  property float f2 = 2.04
+  @config property double d1
+  property double d2 = 256d
+  @config property Buf(4) bufA
+  property Buf(2) bufB
+  @config @asStr property Buf(5) str = "foo"
+  
+  /* LOOPTEST
+  virtual void reset()
+  {                              
+    meta = 1
+    az = true
+    ai = 747
+    z1 = null
+    z2 = true
+    b1 = 0
+    b2 = 0xab
+    s1 = 0
+    s2 = 0xbeef
+    i1 = 0
+    i2 = -123456789
+    j1 = 0L
+    j2 = -3sec
+    f1 = null
+    f2 = 2.04
+    d1 = 0d
+    d2 = 256d     
+    bufA.copyFromStr("")
+    bufB.copyFromStr("")
+    str.copyFromStr("foo")
+  }
+  */
+
+  @b=false action void incI1() { i1 := i1 + 1 }
+  action void setZ1(bool x)   { z1 := x }
+  action void addI1(int x)    { i1 := i1 + x }
+  @operator action void addJ1(long x)   { j1 := j1 + x }
+  action void addF1(float x)  { f1 := f1 + x }
+  action void addD1(double x) { d1 := d1 + x }
+  
+  action void actionBuf(Buf x) 
+  {
+    bufA.copyFromBuf(x); 
+    changed(TestComp.bufA) 
+  } 
+  
+  @asStr action void actionStr(Buf x) 
+  { 
+    Sys.out.print(x.toStr()).nl(); 
+    changed(TestComp.str)  
+    str.bytes[4] = 0
+    str.copyFromBuf(x) 
+  }
+
+  override int m1() { return 101 }
+  override int m3() { return 103 }
+  virtual override int m4() { return 104 }
+  virtual int m5()  { return 105 }
+  virtual int m6()  { return 106 }
+  virtual long m7() { return 107L }
+  virtual long m8(long a, long b) { return a + b }
+
+  int m3this()  { return this.m3() }
+  int m3super() { return super.m3() }   
+  
+  TestComp self() { return this }
+  long mj2() { return j2 }
+  double md2() { return d2 }
+  
+  override void loaded() { wasLoaded = true }    
+  override void start() { wasStarted = true }    
+  
+  override int childEvent(int eType, Component child)
+  {
+    if (eType == Component.ADDED)
+      childAdded = true
+    else if (eType == Component.REMOVED)
+      childRemoved = true
+    else if (eType == Component.REORDERED)
+      childReordered = true
+    return 0
+  }
+
+  override int parentEvent(int eType, Component child)
+  {
+    if (eType == Component.ADDED)
+      parentAdded = true
+    else if (eType == Component.REMOVED)
+      parentRemoved = true
+          
+    return 0
+  }
+  
+  override int linkEvent(int eType, Link link)
+  {    
+    if (eType == Component.ADDED)
+      linkAdded = true
+    else if (eType == Component.REMOVED)
+      linkRemoved = true
+    
+    return 0;
+  }
+
+  bool parentAdded
+  bool parentRemoved
+  bool childAdded
+  bool childRemoved
+  bool childReordered
+  bool linkAdded
+  bool linkRemoved
+  
+  
+  bool wasLoaded
+  bool wasStarted
+}
+
+class SubTestComp extends TestComp
+{
+  @config property byte sb = 45
+  @config property int si
+  @config property float sf = 7.2
+  @config property double sd = null
+
+  /* LOOPTEST
+  override void reset()
+  {
+    super.reset()
+    sb = 45
+    si = 0
+    sf = 7.2
+    sd = null
+  }
+  */
+
+  action void addSI(int x)
+  {
+    int y = x - 10    // use local
+    si := si + y + 10
+  }
+
+  override virtual int m2() { return 202 }
+  override int m4() { return 204 }
+  override int m6() { return 206 }
+  override long m7() { return 207L }
+  override long m8(long a, long b) { return a - b }
+}
+
+class TestService extends Service
+{
+}
+

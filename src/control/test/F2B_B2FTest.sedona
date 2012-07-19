@@ -1,0 +1,70 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   17 May 07  Andy Sunders  Creation
+//
+
+**
+** F2B_B2FTest
+**
+class F2B_B2FTest
+  extends Test
+{
+  static inline F2B f2b
+  static inline B2F b2f
+  static inline B2P b2p
+
+  static void test()
+  {
+    // test count up
+    for(int i = 0; i <= 0x0ffff; i=i+100)
+    {
+      validate((float)i)
+    }
+
+    b2p.in := true
+    b2p.execute()
+    assert(b2p.out == true)
+    b2p.execute()
+    assert(b2p.out == false)
+    b2p.in := false
+    b2p.execute()
+    assert(b2p.out == false)
+    b2p.in := true
+    b2p.execute()
+    assert(b2p.out == true)
+    b2p.execute()
+    assert(b2p.out == false)
+    b2p.in := false
+    b2p.execute()
+    assert(b2p.out == false)
+  }
+
+  static void validate(float value)
+  {
+    f2b.in := value
+    f2b.execute()
+    b2f.in1  := f2b.out1
+    b2f.in2  := f2b.out2
+    b2f.in3  := f2b.out3
+    b2f.in4  := f2b.out4
+    b2f.in5  := f2b.out5
+    b2f.in6  := f2b.out6
+    b2f.in7  := f2b.out7
+    b2f.in8  := f2b.out8
+    b2f.in9  := f2b.out9
+    b2f.in10 := f2b.out10
+    b2f.in11 := f2b.out11
+    b2f.in12 := f2b.out12
+    b2f.in13 := f2b.out13
+    b2f.in14 := f2b.out14
+    b2f.in15 := f2b.out15
+    b2f.in16 := f2b.out16
+    b2f.execute()
+    assert(b2f.out == value)
+  }
+
+
+}

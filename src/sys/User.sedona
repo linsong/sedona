@@ -1,0 +1,91 @@
+//
+// Copyright (c) 2008 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   19 Sep 08  Brian Frank  Creation
+//
+
+**
+** User models a user account used for network authentication 
+** and authorization.  Users are stored as children of the UserService.
+** The user name is the component's name (limited to 7 chars).
+**
+@niagaraIcon="module://icons/x16/user.png"
+class User
+  extends Component
+{                      
+
+////////////////////////////////////////////////////////////////
+// Permissions
+////////////////////////////////////////////////////////////////
+ 
+  define int or = 0x01        // operator read
+  define int ow = 0x02        // operator write
+  define int oi = 0x04        // operator invoke
+  define int ar = 0x08        // admin read
+  define int aw = 0x10        // admin write
+  define int ai = 0x20        // admin invoke
+  define int ua = 0x40        // user admin
+
+  define int provApp  = 0x01  // permission to provision app.sab
+  define int provKits = 0x02  // permission to provision kits.scode
+  define int provSvm  = 0x04  // permission to provision svm native image
+
+////////////////////////////////////////////////////////////////
+// Properties
+////////////////////////////////////////////////////////////////
+
+  ** This is the credentials 160 bit SHA-1 digest of 
+  ** the UTF-8 string "username:password".
+  @config property Buf(20) cred                                 
+    
+  ** Permissions mask which grant this user specific permissions
+  ** in the four security groups.  Each byte in the permission mask
+  ** is a bitmask of the 7 permissions for groups 0 to 3.
+  @config property int perm
+
+  ** Permissions mask for provisioning.
+  @config property byte prov
+
+////////////////////////////////////////////////////////////////
+// Security
+////////////////////////////////////////////////////////////////
+
+  **
+  ** Return the permissions available .
+  **
+  int permFor(Component c)
+  {
+    int groups = c.meta     
+    int perm = this.perm
+    int x = 0                      
+    if ((groups & 0x01) != 0) x |= perm & 0xff
+    if ((groups & 0x02) != 0) x |= (perm >> 8)  & 0xff
+    if ((groups & 0x04) != 0) x |= (perm >> 16) & 0xff
+    if ((groups & 0x08) != 0) x |= (perm >> 24) & 0xff
+    return x
+  }
+
+  **
+  ** Return if this user has the specified permission 
+  ** on the given component.
+  **
+  bool has(Component c, int hasPerm)
+  {                             
+    if (c.type == User.type) hasPerm = ua
+    return (permFor(c) & hasPerm) != 0
+  }
+
+  **
+  ** Can this user provisiong (read/write) the specified file.
+  **
+  bool canProv(Str uri)
+  {                
+    if (uri.startsWith("app."))  return (prov & provApp)  != 0
+    if (uri.startsWith("kits.")) return (prov & provKits) != 0
+    if (uri.startsWith("svm"))   return (prov & provSvm)  != 0
+    return true
+  }
+  
+}

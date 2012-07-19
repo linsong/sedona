@@ -1,0 +1,54 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   16 May 07  Andy Sunders  Creation
+//
+
+**
+** CmprTest
+**
+class CmprTest
+  extends Test
+{
+  static inline Cmpr cmpr
+
+  static void test()
+  {
+    cmpr.y := 10.0
+    cmpr.x := 9.0
+    cmpr.execute()
+    assert(cmpr.xgy == false)
+    assert(cmpr.xey == false)
+    assert(cmpr.xly == true)
+    cmpr.x := 10.0
+    cmpr.execute()
+    assert(cmpr.xgy == false)
+    assert(cmpr.xey == true)
+    assert(cmpr.xly == false)
+    cmpr.x := 11.0
+    cmpr.execute()
+    assert(cmpr.xgy == true)
+    assert(cmpr.xey == false)
+    assert(cmpr.xly == false)
+
+    cmpr.y := -10.0
+    cmpr.x := -9.0
+    cmpr.execute()
+    assert(cmpr.xgy == true)
+    assert(cmpr.xey == false)
+    assert(cmpr.xly == false)
+    cmpr.x := -10.0
+    cmpr.execute()
+    assert(cmpr.xgy == false)
+    assert(cmpr.xey == true)
+    assert(cmpr.xly == false)
+    cmpr.x := -11.0
+    cmpr.execute()
+    assert(cmpr.xgy == false)
+    assert(cmpr.xey == false)
+    assert(cmpr.xly == true)
+  }
+
+}

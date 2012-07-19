@@ -1,0 +1,348 @@
+//
+// Copyright (c) 2008 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   31 Mar 08  Brian Frank  Creation
+//
+
+**
+** SoxSession models a Dasp/Sox session.
+**
+class SoxSession
+  extends Watch
+{
+
+////////////////////////////////////////////////////////////////
+// Reset
+////////////////////////////////////////////////////////////////
+
+  **
+  ** Reset into a clean state for new session.
+  **
+  void reset()
+  {
+    lastReceiveTicks = lastSendTicks = Sys.ticks()
+    receiveTimeout = 2
+    receiveWindow.reset()
+    sendWindow.reset()
+    transfer.reset()
+    user = null        
+  }
+
+////////////////////////////////////////////////////////////////
+// Handshake
+////////////////////////////////////////////////////////////////
+
+  **
+  ** Receive hello and respond with challenge.
+  **
+  void challenge(SoxService service, int numFields)
+  {         
+    // hello fields    
+    int version         = -1
+    int remoteId        = -1
+    int remoteIdealMax  = Dasp.IDEAL_MAX_DEF
+    int remoteTimeout   = Dasp.RECEIVE_TIMEOUT_DEF
+    
+    // parse hello fields    
+    BufInStream in = service.in
+    for (int i=0; i<numFields; ++i)
+    {
+      int headerId = in.read()
+      int typeId = headerId & 0x3
+      headerId >>= 2
+      
+      switch (headerId)
+      {          
+        case Dasp.VERSION:         version        = in.readU2(); break
+        case Dasp.REMOTE_ID:       remoteId       = in.readU2(); break
+        case Dasp.IDEAL_MAX:       idealMax       = in.readU2(); break
+        case Dasp.RECEIVE_TIMEOUT: remoteTimeout  = in.readU2(); break        
+        default: skipHeader(in, typeId)
+      }
+    }   
+    
+    // tune the session parameters
+    this.remoteId       = remoteId      
+    this.idealMax       = Sys.max(Dasp.IDEAL_MAX_VAL, remoteIdealMax)
+    this.receiveTimeout = Sys.max(Dasp.RECEIVE_TIMEOUT_MIN, remoteTimeout)
+
+    // check version
+    if (version != Dasp.VERSION_VAL)
+    {    
+      close(service, Dasp.INCOMPATIBLE_VERSION)
+      return
+    }  
+    
+    // make sure we don't have any other open sessions to the 
+    // same client IP address with same session id - that can 
+    // happen if we drop a challenge packet
+    foreach (SoxSession s : service.sessions, Watch.max)
+    {
+      if (s != this &&
+          s.remoteId == this.remoteId &&
+          s.addr.equals(this.addr))
+      {
+        service.closeSession(s, "Dup ID")
+        break
+      }
+    }
+
+    // generate nonce
+    nonce = (long)Sys.rand() << 32 | (long)Sys.rand()
+    
+    // send back challenge
+    OutStream out = prepare(service, Dasp.CHALLENGE, sendWindow.seqNum)
+    out.write(Dasp.REMOTE_ID << 2 | Dasp.U2);    
+      out.writeI2(id())
+    out.write(Dasp.NONCE << 2 | Dasp.BYTES); 
+      out.write(8); 
+      out.writeI8(nonce)
+    service.packet.bytes[4] |= 2  // header count    
+    service.send(this)
+  }       
+
+  **
+  ** Receive authenticate and respond with welcome.
+  **
+  void welcome(SoxService service, int numFields)
+  {         
+    // authenticate fields     
+    Str username  = null
+    int digestLen = 0    
+    int digestOff = 0
+    byte[] digest = null    
+    
+    // parse authenticate fields    
+    BufInStream in = service.in
+    for (int i=0; i<numFields; ++i)
+    {
+      int headerId = in.read()
+      int typeId = headerId & 0x3
+      headerId >>= 2
+      
+      switch (headerId)
+      {          
+        case Dasp.DIGEST: 
+          digestLen = in.read()         
+          digestOff = in.pos
+          digest    = in.buf.bytes
+          in.skip(digestLen)
+          break
+        case Dasp.USERNAME:
+          username = in.readStrInPlace(SoxCommands.tempStr1)
+          break
+        default: 
+          skipHeader(in, typeId)
+      }
+    }                 
+
+    // bad authenticate headers
+    if (digestLen != 20 || username == null) return 
+    
+    // authenticate
+    if (!authenticate(service, username, digest, digestOff, digestLen))
+    {    
+      close(service, Dasp.NOT_AUTHENTICATED)
+      return
+    }  
+                        
+    // send back welcome - use the defaults for
+    // absMax, receiveMax, and receiveTimeout
+    //
+    //   Shouldn't use defaults here; this is last msg in handshake
+    //   so we need to specify the values that we will be using.
+    //
+    OutStream out = prepare(service, Dasp.WELCOME, sendWindow.seqNum)
+    out.write(Dasp.IDEAL_MAX << 2 | Dasp.U2)
+    out.writeI2(Dasp.IDEAL_MAX_VAL)
+    out.write(Dasp.RECEIVE_MAX << 2 | Dasp.U2)
+    out.writeI2(service.receiveMax)
+    out.write(Dasp.RECEIVE_TIMEOUT << 2 | Dasp.U2)
+    out.writeI2(receiveTimeout)
+    service.packet.bytes[4] |= 3  // header count    
+    service.send(this)    
+  }                             
+  
+  **
+  ** If authenticated, then update user field and 
+  ** return true, or return false if rejected.
+  **
+  bool authenticate(SoxService service, Str username, byte[] digest, int digestOff, int digestLen)
+  {                   
+    // lookup user by name                     
+    user = (User)service.userService?.lookupByName(username)
+    if (user == null || user.type != User.type) return false
+    
+    // create the digest of the actual credentials - we reuse
+    // the packet buffer itself for the result by assuming
+    // the digest leaves plenty of room afterwards
+    authTemp.size = 0
+    authTempOut.writeBytes(user.cred.bytes, 0, user.cred.size)
+    authTempOut.writeI8(nonce)     
+    Crypto.sha1(authTemp.bytes, 0, authTemp.size, authDigest, 0)
+    
+    // verify if digests are equal                        
+    return Sys.compareBytes(authDigest, 0, digest, digestOff, digestLen) == 0
+  }                 
+  
+  private static inline Buf(32) authTemp      
+  private static inline BufOutStream(authTemp) authTempOut
+  private static inline byte[20] authDigest
+
+////////////////////////////////////////////////////////////////
+// House Keeping
+////////////////////////////////////////////////////////////////
+
+  **
+  ** House keeping is used to check for retries, acks, keep-alives, and 
+  ** timeouts.  Ideally it is called every SoxService.HOUSE_KEEPING_INTERVAL,
+  ** but call rate may very based on App scanPeriod.  It is never called
+  ** more often then HOUSE_KEEPING_INTERVAL ms, but it may be called less
+  ** frequently.  houseKeepingTicks represents the number of intervals
+  ** that have elapsed (rounded up) since the last time houseKeeping was called
+  **
+  ** For example, if HOUSE_KEEPING_INTERVAL is 100ms and 160 ms have elapsed
+  ** since the last time the method was called, houseKeepingTicks = 2   
+  **
+  bool houseKeeping(SoxService service, long now, int houseKeepingTicks)
+  {
+    // if we haven't heard from the remote endpoint in a 
+    // while, then its curtains for this session     
+    if (now - lastReceiveTicks > (long)receiveTimeout*1sec)
+    {              
+      close(service, Dasp.TIMEOUT)
+      return true
+    }
+
+    // check for retries
+    if (sendWindow.sendRetries(service, this, houseKeepingTicks))
+      return true
+    
+    // send keep-alive if we have pending acks or 
+    // just haven't sent anything in a while       
+    if (!receiveWindow.acked || now - lastSendTicks > 300ms*(long)receiveTimeout)
+    {
+      keepAlive(service)                               
+      return true
+    }
+    
+    // no work done 
+    return false
+  }                  
+  
+  **
+  ** Send a keep alive message
+  **
+  void keepAlive(SoxService service)
+  {                                    
+    OutStream out = prepare(service, Dasp.KEEPALIVE, 0xffff)
+    receiveWindow.acked = false                  // force keepalive to include ackNum
+    receiveWindow.setAckHeaders(service)
+    service.send(this)
+  }
+
+////////////////////////////////////////////////////////////////
+// Closing
+////////////////////////////////////////////////////////////////
+  
+  **
+  ** Close the dasp/sox session.
+  **
+  void close(SoxService service, int errorCode)
+  {                         
+    // prepare close message
+    OutStream out = prepare(service, Dasp.CLOSE, 0xffff)
+    out.write(Dasp.ERROR_CODE << 2 | Dasp.U2) 
+    out.writeI2(errorCode)
+    service.packet.bytes[4] |= 1  // header count    
+    service.send(this)
+    
+    // Copy hex string into local
+    errStr.copyFromStr( Sys.hexStr(errorCode), 8 )
+
+    // free the session          
+    service.closeSession(this, errStr)
+  }
+  
+////////////////////////////////////////////////////////////////
+// Discovery response
+////////////////////////////////////////////////////////////////
+  
+  **
+  ** Send a discovery response.
+  **
+  void discoverResponse(SoxService service)
+  {                         
+    // prepare response message
+    OutStream out = prepare(service, Dasp.DISCOVER, 0xffff)
+    out.write(Dasp.PLATFORM_ID << 2 | Dasp.STR) 
+    out.writeStr(Sys.app.platform.platformId.toStr())
+    service.packet.bytes[4] |= 1  // header count    
+    service.send(this)
+  }
+  
+
+////////////////////////////////////////////////////////////////
+// Messaging
+////////////////////////////////////////////////////////////////
+
+  **
+  ** Skip a Dasp header field based on its typeId.
+  **
+  static void skipHeader(BufInStream in, int typeId)
+  {
+    switch (typeId)
+    {
+      case Dasp.NIL: 
+        return
+      case Dasp.U2: 
+        in.skip(2); 
+        return
+      case Dasp.STR: 
+        while (true)
+        {
+          int c = in.read()
+          if (c <= 0) return
+        }
+      case Dasp.BYTES:
+        int len = in.read()
+        if (len > 0) in.skip(len)
+        return
+    }
+  }
+
+  **
+  ** Prepare a control dasp packet with common dasp header
+  **
+  internal OutStream prepare(SoxService service, int msgType, int seqNum)
+  {
+    service.packet.clear()
+    OutStream out = service.out
+    out.writeI2(remoteId)
+    out.writeI2(seqNum)                            
+    out.write(msgType << 4)
+    return out
+  }
+
+//////////////////////////////////////////////////////////////////////////
+// Fields
+//////////////////////////////////////////////////////////////////////////
+
+  
+  inline SocketAddr addr             // remote endpoint address
+  short remoteId                     // remote endpoint's session id
+  short idealMax                     // session tuned ideal packet size
+  short receiveTimeout               // session tuned timeout in seconds
+  long lastReceiveTicks              // Ticks of last receive
+  long lastSendTicks                 // Ticks of last send
+  bool allTreeEvents                 // Subscribed to all component tree events
+  long nonce                         // Nonce used for authentication
+  User user                          // Authenticated user for session
+  inline ReceiveWindow receiveWindow // Sliding window for incoming messages 
+  inline SendWindow sendWindow       // Sliding window for outgoing messages 
+  inline FileTransfer transfer       // File transfer state  
+
+  inline Str(8) errStr               // Storage for error code value in hex
+} 

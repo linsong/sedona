@@ -1,0 +1,39 @@
+//
+// Copyright (c) 2011 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   07 Dec 11  Elizabeth McKenney  Creation
+//
+
+**
+** ADemux2Test
+**
+class ADemux2Test
+  extends Test
+{
+  static inline ADemux2  demux
+
+ 
+  static void test()
+  {
+    // Test bool
+    demux.in := 23f
+    assert(demux.out1 == 0f)
+    assert(demux.out2 == 0f)
+    
+    demux.execute()
+    assert(demux.out1 == 23f)
+    assert(demux.out2 == 0f)
+
+    demux.in := -1.43f
+    demux.s1 := true
+    assert(demux.out1 == 23f)
+    assert(demux.out2 == 0f)
+    
+    demux.execute()
+    assert(demux.out1 == 23f)
+    assert(demux.out2 == -1.43f)
+
+  }
+}

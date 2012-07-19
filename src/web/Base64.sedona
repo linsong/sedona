@@ -1,0 +1,138 @@
+//
+// Copyright (c) 2011 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   21 Dec 11  Elizabeth McKenney   Adapted from sedona.util.Base64
+//
+
+**
+** Base64 encoding.  
+**   Base64 encoding replaces each set of 3 bytes from the input with 4 bytes of encoded data.
+**   This implementation prints base64 encoding of byte array to given output.
+**
+class Base64
+{
+
+////////////////////////////////////////////////////////////////
+// Methods
+////////////////////////////////////////////////////////////////
+
+  /**
+   * Encode the specified byte array to the given OutStream.
+   */
+  static void encode(OutStream out, byte[] buf, int buflen)
+  {
+    encodeLen(out, buf, buflen, -1)
+  }
+
+
+  /**
+   * Encode the specified byte array to the given OutStream.
+   *
+   * @param linelen the number of characters per
+   *   line in the output, -1 indicates no line breaks
+   */
+  static void encodeLen(OutStream out, byte[] buf, int buflen, int linelen)
+  {
+    
+    int pos = 0
+    int bytesRemaining = buflen
+    int index = 0
+  
+    // Full groups of 3 bytes
+    while (bytesRemaining >= 3)
+    {
+      int i0 = buf[index] >> 2
+      int i1 = ((buf[index] & 0x3) << 4) + (buf[index+1] >> 4)
+      int i2 = ((buf[index+1] & 0xf) << 2) + (buf[index+2] >> 6)
+      int i3 = buf[index+2] & 0x3f
+
+      pos = append(out, encodeTable[i0], linelen, pos)
+      pos = append(out, encodeTable[i1], linelen, pos)
+      pos = append(out, encodeTable[i2], linelen, pos)
+      pos = append(out, encodeTable[i3], linelen, pos)
+
+      bytesRemaining -= 3
+      index += 3
+    }
+
+    // Handle last group of bytes (if any)
+    if (bytesRemaining>0)
+    {
+      // Create a group of 3 from remaining bytes
+      for (int i=0; i<bytesRemaining; i++)
+        remainder[i] = buf[index+i]
+      for (int i=bytesRemaining; i<3; i++)
+        remainder[i] = 0
+
+      int lastOut = bytesRemaining==1 ? 2 : 3
+
+      // Encode the last group
+      int i0 = remainder[0] >> 2
+      int i1 = ((remainder[0] & 0x3) << 4) + (remainder[1] >> 4)
+      int i2 = ((remainder[1] & 0xf) << 2) + (remainder[2] >> 6)
+
+      pos = append(out, encodeTable[i0], linelen, pos)
+      if (lastOut>1)
+        pos = append(out, encodeTable[i1], linelen, pos)
+      if (lastOut>2)
+        pos = append(out, encodeTable[i2], linelen, pos)
+
+      // Pad result as needed
+      int padCount = 4-lastOut
+      for (int i=0; i<padCount; i++)
+        pos = append(out, PAD, linelen, pos)
+    }
+
+  }
+
+
+  /**
+   * Append a character to the specified OutStream, inserting
+   * line breaks if necessary to conform to the linelen.
+   */
+  static int append(OutStream out, int ch, int linelen, int pos)
+  {
+    if (linelen>0)
+    {
+      if (pos==linelen)
+      {
+        out.nl()
+        pos = 0
+      }
+
+      pos++
+    }
+
+    out.write(ch)
+    return pos
+  }
+
+
+///////////////////////////////////////////////////////////
+// Encoding table
+///////////////////////////////////////////////////////////
+
+  define byte[] encodeTable =
+  {
+    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
+    'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q',
+    'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+    'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h',
+    'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q',
+    'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+    '0', '1', '2', '3', '4', '5', '6', '7', '8',
+    '9', '+', '/'
+  }
+
+  define int PAD = '='
+
+///////////////////////////////////////////////////////////
+// Fields
+///////////////////////////////////////////////////////////
+
+  static inline byte[3] remainder
+
+
+}

@@ -1,0 +1,44 @@
+//
+// Copyright (c) 2009-2011 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   02 Jul 2009  Clif Turman    Creation
+//   04 Aug 2011  Clif Turman    Add comments
+//
+
+**
+** Limits input between two configured values
+** If (in < lowLmt), out = lowLmt
+** else if (in > highLmt), out = highLmt
+** else out = in
+**
+@niagaraIcon="module://icons/x16/control/util/limit.png"
+class Limiter
+  extends Component
+{
+  ** the range limited output
+  @readonly property float out
+  
+  ** input value
+  property float in
+
+  ** low limit value. If (in < lowLmt), out = lowLmt 
+  @config property float lowLmt
+  
+  ** high limit value. If (in > highLmt), out = highLmt
+  @config property float highLmt
+
+  **
+  ** Execute is called once every scan.
+  **
+  virtual override void execute()
+  {
+    if(in > highLmt)
+      out := highLmt
+    else if (in < lowLmt)
+      out := lowLmt
+    else
+      out := in
+  }
+}

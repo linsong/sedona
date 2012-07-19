@@ -1,0 +1,117 @@
+//
+// Copyright (c) 2007-2011 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   10 Jan 07  Andy Saunders  Creation
+//   27 Apr 07  Brian Frank    Port from Java to Sedona
+//   22 Apr 09  Elizabeth McKenney   Updated
+//   04 Aug 11  Clif Turman    Add comments, added millsecond units to maxTime
+//
+
+**
+** Avg Running Average math object
+**
+**   out = (sum last 10 value)/10
+** 
+**   Samples current value again if value has not changed in maxTime msec.
+**   For first ten samples, averages only the samples recd.
+**
+@niagaraIcon="module://icons/x16/control/math/average.png"
+class Avg10
+  extends Component
+{
+  ** averaged output
+  @readonly property float out
+  
+  ** input value to be averaged
+  property float in
+
+  ** if maxTime == 0, then average every scan
+  ** if maxTime > 0, then average a new sample every maxTime milliseconds
+  **                 or every scan, whichever is greater.
+  @unit=Units.millisecond
+  @config property int maxTime = 0
+
+  **
+  ** Callback when component is first started in an app,
+  ** before the first call to propagateLinksTo() or execute().
+  **
+  virtual override void start()
+  {
+    // Initialize all samples to 0 (so first 10 samples average properly)
+    for (int i = 0; i < 10; i++) samples[i] = 0.0f
+
+    total = in
+    index = 0
+    firstTen = true
+    maxSampleTime = (long)maxTime * 1ms
+    lastValue = in
+  }
+
+
+  **
+  ** Execute is called once every scan.
+  **
+  virtual override void execute()
+  {
+    float cv = in
+    bool forceSample = false
+    long now = Sys.ticks()
+
+    // If max sample time is exceeded, process new sample even if input is unchanged
+    if (maxTime > 0)
+    {
+      forceSample = (now - lastSampleTime) >= maxSampleTime
+    }
+
+    if ((cv != lastValue) || forceSample)
+    {
+      // Add current sample to total and remove oldest sample
+      total = total - samples[index] + cv
+      samples[index] = cv
+
+      // Move to next oldest sample
+      if (++index >= 10) 
+      {
+        if (firstTen) firstTen = false
+        index = 0
+      }
+
+      lastValue = cv
+      lastSampleTime = now
+    }
+    
+    // For first ten samples, average only the # samples read so far
+    if (firstTen)
+      out := total / (float)index
+    else
+      out := total / 10.0f
+  }
+
+  **
+  ** Behavior to execute when a property is changed externally
+  ** 
+  override void changed(Slot slot)
+  {
+    super.changed(slot)
+
+    // If maxTime state changes at runtime, update private (long) copy
+    if (slot == Avg10.maxTime)
+    {
+      maxSampleTime = (long)maxTime * 1ms
+    }
+  }
+
+
+  private float  total = 0.0
+  private float  lastValue
+  private int    index = -1
+  private long   lastSampleTime = 0L
+  private long   maxSampleTime  = 0L
+  private inline float[10] samples
+
+  // True for first 10 samples
+  private bool   firstTen
+
+}
