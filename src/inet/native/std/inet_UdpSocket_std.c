@@ -11,7 +11,7 @@
 
 
 // defined in inet_util_std.c (may be commented out)
-extern void printAddr(const char* label, void* loc, int len);
+//extern void printAddr(const char* label, void* loc, int len);
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -28,17 +28,21 @@ struct UdpDatagram
   uint8_t* buf;
   int32_t  off;
   int32_t  len;
+  int32_t  scope;
+  int32_t  flow;
 };
 
 static void getUdpDatagram(int8_t* sedona, struct UdpDatagram* c)
 {
   if (sizeof(void*) == 4)
   {
-    c->addr = getRef(sedona, 0);
-    c->port = getInt(sedona, 4);
-    c->buf  = getRef(sedona, 8);
-    c->off  = getInt(sedona, 12);
-    c->len  = getInt(sedona, 16);
+    c->addr  = getRef(sedona, 0);
+    c->port  = getInt(sedona, 4);
+    c->buf   = getRef(sedona, 8);
+    c->off   = getInt(sedona, 12);
+    c->len   = getInt(sedona, 16);
+    c->scope = getInt(sedona, 20);
+    c->flow  = getInt(sedona, 24);
   }
   else
   {
@@ -55,6 +59,8 @@ static void setUdpDatagram(int8_t* sedona, struct UdpDatagram* c)
     setRef(sedona, 8,  c->buf);
     setInt(sedona, 12, c->off);
     setInt(sedona, 16, c->len);
+    setInt(sedona, 20, c->scope);
+    setInt(sedona, 24, c->flow);
   }
   else
   {
@@ -165,8 +171,7 @@ Cell inet_UdpSocket_bind(SedonaVM* vm, Cell* params)
   bool closed   = getClosed(self);
   socket_t sock = getSocket(self);
 
-  if (closed)
-    return falseCell;
+  if (closed) return falseCell;
 
 #ifdef _WIN32
   if (inet_bind(sock, port) == SOCKET_ERROR)
@@ -194,8 +199,7 @@ Cell inet_UdpSocket_join(SedonaVM* vm, Cell* params)
   
   int rc = -1;
 
-  if (closed)
-    return falseCell;
+  if (closed) return falseCell;
 
   //
   // Join all-hosts multicast address group (used for device discovery)
@@ -243,11 +247,23 @@ Cell inet_UdpSocket_send(SedonaVM* vm, Cell* params)
   void* sDatagram = params[1].aval;
   socket_t sock   = getSocket(self);
   bool closed     = getClosed(self);
+
   struct UdpDatagram datagram;
   uint8_t* buf;
   int32_t len;
-  struct sockaddr_in addr;
   int r;
+
+  struct sockaddr_storage addr;
+  memset(&addr, 0, sizeof(addr));
+
+#ifdef SOCKET_FAMILY_INET
+  // do nothing
+#elif defined( SOCKET_FAMILY_INET6 )
+  {
+    //struct sockaddr_in6* paddr = (struct sockaddr_in6*)&addr;
+    //paddr->sin6_scope_id = 0x02;   // what should this be set to, if anything?
+  }
+#endif
 
   if (closed) printf("  send error! UDP socket is closed\n");
 
@@ -260,12 +276,17 @@ Cell inet_UdpSocket_send(SedonaVM* vm, Cell* params)
   if (datagram.addr == 0) return falseCell;
 
   // Set up args for sendto()
-  inet_toSockaddr(&addr, datagram.addr, datagram.port);
+  inet_toSockaddr(&addr, datagram.addr, datagram.port, datagram.scope, datagram.flow);
   buf = datagram.buf + datagram.off;
   len = datagram.len;
 
   //printAddr("send: datagram.addr", datagram.addr, 8);
-
+  //printf("  datagram.port  = %d\n", datagram.port);
+#ifdef SOCKET_FAMILY_INET6
+  //printf("  datagram.scope = %d\n", datagram.scope);
+  //printf("  datagram.flow  = %d\n", datagram.flow);
+#endif
+  
   r = sendto(sock, buf, len, 0, (SOCKADDR_PARAM*)&addr, sizeof(addr));
 
   if (r!=len) printf("  send error! sendto sent %d bytes (should have sent %d)\n", r, len);
@@ -299,14 +320,26 @@ Cell inet_UdpSocket_receive(SedonaVM* vm, Cell* params)
   void* sDatagram = params[1].aval;
   socket_t sock   = getSocket(self);
   bool closed     = getClosed(self);
+
   struct UdpDatagram datagram;
   uint8_t* buf;
   int32_t len;
-  struct sockaddr_in addr;
-  int addrLen = sizeof(addr);
+
   int r;
   void* receiveIpAddr;
+  int addrLen;
 
+  struct sockaddr_storage addr;
+  memset(&addr, 0, sizeof(addr));
+
+#ifdef SOCKET_FAMILY_INET
+  // do nothing
+#elif defined( SOCKET_FAMILY_INET6 )
+  {
+    //struct sockaddr_in6* paddr = (struct sockaddr_in6*)addr;
+    //paddr->sin6_scope_id = 0x02;   // what should this be set to, if anything?
+  }
+#endif
 
   // we store an inline IpAddr in UdpSocket to use as the
   // storage location for the address to return in the datagram
@@ -337,12 +370,17 @@ Cell inet_UdpSocket_receive(SedonaVM* vm, Cell* params)
   }
   else
   {       
-    inet_fromSockaddr(&addr, receiveIpAddr, &datagram.port);
+    inet_fromSockaddr(&addr, receiveIpAddr, &datagram.port, &datagram.scope, &datagram.flow);
     datagram.len  = r;
     datagram.addr = receiveIpAddr;
     setUdpDatagram(sDatagram, &datagram);
 
     //printAddr("recv: receiveIpAddr", receiveIpAddr, 8);
+    //printf("  datagram.port  = %d\n", datagram.port);
+#ifdef SOCKET_FAMILY_INET6
+    //printf("  datagram.scope = %d\n", datagram.scope);
+    //printf("  datagram.flow  = %d\n", datagram.flow);
+#endif
 
     return trueCell;
   }

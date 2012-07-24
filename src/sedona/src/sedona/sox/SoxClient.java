@@ -8,7 +8,6 @@ import java.util.*;
 import sedona.*;
 import sedona.dasp.DaspSession;
 import sedona.dasp.DaspSocket;
-import sedona.dasp.DiscoveredNode;
 import sedona.manifest.KitManifest;
 import sedona.manifest.ManifestDb;
 import sedona.manifest.ManifestZipUtil;
@@ -524,8 +523,8 @@ public class SoxClient
     for (int i=0; i<comps.length; ++i)
     {
       SoxComponent comp = comps[i];
-      if ((comps[i].subscription() & mask) != mask)
-        arr.add(comps[i]);
+      if ((comp.subscription() & mask) != mask)
+        arr.add(comp);
     }
     if (arr.size() == 0) return;
 
@@ -1128,25 +1127,6 @@ public class SoxClient
     res.checkResponse('B');
   }
 
-//////////////////////////////////////////////////////////////////////////
-// Device discovery
-//////////////////////////////////////////////////////////////////////////
-
-  /**
-   * Start a discover operation
-   */
-  public synchronized void doDiscover()
-  {
-    socket.discover(port);
-  }
-
-  /**
-   * Access the list of currently discovered nodes  (not thread safe?)
-   */
-  public DiscoveredNode[] getDiscovered()
-  {
-    return socket.getDiscovered();
-  }
 
 //////////////////////////////////////////////////////////////////////////
 // PStore Convenience

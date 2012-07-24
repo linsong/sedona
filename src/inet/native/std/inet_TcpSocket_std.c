@@ -38,7 +38,7 @@ Cell inet_TcpSocket_connect(SedonaVM* vm, Cell* params)
 #endif
 
   // initialize the sockaddr from inet::IpAddr and port
-  inet_toSockaddr(&sa, addr, port);
+  inet_toSockaddr((struct sockaddr_storage*)&sa, addr, port, 0, 0);
 
   // create socket
   sock = socket(sa.sin_family, SOCK_STREAM, 0);

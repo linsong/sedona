@@ -42,7 +42,7 @@ public final class DefaultDaspSocketInterface extends DaspSocketInterface
   }
 
   public void close() throws IOException 
-  {                 
+  {
     sock.close(); 
   }
 

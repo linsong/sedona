@@ -162,9 +162,9 @@ typedef SOCKET socket_t;
 // util forwards
 extern int inet_setNonBlocking(socket_t sock);
 extern bool inet_errorIsWouldBlock();
-extern int inet_bind(socket_t, int port);
-extern int inet_toSockaddr(struct sockaddr_in* addr, uint32_t* ipAddr, int port);
-extern int inet_fromSockaddr(struct sockaddr_in* addr, uint32_t* ipAddr, int* port);
+extern int inet_bind(socket_t sock, int port);
+extern int inet_toSockaddr(struct sockaddr_storage* addr, uint32_t* ipAddr, int port, int scope, int flow);
+extern int inet_fromSockaddr(struct sockaddr_storage* addr, uint32_t* ipAddr, int* port, int* scope, int* flow);
 
 #ifdef __cplusplus
 }

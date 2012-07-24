@@ -64,4 +64,10 @@ class UdpDatagram
   ** receive() specified the number of bytes actually read
   int len
 
+  ** IPv6 address scope ID
+  int scopeId  = 0xcafef00d;
+
+  ** IPv6 address flow info
+  int flowinfo = 0xbeadfade;
+
 }

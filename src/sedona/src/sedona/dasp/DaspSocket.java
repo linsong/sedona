@@ -9,18 +9,12 @@
 package sedona.dasp;      
 
 
+import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
-import java.net.Inet4Address;
-import java.net.Inet6Address;
 import java.net.UnknownHostException;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Random;
+import java.util.*;
 
 import sedona.Buf;
 import sedona.Env;
@@ -447,10 +441,16 @@ public class DaspSocket
   /**
    * Send device discovery multicast msg
    */                         
-  public void discover(int port)
+  public void discover(int port, boolean useIPv6)
   {
     InetAddress mcaddr;
-    try { mcaddr = InetAddress.getByName(DaspConst.USE_MULTICAST_GROUP); }
+    try
+    {
+      if (useIPv6)
+        mcaddr = InetAddress.getByName(DaspConst.IPv6_MULTICAST_ADDR);
+      else
+        mcaddr = InetAddress.getByName(DaspConst.IPv4_MULTICAST_ADDR);
+    }
     catch (UnknownHostException e)
     { 
       System.out.println("ERROR Creating multicast address (" + DaspConst.USE_MULTICAST_GROUP 
@@ -483,7 +483,9 @@ public class DaspSocket
     {
       System.out.println(" === Found " + iface.length + " interfaces for discover multicast");
       for (int i=0; i<iface.length; i++)
-        iface[i].send(dgPacket);    
+      {
+        iface[i].send(dgPacket);
+      }
     }
     catch (IOException e)
     {
@@ -494,7 +496,6 @@ public class DaspSocket
       }
     }
   }
-
 
   /**
    * All sends route thru here, except Discovery
@@ -578,5 +579,5 @@ public class DaspSocket
   int qMode;                        // session or socket queueing mode
   ReceiveQueue queue;               // used for socket queuing
 
-  ArrayList discovered;             // collects responses to discover msg
+  ArrayList discovered;   // collects responses to discover msg
 }
