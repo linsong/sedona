@@ -29,6 +29,29 @@ void printAddr(const char* label, void* loc, int len)
 
 
 /**
+ * Return true if the the address string is the correct protocol for this SVM.
+ */
+bool checkProtocol(const char* addr)
+{
+#if defined( SOCKET_FAMILY_INET )
+  if (strchr(addr, '.')==NULL)
+  {
+    printf("Bad address: This Sedona VM is IPv4 only.\n");
+    return FALSE;
+  }
+#elif defined( SOCKET_FAMILY_INET6 )
+  if (strchr(addr, '.')!=NULL)
+  {
+    printf("Bad address: This Sedona VM is IPv6 only.\n");
+    return FALSE;
+  }
+#endif
+  return TRUE;
+}
+
+
+
+/**
  * Configure specified socket as non-blocking.
  * Return 0 on success, non-zero on error.
  */

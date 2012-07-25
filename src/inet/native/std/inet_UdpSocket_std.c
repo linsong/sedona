@@ -28,8 +28,8 @@ struct UdpDatagram
   uint8_t* buf;
   int32_t  off;
   int32_t  len;
-  int32_t  scope;
-  int32_t  flow;
+  int32_t  scope;    // only used by IPv6, BUT in 1.2.16+ UdpDatagram.sedona for both
+  int32_t  flow;     // only used by IPv6, BUT in 1.2.16+ UdpDatagram.sedona for both
 };
 
 static void getUdpDatagram(int8_t* sedona, struct UdpDatagram* c)
@@ -41,8 +41,10 @@ static void getUdpDatagram(int8_t* sedona, struct UdpDatagram* c)
     c->buf   = getRef(sedona, 8);
     c->off   = getInt(sedona, 12);
     c->len   = getInt(sedona, 16);
-    c->scope = getInt(sedona, 20);
-    c->flow  = getInt(sedona, 24);
+#ifdef SOCKET_FAMILY_INET6
+    c->scope = getInt(sedona, 20);   // don't touch these for IPv4
+    c->flow  = getInt(sedona, 24);   // don't touch these for IPv4
+#endif
   }
   else
   {
@@ -59,8 +61,10 @@ static void setUdpDatagram(int8_t* sedona, struct UdpDatagram* c)
     setRef(sedona, 8,  c->buf);
     setInt(sedona, 12, c->off);
     setInt(sedona, 16, c->len);
-    setInt(sedona, 20, c->scope);
-    setInt(sedona, 24, c->flow);
+#ifdef SOCKET_FAMILY_INET6
+    setInt(sedona, 20, c->scope);   // don't touch these for IPv4
+    setInt(sedona, 24, c->flow);    // don't touch these for IPv4
+#endif
   }
   else
   {
@@ -201,6 +205,11 @@ Cell inet_UdpSocket_join(SedonaVM* vm, Cell* params)
 
   if (closed) return falseCell;
 
+
+  // Make sure address matches protocol SVM was built for
+  if (!checkProtocol(addr))
+    return falseCell;
+
   //
   // Join all-hosts multicast address group (used for device discovery)
   //
@@ -255,15 +264,6 @@ Cell inet_UdpSocket_send(SedonaVM* vm, Cell* params)
 
   struct sockaddr_storage addr;
   memset(&addr, 0, sizeof(addr));
-
-#ifdef SOCKET_FAMILY_INET
-  // do nothing
-#elif defined( SOCKET_FAMILY_INET6 )
-  {
-    //struct sockaddr_in6* paddr = (struct sockaddr_in6*)&addr;
-    //paddr->sin6_scope_id = 0x02;   // what should this be set to, if anything?
-  }
-#endif
 
   if (closed) printf("  send error! UDP socket is closed\n");
 
@@ -331,15 +331,6 @@ Cell inet_UdpSocket_receive(SedonaVM* vm, Cell* params)
 
   struct sockaddr_storage addr;
   memset(&addr, 0, sizeof(addr));
-
-#ifdef SOCKET_FAMILY_INET
-  // do nothing
-#elif defined( SOCKET_FAMILY_INET6 )
-  {
-    //struct sockaddr_in6* paddr = (struct sockaddr_in6*)addr;
-    //paddr->sin6_scope_id = 0x02;   // what should this be set to, if anything?
-  }
-#endif
 
   // we store an inline IpAddr in UdpSocket to use as the
   // storage location for the address to return in the datagram

@@ -138,6 +138,8 @@ class SoxService
     Str group = Dasp.USE_MULTICAST_GROUP
     if (socket.join(group))
       log.message("joined multicast group $group")
+    else
+      log.message("Failed to join multicast group $group")
 
     Sys.app.platform.notify("sox", Sys.intStr(port))
     return isPortOpen = true
