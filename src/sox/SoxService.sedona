@@ -135,11 +135,10 @@ class SoxService
 
     log.message("started port=$port")
 
-    Str group = Dasp.USE_MULTICAST_GROUP
-    if (socket.join(group))
-      log.message("joined multicast group $group")
+    if (socket.join())
+      log.message("DASP Discovery enabled")
     else
-      log.message("Failed to join multicast group $group")
+      log.message("DASP Discovery not enabled")
 
     Sys.app.platform.notify("sox", Sys.intStr(port))
     return isPortOpen = true

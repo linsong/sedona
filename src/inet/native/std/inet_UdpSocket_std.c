@@ -9,9 +9,21 @@
 
 #include "inet_util_std.h"
 
+//
+// Define the multicast group address for Discover
+// (must match address used by SoxClient, defined in sedona.jar)
+//
+#ifdef SOCKET_FAMILY_INET
+ #define DISCOVER_MULTICAST_GROUP_ADDRESS "224.0.0.1"  //"239.255.18.76"   // RFC 2365
+#elif defined( SOCKET_FAMILY_INET6 )
+ #define DISCOVER_MULTICAST_GROUP_ADDRESS "FF02::1"      
+#endif
+
+
 
 // defined in inet_util_std.c (may be commented out)
 //extern void printAddr(const char* label, void* loc, int len);
+
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -196,7 +208,6 @@ Cell inet_UdpSocket_bind(SedonaVM* vm, Cell* params)
 Cell inet_UdpSocket_join(SedonaVM* vm, Cell* params)
 {
   void* self       = params[0].aval;
-  const char* addr = (const char*)params[1].aval;
 
   bool closed   = getClosed(self);
   socket_t sock = getSocket(self);
@@ -205,38 +216,37 @@ Cell inet_UdpSocket_join(SedonaVM* vm, Cell* params)
 
   if (closed) return falseCell;
 
-
-  // Make sure address matches protocol SVM was built for
-  if (!checkProtocol(addr))
-    return falseCell;
-
   //
   // Join all-hosts multicast address group (used for device discovery)
   //
-
 #if defined( SOCKET_FAMILY_INET )
   {
     struct ip_mreq mreq;
-    mreq.imr_multiaddr.s_addr = inet_addr(addr);
+    mreq.imr_multiaddr.s_addr = inet_addr(DISCOVER_MULTICAST_GROUP_ADDRESS);
     mreq.imr_interface.s_addr = INADDR_ANY;
     rc = setsockopt(sock, IPPROTO_IP, IP_ADD_MEMBERSHIP, (char *)&mreq, sizeof(mreq));
   }
 #elif defined( SOCKET_FAMILY_INET6 )
   {
     struct ipv6_mreq mreq;
-    inet_pton( AF_INET6, addr, &(mreq.ipv6mr_multiaddr) );
+    inet_pton( AF_INET6, DISCOVER_MULTICAST_GROUP_ADDRESS, &(mreq.ipv6mr_multiaddr) );
     mreq.ipv6mr_interface = 0;
     rc = setsockopt(sock, IPPROTO_IPV6, IPV6_ADD_MEMBERSHIP, (char *)&mreq, sizeof(mreq));
   }
 #endif 
 
   if (rc==0) 
+  {
+    printf(" Joined multicast group %s\n", DISCOVER_MULTICAST_GROUP_ADDRESS);
     return trueCell;
+  }
 
 #ifdef _WIN32
-  printf("  setsockopt error %d joining multicast group %s\n", WSAGetLastError(), addr);
+  printf("  setsockopt error %d joining multicast group %s\n", WSAGetLastError(), 
+                                                                DISCOVER_MULTICAST_GROUP_ADDRESS);
 #else
-  printf("  setsockopt error %d joining multicast group %s\n", errno, addr);
+  printf("  setsockopt error %d joining multicast group %s\n", errno, 
+                                                                DISCOVER_MULTICAST_GROUP_ADDRESS);
 #endif
   return falseCell;
 }

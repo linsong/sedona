@@ -50,10 +50,11 @@ class UdpSocket
   native bool bind(int port)
 
   **
-  ** Join this socket the specified multicast group address.
+  ** Join this socket to a multicast group.
+  ** (Address is defined at native level.)
   ** Return true on success, false on failure.
   **
-  native bool join(Str groupaddr)
+  native bool join()
 
   **
   ** Send the specified datagram which encapsulates both the
