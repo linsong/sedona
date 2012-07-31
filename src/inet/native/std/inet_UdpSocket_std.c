@@ -9,9 +9,21 @@
 
 #include "inet_util_std.h"
 
+//
+// Define the multicast group address for Discover
+// (must match address used by SoxClient, defined in sedona.jar)
+//
+#ifdef SOCKET_FAMILY_INET
+ #define DISCOVER_MULTICAST_GROUP_ADDRESS "239.255.18.76"   // RFC 2365
+#elif defined( SOCKET_FAMILY_INET6 )
+ #define DISCOVER_MULTICAST_GROUP_ADDRESS "FF02::1"  //"FF02::137"       // use Niagara's
+#endif
+
+
 
 // defined in inet_util_std.c (may be commented out)
 //extern void printAddr(const char* label, void* loc, int len);
+
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -28,8 +40,8 @@ struct UdpDatagram
   uint8_t* buf;
   int32_t  off;
   int32_t  len;
-  int32_t  scope;
-  int32_t  flow;
+  int32_t  scope;    // only used by IPv6, BUT in 1.2.16+ UdpDatagram.sedona for both
+  int32_t  flow;     // only used by IPv6, BUT in 1.2.16+ UdpDatagram.sedona for both
 };
 
 static void getUdpDatagram(int8_t* sedona, struct UdpDatagram* c)
@@ -41,8 +53,10 @@ static void getUdpDatagram(int8_t* sedona, struct UdpDatagram* c)
     c->buf   = getRef(sedona, 8);
     c->off   = getInt(sedona, 12);
     c->len   = getInt(sedona, 16);
-    c->scope = getInt(sedona, 20);
-    c->flow  = getInt(sedona, 24);
+#ifdef SOCKET_FAMILY_INET6
+    c->scope = getInt(sedona, 20);   // don't touch these for IPv4
+    c->flow  = getInt(sedona, 24);   // don't touch these for IPv4
+#endif
   }
   else
   {
@@ -59,8 +73,10 @@ static void setUdpDatagram(int8_t* sedona, struct UdpDatagram* c)
     setRef(sedona, 8,  c->buf);
     setInt(sedona, 12, c->off);
     setInt(sedona, 16, c->len);
-    setInt(sedona, 20, c->scope);
-    setInt(sedona, 24, c->flow);
+#ifdef SOCKET_FAMILY_INET6
+    setInt(sedona, 20, c->scope);   // don't touch these for IPv4
+    setInt(sedona, 24, c->flow);    // don't touch these for IPv4
+#endif
   }
   else
   {
@@ -192,7 +208,6 @@ Cell inet_UdpSocket_bind(SedonaVM* vm, Cell* params)
 Cell inet_UdpSocket_join(SedonaVM* vm, Cell* params)
 {
   void* self       = params[0].aval;
-  const char* addr = (const char*)params[1].aval;
 
   bool closed   = getClosed(self);
   socket_t sock = getSocket(self);
@@ -204,30 +219,34 @@ Cell inet_UdpSocket_join(SedonaVM* vm, Cell* params)
   //
   // Join all-hosts multicast address group (used for device discovery)
   //
-
 #if defined( SOCKET_FAMILY_INET )
   {
     struct ip_mreq mreq;
-    mreq.imr_multiaddr.s_addr = inet_addr(addr);
+    mreq.imr_multiaddr.s_addr = inet_addr(DISCOVER_MULTICAST_GROUP_ADDRESS);
     mreq.imr_interface.s_addr = INADDR_ANY;
     rc = setsockopt(sock, IPPROTO_IP, IP_ADD_MEMBERSHIP, (char *)&mreq, sizeof(mreq));
   }
 #elif defined( SOCKET_FAMILY_INET6 )
   {
     struct ipv6_mreq mreq;
-    inet_pton( AF_INET6, addr, &(mreq.ipv6mr_multiaddr) );
+    inet_pton( AF_INET6, DISCOVER_MULTICAST_GROUP_ADDRESS, &(mreq.ipv6mr_multiaddr) );
     mreq.ipv6mr_interface = 0;
     rc = setsockopt(sock, IPPROTO_IPV6, IPV6_ADD_MEMBERSHIP, (char *)&mreq, sizeof(mreq));
   }
 #endif 
 
   if (rc==0) 
+  {
+    printf(" Joined multicast group %s\n", DISCOVER_MULTICAST_GROUP_ADDRESS);
     return trueCell;
+  }
 
 #ifdef _WIN32
-  printf("  setsockopt error %d joining multicast group %s\n", WSAGetLastError(), addr);
+  printf("  setsockopt error %d joining multicast group %s\n", WSAGetLastError(), 
+                                                                DISCOVER_MULTICAST_GROUP_ADDRESS);
 #else
-  printf("  setsockopt error %d joining multicast group %s\n", errno, addr);
+  printf("  setsockopt error %d joining multicast group %s\n", errno, 
+                                                                DISCOVER_MULTICAST_GROUP_ADDRESS);
 #endif
   return falseCell;
 }
@@ -255,15 +274,6 @@ Cell inet_UdpSocket_send(SedonaVM* vm, Cell* params)
 
   struct sockaddr_storage addr;
   memset(&addr, 0, sizeof(addr));
-
-#ifdef SOCKET_FAMILY_INET
-  // do nothing
-#elif defined( SOCKET_FAMILY_INET6 )
-  {
-    //struct sockaddr_in6* paddr = (struct sockaddr_in6*)&addr;
-    //paddr->sin6_scope_id = 0x02;   // what should this be set to, if anything?
-  }
-#endif
 
   if (closed) printf("  send error! UDP socket is closed\n");
 
@@ -331,15 +341,6 @@ Cell inet_UdpSocket_receive(SedonaVM* vm, Cell* params)
 
   struct sockaddr_storage addr;
   memset(&addr, 0, sizeof(addr));
-
-#ifdef SOCKET_FAMILY_INET
-  // do nothing
-#elif defined( SOCKET_FAMILY_INET6 )
-  {
-    //struct sockaddr_in6* paddr = (struct sockaddr_in6*)addr;
-    //paddr->sin6_scope_id = 0x02;   // what should this be set to, if anything?
-  }
-#endif
 
   // we store an inline IpAddr in UdpSocket to use as the
   // storage location for the address to return in the datagram
