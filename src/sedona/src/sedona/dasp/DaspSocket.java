@@ -444,17 +444,14 @@ public class DaspSocket
   public void discover(int port, boolean useIPv6)
   {
     InetAddress mcaddr;
+    String addrstr = useIPv6 ? DaspConst.IPv6_MULTICAST_ADDR : DaspConst.IPv4_MULTICAST_ADDR;
     try
     {
-      if (useIPv6)
-        mcaddr = InetAddress.getByName(DaspConst.IPv6_MULTICAST_ADDR);
-      else
-        mcaddr = InetAddress.getByName(DaspConst.IPv4_MULTICAST_ADDR);
+      mcaddr = InetAddress.getByName(addrstr);
     }
     catch (UnknownHostException e)
     { 
-      System.out.println("ERROR Creating multicast address (" + DaspConst.USE_MULTICAST_GROUP 
-                                                              + "): " + e.getMessage());
+      System.out.println("ERROR Creating multicast address (" + addrstr + "): " + e.getMessage());
       e.printStackTrace();
       return;
     }
