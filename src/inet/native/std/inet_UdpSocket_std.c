@@ -14,9 +14,9 @@
 // (must match address used by SoxClient, defined in sedona.jar)
 //
 #ifdef SOCKET_FAMILY_INET
- #define DISCOVER_MULTICAST_GROUP_ADDRESS "224.0.0.1"  //"239.255.18.76"   // RFC 2365
+ #define DISCOVER_MULTICAST_GROUP_ADDRESS "239.255.18.76"   // RFC 2365
 #elif defined( SOCKET_FAMILY_INET6 )
- #define DISCOVER_MULTICAST_GROUP_ADDRESS "FF02::1"      
+ #define DISCOVER_MULTICAST_GROUP_ADDRESS "FF02::1"  //"FF02::137"       // use Niagara's
 #endif
 
 

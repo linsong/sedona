@@ -95,8 +95,7 @@ public interface DaspConst
 // Device Discovery
 ///////////////////////////////////////////////////////////////
 
-  public static final String IPv4_MULTICAST_ADDR = "224.0.0.1";
-  public static final String IPv6_MULTICAST_ADDR = "FF02::1";
-  public static final String USE_MULTICAST_GROUP = IPv4_MULTICAST_ADDR;  // use IPv4 for now
+  public static final String IPv4_MULTICAST_ADDR = "239.255.18.76";  // RFC 2365
+  public static final String IPv6_MULTICAST_ADDR = "FF02::1";  //"FF02::137";   // use Niagara's
 
 }
