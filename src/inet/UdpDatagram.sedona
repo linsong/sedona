@@ -65,9 +65,9 @@ class UdpDatagram
   int len
 
   ** IPv6 address scope ID
-  int scopeId  = 0xcafef00d;
+  int scopeId;
 
   ** IPv6 address flow info
-  int flowinfo = 0xbeadfade;
+  int flowinfo;
 
 }

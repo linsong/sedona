@@ -337,9 +337,10 @@ Cell inet_UdpSocket_receive(SedonaVM* vm, Cell* params)
 
   int r;
   void* receiveIpAddr;
-  int addrLen;
 
   struct sockaddr_storage addr;
+  int addrLen = sizeof(addr);
+
   memset(&addr, 0, sizeof(addr));
 
   // we store an inline IpAddr in UdpSocket to use as the
