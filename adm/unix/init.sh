@@ -38,6 +38,7 @@ done
 # Ensure permissions are correct for adm python scripts
 find $sedona_home/adm -name "*.py" -exec chmod 755 '{}' \; 2> /dev/null
 find $sedona_home/adm -name "*.sh" -exec chmod 755 '{}' \; 2> /dev/null
+find $sedona_home/bin -name "*.sh" -exec chmod 755 '{}' \; 2> /dev/null
 
 # aliases
 alias makeunixvm='makeunixvm.py'
