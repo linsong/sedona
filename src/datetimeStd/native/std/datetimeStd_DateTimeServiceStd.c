@@ -57,9 +57,14 @@ Cell datetimeStd_DateTimeServiceStd_doGetUtcOffset(SedonaVM* vm, Cell* params)
   //  localtime is called.  QNX follows same convention.
   //  timezone is difference between localtime and GMT, so we must negate to 
   //  get utcOffset as we define it.
-  time_t now = time(NULL);
-  struct tm *lcltime = localtime(&now);
+  time_t now;
+  struct tm *lcltime;
+
+  tzset();   // set up time zone related variables before calling localtime()
   
+  now     = time(NULL);
+  lcltime = localtime(&now);
+
   #ifdef _WIN32
     result.ival = -(int)_timezone;
     if (_daylight)
