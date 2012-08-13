@@ -45,6 +45,9 @@ typedef SOCKET socket_t;
 
 #define SOCKADDR_PARAM struct sockaddr
 
+LPSTR PrintError(int ErrorCode);
+
+
 #endif
 
 ////////////////////////////////////////////////////////////////

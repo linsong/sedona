@@ -75,17 +75,24 @@ int inet_bind(socket_t sock, int port)
 #ifdef SOCKET_FAMILY_INET
   {
     struct sockaddr_in* paddr = (struct sockaddr_in*)&addr;
-
+#ifdef __QNX__
+    paddr->sin_len         = sizeof(struct sockaddr_in);
+#endif
     paddr->sin_family      = AF_INET;
     paddr->sin_addr.s_addr = INADDR_ANY;
     paddr->sin_port        = htons(port);
 
     //printAddr(" Binding to IPv4 addr: ", &(addr.sin_addr.s_addr), 2);
+   
+    rc = bind(sock, (struct sockaddr *)&addr, sizeof(*paddr));
   }
 #elif defined( SOCKET_FAMILY_INET6 )
   {
     struct sockaddr_in6* paddr = (struct sockaddr_in6*)&addr;
 
+#ifdef __QNX__
+    paddr->sin6_len    = sizeof(struct sockaddr_in6);
+#endif
     paddr->sin6_family   = AF_INET6;
     paddr->sin6_addr     = in6addr_any;
     paddr->sin6_port     = htons(port);
@@ -93,16 +100,13 @@ int inet_bind(socket_t sock, int port)
     paddr->sin6_scope_id = 0x0;   // Interface #, I guess 0 is okay for in6addr_any
 
     //printAddr(" Binding to IPv6 addr: ", &(paddr->sin6_addr), 8);
+
+    rc = bind(sock, (struct sockaddr *)&addr, sizeof(*paddr));
   }
 #endif
 
-  rc = bind(sock, (SOCKADDR_PARAM*)&addr, sizeof(addr));
 
-#ifdef _WIN32
-  if (rc!=0) printf(" bind() returned %d, errno = %d\n", rc, WSAGetLastError());   // DIAG
-#else
-  if (rc!=0) printf(" bind() returned %d, errno = %d\n", rc, errno);   // DIAG
-#endif
+  if (rc!=0) perror("bind failed");
 
   return rc;
 }
@@ -115,7 +119,9 @@ int inet_toSockaddr(struct sockaddr_storage* addr, uint32_t* ipAddr, int port, i
 {
 #if defined( SOCKET_FAMILY_INET )
   struct sockaddr_in* paddr = (struct sockaddr_in*)addr;
-
+#ifdef __QNX__
+  paddr->sin_len    = sizeof(struct sockaddr_in);
+#endif
   paddr->sin_port   = htons(port);
   paddr->sin_family = AF_INET;
 
@@ -128,6 +134,9 @@ int inet_toSockaddr(struct sockaddr_storage* addr, uint32_t* ipAddr, int port, i
   struct sockaddr_in6* paddr = (struct sockaddr_in6*)addr;
   uint32_t* x = (uint32_t*)&(paddr->sin6_addr);
 
+#ifdef __QNX__
+  paddr->sin6_len      = sizeof(struct sockaddr_in6);
+#endif
   paddr->sin6_port     = htons(port);
   paddr->sin6_family   = AF_INET6;
   paddr->sin6_scope_id = htonl(scope);
@@ -179,4 +188,24 @@ int inet_fromSockaddr(struct sockaddr_storage* addr, uint32_t* ipAddr, int* port
 
 
 
+#ifdef _WIN32
+//
+// Convenience for Winsock error messages
+//   Copied from http://msdn.microsoft.com/en-us/library/windows/desktop/ms738639(v=vs.85).aspx
+//
+LPSTR PrintError(int ErrorCode)
+{
+    static char Message[1024];
+
+    // If this program was multithreaded, we'd want to use
+    // FORMAT_MESSAGE_ALLOCATE_BUFFER instead of a static buffer here.
+    // (And of course, free the buffer when we were done with it)
+
+    FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS |
+                  FORMAT_MESSAGE_MAX_WIDTH_MASK, NULL, ErrorCode,
+                  MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+                  (LPSTR) Message, 1024, NULL);
+    return Message;
+}
+#endif
 

@@ -15,9 +15,9 @@
 
 // static Str Sys.platformType()
 Cell sys_Sys_platformType(SedonaVM* vm, Cell* params)
-{         
+{
   Cell result;
-  result.aval = "jace::JacePlatform";
+  result.aval = "platQnxPpc::QnxPlatformService";
   return result;
 }
 
@@ -54,23 +54,23 @@ int64_t sys_Sys_ticks(SedonaVM* vm, Cell* params)
   int64_t nanos;
 
   pthread_mutex_lock(&mutex);
-  
-  if (cycles_per_usec == 0)      
+
+  if (cycles_per_usec == 0)
     cycles_per_usec = (SYSPAGE_ENTRY(qtime)->cycles_per_sec) / (1000 * 1000);
-  
+
   cycles = ClockCycles();
-  
+
   if (cycles < last_cycles)
     rollover_count++;
 
   //  To avoid overflow and rounding problems, convert to usec, then
-  //  multiply by 1000 to get nanos. 
-  nanos = (cycles / cycles_per_usec) * 1000 + 
+  //  multiply by 1000 to get nanos.
+  nanos = (cycles / cycles_per_usec) * 1000 +
           rollover_count * (UINT64_MAX / cycles_per_usec) * 1000;
 
-  last_cycles = cycles;   
-  
+  last_cycles = cycles;
+
   pthread_mutex_unlock(&mutex);
-  
+
   return nanos;
 }

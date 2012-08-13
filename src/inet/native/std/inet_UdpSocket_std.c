@@ -5,6 +5,8 @@
 // History:
 //   05 Sep 06  Brian Frank  Creation
 //   07 May 07  Brian Frank  Port from C++ old Sedona
+//   09 Jul 12  Elizabeth McKenney/Clif Turman IPV6 support
+//   09 Aug 12  Clif Turman  Add QNX Specific variant
 //
 
 #include "inet_util_std.h"
@@ -23,7 +25,6 @@
 
 // defined in inet_util_std.c (may be commented out)
 //extern void printAddr(const char* label, void* loc, int len);
-
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -230,23 +231,28 @@ Cell inet_UdpSocket_join(SedonaVM* vm, Cell* params)
   {
     struct ipv6_mreq mreq;
     inet_pton( AF_INET6, DISCOVER_MULTICAST_GROUP_ADDRESS, &(mreq.ipv6mr_multiaddr) );
+
+#ifdef __QNX__
+    mreq.ipv6mr_interface = 2;  // This is hardcoded for now.  Need to get this through api's
+#else
     mreq.ipv6mr_interface = 0;
-    rc = setsockopt(sock, IPPROTO_IPV6, IPV6_ADD_MEMBERSHIP, (char *)&mreq, sizeof(mreq));
+#endif
+
+    rc = setsockopt(sock, IPPROTO_IPV6, IPV6_JOIN_GROUP, (char *)&mreq, sizeof(mreq));
   }
 #endif 
 
   if (rc==0) 
   {
-    printf(" Joined multicast group %s\n", DISCOVER_MULTICAST_GROUP_ADDRESS);
+    printf(" Joined multicast group %s\n", DISCOVER_MULTICAST_GROUP_ADDRESS);   // debug
     return trueCell;
   }
 
+  printf("  setsockopt error joining multicast group %s: %s\n", DISCOVER_MULTICAST_GROUP_ADDRESS,
 #ifdef _WIN32
-  printf("  setsockopt error %d joining multicast group %s\n", WSAGetLastError(), 
-                                                                DISCOVER_MULTICAST_GROUP_ADDRESS);
+                                                                PrintError(WSAGetLastError()) );
 #else
-  printf("  setsockopt error %d joining multicast group %s\n", errno, 
-                                                                DISCOVER_MULTICAST_GROUP_ADDRESS);
+                                                                strerror(errno) );
 #endif
   return falseCell;
 }
@@ -290,18 +296,26 @@ Cell inet_UdpSocket_send(SedonaVM* vm, Cell* params)
   buf = datagram.buf + datagram.off;
   len = datagram.len;
 
-  //printAddr("send: datagram.addr", datagram.addr, 8);
-  //printf("  datagram.port  = %d\n", datagram.port);
-#ifdef SOCKET_FAMILY_INET6
-  //printf("  datagram.scope = %d\n", datagram.scope);
-  //printf("  datagram.flow  = %d\n", datagram.flow);
+//#ifdef __QNX__
+  // On QNX, sendto requires the exact length of the buffer to be used
+  {
+#if defined( SOCKET_FAMILY_INET )
+    socklen_t addrLen = sizeof(struct sockaddr_in);
+#elif defined( SOCKET_FAMILY_INET6 )
+    socklen_t addrLen = sizeof(struct sockaddr_in6);
 #endif
-  
-  r = sendto(sock, buf, len, 0, (SOCKADDR_PARAM*)&addr, sizeof(addr));
+    r = sendto(sock, buf, len, 0, (const struct sockaddr *)&addr, addrLen);
+//#else  
+//    r = sendto(sock, buf, len, 0, (const struct sockaddr *)&addr, sizeof(addr));
+//#endif
+  }
 
-  if (r!=len) printf("  send error! sendto sent %d bytes (should have sent %d)\n", r, len);
+  if (r!=len) 
+  {
+    perror("sendto error:");
+    return falseCell;
+  }
 
-  if (r != len) return falseCell;
   return trueCell;
 }
 
@@ -359,7 +373,7 @@ Cell inet_UdpSocket_receive(SedonaVM* vm, Cell* params)
   buf = datagram.buf + datagram.off;
   len = datagram.len;
 
-  r = recvfrom(sock, buf, len, 0, (SOCKADDR_PARAM*)&addr, &addrLen);
+  r = recvfrom(sock, buf, len, 0, (struct sockaddr *)&addr, &addrLen);
 
   // Update shared struct from contents of local var
   if (r == SOCKET_ERROR)
@@ -370,22 +384,12 @@ Cell inet_UdpSocket_receive(SedonaVM* vm, Cell* params)
     setUdpDatagram(sDatagram, &datagram);
     return falseCell;
   }
-  else
-  {       
-    inet_fromSockaddr(&addr, receiveIpAddr, &datagram.port, &datagram.scope, &datagram.flow);
-    datagram.len  = r;
-    datagram.addr = receiveIpAddr;
-    setUdpDatagram(sDatagram, &datagram);
 
-    //printAddr("recv: receiveIpAddr", receiveIpAddr, 8);
-    //printf("  datagram.port  = %d\n", datagram.port);
-#ifdef SOCKET_FAMILY_INET6
-    //printf("  datagram.scope = %d\n", datagram.scope);
-    //printf("  datagram.flow  = %d\n", datagram.flow);
-#endif
-
-    return trueCell;
-  }
+  inet_fromSockaddr(&addr, receiveIpAddr, &datagram.port, &datagram.scope, &datagram.flow);
+  datagram.len  = r;
+  datagram.addr = receiveIpAddr;
+  setUdpDatagram(sDatagram, &datagram);
+  return trueCell;
 }
 
 //
@@ -407,5 +411,6 @@ Cell inet_UdpSocket_close(SedonaVM* vm, Cell* params)
   }
   return nullCell;
 }
+
 
 

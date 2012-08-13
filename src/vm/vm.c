@@ -277,8 +277,8 @@ const char* qnameType(SedonaVM* vm, uint16_t block)
   static char buf[64];
   const uint8_t* cb = vm->codeBaseAddr;
   uint16_t* pair = (uint16_t*)block2addr(cb, block);
-  const char* kitName = block2addr(cb, pair[0]);
-  const char* typeName = block2addr(cb, pair[1]);
+  const unsigned char* kitName  = block2addr(cb, pair[0]);
+  const unsigned char* typeName = block2addr(cb, pair[1]);
 
   sprintf(buf, "%s::%s", kitName, typeName);
   return buf;
@@ -290,7 +290,7 @@ const char* qnameSlot(SedonaVM* vm, uint16_t block)
   const uint8_t* cb = vm->codeBaseAddr;
   uint16_t* pair = (uint16_t*)block2addr(cb, block);
   const char* typeName = qnameType(vm, pair[0]);
-  const char* slotName = block2addr(cb, pair[1]);
+  const unsigned char* slotName = block2addr(cb, pair[1]);
 
   sprintf(buf, "%s.%s", typeName, slotName);
   return buf;
