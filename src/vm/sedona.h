@@ -132,6 +132,12 @@ typedef short             int_least16_t;
 #define SCODE_BLOCK_SIZE 4
 #define block2addr(cb, block) ((cb) + (block<<2))
 #define SCODE_DEBUG
+#ifndef TRUE
+  #define TRUE 1
+#endif
+#ifndef FALSE
+  #define FALSE 0
+#endif
 
 #ifdef __LITTLEENDIAN__
   #define IS_LITTLE_ENDIAN

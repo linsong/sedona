@@ -14,6 +14,12 @@
 #include <stdlib.h>
 #include "errorcodes.h"
 
+//needed to pass version info from gcc command line as a string value (only needed for QNX)
+#define VER1(x) #x
+#define VER(x) VER1(x)
+//#define VER VER_(PLAT_BUILD_VERSION)
+
+
 // sys::Sys forward
 int64_t sys_Sys_ticks(SedonaVM* vm, Cell* params);
 void sys_Sys_sleep(SedonaVM* vm, Cell* params);
@@ -39,7 +45,7 @@ extern NativeMethod* nativeTable[];
 
 int main(int argc, char *argv[])
 {
-  int result;
+  //int result;
   int i;
   bool runAsPlatform = FALSE;
   char* filename = NULL;
@@ -303,7 +309,12 @@ static int printVersion()
   const char* endian = "little";
 #endif
   printf("\n");
+#ifdef __QNX__
+  printf("Sedona VM %s\n", VER(PLAT_BUILD_VERSION));
+#else
   printf("Sedona VM %s\n", PLAT_BUILD_VERSION);
+#endif
+ 
   printf("buildDate: %s %s\n", __DATE__, __TIME__);
   printf("endian:    %s\n", endian);
   printf("blockSize: %d\n", SCODE_BLOCK_SIZE);
