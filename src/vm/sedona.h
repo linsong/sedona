@@ -198,18 +198,25 @@ typedef short             int_least16_t;
 #  define FALSE 0
 #endif
 
+#endif   // end of definitions for standard platforms ( _WIN32, __QNX__, __UNIX__ )
+
+
+
+
 ////////////////////////////////////////////////////////////////
 //
-// If none of the above platforms, look for local sedona.h file 
-//   with defns for additional platforms supplied by user
+// If none of the above platforms, put definitions into a file
+// named sedona-local.h and define SEDONA_LOCAL_H on the compiler
+// command line.
 //
 ////////////////////////////////////////////////////////////////
 
-#else
+#ifdef SEDONA_LOCAL_H
 
-#include <sedona-local.h>
+ #include <sedona-local.h>
 
 #endif
+
 
 
 ////////////////////////////////////////////////////////////////
