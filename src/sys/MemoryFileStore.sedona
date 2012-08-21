@@ -1,0 +1,152 @@
+//
+// Copyright (c) 2012 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+
+**
+** A file store implementation where the file contents are backed by an in-
+** memory byte[]. The memory file is modeled by a MemoryFile object. When a
+** sys::File is opened by this file store, the "fp" field of the File will be
+** assigned to a MemoryFile. Therefore, any open memory file can be accessed
+** by casting the fp field of the sys::File to a MemoryFile.
+**
+** Sub-classes must implement the following abstract methods:
+**    int getMemorySize(File f)
+**    bool openMemoryFile(MemoryFile m)
+**
+abstract class MemoryFileStore extends FileStore
+{
+  ** Must be implemented by getMemorySize(File f)
+  override int size(File f)
+  {
+    return getMemorySize(f)
+  }
+
+  ** Return the size of the memory buffer back the file represented by "f".
+  abstract int getMemorySize(File f)
+
+  override bool open(File f, Str mode)
+  {
+    MemoryFile m = new MemoryFile()
+    if (m == null)
+      return false
+    f.fp = m
+    m.file = f
+    m.mode = mode.get(0)
+    m.size = getMemorySize(f)
+    if ((m.size < 0) || !openMemoryFile(m))
+    {
+      close(f)
+      return false
+    }
+    return true
+  }
+
+  **
+  ** Given a MemoryFile, the implementation must set the mem byte[] to point
+  ** to the contents being backed by the memory file.
+  **
+  ** Pre-Condition: all fields of the MemoryFile are initialized except for
+  ** the mem field.
+  **
+  ** return true on success, false on error.
+  **
+  abstract bool openMemoryFile(MemoryFile m)
+
+  override virtual void flush(File f)
+  {
+  }
+
+  override bool close(File f)
+  {
+    if (f.fp != null)
+    {
+      delete (MemoryFile)f.fp
+      f.fp = null
+      return true
+    }
+    return false
+  }
+
+  override virtual int tell(File f)
+  {
+    MemoryFile m = (MemoryFile)f.fp
+    return (m == null ) ? -1 : m.pos
+  }
+
+  override virtual bool seek(File f, int pos)
+  {
+    MemoryFile m = (MemoryFile)f.fp
+    if (m == null)
+      return false
+    if (pos >= 0 && pos < m.size)
+    {
+      m.pos = pos
+      return true
+    }
+    return false
+  }
+
+  override virtual int read(File f)
+  {
+    MemoryFile m = (MemoryFile)f.fp
+    if (m == null || m.eof())
+      return -1
+    return m.mem[m.pos++]
+  }
+
+  override virtual int readBytes(File f, byte[] b, int off, int len)
+  {
+    MemoryFile m = (MemoryFile)f.fp
+    if (m == null || m.eof())
+      return -1
+    int num = (m.pos + len) >= m.size ? (m.size - m.pos) : len
+    Sys.copy(m.mem, m.pos, b, off, num)
+    m.pos += num
+    return num
+  }
+
+  override virtual bool write(File f, int b)
+  {
+    MemoryFile m = (MemoryFile)f.fp
+    if (m == null || !m.writable() || m.eof())
+      return false
+    m.mem[m.pos++] = b
+    return true
+  }
+
+  override virtual bool writeBytes(File f, byte[] b, int off, int len)
+  {
+    MemoryFile m = (MemoryFile)f.fp
+    if (m == null || !m.writable() || m.eof() || (m.pos + len > m.size))
+      return false
+    Sys.copy(b, off, m.mem, m.pos, len)
+    m.pos += len
+    return true
+  }
+}
+
+final class MemoryFile
+{
+  ** reference to containing File instance
+  File file
+
+  ** 'r', 'w', 'm' or 0 if an error
+  byte mode = 0
+
+  ** current read/write position in the memory file.
+  int pos = 0
+
+  ** size of the memory file. Less than zero indicates an error.
+  ** Modify at your peril.
+  int size = -1
+
+  ** the contents of the memory file. Modify at your peril.
+  byte[] mem
+
+  ** returns true if the position is past the end of file.
+  bool eof() { return pos >= size }
+
+  ** returns true if the memory file was opened for writing.
+  bool writable() { return mode == 'm' || mode == 'w' }
+}

@@ -1,0 +1,198 @@
+//
+// Copyright (c) 2012 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   26 Oct 11  Elizabeth McKenney  Creation
+//
+
+**
+** PrioritizedBool 
+**
+class PrioritizedBool
+  extends Prioritized
+{
+
+  define bool NULLVAL := null
+
+////////////////////////////////////////////////////////////////
+// Properties
+////////////////////////////////////////////////////////////////
+
+  @readonly 
+  @summary=false property bool in1 = NULLVAL
+
+  @summary=false property bool in2 := NULLVAL
+  @summary=false property bool in3 := NULLVAL
+  @summary=false property bool in4 := NULLVAL
+  @summary=false property bool in5 := NULLVAL
+
+  @readonly 
+  @summary=false property bool in6 := NULLVAL
+
+  @summary=false property bool in7 := NULLVAL
+
+  @readonly 
+  @summary=false property bool in8 := NULLVAL
+
+  @summary=false property bool in9 := NULLVAL
+  @summary=true  property bool in10 := NULLVAL
+  @summary=false property bool in11 := NULLVAL
+  @summary=false property bool in12 := NULLVAL
+  @summary=false property bool in13 := NULLVAL
+  @summary=false property bool in14 := NULLVAL
+  @summary=false property bool in15 := NULLVAL
+  @summary=true  property bool in16 := NULLVAL
+
+  @config 
+  @summary=false property bool fallback := NULLVAL
+
+  @readonly 
+  @summary=true  property bool out
+
+
+  @config 
+  @unit=Units.millisecond
+  @summary=false property int minActiveTime := 0
+
+  @config 
+  @unit=Units.millisecond
+  @summary=false property int minInactiveTime := 0
+
+
+
+////////////////////////////////////////////////////////////////
+// Actions
+////////////////////////////////////////////////////////////////
+
+  action void emergencySetActive()
+  {
+    in1 := true
+  }
+
+  action void emergencySetInactive()
+  {
+    in1 := false
+  }
+
+  action void emergencyAuto()
+  {
+    setToDefault(PrioritizedBool.in1)
+  }
+
+  action void manualSetActive(int expTime)
+  {
+    in8 := true
+    long overtime := (long)expTime * 1ms
+    if (overtime>0L) overtime += Sys.ticks()
+    overrideExpTime := overtime
+  }
+
+  action void manualSetInactive(int expTime)
+  {
+    in8 := false
+    long overtime = (long)expTime * 1ms
+    if (overtime>0L) overtime += Sys.ticks()
+    overrideExpTime := overtime
+  }
+
+  action void manualAuto()
+  {
+    setToDefault(PrioritizedBool.in8)
+    overrideExpTime := 0L
+  }
+
+
+
+////////////////////////////////////////////////////////////////
+// Component
+////////////////////////////////////////////////////////////////
+
+  **
+  ** Execute is called once every scan using the
+  ** simple round-robin scan engine.
+  **
+  override virtual void execute()
+  {
+    bool value = fallback
+    int  level = FB_LEVEL
+
+    // Expire manual override if any 
+    if ( (overrideExpTime>0L) && (Sys.ticks()>overrideExpTime) )
+      manualAuto()
+
+    // Expire active timeout if any 
+    if ( (minActiveEndTime>0L) && (Sys.ticks()>minActiveEndTime) )
+      minActiveEndTime = 0L
+
+    // Expire inactive timeout if any 
+    if ( (minInactiveEndTime>0L) && (Sys.ticks()>minInactiveEndTime) )
+      minInactiveEndTime = 0L
+
+    // If both min active & inactive times have expired, stop using in6
+    if ( (minActiveEndTime==0L) && (minInactiveEndTime==0L) )
+    {
+      setToDefault(PrioritizedBool.in6)
+    }
+
+    
+    //
+    // Big if/else if block 
+    //   (believe it or not this is the fastest & smallest strategy)
+    //
+    if (in1 != NULLVAL)       {  value = in1;   level = 1 }
+    else if (in2 != NULLVAL)  {  value = in2;   level = 2 }
+    else if (in3 != NULLVAL)  {  value = in3;   level = 3 }
+    else if (in4 != NULLVAL)  {  value = in4;   level = 4 }
+    else if (in5 != NULLVAL)  {  value = in5;   level = 5 }
+    else if (in6 != NULLVAL)  {  value = in6;   level = 6 }
+    else if (in7 != NULLVAL)  {  value = in7;   level = 7 }
+    else if (in8 != NULLVAL)  {  value = in8;   level = 8 }
+    else if (in9 != NULLVAL)  {  value = in9;   level = 9 }
+    else if (in10 != NULLVAL) {  value = in10;  level = 10 }
+    else if (in11 != NULLVAL) {  value = in11;  level = 11 }
+    else if (in12 != NULLVAL) {  value = in12;  level = 12 }
+    else if (in13 != NULLVAL) {  value = in13;  level = 13 }
+    else if (in14 != NULLVAL) {  value = in14;  level = 14 }
+    else if (in15 != NULLVAL) {  value = in15;  level = 15 }
+    else if (in16 != NULLVAL) {  value = in16;  level = 16 }
+
+
+    // Start min active/inactive timer if appropriate
+    if (value!=prevOut) 
+    {
+      if (value!=NULLVAL)
+      {
+        if (value && (minActiveTime>0))
+        {
+          in6 := true
+          minActiveEndTime = Sys.ticks() + ((long)minActiveTime * 1ms)
+        }
+        else if (!value && (minInactiveTime>0))
+        {
+          in6 := false
+          minInactiveEndTime = Sys.ticks() + ((long)minInactiveTime * 1ms)
+        }
+      }
+
+      prevOut = value  // always update prevOut when value changes
+    }
+
+    // Update output value
+    out         := value
+    sourceLevel := level
+    //Sys.out.print(" -- choosing in:$level, out set to $value --\n")
+  }
+
+  
+
+////////////////////////////////////////////////////////////////
+// Fields
+////////////////////////////////////////////////////////////////
+
+  bool prevOut = NULLVAL
+
+  long minActiveEndTime   = 0L
+  long minInactiveEndTime = 0L
+
+}

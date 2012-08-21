@@ -1,0 +1,50 @@
+//
+// Copyright (c) 2009 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   18 Feb 09  Dan Giorgis   creation
+//
+
+class DateTimeServiceStd 
+  extends DateTimeService
+{
+ 
+////////////////////////////////////////////////////////////////
+// DateTimeService
+////////////////////////////////////////////////////////////////
+ 
+  **
+  **  Return the current UTC date/time on the system in nanoseconds, or 
+  **  DateTime.invalid if not supported, i.e. platform does not have clock
+  **  capability
+  **    
+  virtual override long now() 
+  {
+    return doNow()
+  }
+    
+  ** 
+  ** Return current UTC offset as reported by platform
+  **
+  virtual override int getUtcOffset()
+  {
+    return doGetUtcOffset()
+  }  
+
+  **
+  **  Set the current UTC date/time in nanoseconds.  May not be supported on
+  **  all platforms
+  **  
+  virtual override void setClock(long nanos) 
+  { 
+    doSetClock(nanos)
+  }   
+
+  static native long doNow()
+  
+  static native void doSetClock(long nanos)
+
+  static native int doGetUtcOffset()
+  
+}

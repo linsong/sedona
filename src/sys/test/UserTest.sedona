@@ -1,0 +1,62 @@
+//
+// Copyright (c) 2008 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   11 Jun 08  Brian Frank  Creation
+//
+
+**
+** UserTest
+**
+class UserTest
+  extends Test
+{
+  static Component c = InheritTest.testComp
+  static inline User u
+  
+  define int or = 0x01        // operator read
+  define int ow = 0x02        // operator write
+  define int oi = 0x04        // operator invoke
+  define int ar = 0x08        // admin read
+  define int aw = 0x10        // admin write
+  define int ai = 0x20        // admin invoke
+  define int ua = 0x40        // user admin
+  
+  static void testHas()
+  { 
+    // group 0                            
+    verifyHas(0x01, 0,    or, false)
+    verifyHas(0x01, 0xff, or, true)
+    verifyHas(0x01, 0xff, ua, true)
+    
+    // group 1    
+    verifyHas(0x02, 0,    or, false)
+    verifyHas(0x02, 0xff, or, false)
+    verifyHas(0x02, 0xff << 8, or, true)
+    verifyHas(0x02, (or|ow) << 8, or, true)
+    verifyHas(0x02, (or|ow) << 8, oi, false)
+    
+    // group 3          
+    verifyHas(0x08, 0, ar, false)
+    verifyHas(0x08, 0x00ff_ffff, ar, false)
+    verifyHas(0x08, 0xffff_ff00, ar, true)
+    
+    // group 1, 4    
+    verifyHas(0x0a, 0,aw, false)
+    verifyHas(0x0a, 0xff, aw, false)
+    verifyHas(0x0a, (or|ow)<<8, or, true)
+    verifyHas(0x0a, (or|ow)<<8, oi, false)
+    verifyHas(0x0a, (oi<<24)|((or|ow)<<8), or, true)
+    verifyHas(0x0a, (oi<<24)|((or|ow)<<8), ar, false)
+  }           
+  
+  static void verifyHas(int groups, int perm, int has, bool result)
+  {                                   
+    // Sys.out.print("verifyHas 0x" + Sys.hexStr(groups) + "  0x" + Sys.hexStr(perm) + "  0x" + Sys.hexStr(has)).nl()  
+    c.meta := groups
+    u.perm := perm
+    assert(u.has(c, has) == result)
+  }
+  
+}

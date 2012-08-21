@@ -1,0 +1,112 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   05 Sep 06  Brian Frank  Creation
+//   07 May 07  Brian Frank  Port from Java to Sedona
+//
+
+**
+** UdpSocket is used to send and receive UDP datagrams.
+** The Sedona socket APIs are all asynchronous to be used
+** in a single threaded environment.
+**
+@javaPeer
+class UdpSocket
+{
+
+////////////////////////////////////////////////////////////////
+// Methods
+////////////////////////////////////////////////////////////////
+  
+  **
+  ** What is the maximum number of bytes which can be
+  ** sent by this UDP implementation.
+  **
+  static native int maxPacketSize()
+
+  **
+  ** What is the ideal maximum number of bytes to send by this 
+  ** UDP implementation.  This is typically driven by the 
+  ** lower levels of the IP stack - for instance when running 
+  ** 6LoWPAN over 802.15.4, this is the max UDP packet size 
+  ** which doesn't require fragmenting across multiple 
+  ** 802.15.4 frames.
+  **
+  static native int idealPacketSize()
+
+  **
+  ** Initialize this socket which allocates a socket handle
+  ** for this instance.  This method must be called before using
+  ** the socket.  Return true on success, false on failure.
+  **
+  native bool open()
+
+  **
+  ** Bind this socket the specified well-known port on this
+  ** host. Return true on success, false on failure.
+  **
+  native bool bind(int port)
+
+  **
+  ** Join this socket to a multicast group.
+  ** (Address is defined at native level.)
+  ** Return true on success, false on failure.
+  **
+  native bool join()
+
+  **
+  ** Send the specified datagram which encapsulates both the
+  ** destination address and the data to send.  Return true
+  ** on success, false on failure.  If the number of bytes
+  ** sent does not match datagram.len then this call will
+  ** fail and return false.
+  **
+  native bool send(UdpDatagram datagram)
+
+  **
+  ** Receive a datagram into the specified structure.  The
+  ** datagram.buf must reference a valid byte buffer - bytes
+  ** are read in starting at datagram.buf[0] with at most datagram.len
+  ** bytes being received.  If successful then return true,
+  ** datagram.len reflects the actual number of bytes received,
+  ** and datagram.addr/datagram.port reflect the source socket
+  ** address.  Note datagram.addr is only valid until the next
+  ** call to receive().  On failure or if no packets are pending
+  ** to read, then return false, len=0, port=-1, and addr=null.
+  **
+  ** Note if the number of bytes available to be read is greater
+  ** then len than this call works differently dependent on the
+  ** platform.  In Java it silently ignores the remainder of
+  ** the bytes (wrong way), and in C++ it returns false since
+  ** the message received is not the same as the message sent.
+  **
+  native bool receive(UdpDatagram datagram)
+
+  **
+  ** Is this socket closed.
+  **
+  bool isClosed() { return closed }
+
+  **
+  ** Shutdown and close this socket.
+  **
+  native void close()
+
+////////////////////////////////////////////////////////////////
+// Fields
+////////////////////////////////////////////////////////////////
+
+  ** Bitmask for select when socket is readable
+  define int READ = 0x01
+
+  ** Bitmask for select when socket is writable
+  define int WRITE = 0x02
+
+  // these fields must match layout used in C code
+  @javaPublic private bool closed = true
+  private int socket  = -1
+  @javaPublic private inline IpAddr receiveAddr
+
+}

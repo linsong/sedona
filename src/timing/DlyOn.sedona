@@ -1,0 +1,84 @@
+//
+// Copyright (c) 2007-2011 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   10 Jan 2007  Andy Saunders  Creation
+//   27 Apr 2007  Brian Frank    Port from Java to Sedona
+//   22 Apr 2009  Elizabeth McKenney Simplified logic
+//
+
+**
+** DlyOn Delay On object
+**
+**    Delays the off to on transition by a time delay
+**
+@niagaraIcon="module://icons/x16/control/control.png"
+class DlyOn
+  extends Component
+{
+  ** Output signal
+  @readonly property bool out
+
+  ** Input signal
+  property bool in
+
+  ** Specified hold time in sec
+  @unit = Units.second
+  @config @summary property float delayTime  // specified hold time in sec
+
+  ** Remaining hold time in msec
+  @unit = Units.millisecond
+  @readonly property int hold                // remaining hold time in ms
+
+  **
+  ** Callback when component is first started in an app.
+  **
+  virtual override void start()
+  {
+    // Must initialize lastIn before first call to execute()
+    lastIn = in    
+  }
+
+
+  **
+  ** Execute is called once every scan.
+  **
+  virtual override void execute()
+  {
+    long now = Sys.ticks()
+
+    // On positive edge transition, start delay
+    if (in && !lastIn)
+    {
+      delayEnd = now + (long)( (double)delayTime * (double)1sec )
+    }
+        
+    // If input is false, cancel any delay and set output false
+    if (!in)
+    {
+      delayEnd = 0L
+      out := false
+    }
+    // If input is true, output is false if delay not expired;
+    // o/w output is true and delay is reset
+    else
+    {
+      out := delayEnd < now
+
+      // If out is true, delay has expired
+      if (out) delayEnd = 0L
+    }
+
+    // Update hold property to reflect delay time remaining
+    if (delayEnd == 0L)
+      hold := 0
+    else
+      hold := (int)((delayEnd - now)/1000000L)  // convert to msec
+
+    lastIn = in
+  }
+
+  private long delayEnd = 0L
+  private bool lastIn
+}
