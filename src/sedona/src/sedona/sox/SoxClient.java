@@ -77,7 +77,7 @@ public class SoxClient
     throws Exception
   {
     comm().connect(options);
-      }
+  }
 
   /**
    * Return the underlying DaspSession or null if closed.
@@ -1176,6 +1176,12 @@ public class SoxClient
   public void applyToCache(Msg msg)
     throws Exception
   {
+    applyToCache(msg, true);
+  }
+  
+  public void applyToCache(Msg msg, boolean applyMask)
+    throws Exception
+  {
     final boolean isEvent = msg.command() == 'e';
 
     int compId = msg.u2();
@@ -1185,7 +1191,7 @@ public class SoxClient
     if (cached == null)
       cacheAdd(sc);
 
-    if (isEvent)
+    if (isEvent && applyMask)
       applyEvent(sc, what);
   }
 
