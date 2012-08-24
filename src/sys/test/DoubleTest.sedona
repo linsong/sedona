@@ -14,6 +14,14 @@ class DoubleTest
 {
   static double x(double v) { return v }
 
+  static void testDouble()
+  {
+    assert(x(0d) != null)
+    assert(x(null) == null)
+    assert(null != x(1d))
+    assert(!(x(10.0d) == 10.2d))
+  }
+
   static void testOps()
   {
     // arithmetic operators

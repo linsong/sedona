@@ -632,7 +632,7 @@ int vmCall(SedonaVM* vm, uint16_t method, Cell* args, int argc)
       // double compare
       // NOTE: DoubleEq needs to compare as int64_t so that NaN is ==
       Case DoubleEq:    sp -= 3; sp->ival = *(int64_t*)sp == *(int64_t*)(sp+2); ++cp;  EndInstr;
-      Case DoubleNotEq: sp -= 3; sp->ival = *(double*)sp != *(double*)(sp+2); ++cp;  EndInstr;
+      Case DoubleNotEq: sp -= 3; sp->ival = *(int64_t*)sp != *(int64_t*)(sp+2); ++cp;  EndInstr;
       Case DoubleGt:    sp -= 3; sp->ival = *(double*)sp >  *(double*)(sp+2); ++cp;  EndInstr;
       Case DoubleGtEq:  sp -= 3; sp->ival = *(double*)sp >= *(double*)(sp+2); ++cp;  EndInstr;
       Case DoubleLt:    sp -= 3; sp->ival = *(double*)sp <  *(double*)(sp+2); ++cp;  EndInstr;
