@@ -24,7 +24,7 @@ stageDir = os.path.join(env.temp, "win32")
 
 srcFiles = [ os.path.join(stageDir, "*.c")]
 
-includes = []
+includes = [ stageDir ]
 
 libs = [ "ws2_32.lib",  "uuid.lib", "kernel32.lib"]
 
