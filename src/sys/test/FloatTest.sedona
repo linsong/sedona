@@ -14,14 +14,6 @@ class FloatTest
 {
   static float x(float v) { return v }
 
-  static void testFloat()
-  {
-    assert(x(0f) != null)
-    assert(x(null) == null)
-    assert(null != x(1f))
-    assert(!(x(10.0f) == 10.2f))
-  }
-
   static void testOps()
   {
     // arithmetic operators
@@ -39,6 +31,11 @@ class FloatTest
     assert(x(99000000f) <= 99000000f)
     assert(x(1234.6789) <= 1234.6789)
     assert(-x(707.025) < -707.01)
+    assert(x(0f) != null)
+    assert(x(null) == null)
+    assert(null != x(1f))
+    assert(!(x(10.0f) == 10.2f))
+    assert(!(x(null) != null))
   }
 
   static void testAssigns()
