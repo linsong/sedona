@@ -112,6 +112,9 @@ typedef short             int_least16_t;
 #define TRUE 1
 #define FALSE 0
 
+#define ISNANF(f) (_isnan((double)(f)))
+#define ISNAN(d)  (_isnan(d))
+
 
 ////////////////////////////////////////////////////////////////
 // QNX
@@ -143,11 +146,14 @@ typedef short             int_least16_t;
   #define IS_LITTLE_ENDIAN
 #elif defined(__BIGENDIAN__)
   #define IS_BIG_ENDIAN
-#else
-  #error "endian not configured for system"
 #endif
 
 #define _chdir  chdir
+
+
+#define ISNANF(f) (isnanf(f))
+#define ISNAN(d)  (isnan(d))
+
 
 
 ////////////////////////////////////////////////////////////////
@@ -198,18 +204,30 @@ typedef short             int_least16_t;
 #  define FALSE 0
 #endif
 
+
+#define ISNANF(f) (isnanf(f))
+#define ISNAN(d)  (isnan(d))
+
+
+#endif   
+
+//////// end of definitions for standard platforms ( _WIN32, __QNX__, __UNIX__ ) ////////
+
+
 ////////////////////////////////////////////////////////////////
 //
-// If none of the above platforms, look for local sedona.h file 
-//   with defns for additional platforms supplied by user
+// If none of the above platforms, put definitions into a file
+// named sedona-local.h and define SEDONA_LOCAL_H on the compiler
+// command line.
 //
 ////////////////////////////////////////////////////////////////
 
-#else
+#ifdef SEDONA_LOCAL_H
 
-#include <sedona-local.h>
+ #include <sedona-local.h>
 
 #endif
+
 
 
 ////////////////////////////////////////////////////////////////
@@ -231,6 +249,11 @@ typedef short             int_least16_t;
 // sedona word size
 #ifndef block2addr
 #error "Must define block2addr(cb, block)"
+#endif
+
+// isNan macro
+#if !defined( ISNAN ) || !defined( ISNANF )
+#error "Must define ISNAN() and ISNANF() macros"
 #endif
 
 //////////////////////////////////////////////////////////////////////////
