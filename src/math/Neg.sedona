@@ -28,10 +28,7 @@ class Neg
   **
   virtual override void execute()
   {
-    if (in==null)
-      out := null
-    else
-      out := -in
+    out := -in
   }
 
 }

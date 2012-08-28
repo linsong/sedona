@@ -112,6 +112,9 @@ typedef short             int_least16_t;
 #define TRUE 1
 #define FALSE 0
 
+#define ISNANF(f) (_isnan((double)(f)))
+#define ISNAN(d)  (_isnan(d))
+
 
 ////////////////////////////////////////////////////////////////
 // QNX
@@ -143,11 +146,14 @@ typedef short             int_least16_t;
   #define IS_LITTLE_ENDIAN
 #elif defined(__BIGENDIAN__)
   #define IS_BIG_ENDIAN
-#else
-  #error "endian not configured for system"
 #endif
 
 #define _chdir  chdir
+
+
+#define ISNANF(f) (isnanf(f))
+#define ISNAN(d)  (isnan(d))
+
 
 
 ////////////////////////////////////////////////////////////////
@@ -198,9 +204,14 @@ typedef short             int_least16_t;
 #  define FALSE 0
 #endif
 
-#endif   // end of definitions for standard platforms ( _WIN32, __QNX__, __UNIX__ )
+
+#define ISNANF(f) (isnanf(f))
+#define ISNAN(d)  (isnan(d))
 
 
+#endif   
+
+//////// end of definitions for standard platforms ( _WIN32, __QNX__, __UNIX__ ) ////////
 
 
 ////////////////////////////////////////////////////////////////
@@ -238,6 +249,11 @@ typedef short             int_least16_t;
 // sedona word size
 #ifndef block2addr
 #error "Must define block2addr(cb, block)"
+#endif
+
+// isNan macro
+#if !defined( ISNAN ) || !defined( ISNANF )
+#error "Must define ISNAN() and ISNANF() macros"
 #endif
 
 //////////////////////////////////////////////////////////////////////////

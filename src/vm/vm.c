@@ -608,11 +608,24 @@ int vmCall(SedonaVM* vm, uint16_t method, Cell* args, int argc)
       ////////////////////////////////////////////////////////////////////
       // float
       ////////////////////////////////////////////////////////////////////
-
-      // float compare
-      // NOTE: FloatEq and FloatNotEq need to compare as int32_t so that NaN is == (or !=)
-      Case FloatEq:    --sp; sp->ival = sp->ival == (sp+1)->ival; ++cp; EndInstr;
-      Case FloatNotEq: --sp; sp->ival = sp->ival != (sp+1)->ival; ++cp; EndInstr;
+      Case FloatEq:    
+        --sp; 
+        if (ISNANF(sp->fval) && ISNANF((sp+1)->fval))   // special case for Sedona
+          sp->ival = TRUE;
+        else
+          sp->ival = sp->fval == (sp+1)->fval;          // regular float comparison
+        ++cp; 
+        EndInstr;
+      Case FloatNotEq: 
+        --sp; 
+        if (ISNANF(sp->fval) && ISNANF((sp+1)->fval))   // special case for Sedona
+          sp->ival = FALSE;
+        else
+          sp->ival = sp->fval != (sp+1)->fval;          // regular float comparison
+        ++cp; 
+        EndInstr;
+      ////////////////////////////////////////////////////////////////////
+      //
       Case FloatGt:    --sp; sp->ival = sp->fval >  (sp+1)->fval; ++cp; EndInstr;
       Case FloatGtEq:  --sp; sp->ival = sp->fval >= (sp+1)->fval; ++cp; EndInstr;
       Case FloatLt:    --sp; sp->ival = sp->fval <  (sp+1)->fval; ++cp; EndInstr;
@@ -628,11 +641,24 @@ int vmCall(SedonaVM* vm, uint16_t method, Cell* args, int argc)
       ////////////////////////////////////////////////////////////////////
       // double
       ////////////////////////////////////////////////////////////////////
-
-      // double compare
-      // NOTE: DoubleEq needs to compare as int64_t so that NaN is ==
-      Case DoubleEq:    sp -= 3; sp->ival = *(int64_t*)sp == *(int64_t*)(sp+2); ++cp;  EndInstr;
-      Case DoubleNotEq: sp -= 3; sp->ival = *(int64_t*)sp != *(int64_t*)(sp+2); ++cp;  EndInstr;
+      Case DoubleEq:    
+        sp -= 3; 
+        if (ISNAN(*(double*)sp) && ISNAN(*(double*)(sp+2)))   // special case for Sedona
+          sp->ival = TRUE;
+        else
+          sp->ival = *(double*)sp == *(double*)(sp+2);        // regular double comparison
+        ++cp;  
+        EndInstr;
+      Case DoubleNotEq: 
+        sp -= 3; 
+        if (ISNAN(*(double*)sp) && ISNAN(*(double*)(sp+2)))   // special case for Sedona
+          sp->ival = FALSE;
+        else
+          sp->ival = *(double*)sp != *(double*)(sp+2);        // regular double comparison
+        ++cp;  
+        EndInstr;
+      ////////////////////////////////////////////////////////////////////
+      //
       Case DoubleGt:    sp -= 3; sp->ival = *(double*)sp >  *(double*)(sp+2); ++cp;  EndInstr;
       Case DoubleGtEq:  sp -= 3; sp->ival = *(double*)sp >= *(double*)(sp+2); ++cp;  EndInstr;
       Case DoubleLt:    sp -= 3; sp->ival = *(double*)sp <  *(double*)(sp+2); ++cp;  EndInstr;

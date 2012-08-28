@@ -14,6 +14,8 @@ class DoubleTest
 {
   static double x(double v) { return v }
 
+  static double nullval() { return x(0d) / x(0d) }
+
   static void testOps()
   {
     // arithmetic operators
@@ -33,6 +35,8 @@ class DoubleTest
     assert(-x(707.025d) < -707.01d)
     assert(x(0d) != null)
     assert(null == x(null))
+    assert(x(null) == nullval())
+    assert(null == x(null)+1d)
     assert(null != x(1d))
     assert(!(x(10.0d) == 10.2d))
     assert(!(x(null) != null))
