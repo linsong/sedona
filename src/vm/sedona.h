@@ -129,6 +129,7 @@ typedef short             int_least16_t;
 #include <stdlib.h>
 #include <stdbool.h>
 #include <unistd.h>
+#include <math.h>
 
 // macros
 #define USE_STANDARD_MAIN
@@ -151,7 +152,7 @@ typedef short             int_least16_t;
 #define _chdir  chdir
 
 
-#define ISNANF(f) (isnanf(f))
+#define ISNANF(f) (isnan(f))
 #define ISNAN(d)  (isnan(d))
 
 
