@@ -1,0 +1,178 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   22 May 07  Brian Frank  Creation
+//
+
+**
+** SoxTest is a component which executes tests as a series
+** of action invocations from the Java client - it is paired
+** with the tests in "sedonac.test.SoxTest.java".
+**
+class SoxTest
+  extends Component
+{
+
+//////////////////////////////////////////////////////////////////////////
+// Slots
+//////////////////////////////////////////////////////////////////////////
+
+  property int verifies
+  property int failures
+
+//////////////////////////////////////////////////////////////////////////
+// Test
+//////////////////////////////////////////////////////////////////////////
+
+  action void verifyTrue()
+  {
+    verify(true)
+  }
+
+  action void changeProps(int id)
+  {                                  
+    // make changes to c
+    TestComp c = (TestComp)Sys.app.lookup(id)
+//dump(c, "Before Change");    
+    c.z1 := !c.z1
+    c.z2 := !c.z2 
+    c.b1 := c.b1 + 1
+    c.b2 := c.b2 + 1
+    c.s1 := c.s1 + 1
+    //++c.s2
+    c.s2 := c.s2 + 1
+    c.i1 := c.i1 + 1
+    c.i2 := c.i2 + 1
+    c.j1 := c.j1 + 1L
+    //++c.j2
+    c.j2 := c.j2 + 1L
+    c.f1 := c.f1 + 1f
+    c.f2 := c.f2 + 1f
+    c.d1 := c.d1 + 1d
+    //++c.d2
+    c.d2 := c.d2 + 1d
+    if (c.bufA.size == 0) c.bufA.size = 1
+    if (c.bufB.size == 0) c.bufB.size = 1
+    c.bufA.bytes[0]++
+    c.bufB.bytes[0]++
+//dump(c, "After Change");    
+  }                        
+  
+  /*
+  static void dump(TestComp c, Str msg)
+  {
+    Sys.out.print("--- Dump $msg").nl()
+    Sys.out.print(" z1 = $c.z1").nl()
+    Sys.out.print(" z2 = $c.z2").nl()
+    Sys.out.print(" b1 = $c.b1").nl()
+    Sys.out.print(" b2 = $c.b2").nl()
+    Sys.out.print(" i1 = $c.i1").nl()
+    Sys.out.print(" i2 = $c.i2").nl()
+    Sys.out.print(" j1 = $c.j1").nl()
+    Sys.out.print(" j2 = $c.j2").nl()
+    Sys.out.print(" f1 = $c.f1").nl()
+    Sys.out.print(" f2 = $c.f2").nl()
+    Sys.out.print(" d1 = $c.d1").nl()
+    Sys.out.print(" d2 = $c.d2").nl()
+  }                             
+  */
+
+  action void verifySub(int arg)
+  {
+    // u1 compId
+    // u2 watchId
+    // u1 subMask
+    int compId  = arg >> 24
+    int watchId = (arg >> 8) & 0xffff
+    int subMask = (arg & 0xf)
+
+    // Sys.out.print("----> verifySub compId=").printInt(compId).print(" w=").printInt(watchId&0xff).print(" m=").printHex(subMask).nl()
+
+    Component c = Sys.app.lookup(compId)
+    verify(c.watchFlags[watchId&0xff] >> 4 == subMask)
+  }
+
+  action void verifyAdd(int compId)
+  {
+    Component a = Sys.app.lookupByName("a")
+    TestComp x = (TestComp)Sys.app.lookup(compId)
+
+    verify(a.name.equals("a"))
+    verify(x.parent == a.id)
+    verify(x.id == compId)
+    verify(x.name.equals("x"))
+    verify(x.children == nullId)
+    verify(x.nextSibling == nullId)
+    verify(x.type.name.equals("TestComp"))
+
+    verify(x.meta == 0x0203)
+    verify(x.z1)
+    verify(x.b1 == 35)
+    verify(x.s1 == 1896)
+    verify(x.i1 == 123454321)
+    verify(x.f1 == 601f)
+    verify(x.bufA.size == 4)
+    verify(x.bufA.bytes[3] == 0xdd)
+    verify(x.str.toStr().equals("hell"))   
+    verify(x.wasLoaded)         
+    verify(x.wasStarted)         
+  }
+
+  action void verifyRename(int compId)
+  {
+    Component c = Sys.app.lookup(compId)
+    verify(c.name.equals("foobar"))
+  }
+
+  action void verifyReorderCallback(int compId)
+  {
+    TestComp tc = (TestComp)Sys.app.lookup(compId)
+    verify(tc.childReordered)
+  }
+
+  action void verifyDelete(int compId)
+  {
+    verify(Sys.app.lookup(compId) == null)
+
+    Component a  = Sys.app.lookupByName("a")
+    Component ab = Sys.app.lookup(a.children)
+    Component x  = Sys.app.lookup(ab.nextSibling)
+
+    verify(ab.name.equals("ab"))
+    verify(x.name.equals("foobar"))
+    verify(x.nextSibling == nullId)
+  }
+
+  action void verifyClose(int sessionId)
+  {
+    SoxSession session = service.session(sessionId)
+    verify(session == null)
+  } 
+
+//////////////////////////////////////////////////////////////////////////
+// Utils
+//////////////////////////////////////////////////////////////////////////
+
+
+  override void start()
+  {
+    service = (SoxService)Sys.app.lookupService(SoxService.type)
+  }
+
+  void verify(bool cond)
+  {
+    // Sys.out.print("   verify(").printBool(cond).print(")").nl()
+    if (cond)
+      verifies := verifies + 1
+    else
+      failures := failures + 1
+  }    
+
+//////////////////////////////////////////////////////////////////////////
+// Fields
+//////////////////////////////////////////////////////////////////////////
+
+  SoxService service     
+}

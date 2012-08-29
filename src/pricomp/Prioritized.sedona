@@ -1,0 +1,73 @@
+//
+// Copyright (c) 2012 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   10 Jan 12  Elizabeth McKenney  Creation
+//
+
+**
+** Prioritized
+**
+abstract class Prioritized
+  extends Component
+{
+
+////////////////////////////////////////////////////////////////
+// Constants
+////////////////////////////////////////////////////////////////
+
+  define int FB_LEVEL  =  17   // "level" for fallback input
+
+
+////////////////////////////////////////////////////////////////
+// Common properties
+////////////////////////////////////////////////////////////////
+
+  @readonly 
+  @range=srcLevelStr
+  @summary=false property int sourceLevel := FB_LEVEL
+
+  @readonly 
+  @unit = Units.nanosecond
+  @summary=false property long overrideExpTime := 0L        // 0 indicates no timeout ("permanent")
+
+
+  define Str srcLevelStr= "in0, emergency, in2, in3, in4, in5, in6, in7, override, in9, in10, in11, in12, in13, in14, in15, in16, fallback"
+  
+
+////////////////////////////////////////////////////////////////
+// Component
+////////////////////////////////////////////////////////////////
+
+
+  **
+  ** Set a property to its default value.  This overrides the
+  ** base class method to set slots to "null" instead of zero.
+  **
+  override virtual void setToDefault(Slot slot)
+  {
+    switch (slot.type.id)
+    {
+      case Type.boolId:   setBool(slot, null); break
+      case Type.byteId:
+      case Type.shortId:
+      case Type.intId:    setInt(slot, Sys.minInt); break
+      case Type.longId:   setLong(slot, Sys.minLong); break
+      case Type.floatId:  setFloat(slot, null); break
+      case Type.doubleId: setDouble(slot, null); break
+      case Type.bufId:    getBuf(slot).clear(); break
+    }
+  }
+
+
+////////////////////////////////////////////////////////////////
+// Util
+////////////////////////////////////////////////////////////////
+
+
+////////////////////////////////////////////////////////////////
+// Fields
+////////////////////////////////////////////////////////////////
+
+}

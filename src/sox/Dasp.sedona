@@ -1,0 +1,85 @@
+//
+// Copyright (c) 2008 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   31 Mar 08  Brian Frank  Creation
+//
+
+**
+** Dasp constants
+**
+class Dasp
+{
+
+////////////////////////////////////////////////////////////////
+// Sedona Implementation Defaults
+////////////////////////////////////////////////////////////////
+
+  define int   VERSION_VAL         = 0x0100  // 1.0
+  define int   ABS_MAX_VAL         = 512     // bytes
+  define int   RECEIVE_MAX_VAL     = 31      // msgs (must be 31 or less to fit in 32-bit int)
+  define int   RECEIVE_TIMEOUT_MIN =  5      // seconds
+  static short IDEAL_MAX_VAL       = Sys.min(ABS_MAX_VAL, UdpSocket.idealPacketSize())
+  
+////////////////////////////////////////////////////////////////
+// Specification Defaults
+////////////////////////////////////////////////////////////////
+
+  define int IDEAL_MAX_DEF         = 512     // bytes
+  define int ABS_MAX_DEF           = 512     // bytes
+  define int RECEIVE_MAX_DEF       = 31      // msgs
+  define int RECEIVE_TIMEOUT_DEF   = 30      // seconds
+                                            
+////////////////////////////////////////////////////////////////
+// Message Types
+////////////////////////////////////////////////////////////////
+
+  define int DISCOVER     = 0
+  define int HELLO        = 1
+  define int CHALLENGE    = 2
+  define int AUTHENTICATE = 3
+  define int WELCOME      = 4
+  define int KEEPALIVE    = 5
+  define int DATAGRAM     = 6
+  define int CLOSE        = 7
+
+////////////////////////////////////////////////////////////////
+// Header Values
+////////////////////////////////////////////////////////////////
+
+  define int NIL   = 0
+  define int U2    = 1
+  define int STR   = 2
+  define int BYTES = 3
+
+////////////////////////////////////////////////////////////////
+// Header Ids (shifted down 2 bits)
+////////////////////////////////////////////////////////////////
+
+  define int VERSION          = 0x01  // 0x05 (1,1)
+  define int REMOTE_ID        = 0x02  // 0x09 (2,1)
+  define int DIGEST_ALGORITHM = 0x03  // 0x0e (3,2)
+  define int NONCE            = 0x04  // 0x13 (4,3)
+  define int USERNAME         = 0x05  // 0x16 (5,2)
+  define int DIGEST           = 0x06  // 0x1b (6,3)
+  define int IDEAL_MAX        = 0x07  // 0x1d (7,1)
+  define int ABS_MAX          = 0x08  // 0x21 (8,1)
+  define int ACK              = 0x09  // 0x25 (9,1)
+  define int ACK_MORE         = 0x0a  // 0x2b (a,3)
+  define int RECEIVE_MAX      = 0x0b  // 0x2d (b,1)  
+  define int RECEIVE_TIMEOUT  = 0x0c  // 0x31 (c,1)
+  define int ERROR_CODE       = 0x0d  // 0x35 (d,1)
+  define int PLATFORM_ID      = 0x0e  // 0x3a (e,2)
+  
+////////////////////////////////////////////////////////////////
+// Error Codes
+///////////////////////////////////////////////////////////////
+
+  define int INCOMPATIBLE_VERSION  = 0xe1
+  define int BUSY                  = 0xe2
+  define int DIGEST_NOT_SUPPORTED  = 0xe3
+  define int NOT_AUTHENTICATED     = 0xe4
+  define int TIMEOUT               = 0xe5
+  
+}

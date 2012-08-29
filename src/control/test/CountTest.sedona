@@ -1,0 +1,97 @@
+//
+// Copyright (c) 2011 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   07 Dec 11  Elizabeth McKenney  Creation
+//
+
+**
+** CountTest
+**
+class CountTest
+  extends Test
+{
+  static inline Count c
+
+ 
+  static void test()
+  {
+    // Reset, but not enabled: out==preset
+    inFalse()
+    c.preset := 19
+    c.reset()
+    assert(c.out == 19)
+    
+    // Change preset to 0 and enable
+    c.preset := 0
+    c.reset()
+    c.enable := true
+    c.execute()
+    assert(c.out == 0)
+
+    // Count up
+    for (int k=1; k<=10; k++)
+    {
+      inTrue()
+      inFalse()
+      assert(c.out == k)
+    }
+    assert(c.out == 10)
+
+    // Count down; make sure it stops at 0
+    c.dir := false
+    for (int k=9; k>=-2; k--)
+    {
+      inTrue()
+      inFalse()
+      int a = (k>=0 ? k : 0)  // compiler bug doesn't like comparing with ternary [21373]
+      assert(c.out == a)
+    }
+    assert(c.out == 0)
+
+    // Input 'r' forces out==preset and disables counting
+    c.r := true
+    c.preset := 19
+    for (int k=1; k<=10; k++)
+    {
+      inTrue()
+      inFalse()
+      assert(c.out == 19)
+    }
+
+    // Turn off input 'r', counting should work again 
+    c.r := false
+    for (int k=1; k<=10; k++)
+    {
+      inTrue()
+      inFalse()
+      //Sys.out.print("   c.out = ${c.out}\n")
+      assert(c.out == 19-k)
+    }
+    
+    // Disable; confirm output doesn't change
+    c.enable := false
+    int value = c.out
+    for (int k=9; k>=0; k--)
+    {
+      inTrue()
+      inFalse()
+      assert(c.out == value)
+    }
+
+  }
+
+  static void inTrue()
+  {
+    c.in := true
+    c.execute()
+  }
+
+  static void inFalse()
+  {
+    c.in := false
+    c.execute()
+  }
+
+}

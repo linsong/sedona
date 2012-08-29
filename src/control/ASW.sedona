@@ -1,0 +1,40 @@
+//
+// Copyright (c) 2007-2011 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   10 Jan 07  Andy Saunders  Creation
+//   27 Apr 07  Brian Frank    Port from Java to Sedona
+//   04 Aug 11  Clif Turman    Add comments
+//
+
+**
+** ASW Analog Switch object switches one of two inputs to the output
+**
+** out = s1 ? in2 : in1
+**
+@niagaraIcon="module://icons/x16/control/util/switch.png"
+class ASW
+  extends Component
+{
+  ** output
+  @readonly property float out
+
+  ** input 1
+  property float in1
+
+  ** input 2
+  property float in2
+
+  ** s1 switches in1 or in2 to out
+  property bool  s1
+
+  **
+  ** Execute is called once every scan.
+  **
+  virtual override void execute()
+  {
+    out := s1 ? in2 : in1
+  }
+
+}
