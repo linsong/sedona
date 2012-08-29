@@ -171,6 +171,7 @@ typedef short             int_least16_t;
 #include <unistd.h>
 #include <endian.h>
 #include <sys/stat.h>
+#include <math.h>
 
 // debug
 #define SCODE_DEBUG
