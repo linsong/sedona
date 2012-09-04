@@ -233,14 +233,12 @@ Cell inet_UdpSocket_join(SedonaVM* vm, Cell* params)
     inet_pton( AF_INET6, DISCOVER_MULTICAST_GROUP_ADDRESS, &(mreq.ipv6mr_multiaddr) );
 
 #ifdef __QNX__
-  mreq.ipv6mr_interface = 2;  //this is hardcoded for now.  Need to
-                                // figure a way to get this through api's
-  rc = setsockopt(sock, IPPROTO_IPV6, IPV6_JOIN_GROUP, &mreq, sizeof(mreq));
+    mreq.ipv6mr_interface = 2;  // This is hardcoded for now.  Need to get this through api's
 #else
     mreq.ipv6mr_interface = 0;
-  rc = setsockopt(sock, IPPROTO_IPV6, IPV6_ADD_MEMBERSHIP, (char *)&mreq, sizeof(mreq));
 #endif
 
+    rc = setsockopt(sock, IPPROTO_IPV6, IPV6_JOIN_GROUP, (char *)&mreq, sizeof(mreq));
   }
 #endif 
 
@@ -307,12 +305,14 @@ Cell inet_UdpSocket_send(SedonaVM* vm, Cell* params)
     socklen_t addrLen = sizeof(struct sockaddr_in6);
 #endif
     r = sendto(sock, buf, len, 0, (const struct sockaddr *)&addr, addrLen);
+//#else  
+//    r = sendto(sock, buf, len, 0, (const struct sockaddr *)&addr, sizeof(addr));
+//#endif
   }
-  if (r == -1)
-    perror("sendto error:");
-  if (r!=len) 
+
+  if (r!=len) 
   {
-    printf("  send error! sendto sent %d bytes (should have sent %d)\n", r, len);    perror("sendto error:");
+    perror("sendto error:");
     return falseCell;
   }
 

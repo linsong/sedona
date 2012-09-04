@@ -72,53 +72,42 @@ int inet_bind(socket_t sock, int port)
   struct sockaddr_storage addr;
   memset(&addr, 0, sizeof(addr));
 
+#ifdef SOCKET_FAMILY_INET
+  {
+    struct sockaddr_in* paddr = (struct sockaddr_in*)&addr;
 #ifdef __QNX__
-#ifdef SOCKET_FAMILY_INET
-  {
-    struct sockaddr_in* paddr = (struct sockaddr_in*)&addr;
-    paddr->sin_len         = sizeof(struct sockaddr_in);  //QNX has extra sin_len field that must be filled
+    paddr->sin_len         = sizeof(struct sockaddr_in);
+#endif
     paddr->sin_family      = AF_INET;
     paddr->sin_addr.s_addr = INADDR_ANY;
     paddr->sin_port        = htons(port);
-    rc = bind(sock, (struct sockaddr *)paddr, sizeof(struct sockaddr_in));
-  }
-#else
-  {
-    struct sockaddr_in6* paddr = (struct sockaddr_in6*)&addr;
-    paddr->sin6_len      = sizeof(struct sockaddr_in6);  //QNX has extra sin_len field that must be filled
-    paddr->sin6_family   = AF_INET6;
-    paddr->sin6_addr     = in6addr_any;
-    paddr->sin6_port     = htons(port);
-    paddr->sin6_flowinfo = 0x0;          //is set by incoming packets on receipt
-    paddr->sin6_scope_id = 0x0;          //is set by incoming packets on receipt
-    rc = bind(sock, (struct sockaddr *)paddr, sizeof(struct sockaddr_in6));
-  }
-#endif
-#else
-#ifdef SOCKET_FAMILY_INET
-  {
-    struct sockaddr_in* paddr = (struct sockaddr_in*)&addr;
-    paddr->sin_family      = AF_INET;
-    paddr->sin_addr.s_addr = INADDR_ANY;
-    paddr->sin_port        = htons(port);
-    rc = bind(sock, (SOCKADDR_PARAM*)&addr, sizeof(addr));
-  }
-#else
-  {
-    struct sockaddr_in6* paddr = (struct sockaddr_in6*)&addr;
-    paddr->sin6_family   = AF_INET6;
-    paddr->sin6_addr     = in6addr_any;
-    paddr->sin6_port     = htons(port);
-    paddr->sin6_flowinfo = 0x0;          //is set by incoming packets on receipt
-    paddr->sin6_scope_id = 0x0;          //is set by incoming packets on receipt
-    rc = bind(sock, (SOCKADDR_PARAM*)&addr, sizeof(addr));
-  }
-#endif
 
+    //printAddr(" Binding to IPv4 addr: ", &(addr.sin_addr.s_addr), 2);
+   
+    rc = bind(sock, (struct sockaddr *)&addr, sizeof(*paddr));
+  }
+#elif defined( SOCKET_FAMILY_INET6 )
+  {
+    struct sockaddr_in6* paddr = (struct sockaddr_in6*)&addr;
+
+#ifdef __QNX__
+    paddr->sin6_len    = sizeof(struct sockaddr_in6);
+#endif
+    paddr->sin6_family   = AF_INET6;
+    paddr->sin6_addr     = in6addr_any;
+    paddr->sin6_port     = htons(port);
+    paddr->sin6_flowinfo = 0x0;   // Use 0 if not supporting flowinfo
+    paddr->sin6_scope_id = 0x0;   // Interface #, I guess 0 is okay for in6addr_any
+
+    //printAddr(" Binding to IPv6 addr: ", &(paddr->sin6_addr), 8);
+
+    rc = bind(sock, (struct sockaddr *)&addr, sizeof(*paddr));
+  }
 #endif
 
 
   if (rc!=0) perror("bind failed");
+
   return rc;
 }
 
