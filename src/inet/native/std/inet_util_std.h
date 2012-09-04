@@ -47,6 +47,7 @@ typedef SOCKET socket_t;
 
 LPSTR PrintError(int ErrorCode);
 
+#define ERRNO_MSG() (PrintError(WSAGetLastError()))
 
 #endif
 
@@ -73,6 +74,8 @@ typedef int socket_t;
 
 #define SOCKADDR_PARAM struct sockaddr
 
+#define ERRNO_MSG() (strerror(errno))
+
 #define closesocket(x) close(x)
 
 #define INVALID_SOCKET -1
@@ -96,6 +99,8 @@ typedef int socket_t;
 typedef int socket_t;
 
 #define SOCKADDR_PARAM struct sockaddr
+
+#define ERRNO_MSG() (strerror(errno))
 
 #define closesocket(x) close(x)
 
@@ -128,6 +133,8 @@ typedef int socket_t;
 
 #define SOCKADDR_PARAM sockaddr
 
+#define ERRNO_MSG() (strerror(errno))
+
 #define closesocket(x) close(x)
 
 #define INVALID_SOCKET -1
@@ -153,7 +160,11 @@ typedef SOCKET socket_t;
 
 #define SOCKADDR_PARAM struct sockaddr_in
 
+#define ERRNO_MSG() (strerror(errno))
+
 #endif
+
+
 
 ////////////////////////////////////////////////////////////////
 // Common
@@ -162,6 +173,7 @@ typedef SOCKET socket_t;
 #define INET_READ  0x01
 #define INET_WRITE 0x02
 
+
 // util forwards
 extern int inet_setNonBlocking(socket_t sock);
 extern bool inet_errorIsWouldBlock();
@@ -169,8 +181,5 @@ extern int inet_bind(socket_t sock, int port);
 extern int inet_toSockaddr(struct sockaddr_storage* addr, uint32_t* ipAddr, int port, int scope, int flow);
 extern int inet_fromSockaddr(struct sockaddr_storage* addr, uint32_t* ipAddr, int* port, int* scope, int* flow);
 
-#ifdef __cplusplus
-}
-#endif
 
 #endif

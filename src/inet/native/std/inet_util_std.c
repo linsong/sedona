@@ -67,28 +67,30 @@ bool inet_errorIsWouldBlock()
  */
 int inet_bind(socket_t sock, int port)
 {
-  int rc;
+  int addrLen, rc;
 
   struct sockaddr_storage addr;
   memset(&addr, 0, sizeof(addr));
 
 #ifdef SOCKET_FAMILY_INET
+
   {
     struct sockaddr_in* paddr = (struct sockaddr_in*)&addr;
+    addrLen = sizeof(*paddr);
+
 #ifdef __QNX__
     paddr->sin_len         = sizeof(struct sockaddr_in);
 #endif
     paddr->sin_family      = AF_INET;
     paddr->sin_addr.s_addr = INADDR_ANY;
     paddr->sin_port        = htons(port);
-
-    //printAddr(" Binding to IPv4 addr: ", &(addr.sin_addr.s_addr), 2);
-   
-    rc = bind(sock, (struct sockaddr *)&addr, sizeof(*paddr));
   }
+
 #elif defined( SOCKET_FAMILY_INET6 )
+
   {
     struct sockaddr_in6* paddr = (struct sockaddr_in6*)&addr;
+    addrLen = sizeof(*paddr);
 
 #ifdef __QNX__
     paddr->sin6_len    = sizeof(struct sockaddr_in6);
@@ -98,16 +100,12 @@ int inet_bind(socket_t sock, int port)
     paddr->sin6_port     = htons(port);
     paddr->sin6_flowinfo = 0x0;   // Use 0 if not supporting flowinfo
     paddr->sin6_scope_id = 0x0;   // Interface #, I guess 0 is okay for in6addr_any
-
-    //printAddr(" Binding to IPv6 addr: ", &(paddr->sin6_addr), 8);
-
-    rc = bind(sock, (struct sockaddr *)&addr, sizeof(*paddr));
   }
+
 #endif
 
-
-  if (rc!=0) perror("bind failed");
-
+  rc = bind(sock, (struct sockaddr *)&addr, addrLen);
+  
   return rc;
 }
 
@@ -118,7 +116,9 @@ int inet_bind(socket_t sock, int port)
 int inet_toSockaddr(struct sockaddr_storage* addr, uint32_t* ipAddr, int port, int scope, int flow)
 {
 #if defined( SOCKET_FAMILY_INET )
+
   struct sockaddr_in* paddr = (struct sockaddr_in*)addr;
+
 #ifdef __QNX__
   paddr->sin_len    = sizeof(struct sockaddr_in);
 #endif
@@ -131,6 +131,7 @@ int inet_toSockaddr(struct sockaddr_storage* addr, uint32_t* ipAddr, int port, i
     paddr->sin_addr.s_addr = ipAddr[3];
 
 #elif defined( SOCKET_FAMILY_INET6 )
+
   struct sockaddr_in6* paddr = (struct sockaddr_in6*)addr;
   uint32_t* x = (uint32_t*)&(paddr->sin6_addr);
 
@@ -158,6 +159,7 @@ int inet_toSockaddr(struct sockaddr_storage* addr, uint32_t* ipAddr, int port, i
 int inet_fromSockaddr(struct sockaddr_storage* addr, uint32_t* ipAddr, int* port, int* scope, int* flow)
 {
 #if defined( SOCKET_FAMILY_INET )
+
   struct sockaddr_in* paddr = (struct sockaddr_in*)addr;
 
   *port = ntohs(paddr->sin_port);
@@ -168,6 +170,7 @@ int inet_fromSockaddr(struct sockaddr_storage* addr, uint32_t* ipAddr, int* port
   ipAddr[3] = (uint32_t)paddr->sin_addr.s_addr;
 
 #elif defined( SOCKET_FAMILY_INET6 )
+
   struct sockaddr_in6* paddr = (struct sockaddr_in6*)addr;
   uint32_t* x = (uint32_t*)&(paddr->sin6_addr);
 
@@ -181,7 +184,6 @@ int inet_fromSockaddr(struct sockaddr_storage* addr, uint32_t* ipAddr, int* port
   ipAddr[3] = x[3];
 
 #endif
-
 
   return 0;
 }
