@@ -136,16 +136,15 @@ Cell inet_UdpSocket_open(SedonaVM* vm, Cell* params)
   void* self    = params[0].aval;
   bool closed   = getClosed(self);
   socket_t sock = getSocket(self);
+
 #ifdef _WIN32
-  WSADATA wsaData;
-#endif
   // windoze startup
-#ifdef _WIN32
+  WSADATA wsaData;
   if (WSAStartup(MAKEWORD(2,2), &wsaData) != 0)
     return falseCell;
 #endif
 
-  // check that not already initialized
+  // check for already initialized
   if (!closed || sock != -1) return falseCell;
 
   // create socket
@@ -187,15 +186,17 @@ Cell inet_UdpSocket_bind(SedonaVM* vm, Cell* params)
   int32_t port  = params[1].ival;
   bool closed   = getClosed(self);
   socket_t sock = getSocket(self);
+  int rc;
 
   if (closed) return falseCell;
 
-#ifdef _WIN32
-  if (inet_bind(sock, port) == SOCKET_ERROR)
-#else
-  if (inet_bind(sock, port) != 0)
-#endif
+  rc = inet_bind(sock, port);
+
+  if (rc == SOCKET_ERROR)
+  {
+    printf("  Failed to bind: %s\n", ERRNO_MSG());
     return falseCell;
+  }
 
   return trueCell;
 }
@@ -213,7 +214,7 @@ Cell inet_UdpSocket_join(SedonaVM* vm, Cell* params)
   bool closed   = getClosed(self);
   socket_t sock = getSocket(self);
   
-  int rc = -1;
+  int rc;
 
   if (closed) return falseCell;
 
@@ -233,7 +234,7 @@ Cell inet_UdpSocket_join(SedonaVM* vm, Cell* params)
     inet_pton( AF_INET6, DISCOVER_MULTICAST_GROUP_ADDRESS, &(mreq.ipv6mr_multiaddr) );
 
 #ifdef __QNX__
-    mreq.ipv6mr_interface = 2;  // This is hardcoded for now.  Need to get this through api's
+    mreq.ipv6mr_interface = 2;      // Hardcoded for now.  How to get this through api's?
 #else
     mreq.ipv6mr_interface = 0;
 #endif
@@ -242,20 +243,20 @@ Cell inet_UdpSocket_join(SedonaVM* vm, Cell* params)
   }
 #endif 
 
-  if (rc==0) 
+
+  if (rc==SOCKET_ERROR) 
   {
-    printf(" Joined multicast group %s\n", DISCOVER_MULTICAST_GROUP_ADDRESS);   // debug
-    return trueCell;
+    // Print error details, since there are different reasons join might fail
+    printf("  Error joining multicast group %s: %s\n", DISCOVER_MULTICAST_GROUP_ADDRESS, 
+                                                       ERRNO_MSG());
+    return falseCell;
   }
 
-  printf("  setsockopt error joining multicast group %s: %s\n", DISCOVER_MULTICAST_GROUP_ADDRESS,
-#ifdef _WIN32
-                                                                PrintError(WSAGetLastError()) );
-#else
-                                                                strerror(errno) );
-#endif
-  return falseCell;
+  printf(" Joined multicast group %s\n", DISCOVER_MULTICAST_GROUP_ADDRESS);   // debug
+  return trueCell;
 }
+
+
 
 //
 // Send the specified datagram which encapsulates both the
@@ -276,7 +277,14 @@ Cell inet_UdpSocket_send(SedonaVM* vm, Cell* params)
   struct UdpDatagram datagram;
   uint8_t* buf;
   int32_t len;
-  int r;
+  int rc;
+
+  // On QNX, sendto requires the exact length of the buffer to be used
+#if defined( SOCKET_FAMILY_INET )
+  socklen_t addrLen = sizeof(struct sockaddr_in);
+#elif defined( SOCKET_FAMILY_INET6 )
+  socklen_t addrLen = sizeof(struct sockaddr_in6);
+#endif
 
   struct sockaddr_storage addr;
   memset(&addr, 0, sizeof(addr));
@@ -296,23 +304,11 @@ Cell inet_UdpSocket_send(SedonaVM* vm, Cell* params)
   buf = datagram.buf + datagram.off;
   len = datagram.len;
 
-//#ifdef __QNX__
-  // On QNX, sendto requires the exact length of the buffer to be used
-  {
-#if defined( SOCKET_FAMILY_INET )
-    socklen_t addrLen = sizeof(struct sockaddr_in);
-#elif defined( SOCKET_FAMILY_INET6 )
-    socklen_t addrLen = sizeof(struct sockaddr_in6);
-#endif
-    r = sendto(sock, buf, len, 0, (const struct sockaddr *)&addr, addrLen);
-//#else  
-//    r = sendto(sock, buf, len, 0, (const struct sockaddr *)&addr, sizeof(addr));
-//#endif
-  }
+  rc = sendto(sock, buf, len, 0, (const struct sockaddr *)&addr, addrLen);
 
-  if (r!=len) 
+  if (rc==SOCKET_ERROR) 
   {
-    perror("sendto error:");
+    printf("  sendto error: %s\n", ERRNO_MSG());
     return falseCell;
   }
 
