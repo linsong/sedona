@@ -1,0 +1,24 @@
+<!--
+  -  Sedona Kit
+  -  Copyright 2007 Tridium Inc, All Rights Reserved.
+  -->
+
+<sedonaKit
+ name = "platQnxPpc"
+ vendor = "Tridium"
+ description = "Platform service for QNX-PPC"
+ includeSource = "false"
+ doc = "true"
+>
+
+  <!-- Dependencies -->
+  <depend on="sys 1.2"  />
+
+  <!-- Source Directories -->
+  <source dir="."/>
+
+  <!-- Natives -->
+  <native qname="platQnxPpc::QnxPlatformService.doPlatformId" id="1::0"  />
+
+</sedonaKit>
+
