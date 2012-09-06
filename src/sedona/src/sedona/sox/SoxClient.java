@@ -798,6 +798,9 @@ public class SoxClient
       throw new IllegalArgumentException("Too many children under component");
 
     // check type
+    if (type == null)
+      throw new IllegalArgumentException("Add error: invalid type");
+
     if (type.schema != util.schema)
     {
       KitPart typePart = type.kit.manifest.part();
