@@ -4,7 +4,7 @@
   -  Licensed under the Academic Free License version 3.0
   -->
 
-<sedonaPlatform vendor="Tridium" id="tridium-jace-qnx-ppc-${sedona.env.version}">
+<sedonaPlatform vendor="Tridium" id="tridium-generic-qnx-ppc-${sedona.env.version}">
 
   <compile endian="big" blockSize="4" refSize="4" debug="true" test="true">
 
