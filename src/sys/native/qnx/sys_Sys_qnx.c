@@ -17,7 +17,7 @@
 Cell sys_Sys_platformType(SedonaVM* vm, Cell* params)
 {
   Cell result;
-  result.aval = "platQnxPpc::QnxPlatformService";
+  result.aval = "platJaceQnxPpc::JaceQnxPpcPlatformService";
   return result;
 }
 

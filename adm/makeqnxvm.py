@@ -5,20 +5,23 @@
 #
 #    Compile specific svm for QNX, big-endian, power PC
 #
-#    USAGE: makeqnxvm [-v VERSION] [-4 | -6]
+#    USAGE: makeqnxvm [-v VERSION] [-4 | -6] [-s]
 #              options:  -v VERSION - sets the compiler macro PLAT_BUILD_VERSION, which in turn determines the
 #                           "Platform Version" reported in the sedona platform service.  If not specified, defaults
 #                           to "buildVersion" in sedona.properties
 #                        -4 | -6 - build for ipv6 or ipv4.  If not specified, defaults to ipv4
+#                        -s - stage only - copies src to temp folder but does not compile the vm
+#
 #    EXAMPLE: makeqnxvm -v 1.2.24 -6    (builds a vm with ipv6 stack, build version identifier 1.2.24
 #    EXAMPLE: makeqnxvm -6              (builds a vm with ipv6 stack, build version specified by current sedona.properties
+#    EXAMPLE: makeqnxvm -s              (gathers all source in temp folder, but doesn't compile)
 #
 #    NOTES:
 #       1) Valid installation of QNX dev environment is assumed.
 #       2) This script first copies all source files into the <sedona.home>/temp/qnx folder.  This is
 #          normally and currently "D:/sedona/baseline/pub/temp/qnx" folder.
 #       3) Top-level QNX makefiles are included/checked in the platform source code folder: 
-#          "\pub\platforms\src\generic\qnx\ppc\native"
+#          "\pub\platforms\src\jace\qnx\ppc\native"
 #          In order to compile, two args must be passed to the top-level Makefile:
 #          a)the version string, and b) the ipv4 or ipv6 variant.
 #          This script does this automatically by looking at the -v and -4/-6 args to this script (makeqnxvm.py) 
@@ -76,8 +79,8 @@ def main(argv=[]):
     print " ERROR: QNX dev environment not found"
     exit();
 
-  platFile = os.path.join(env.platforms, "src","generic","qnx","ppc","generic-qnx-ppc.xml")
-  stageDir = os.path.join(env.temp,"qnx")
+  platFile = os.path.join(env.platforms, "src","jace","qnx","ppc","jace-qnx-ppc.xml")
+  stageDir = os.path.join(env.temp,"jace")
   global parser
 
   # Parse command line arguments

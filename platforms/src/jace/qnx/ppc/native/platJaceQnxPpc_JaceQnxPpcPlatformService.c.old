@@ -3,13 +3,14 @@
 //
 // History:
 //   5 Dec 07  Dan Giorgis  Creation
+//  10 Sep 12  Clif Turman  Move to pub
 //
 
 #include "sedona.h"
 #include "sedonaPlatform.h"
 
-// Str QnxPlatform.doPlatformId()
-Cell platQnxPpc_QnxPlatformService_doPlatformId(SedonaVM* vm, Cell* params)
+// Str JaceQnxPpcPlatformService.doPlatformId()
+Cell platJaceQnxPpc_JaceQnxPpcPlatformService_doPlatformId(SedonaVM* vm, Cell* params)
 {         
   Cell result;
 

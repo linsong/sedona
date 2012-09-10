@@ -8,10 +8,10 @@
 
 
 **
-** Generic Unix Platform Service
+** Jace QNX PPC Platform Service
 **
 **
-class QnxPlatformService extends PlatformService
+class JaceQnxPpcPlatformService extends PlatformService
 {
   // No plat-specific properties or methods
 }

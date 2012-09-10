@@ -4,14 +4,14 @@
   -  Licensed under the Academic Free License version 3.0
   -->
 
-<sedonaPlatform vendor="Tridium" id="tridium-generic-qnx-ppc-${sedona.env.version}">
+<sedonaPlatform vendor="Tridium" id="tridium-jace-qnx-ppc-${sedona.env.version}">
 
   <compile endian="big" blockSize="4" refSize="4" debug="true" test="true">
 
     <!-- Native Kits -->
     <nativeKit depend="sys 1.2"    />
     <nativeKit depend="inet 1.2"   />    
-    <nativeKit depend="platQnxPpc 1.2"   />
+    <nativeKit depend="platJaceQnxPpc 1.2"   />
     <nativeKit depend="datetimeStd 1.2" />
   
     <!-- Sources -->
@@ -21,8 +21,9 @@
     <nativeSource path="/src/sys/native/qnx" />
     <nativeSource path="/src/inet/native" />
     <nativeSource path="/src/inet/native/std" />
-    <nativeSource path="/src/inet/native/sha1" />    
-    <nativeSource path="/platforms/src/generic/qnx/ppc/native" />
+    <nativeSource path="/src/inet/native/sha1" />
+    <!-- following line allows copying qnx makefiles to staging folder -->    
+    <nativeSource path="/platforms/src/jace/qnx/ppc/native" />
     <nativeSource path="/src/datetimeStd/native/std" />  
 
   </compile>    

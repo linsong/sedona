@@ -4,21 +4,20 @@
   -->
 
 <sedonaKit
- name = "platQnxPpc"
+ name = "platJaceQnxPpc"
  vendor = "Tridium"
- description = "Platform service for QNX-PPC"
+ description = "Platform service for Jace QNX-PPC"
  includeSource = "false"
  doc = "true"
 >
 
   <!-- Dependencies -->
-  <depend on="sys 1.2"  />
+  <depend on="sys 1.2+"  />
 
   <!-- Source Directories -->
   <source dir="."/>
 
   <!-- Natives -->
-  <native qname="platQnxPpc::QnxPlatformService.doPlatformId" id="1::0"  />
 
 </sedonaKit>
 

@@ -10,7 +10,7 @@
   <kit name="inet"  />
   <kit name="logic"  />
   <kit name="math"  />
-  <kit name="platQnxPpc"  />
+  <kit name="platJaceQnxPpc"  />
   <kit name="pricomp"  />
   <kit name="pstore"  />
   <kit name="sox"  />
@@ -24,7 +24,7 @@
   <comp name="service" id="1" type="sys::Folder">
     <prop name="meta" val="33685505"/>
     <!-- /service/plat -->
-    <comp name="plat" id="9" type="platQnxPpc::QnxPlatformService"/>
+    <comp name="plat" id="9" type="platJaceQnxPpc::JaceQnxPpcPlatformService"/>
     <!-- /service/users -->
     <comp name="users" id="3" type="sys::UserService">
       <prop name="meta" val="17367041"/>
