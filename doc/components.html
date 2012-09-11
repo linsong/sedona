@@ -60,6 +60,7 @@ Components include several features:
 <li>Can be given a human friendly name (up to 7 ASCII characters)</li>
 <li>Have a two byte identifier within an application</li>
 <li>Can be linked within an application</li>
+<li>Provides <a href='#callbacks'>callback methods</a> that can be overridden</li>
 <li>Component types have <a href='reflection.html'>reflection</a> capability</li>
 </ul>
 
@@ -247,6 +248,41 @@ class FooOverride extends Foo
 Note that you can use the "asStr" facet to annotate an action that
 takes a Buf, if the argument should be a null-terminated string.
 </p>
+
+
+
+<!--/////////////////////////////////////////////////////////-->
+<h1 id="callbacks">Callbacks</h1>
+<!--/////////////////////////////////////////////////////////-->
+
+
+<p>
+Any class that extends <code><a href='sys/Component.html'>sys::Component</a></code>
+includes the following virtual methods.  
+Each is called automatically by the system at the appropriate time.  
+These callback methods may be overridden by
+Component subclasses to change the behavior of the component.
+</p>
+
+<pre>
+  virtual void loaded()
+  virtual void start()
+  virtual void execute()
+
+  virtual void changed(Slot slot)
+  virtual void setToDefault(Slot slot)
+
+  virtual int  childEvent(int eType, Component child)
+  virtual int  parentEvent(int eType, Component parent)
+  virtual int  linkEvent(int eType, Link link)
+</pre>
+
+
+<p>
+See the API documentation at <code><a href='sys/Component.html'>sys::Component</a></code>
+for details on how these methods are used.
+</p>
+
 
 
 <!-- TOC-FOOTER-START -->

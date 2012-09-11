@@ -161,12 +161,16 @@ class Component
   }
 
   **
-  ** Set a property to its default value.  We don't actually
-  ** have the declared default at runtime, so we just set it
-  ** zero.
+  ** Set property to a default value.  
+  ** Called when a link is removed from an input slot.
   **
   virtual void setToDefault(Slot slot)
   {
+    // default input - we can't really do this using the
+    // actual property default because we don't have that
+    // information available at runtime - but we can default
+    // things to zero which seems better than just leaving
+    // a dangling value
     switch (slot.type.id)
     {
       case Type.boolId:   setBool(slot, false); break
@@ -230,25 +234,25 @@ class Component
 // Component event callbacks
 //////////////////////////////////////////////////////////////////////////
 
-  define int REORDERED = 2
-  define int ADDED     = 1
   define int REMOVED   = 0
+  define int ADDED     = 1
+  define int REORDERED = 2
 
   **
   ** Called on parent when a child event occurs.  Only called if app is
-  ** running
+  ** running.
   **
-  ** Defined event types are
+  ** Defined event types are:
   **
-  ** REORDERED - notification that a component's children have been reordered.  
-  **   Should always return 0.   Called by SoxCommands.reorderReq() after it
-  **   completes the reordering.
-  ** ADDED - notification that child has been added to component.  Should
-  **   always return 0.   Called prior to loaded() / start() on child.
   ** REMOVED - notification that child has been removed from component.  
   **   Should always return 0.  Called after stop() on child.
+  ** ADDED   - notification that child has been added to component.  
+  **   Should always return 0.   Called prior to loaded() / start() on child.
+  ** REORDERED - notification that component's children have been reordered.  
+  **   Should always return 0.   Called after the reordering is complete.
+  **   Only called once per reorder event; child arg is always null.
   **
-  ** Future event types may make use of return code  
+  ** Future event types may make use of return code.
   **
   virtual int childEvent(int eType, Component child)
   {
@@ -258,16 +262,16 @@ class Component
 
   **
   ** Called on a child when a parent event occurs.  Only called if app is
-  ** running
+  ** running.
   **
-  ** Defined event types are
+  ** Defined event types are:
   **
-  ** ADDED - notification this child has been parented.  Should
-  **   always return 0.  Called prior to loaded() / start() on child.
   ** REMOVED - notification that child has been removed/unparented.  
   **   Should always return 0.  Called after stop() on child.
+  ** ADDED   - notification this child has been parented.  
+  **   Should always return 0.  Called prior to loaded() / start() on child.
   **
-  ** Future event types may make use of return code  
+  ** Future event types may make use of return code. 
   **
   virtual int parentEvent(int eType, Component parent)
   {
@@ -277,15 +281,16 @@ class Component
 
   **
   ** Called on a component when a link event occurs.  Only called
-  ** if app is running
+  ** if app is running.
   **
-  ** Defined event types are
+  ** Defined event types are:
   **
-  ** ADDED - link has been added to the component .  Should
-  **   always return 0. 
-  ** REMOVED - link has been removed.  Should always return 0
+  ** REMOVED - link has been removed from the component.  
+  **   Should always return 0
+  ** ADDED   - link has been added to the component.  
+  **   Should always return 0. 
   **
-  ** Future event types may make use of return code  
+  ** Future event types may make use of return code. 
   **
   virtual int linkEvent(int eType, Link link)
   {

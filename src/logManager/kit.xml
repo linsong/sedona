@@ -5,7 +5,7 @@
   includeSource="true" 
   doc="true">
   
-  <depend on="sys 1.2"/>
+  <depend on="sys 1.2+"/>
   
   <source dir="."/>
 </sedonaKit>

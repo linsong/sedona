@@ -22,30 +22,30 @@
 class AppDbg
   extends Component
 {
-	**
-	** Enable calculations.  If false, the execute() method returns immediately
-	** without doing anything.  If true, 
-	**
-	@summary=false
-	@config
-	property bool enable
-	
-	**
-	** prints exec time (ms*10), work time (ms*10), and 
-	** scan time (ms*10) on every execute() cycle
-	** NOTE that values printed need to be divided by 10!
-	**
-	@summary=false
-	@config
-	property bool print
-	
-	**
-	** Over how many scans to update statistics
-	** Actual time = (App.scanPeriod) * (scanCyclesPerUpdate)
-	** Does not begin calculation until App.isSteadyState is reached
-	**
-	@summary=false
-	@config
+  **
+  ** Enable calculations.  If false, the execute() method returns immediately
+  ** without doing anything.  If true, 
+  **
+  @summary=false
+  @config
+  property bool enable
+  
+  **
+  ** prints exec time (ms*10), work time (ms*10), and 
+  ** scan time (ms*10) on every execute() cycle
+  ** NOTE that values printed need to be divided by 10!
+  **
+  @summary=false
+  @config
+  property bool print
+  
+  **
+  ** Over how many scans to update statistics
+  ** Actual time = (App.scanPeriod) * (scanCyclesPerUpdate)
+  ** Does not begin calculation until App.isSteadyState is reached
+  **
+  @summary=false
+  @config
   property int scanCyclesPerUpdate = 1000
 
   **
@@ -55,7 +55,7 @@ class AppDbg
   ** execTime = App.lastStartWork - App.lastStartExec
   **
   //@summary=false
-	//@unit=Units.millisecond
+  //@unit=Units.millisecond
   //@readonly property float execTime
 
   **
@@ -182,7 +182,7 @@ class AppDbg
 
   virtual override void start()
   {
-  	resetValues()
+    resetValues()
   }
 
   **
@@ -191,8 +191,8 @@ class AppDbg
   **
   virtual override void changed(Slot slot)
   {
-  	if(slot == AppDbg.enable) resetValues()
-  	super.changed(slot)
+    if(slot == AppDbg.enable) resetValues()
+    super.changed(slot)
   }
 
   **
@@ -200,13 +200,13 @@ class AppDbg
   **
   virtual override void execute()
   {
-  	if(!Sys.app.isSteadyState())
-  	  return
+    if(!Sys.app.isSteadyState())
+      return
     
     if(!enable)
       return
 
-  	//cache calculated values for last scan cycle
+    //cache calculated values for last scan cycle
     tmpExecTime = ((float)(Sys.app.lastStartWork - Sys.app.lastStartExec))*1e-6
     tmpWorkTime = ((float)(Sys.app.lastEndWork   - Sys.app.lastStartWork))*1e-6
     tmpScanTime = ((float)(Sys.app.newStartExec  - Sys.app.lastStartExec))*1e-6
@@ -248,7 +248,7 @@ class AppDbg
 
       if(first)
       {
-      	first = false
+        first = false
         execMinMin := execMin
         execMaxMax := execMax
         workMinMin := workMin
