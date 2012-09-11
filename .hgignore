@@ -36,3 +36,5 @@ syntax: regexp
 ^test/
 ^doc/.*/
 ^sedona-cert/
+^manifests-1.1/
+
