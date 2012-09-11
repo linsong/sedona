@@ -697,11 +697,7 @@ class App
       for (Link x = to.linksTo; x != null; x = x.nextTo)
         if (x.nextTo == link) { x.nextTo = link.nextTo; break }
 
-      // default input - we can't really do this using the
-      // actual property default because we don't have that
-      // information available at runtime - but we can default
-      // things to zero which seems better than just leaving
-      // a dangling value
+      // restore value to default
       Slot toSlot = to.type.slot(link.toSlot)
       if (toSlot != null && toSlot.isProp())
         to.setToDefault(toSlot)
