@@ -230,6 +230,18 @@ class Component
       link.propagate()
   }
 
+
+  **
+  ** allowChildExecute returns false if child components of this
+  ** should not have execute() called this app cycle.
+  **
+  virtual bool allowChildExecute()
+  {
+    return true
+  }
+
+
+  
 //////////////////////////////////////////////////////////////////////////
 // Component event callbacks
 //////////////////////////////////////////////////////////////////////////

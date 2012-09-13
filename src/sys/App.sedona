@@ -260,9 +260,6 @@ class App
       {
         // sleep until next cycle if we have time remaining
 
-        //debug output in 1/100's ms
-        //Sys.out.printLong((lastStartWork-newStartExec)/10000L).print(" ").printLong((lastEndWork-lastStartWork)/10000L).nl()
-
         // note that if we have overrun our deadline, sleep time will be
         // negative and Sys.sleep will return immediately.
         Sys.sleep(nsUntilDeadline)
@@ -278,7 +275,7 @@ class App
   private void executeTree(Component c)
   {
     // recurse children first
-    if (c.children != nullId)
+    if ((c.children != nullId) && c.allowChildExecute())
     {
       Component kid = lookup(c.children)
       while (kid != null)
