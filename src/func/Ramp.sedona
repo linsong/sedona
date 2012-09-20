@@ -6,46 +6,47 @@
 //   26 Oct 2007  Brian Frank    Creation
 //   27 Apr 2007  Brian Frank    Port from Java to Sedona
 //   04 Aug 2011  Clif Turman    Add comments
-//   13 Aug 2011  Clif Turman    Rework logic to remove delta property and replace with period property, added rampType
+//   13 Aug 2011  Clif Turman    Rework logic; use period instead of delta, add rampType
 //   24 Aug 2011  Clif Turman    Old: If period is 0, out = 0. New: If period is 0, out = min  
-//   24 Aug 2011  Clif Turman    If min/max/period is changed, restart ramp function, bumpless if possible
+//   24 Aug 2011  Clif Turman    If min/max/period changed, restart ramp function smoothly
+//   11 Sep 2012  Elizabeth McKenney  Redesign to avoid assumptions about execution rate
 //
 
 **
 ** Ramp
-**   Triangle wave between min & max
-**   Slope is fixed: 1.0 unit per App cycle
+**   Triangle or sawtooth wave between min & max.
+**   New value calculated every execute cycle (does not rely on execution rate).
 **
 @niagaraIcon="module://icons/x16/control/util/sine.png"
 class Ramp
   extends Component
 {
-  ** ramp triangle wave output
+  ** Ramp output
   @readonly property float out
   
-  ** minimum value
+  ** Minimum value
   @config property float min   = 0.0
   
-  ** maximum value
+  ** Maximum value
   @config property float max   = 100.0
 
   ** Ramp period
   ** If rampType is true (triangle) then this is the time it 
   ** takes to complete up/down cycle.
-  ** a value of 0 gives a 0 output
   ** If rampType is false (sawtooth) then this is the time it 
   ** takes to complete up cycle.
+  ** A value of 0 forces output to min value.
   @unit = Units.second
   @precision = 0
   @min=0
   @config property float period = 10f
 
   ** Specifies whether ramp is sawtooth (min to max and repeat), or
-  ** ramp is min to max/max to min and repeat
+  ** triangle (min to max/max to min and repeat)
   ** Defaults to sawtooth.
   @trueText="triangle"
   @falseText="sawtooth"
-  @config property bool rampType = true
+  @config property bool rampType = TRIANGLE
   
 
   **
@@ -53,7 +54,8 @@ class Ramp
   **
   virtual override void start()
   {
-    computeConstants()
+    periodInNanos = (long)period * 1sec
+    range = max - min
   }
  
   **
@@ -61,64 +63,51 @@ class Ramp
   **
   virtual override void changed(Slot slot)
   {
-    if(slot == Ramp.period    ||
-       slot == Ramp.min       ||
-       slot == Ramp.max       ||
-       slot == Ramp.rampType  )
-      computeConstants()
     super.changed(slot)
+
+    if (slot == Ramp.period)
+      periodInNanos = (long)period * 1sec
+
+    if ((slot == Ramp.min) || (slot == Ramp.max))
+      range = max - min
   }
 
-
-  private void computeConstants()
-  {
-    if(period == 0f) return
-    float engineCyclesPerRampCycle = (1000f * period) / (float)Sys.app.scanPeriod
-    delta = (max-min)/engineCyclesPerRampCycle
-    if(rampType) delta = delta * 2f
-    firstHalf = true
-    if(out < min)
-      out := min
-    else if(out > max)
-      out := max
-  }
   
   **
   ** Execute is called once every scan.
   **
   virtual override void execute()
   {
-    //disable if period is 0
-    if(period == 0f)
+    // Disable if period is 0
+    if (period == 0f)
     {
       out := min
       return
     }
 
-    float tmp = out
+    long now = Sys.ticks()
 
-    if(rampType)
-    {
-      if (firstHalf)
-        tmp += delta
-      else
-        tmp -= delta
+    // Calc current position in cycle
+    long  ticksThisCycle  = now % periodInNanos
+    float fracOfCycle = (float)ticksThisCycle / (float)periodInNanos
 
-      if (tmp < min) { tmp = min; firstHalf = true }
-      if (tmp > max) { tmp = max; firstHalf = false }
-    }
-    else
+    if (rampType==TRIANGLE)
     {
-      tmp += delta
-      if(tmp > max) tmp = min
+      if (fracOfCycle > 0.5)
+        fracOfCycle = 1.0 - fracOfCycle
+      fracOfCycle *= 2.0
     }
 
-    out := tmp
+    out := fracOfCycle * range + min
   }
 
-  //**
-  //**  Internal constants
-  //**
-  float delta
-  bool firstHalf
+
+  //
+  //  Internal vars
+  //
+  define bool TRIANGLE = true
+  define bool SAWTOOTH = false
+
+  float range
+  long  periodInNanos
 }

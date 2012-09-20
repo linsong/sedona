@@ -3,19 +3,17 @@
 // Licensed under the Academic Free License version 3.0
 //
 // History:
-//   15 Feb 2010  Clif Turman  Creation
+//   15 Feb 2010  Clif Turman         Creation
+//   11 Sep 2012  Elizabeth McKenney  Redesign to avoid assumptions about execution rate
 //
 
 **
 ** TimeAvg object averages "in" over the configured time.
-** The actual time is marked in a resolution of scan period (see App.scanPeriod)
-** such that number of samples averaged = time/Sys.app.scanPeriod
 **
 ** Note that this is NOT a running or moving average - this object caches the average over
 ** the previous time as the out value, and updates out every "time" ms.
 **
-** Until a full time cycle has elapsed, the out is set to the average off all samples
-** collected up until that point.
+** Until the first full cycle has elapsed, out is set to average of all samples so far.
 **
 ** The average may be reset/restarted at any time using the "reset" action.
 **
@@ -57,6 +55,7 @@ class TimeAvg
   virtual override void start()
   {
     reset()
+    avgEndTime = Sys.ticks() + (long)time * 1ms
   }
 
   **
@@ -67,29 +66,31 @@ class TimeAvg
     if(!Sys.app.isSteadyState())
       return
 
-    //re-calculate scansPerCalc every cycle in case App.scanPeriod has changed
-    scansPerCalc = Sys.max(1,time/Sys.app.scanPeriod)
-      
     execCount++
     sum += in
 
-    if( first || (execCount >= scansPerCalc) )
+    long now = Sys.ticks()
+
+    if (first || (now > avgEndTime))
     {
       out := sum/(float)execCount
     }
 
-    if(execCount >= scansPerCalc)
+    if (now > avgEndTime)
     {
+      first = false
       sum = 0.0
       execCount = 0
-      first = false
+
+      // Time of next avg
+      avgEndTime = now + (long)time * 1ms
     }
   }
 
-  private int scansPerCalc
   private bool first
   private float sum
   private int execCount
+  private long avgEndTime
 
 }
 

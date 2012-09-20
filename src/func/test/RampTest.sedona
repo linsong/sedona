@@ -15,44 +15,51 @@ class RampTest
   static inline Ramp  r
   static inline IRamp ir
 
+  define int MAXTESTPTS = 100
+  static inline float[MAXTESTPTS] signal
+  static inline long[MAXTESTPTS]  tsig
+  
  
   static void test()
   {
+    float margin = 0.05f
+
     // Ramp produces triangle or sawtooth; float output; fixed delta; set period in seconds
     r.min := 12f
     r.max := 24f
     r.period := 1f
 
-    r.rampType := true   // triangle
-    waveChk(12f, 1sec)
-    waveChk(18f, 1250ms)
-    waveChk(24f, 1500ms)
-    waveChk(18f, 1750ms)
-    waveChk(12f, 2sec)
+    r.rampType := Ramp.TRIANGLE   // triangle
+    valueChk(12f, 1000ms, margin)
+    valueChk(18f, 1250ms, margin)
+    valueChk(24f, 1500ms, margin)
+    valueChk(18f, 1750ms, margin)
+    valueChk(12f, 2000ms, margin)
 
-    r.rampType := false   // sawtooth
-    waveChk(12f, 1sec)
-    waveChk(15f, 1250ms)
-    waveChk(18f, 1500ms)
-    waveChk(21f, 1750ms)
-    waveChk(12f, 2sec)
+    r.rampType := Ramp.SAWTOOTH   // sawtooth
+    valueChk(12f, 1000ms, margin)
+    valueChk(15f, 1250ms, margin)
+    valueChk(18f, 1500ms, margin)
+    valueChk(21f, 1750ms, margin)
+    valueChk(24f, 1980ms, margin)
 
     r.min := 12f
     r.max := 24f
     r.period := 2f
-    r.rampType := true   // triangle
-    waveChk(15f, 250ms)
-    waveChk(18f, 500ms)
-    waveChk(21f, 750ms)
-    waveChk(24f, 1sec)
-    waveChk(12f, 2sec)
 
-    r.rampType := false   // sawtooth
-    waveChk(13.5f, 250ms)
-    waveChk(15f, 500ms)
-    waveChk(16.5f, 750ms)
-    waveChk(18f, 1sec)
-    waveChk(24f, 2sec)    // this would be 12f, except roundoff error delays end of waveform (?)
+    r.rampType := Ramp.TRIANGLE   // triangle
+    valueChk(15f, 250ms, margin)
+    valueChk(18f, 500ms, margin)
+    valueChk(21f, 750ms, margin)
+    valueChk(24f, 1000ms, margin)
+    valueChk(12f, 2000ms, margin)
+
+    r.rampType := Ramp.SAWTOOTH   // sawtooth
+    valueChk(13.5f, 250ms, margin)
+    valueChk(15f, 500ms, margin)
+    valueChk(16.5f, 750ms, margin)
+    valueChk(18f, 1000ms, margin)
+    valueChk(24f, 1980ms, margin)
 
 
 
@@ -76,26 +83,64 @@ class RampTest
 
 
   //
-  // From beginning of waveform, waits 'dur' nanos and then checks output
+  // From beginning of waveform, wait 'dur' nanos and then check output
   //
-  static void waveChk(float x, long dur)
+  static void valueChk(float x, long dur, float margin)
   {
-    //Sys.out.print("  Ramp: ${(float)dur / (float)1sec} sec test\n")
+    Str rtype = r.rampType==Ramp.SAWTOOTH?"SAWTOOTH":"TRIANGLE"
+    float pdur  = (float)dur / (float)1sec
 
-    // Wait for beginning of cycle
-    while (r.out != 12f) 
+    long pd = (long)r.period*1sec
+
+    // Margin (how close does it need to be?)
+    float e = (r.max - r.min) * margin
+
+    // How often to check for start of waveform (need to get pretty close for test to work)
+    long ivl = pd / 1000L
+    
+    r.execute()
+
+    float amin = r.out
+    float amax = r.out
+
+    Sys.out.print("  Scanning....")
+
+    // Wait for beginning of waveform (time out after 2 cycles)
+    long now  = Sys.ticks()
+    long fail = now + pd*2L
+
+    while ( !approx(r.out, r.min, e) && (now < fail) )
+    {
+      if (r.out<amin) amin = r.out
+      if (r.out>amax) amax = r.out
+
+      long sleepTill = now + ivl
+      while (now<sleepTill) now = Sys.ticks()
       r.execute()
+    }
 
-    // Calc how many App cycles in 'dur'
-    int nCycles = (int) (dur / ((long)Sys.app.scanPeriod*1ms))
-    for (int n=0; n<nCycles; n++) 
-      r.execute()
+    // Fail if we timed out (and skip rest of test)
+    assert( now < fail )
+    if (now>fail) 
+    {
+      Sys.out.print("  RampTest failed to find start of cycle (min=$amin, max=$amax)\n")
+      return
+    }
 
-    //Sys.out.print(" waveChk: o = ${r.out}, expected $x ($nCycles cycles)\n")
+    Sys.out.print("  $rtype, $pdur sec test\n")
 
-    // Is output within "close enough" of expected?  (allow for float error)
-    checkVal(r.out, x, (float)nCycles*1e-6)
+    // OK if we got here, we're at the beginning of the waveform (approx)
+    long snap = now + dur
+
+    while (now<snap) now = Sys.ticks()
+
+    r.execute()
+      
+    //Sys.out.print("    Comparing out=$r.out to x=$x (e=$e)\n")
+    assert( approx(r.out, x, e) )
   }
+
+
 
 
   //
@@ -128,12 +173,12 @@ class RampTest
 
 
   //
-  // Check that value is "nearly" what we expected
+  // True if values are "nearly" equal
   //
-  static void checkVal(float x, float v, float epsilon)
+  static bool approx(float x, float v, float epsilon)
   {
-    //Sys.out.print("     checking: ${v-epsilon} < $x < ${v+epsilon} ?\n")
-    assert( (x > v-epsilon) && (x < v+epsilon) )
+    //Sys.out.print("  Comparing x=$x to v=$v (e=$epsilon)\n")
+    return (x > v-epsilon) && (x < v+epsilon) 
   }
 
 
