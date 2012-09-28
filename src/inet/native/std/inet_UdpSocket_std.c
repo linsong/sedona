@@ -252,7 +252,7 @@ Cell inet_UdpSocket_join(SedonaVM* vm, Cell* params)
     return falseCell;
   }
 
-  printf(" Joined multicast group %s\n", DISCOVER_MULTICAST_GROUP_ADDRESS);   // debug
+  //printf(" Joined multicast group %s\n", DISCOVER_MULTICAST_GROUP_ADDRESS);   // debug
   return trueCell;
 }
 
