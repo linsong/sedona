@@ -1,0 +1,46 @@
+<!--
+  -  Sedona Kit
+  -  Copyright (c) 2007 Tridium, Inc.
+  -  Licensed under the Academic Free License version 3.0
+  -->
+
+<sedonaKit
+ name = "inet"
+ vendor = "Tridium"
+ description = "IP and UDP/TCP Socket APIs"
+ includeSource = "true"
+ doc = "true"
+>
+
+  <!-- Dependencies -->
+  <depend on="sys 1.2+" />
+
+  <!-- Source Directories -->
+  <source dir="."/>
+  <source dir="test" testonly="true"/>
+
+  <!-- Natives -->
+  <native qname="inet::TcpSocket.connect"         id="2::0"  />
+  <native qname="inet::TcpSocket.finishConnect"   id="2::1"  />
+  <native qname="inet::TcpSocket.write"           id="2::2"  />
+  <native qname="inet::TcpSocket.read"            id="2::3"  />
+  <native qname="inet::TcpSocket.close"           id="2::4"  />
+
+  <native qname="inet::TcpServerSocket.bind"      id="2::5"  />
+  <native qname="inet::TcpServerSocket.accept"    id="2::6"  />
+  <native qname="inet::TcpServerSocket.close"     id="2::7"  />
+
+  <native qname="inet::UdpSocket.open"            id="2::8"  />
+  <native qname="inet::UdpSocket.bind"            id="2::9"  />
+  <native qname="inet::UdpSocket.send"            id="2::10" />
+  <native qname="inet::UdpSocket.receive"         id="2::11" />
+  <native qname="inet::UdpSocket.close"           id="2::12" />
+  <native qname="inet::UdpSocket.maxPacketSize"   id="2::13"  />
+  <native qname="inet::UdpSocket.idealPacketSize" id="2::14"  />
+
+  <native qname="inet::Crypto.sha1"               id="2::15"  />
+
+  <native qname="inet::UdpSocket.join"            id="2::16" />
+
+</sedonaKit>
+

@@ -1,0 +1,1179 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//    1 Aug 06  Brian Frank         Creation
+//   22 May 07  Brian Frank         Port from Java to Sedona
+//   15 Dec 09  Elizabeth McKenney  Add steady state feature
+//   26 Aug 10  Clif Turman         Add getFirstChildOfType method
+//   26 Aug 10  Clif Turman         Add getNextSiblingOfType method
+//
+
+**
+** App encapsulates an application database which includes
+** the list of available Types, the Component instances,
+** their configuration, and the Links.
+**
+@niagaraIcon="module://icons/x16/database.png"
+@palette=false
+class App
+  extends Component
+{
+
+////////////////////////////////////////////////////////////////
+// Init/Cleanup
+////////////////////////////////////////////////////////////////
+
+  **
+  ** Prepare the applications data structures to begin
+  ** configuration.  
+  **
+  bool initApp(int initCompsLen)
+  {
+    // my identity is fixed
+    this.id       = 0
+    this.parent   = nullId
+    this.name.copyFromStr("App", nameLen)
+
+    // alloc initial components array
+    if (!ensureCompsCapacity(initCompsLen)) return false
+
+    // map myself
+    this.comps[0] = this
+
+    return true
+  }
+
+  **
+  ** Free all the dynamic memory associated with
+  ** this application.
+  **
+  void cleanupApp()
+  {
+    // free all the components and links
+    foreach (Component c : comps, compsLen)
+    {
+      if (c == null) continue
+      Link link = c.linksTo
+      while (link != null)
+      {
+        Link next = link.nextTo
+        delete link
+        link = next
+      }
+      if (c != this) delete c
+    }
+
+    // cleanup misc
+    services = null
+    children = nullId
+
+    // free comps array
+    compsLen = 0
+    delete comps
+    comps = null
+  }
+
+////////////////////////////////////////////////////////////////
+// Run
+////////////////////////////////////////////////////////////////
+
+  **
+  ** Is the application currently running
+  **
+  bool isRunning()
+  {
+    return running
+  }
+
+  **
+  ** Has the application reached steady state (as defined by timeToSteadyState)
+  **
+  bool isSteadyState()
+  {
+    // See whether we have reached steady state yet
+    if (!atSteadyState)
+      atSteadyState = running && (Sys.ticks() > steadyAt)
+
+    return atSteadyState
+  }
+
+
+  **
+  ** Start all the components.  Return 0 on success,
+  ** error code on failure.
+  **
+  int startApp(Str[] args, int argsLen)
+  {
+    // find platform service in this app
+    platform = (PlatformService)lookupService(PlatformService.type)
+    if (platform == null) return Err.noPlatformService
+
+    // verify platform service is correct type for this hw/os platform
+    Type expected = Sys.findType(Sys.platformType());
+    if (expected == null)
+      log.error("missing platform type: ${Sys.platformType()}\n")
+    if (expected == null || !platform.type.is(expected))
+      return Err.badPlatformService
+
+    // given platform its initialization hook
+    int r = platform.init(args, argsLen)
+    if (r != 0) return r
+
+    // log/notify starting
+    log.message("starting")
+    platform.notify("app", "starting")
+
+    // loaded() callback for every component
+    foreach (Component c : comps, compsLen)
+      if (c != null) c.loaded()
+
+    // start() callback for every component
+    foreach (Component c : comps, compsLen)
+      if (c != null) c.start()
+
+    // success
+    return 0
+  }
+
+  **
+  ** Stop all the components.
+  **
+  void stopApp()
+  {
+    log.message("stopping")
+    platform.notify("app", "stopping")
+
+    foreach (Component c : comps, compsLen)
+      if (c != null) c.stop()
+  }
+
+  **
+  ** Run this application - right now this is a
+  ** simple round robin execution.
+  **
+  int runApp()
+  {
+    log.message("running")
+    platform.notify("app", "running")
+
+    // Start counting time to steady state
+    steadyAt = Sys.ticks() + (long)timeToSteadyState*1ms
+
+    return resumeApp()
+  }
+
+  **
+  ** Run this application - right now this is a
+  ** simple round robin execution.
+  **
+  int resumeApp()
+  {
+    //  Are we returning from hibernate?
+    if (runStatus == Err.hibernate)
+    {
+      // should we reset steady state?
+      if (hibernationResetsSteadyState == true)
+      {
+        atSteadyState = false
+        steadyAt = Sys.ticks() + (long)timeToSteadyState*1ms
+      }
+
+      // call Service.onUnhibernate for all the services
+      for (Service s = services; s != null; s = s.nextService)
+        s.onUnhibernate()
+    }
+
+    running = true
+    runStatus = 0
+    long deadline = Sys.ticks()
+    long nsUntilDeadline = 0L
+    lastEndWork = deadline
+
+    while (running)
+    {
+      // update our cycle counter
+      cycleCount++
+
+      // get start ticks and compute cycle deadline
+      lastStartExec = newStartExec
+
+      newStartExec = Sys.ticks()
+
+      deadline = deadline + (long)scanPeriod*1ms
+
+      // execute every component in the tree
+      executeTree(this)
+
+      // give each service a chance to do background work
+      // as long as we have spare time in this cycle and
+      // isRunning has not become false
+      lastStartWork = Sys.ticks()
+
+      bool more = true
+      bool canHibernate = true
+      while (more && running)
+      {
+        // give each service a chance to do a chunk of work and override any requests
+        // for hibernation
+        more = false
+        for (Service s = services; s != null; s = s.nextService)
+        {
+          more |= s.work()
+          canHibernate &= s.canHibernate()
+        }
+        if(canHibernate) runStatus = Err.hibernate
+
+        //  Determine how much idle time is left before the next 
+        //  execute cycle needs to start 
+        nsUntilDeadline = deadline - Sys.ticks()       
+        if (nsUntilDeadline < (long)guardTime*1ms) 
+          break
+
+        //  Allow platform to determine if we should spend
+        //  free time doing more Service work
+        if (platform.workDuringFreeTime(nsUntilDeadline))
+          more = true          
+      }
+
+      lastEndWork = Sys.ticks()
+
+      //  If hibernating, inform services.
+      //  Note that hibernation check must take place before yield since
+      //  hibernation is higher priority then yielding
+      if (runStatus == Err.hibernate)
+      {
+        //  Hibernation has been requested
+        for (Service s = services; s != null; s = s.nextService)
+          s.onHibernate()
+
+        return runStatus
+      }
+      else if (platform.yieldRequired())
+      {
+        platform.yield(nsUntilDeadline);
+        runStatus = Err.yield
+        return runStatus;
+      }
+      else
+      {
+        // sleep until next cycle if we have time remaining
+
+        // note that if we have overrun our deadline, sleep time will be
+        // negative and Sys.sleep will return immediately.
+        Sys.sleep(nsUntilDeadline)
+      }
+    }
+
+    return runStatus
+  }
+
+  **
+  ** Recursively execute the component and its children.
+  **
+  private void executeTree(Component c)
+  {
+    // recurse children first
+    if ((c.children != nullId) && c.allowChildExecute())
+    {
+      Component kid = lookup(c.children)
+      while (kid != null)
+      {
+        executeTree(kid)
+        kid = lookup(kid.nextSibling)
+      }
+    }
+
+    // execute component (after children)
+    c.propagateLinksTo()
+    c.execute()
+  }
+
+////////////////////////////////////////////////////////////////
+// Component Management
+////////////////////////////////////////////////////////////////
+
+  **
+  ** Lookup a component by id or null.
+  **
+  Component lookup(int id)
+  {
+    if (id < 0 || id >= compsLen) return null
+    return comps[id]
+  }
+
+  **
+  ** Get the maximum component id used by the application.
+  **
+  int maxId()
+  {
+    for (int i=compsLen-1; i>=0; --i)
+      if (comps[i] != null) return i
+    return 0
+  }
+
+  **
+  ** Lookup a service by type (or base type).  Return
+  ** null if there are no registered services which
+  ** implement the specified type.
+  **
+  Service lookupService(Type type)
+  {
+    Service s = services
+    while (s != null)
+    {
+      if (s.type.is(type)) return s
+      s = s.nextService
+    }
+    return null
+  }
+
+  **
+  ** Add a component to the application.
+  ** Return the new Component on success, null on failure.
+  **
+  Component add(Component parent, Str name, Type t)
+  {
+    // sanity checking
+    if (parent == null || name == null || t == null)
+      return null
+
+    // don't add if sibiling with same name exists
+    Component sibling = lookup(parent.children)
+    while (sibling != null)
+    {
+     if (sibling.name.equals(name)) return null
+     sibling = lookup(sibling.nextSibling)
+    }
+
+    // allocate component id
+    int id = allocCompId()
+    if (id < 0) return null
+
+    // alloc memory for the component
+    Component c = (Component)t.malloc()
+    if (c == null) return null
+    c.name.copyFromStr(name, nameLen)
+
+    // insert into my lookup tables
+    if (!insert(id, c)) { delete c; return null }
+
+    // setup parent/child relationship
+    c.parent = parent.id
+    if (parent.children == nullId) parent.children = id
+    else
+    {
+      Component x = lookup(parent.children)
+      while (x != null && x.nextSibling != nullId)
+        x = lookup(x.nextSibling)
+      if (x == null) { delete c; return null }
+      x.nextSibling = id
+    }
+
+    // invoke callbacks if running
+    if (running) 
+    { 
+      parent.childEvent(Component.ADDED, c)
+      c.parentEvent(Component.ADDED, parent)
+      c.loaded()
+      c.start() 
+    }
+
+    // fire tree changed on parent
+    parent.fireTreeChanged()
+
+    // success
+    return c
+  }
+
+  **
+  ** Allocate the next component id.  If no more space
+  ** is left in the comps array, then automatically
+  ** grow it.  Return -1 on error.
+  **
+  private int allocCompId()
+  {
+    // check for a null entry in my existing array
+    int len = compsLen
+    for (int i=0; i<len; ++i)
+      if (comps[i] == null)
+        return i
+
+    // need to resize the components array - we grow in
+    // small increments to save space and to keep the
+    // run-time scan from having to process a bunch of nulls
+    if (!ensureCompsCapacity(len+8)) return -1
+    return len
+  }
+
+  **
+  ** Grow the comps array if too small.  Return true on success.
+  **
+  private bool ensureCompsCapacity(int newLen)
+  {
+    if (compsLen >= newLen) return true
+
+    Component[] old = comps
+    Component[] temp = new Component[newLen]
+    if (temp == null) return false
+    for (int i=0; i<compsLen; ++i) temp[i] = old[i]
+    comps = temp
+    compsLen = newLen
+    delete old
+    return true
+  }
+
+  **
+  ** Private implementation of adding a component into
+  ** the lookup tables - this method does NOT manage
+  ** the parent/child relationship.  Return true on
+  ** success, false on failure.
+  **
+  private bool insert(int id, Component c)
+  {
+    // sanity check
+    if (id >= compsLen) return false
+    if (comps[id] != null) return false
+
+    // assign component it's id
+    c.id = id
+
+    // add into components table
+    comps[id] = c
+
+    // if service, add to service linked list
+    if (c.type.is(Service.type))
+    {
+      Service s = (Service)c
+      s.nextService = services
+      services = s
+    }
+
+    return true
+  }
+
+  **
+  ** Remove the specified component and free it's memory.
+  ** This method automatically recursively removes any children
+  ** of the component first.  Return true on success, false on
+  ** failure.
+  bool remove(Component c)
+  {
+    // sanity checks
+    if (c == null) return false
+    int id = c.id
+    if (lookup(id) != c) return false
+    Component parent = lookup(c.parent)
+    if (parent == null) return false
+
+    // stop child is app is running
+    if (running) c.stop()
+
+    // recursively remove any children first
+    Component kid = lookup(c.children)
+    while (kid != null)
+    {
+      Component nextKid = lookup(kid.nextSibling)
+      remove(kid)
+      kid = nextKid
+    }
+
+    // remove from components array
+    comps[id] = null
+
+    // if service remove from that linked list
+    if (c.type.is(Service.type))
+    {
+      Service s = (Service)c;
+      if (services == s) services = s.nextService
+      else
+      {
+        Service prev = services
+        while (prev != null && prev.nextService != s)
+          prev = prev.nextService
+        if (prev == null) return false
+        prev.nextService = s.nextService
+      }
+    }
+
+    // remove from parent's child table
+    if (parent.children == id) 
+      parent.children = c.nextSibling
+    else
+    {
+      Component prev = lookup(parent.children)
+      while (prev != null && prev.nextSibling != id)
+        prev = lookup(prev.nextSibling)
+      if (prev == null) return false
+      prev.nextSibling = c.nextSibling
+    }
+
+    // remove all associated links to/from
+    Link link = c.linksFrom
+    while (link != null)
+    {
+      Link next = link.nextFrom
+      removeLink(link)
+      link = next
+    }
+    link = c.linksTo
+    while (link != null)
+    {
+      Link next = link.nextTo
+      removeLink(link)
+      link = next
+    }
+
+    // call parent / child callback function 
+    if (running)
+    { 
+      parent.childEvent(Component.REMOVED, c)  
+      c.parentEvent(Component.REMOVED, parent)
+    }
+
+    // fire config changed on parent
+    parent.fireTreeChanged()
+
+    // free component's memory
+    delete c
+    return true
+  }
+
+  **
+  ** Gets first child component of a given type.
+  ** Returns null if no objects found, otherwise returns
+  ** a Component
+  **
+  Component getFirstChildOfType(Component parent, Type t)
+  {
+    for (Component c = lookup(parent.children); c != null; c = lookup(c.nextSibling))
+      if (c.type.is(t))
+        return c
+    return null
+  }
+
+  **
+  ** Gets next sibling of a component that is of type t.
+  ** Returns null if end of sibling list is reached without finding one.
+  **
+  Component getNextSiblingOfType(Component component, Type t)
+  {
+    //short circuit if component is not mounted or is App
+    if(component.id == nullId) return null
+    //short circuit if no siblings
+    if(component.nextSibling == nullId) return null
+
+    for (Component c = lookup(component.nextSibling); c != null; c = lookup(c.nextSibling))
+      if (c.type.is(t)) return c
+
+    return null
+  }
+
+
+////////////////////////////////////////////////////////////////
+// Links
+////////////////////////////////////////////////////////////////
+
+  **
+  ** Find a link with the specified from and to
+  ** ids or return null if not found.
+  **
+  Link lookupLink(int fromCompId, int fromSlotId, int toCompId, int toSlotId)
+  {
+    Component to = lookup(toCompId)
+    if (to != null)
+    {
+      for (Link x = to.linksTo; x != null; x = x.nextTo)
+      {
+        if (x.toSlot   == toSlotId   &&
+            x.fromComp == fromCompId &&
+            x.fromSlot == fromSlotId)
+          return x
+      }
+    }
+    return null
+  }
+
+  **
+  ** Add a new Link into the application by registering it in both
+  ** the "to" and "from" component's linked-list of Links.  Return
+  ** the new Link or null on error.
+  **
+  Link addLink(Component from, Slot fromSlot, Component to, Slot toSlot)
+  {
+    if (from == null || fromSlot == null || to == null || toSlot == null)
+      return null
+
+    // no duplicate links
+    if (lookupLink(from.id, fromSlot.id, to.id, toSlot.id) != null)
+      return null
+
+    // toSlot must not already be linked to (no "fan-in")
+    for (Link x = to.linksTo; x != null; x = x.nextTo)
+    {
+      if (x.toSlot == toSlot.id) return null
+    }
+
+    // create link
+    Link link = new Link()
+    link.fromComp = from.id
+    link.fromSlot = fromSlot.id
+    link.toComp   = to.id
+    link.toSlot   = toSlot.id
+
+    // insert it into the from and to component's linked lists
+    insertLink(link)
+
+    //  Invoke callbacks if running
+    if (running)
+    {
+      to.linkEvent(Component.ADDED, link)
+      from.linkEvent(Component.ADDED, link)
+    }
+  
+    // fire links changed on both components
+    from.fireLinksChanged()
+    to.fireLinksChanged()
+
+    return link
+  }
+
+  **
+  ** Insert a Link into the application by registering it in both
+  ** the "to" and "from" component's list linked of Links.  Return
+  ** true on success, false on failure.
+  **
+  private bool insertLink(Link link)
+  {
+    // lookup components
+    Component from = lookup(link.fromComp)
+    Component to = lookup(link.toComp)
+    if (from == null || to == null) return false
+
+    // add into "to" component's linked list
+    link.nextTo = to.linksTo
+    to.linksTo = link
+
+    // add into "from" component's linked list (unless
+    // this is a link between the same component)
+    if (to != from)
+    {
+      link.nextFrom = from.linksFrom
+      from.linksFrom = link
+    }
+    
+    return true
+  }
+
+  **
+  ** Remove a Link from the application by unregistering it from both
+  ** the "to" and "from" component's list linked of Links.  Return
+  ** true on success, false on failure.
+  **
+  bool removeLink(Link link)
+  {
+    if (link == null) return false
+
+    // remove it on "from"
+    Component from = lookup(link.fromComp)
+    if (from != null)
+    {
+      // remove it from component's linked list
+      if (from.linksFrom == link) from.linksFrom = link.nextFrom
+      for (Link x = from.linksFrom; x != null; x = x.nextFrom)
+        if (x.nextFrom == link) { x.nextFrom = link.nextFrom; break }
+    }
+
+    // remove it on "to"
+    Component to = lookup(link.toComp)
+    if (to != null)
+    {
+      // remove it from component's linked list
+      if (to.linksTo == link) to.linksTo = link.nextTo
+      for (Link x = to.linksTo; x != null; x = x.nextTo)
+        if (x.nextTo == link) { x.nextTo = link.nextTo; break }
+
+      // restore value to default
+      Slot toSlot = to.type.slot(link.toSlot)
+      if (toSlot != null && toSlot.isProp())
+        to.setToDefault(toSlot)
+    }
+
+    // Invoke callbacks if running
+    if (running)
+    {  
+      from?.linkEvent(Component.REMOVED, link)
+      to?.linkEvent(Component.REMOVED, link)
+    }
+
+    // fire link changes event
+    from?.fireLinksChanged()
+    to?.fireLinksChanged()
+
+    // free the link's memory
+    delete link
+    return (from != null && to != null)
+  }
+
+////////////////////////////////////////////////////////////////
+// Watches
+////////////////////////////////////////////////////////////////
+
+  **
+  ** Each service which uses watches, should call this
+  ** method on startup with it's service specific array
+  ** of Watch subclasses.
+  **
+  void initWatches(Watch[] subclasses)
+  {
+    int id = 0
+    foreach (Watch w : subclasses, Watch.max)
+    {
+      w.index  = id++
+      w.closed = true
+    }
+  }
+
+  **
+  ** Allocate a watch for a service using watches.  The service
+  ** should pass in its service specific array of Watch subclasses.
+  ** If a watch is opened then it is reserved, its closed field is
+  ** set to false, and the subclass instance is returned.  If all
+  ** the watches are currently open, then return null.
+  **
+  Watch openWatch(Watch[] subclasses)
+  {
+    for (int i=0; i<Watch.max; ++i)
+    {
+      // if non-null this slot is used
+      if (watches[i] != null) continue
+
+      // we found our watch, mark it open
+      Watch w = subclasses[i]
+      watches[i] = w
+      w.closed = false
+
+      // select new unique random byte
+      int rand = Sys.rand() & 0xff
+      if (w.rand == rand) ++rand
+      w.rand = rand
+
+      // clear the every component's events for this watch
+      foreach (Component c : comps, compsLen)
+        if (c != null) c.watchFlags[i] = 0
+
+      // return the opened watch
+      return w
+    }
+    return null
+  }
+
+  **
+  ** Close the specific watch by freeing its id to be used
+  ** again and setting its closed field to false.
+  **
+  void closeWatch(Watch watch)
+  {
+    watches[watch.index] = null
+    watch.closed = true
+  }
+
+////////////////////////////////////////////////////////////////
+// I/O
+////////////////////////////////////////////////////////////////
+
+  **
+  ** Save the app in binary format to the output stream:
+  **
+  **   app
+  **   {
+  **     u4           magic 0x73617070 "sapp"
+  **     u4           version 0x0002 0.2
+  **     Schema       schema
+  **     Component[]  comps
+  **     u2           0xffff end of comps marker
+  **     Link[]       links
+  **     u2           0xffff end of links marker
+  **     u1           '.' end of app marker
+  **   }
+  **
+  ** Return 0 on success, non-zero on failure.
+  **
+  **
+  int saveApp(OutStream out)
+  {
+    // header
+    out.writeI4(0x73617070)  // "sapp"
+    out.writeI4(0x0003)      // version 0.3
+    saveSchema(out)          // schema
+    out.writeI2(maxId())     // maxId
+
+    // components
+    foreach (Component c : comps, compsLen)
+      if (c != null) c.saveAppComp(out)
+    out.writeI2(0xffff)
+
+    // links (walk linksTo on each component)
+    foreach (Component c : comps, compsLen)
+    {
+      if (c == null) continue
+      for (Link link = c.linksTo; link != null; link = link.nextTo)
+        link.save(out)
+    }
+    out.writeI2(0xffff)
+
+    // end of app
+    return out.write('.') ? 0 : 1
+  }
+
+  **
+  ** Load the app from a binary format input stream.
+  ** Return 0 on success or non-zero on error.
+  **
+  int loadApp(InStream in)
+  {
+    // header
+    if (in.readS4() != 0x73617070) return Err.invalidMagic
+    if (in.readS4() != 0x0003) return Err.invalidVersion
+    if (!loadSchema(in)) return Err.invalidSchema
+    int maxId = in.readU2()
+
+    // resize comps array if needed
+    initApp(maxId+1)
+
+    // components
+    while (true)
+    {
+      // read component id
+      int compId = in.readU2()
+      if (compId == 0xffff) break
+      if (compId < 0) return Err.unexpectedEOF
+
+      // read app kit id, map to equivalent scode kit id
+      Kit kit = null
+      int kitid = in.read()
+      if (kitid>=0) kit = Sys.kit( kitIdMap[kitid] )
+      if (kit == null) return Err.invalidKitId
+
+      // read type id
+      Type t = kit.type(in.read())
+
+      if (t == null) return Err.invalidTypeId
+
+      // allocate component
+      Component c
+      if (compId == 0) c = this
+      else
+      {
+        c = (Component)t.malloc()
+        if (c == null) return Err.cannotMalloc
+      }
+
+      // load component
+      int r = c.loadAppComp(in)
+      if (r != 0) return r
+
+      // add component to my tables
+      if (c != this)
+      {
+        if (!insert(compId, c)) return Err.cannotInsert
+      }
+    }
+
+    // links
+    while (true)
+    {
+      // read check component id
+      int compId = in.readU2()
+      if (compId == 0xffff) break
+      if (compId < 0) return Err.unexpectedEOF
+
+      // malloc and load link
+      Link link = new Link()
+      if (link == null) return Err.cannotMalloc
+      if (!link.load(in, compId)) return Err.cannotLoadLink
+
+      // add link
+      if (!insertLink(link)) return Err.cannotLoadLink
+    }
+
+    // end of app marker
+    if (in.read() != '.') return Err.invalidAppEndMarker
+
+    // success
+    return 0
+  }
+
+  **
+  ** Schema is the list of kit names and checksums:
+  **
+  **   schema
+  **   {
+  **     u1  count
+  **     kits[count]
+  **     {
+  **       str  name
+  **       u4   checksum
+  **     }
+  **   }
+  **
+  void saveSchema(OutStream out)
+  {
+    out.write(Sys.kitsLen)
+    foreach (Kit kit : Sys.kits, Sys.kitsLen)
+    {
+      out.writeStr(kit.name)
+      out.writeI4(kit.checksum)
+    }
+  }
+
+  **
+  ** Check that the schema on the input stream matches
+  ** the schema of the current runtime.
+  **
+  ** In this version, we allow the app to depend on fewer kits than 
+  ** the scode, as long as all the app's kits are in the scode.
+  **
+  bool loadSchema(InStream in)
+  {
+    int numkits = in.read()
+    if (numkits > Sys.kitsLen)
+    {
+      log.error("Schema mismatch (num kits): $numkits > $Sys.kitsLen")
+      return false
+    }
+
+    // Create kit id map array
+    if (kitIdMap!=null) delete kitIdMap         // can kitIDMap ever be non-null here?
+    kitIdMap = new int[ numkits ]
+    if (kitIdMap==null) return false
+
+
+    // Assume both app & scode have kits in the same order, so we just 
+    // have to scan Sys.kits once to match all input kits.
+    int n = numkits
+    int checksum  = 0
+    bool gotMatch = true
+
+    foreach (Kit kit : Sys.kits, Sys.kitsLen)
+    {
+      // If we matched last input kit, read next one
+      if (gotMatch && (n>0))
+      {
+        if (!in.readStr(Str.temp, Str.tempLen)) return false
+        checksum = in.readS4()
+        n--
+      }
+
+      // If kit name doesn't match, go to next in Sys.kits
+      if (!kit.name.equals(Str.temp)) { gotMatch = false; continue }
+
+      // If kit name matches but checksum doesn't, fail
+      if (kit.checksum != checksum)
+      {
+        log.error("Schema mismatch (checksum): $Str.temp 0x${Sys.hexStr(checksum)} " +
+                  "!= $kit.name 0x${Sys.hexStr(kit.checksum)} ")
+        return false
+      }
+
+      // If here, then kit & checksum both match; go to next kit
+      gotMatch = true
+
+      // Map this kit to Sys kit id (used in loadApp)
+      kitIdMap[ numkits-n-1 ] = kit.id
+
+      // If we've read in all kits & last one matched, we're done
+      if (n==0) break
+    }
+
+    // If last input kit name didn't match, fail
+    if (!gotMatch)
+    {
+      log.error("Schema mismatch (kits): Kit $Str.temp not found")
+      return false
+    }
+
+    return true
+  }
+
+
+////////////////////////////////////////////////////////////////
+// Actions
+////////////////////////////////////////////////////////////////
+
+  **
+  ** Load the application from persistent storage
+  **
+  int load()
+  {
+    // Read app from file and create objects
+    if (!file.open("r")) return Err.cannotOpenFile
+    int r = loadApp(file.in)
+    file.close()
+    return r
+  }
+
+  **
+  ** Save the application back to persistent storage
+  **
+  action void save()
+  {
+    if (file.open("w"))
+    {
+      int r = saveApp(file.out)
+      file.close()
+      if (r == 0)
+        log.message("saved (${file.size()} bytes)")
+      else
+        log.error("save failed")
+    }
+  }
+
+  **
+  ** Action to request hibernation.  Current execute loop will
+  ** complete and all services will get a chance to work before
+  ** hibernation occurs
+  **
+  @confirmRequired
+  action void hibernate()
+  {
+    runStatus = Err.hibernate;
+  }
+
+  **
+  ** Save the application and then exit the main loop.
+  **
+  @confirmRequired
+  action void quit()
+  {
+    save()
+    running = false
+  }
+
+  **
+  ** Action to invoke Platform.restart.
+  **
+  @confirmRequired
+  action void restart()
+  {
+    platform.restart()
+    running = false
+    runStatus = Err.restart
+  }
+
+  **
+  ** Action to invoke Platform.reboot.
+  **
+  @confirmRequired
+  action void reboot()
+  {
+    platform.reboot()
+  }
+
+
+
+////////////////////////////////////////////////////////////////
+// Properties
+////////////////////////////////////////////////////////////////
+
+  ** Logical name for the device, up to 15 ASCII chars long
+  @config @asStr property Buf(16) deviceName
+
+  ** Name of the app, up to 15 ASCII chars long
+  @config @asStr property Buf(16) appName
+
+  ** Scan cycle period in milliseconds.
+  @unit=Units.millisecond
+  @config property int scanPeriod = 50
+
+  ** Time before the end of the scan period in which no new services work
+  ** should be started in order to allow work in progress to finish before
+  ** the end of scan.
+  @unit=Units.millisecond
+  @config property int guardTime = 5
+
+  ** Time from app start to steady state, in milliseconds.
+  @unit=Units.millisecond
+  @config property int timeToSteadyState = 0
+
+  ** If true, when the App returns from hibernation then the
+  ** steady state will be reset and the App will not return
+  ** to steady state until timeToSteadyState has elapsed.
+  @config property bool hibernationResetsSteadyState = false
+
+////////////////////////////////////////////////////////////////
+// Fields
+////////////////////////////////////////////////////////////////
+
+  ** Application level logging
+  define Log log
+
+  ** List of application component indexed by
+  ** id (may be sparse with null items).
+  Component[] comps
+
+  ** Size of the components array
+  int compsLen
+
+  ** Linked list of services
+  Service services
+
+  ** PlatformService installed in this application
+  PlatformService platform
+
+  ** This counter is incremented at the start of each engine cycle
+  long cycleCount
+
+  ** This array references the active watches by referencing
+  ** the application specific subclasses currently open.
+  inline Watch[Watch.max] watches
+
+  ** Flag to keep executing
+  internal bool running
+
+  ** File for loading and saving application
+  internal inline File file
+
+  ** Status to return from run() method
+  internal byte runStatus = 0
+
+  ** Indicates whether App has reached steady state
+  internal bool atSteadyState = false
+
+  ** Timestamp at which App will be considered steady state
+  internal long steadyAt      = 0L
+
+  //following 4 fields added 2/2/2010 to support AppDbg object
+
+  ** End of previous scan sleep time is also the start of a new component tree execution
+  ** This marks start of he CURRENT scan, such that:
+  **     newStartExec - lastStartExec = scan time of PREVIOUS scan
+  long newStartExec = 0L
+
+  ** Cache of the timestamp of the start of the component tree execution of
+  ** the PREVIOUS scan.  It is intended that that timing statistics to be computed
+  ** within the execute method of a component dropped into the component tree, so
+  ** we need to cache the start of the last component tree execution.  Also marks
+  ** the time that sleep ends on previous scan.
+  **     lastStartWork - lastStartExec = execution time of previous scan
+  long lastStartExec = 0L
+
+  ** Timestamp of start of service work (also marks the end of component tree execution). If
+  ** timing statistics computed during component tree execution, this timestamp
+  ** corresponds to the PREVIOUS scan.
+  **     lastEndWork - lastStartWork = work time of previous scan
+  long lastStartWork = 0L
+
+  ** Timestamp of end of service's work (also start of sleep time).  This timestamp
+  ** corresponds to the PREVIOUS scan.
+  **     lastEndWork - lastStartWork = work time of previous scan
+  long lastEndWork   = 0L
+
+
+  // Kit IDs are assigned at build time; if app schema is subset of scode's then the
+  // IDs may not match even though schemas are compatible.  This array maps app kit IDs 
+  // to scode kit IDs.  (created in loadSchema, used in loadApp)
+  int[] kitIdMap = null
+
+}

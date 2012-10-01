@@ -1,0 +1,159 @@
+//
+// Copyright (c) 2011 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   09 Jan 12  Elizabeth McKenney  Creation
+//
+
+**
+** PrioBoolTest
+**
+class PrioBoolTest
+  extends Test
+{
+  static inline PrioritizedBool  b
+
+
+  //
+  // Adapted from ControlTest.verifyPriorityAlgorithm()
+  //
+  static void test()
+  {
+    //Sys.out.print("Check value of PrioritizedBool.NULLVAL = ${PrioritizedBool.NULLVAL}\n")
+
+    ////////////////////////////////////////////////////////////////
+    // Initial values
+    ////////////////////////////////////////////////////////////////
+
+    // Check output & sourceLevel for defaults
+    b.execute()
+    assert(b.out==PrioritizedBool.NULLVAL)            // property should be init to null??
+    assert(b.sourceLevel==Prioritized.FB_LEVEL)   // init level is FB_LEVEL
+
+
+    ////////////////////////////////////////////////////////////////
+    // Direct setting of input properties
+    ////////////////////////////////////////////////////////////////
+
+    // Set in1 directly
+    b.in1 := true 
+    b.execute()
+    assert(b.out==true)
+    assert(b.sourceLevel==1)
+
+    // Relinquish in1 
+    b.setToDefault(PrioritizedBool.in1)
+    b.execute()
+    assert(b.out==PrioritizedBool.NULLVAL)
+    assert(b.sourceLevel==Prioritized.FB_LEVEL)
+
+    // Set in16 directly
+    b.in16 := false 
+    b.execute()
+    assert(b.out==false)
+    assert(b.sourceLevel==16)
+
+    // Set in9 directly
+    b.in9 := true 
+    b.execute()
+    assert(b.out==true)
+    assert(b.sourceLevel==9)
+
+    // Relinquish in9 
+    b.setToDefault(PrioritizedBool.in9)
+    b.execute()
+    assert(b.out==false)
+    assert(b.sourceLevel==16)
+
+    // Relinquish in16 
+    b.setToDefault(PrioritizedBool.in16)
+    b.execute()
+    assert(b.out==PrioritizedBool.NULLVAL)
+    assert(b.sourceLevel==Prioritized.FB_LEVEL)
+
+
+    ////////////////////////////////////////////////////////////////
+    // Actions
+    ////////////////////////////////////////////////////////////////
+
+    // Test emergency set actions
+    b.emergencySetActive()
+    b.execute()
+    assert(b.out==true)
+    assert(b.sourceLevel==1)
+
+    b.emergencySetInactive()
+    b.execute()
+    assert(b.out==false)
+    assert(b.sourceLevel==1)
+
+    // Test emergency auto action
+    b.emergencyAuto()
+    b.execute()
+    assert(b.out==PrioritizedBool.NULLVAL)
+    assert(b.sourceLevel==Prioritized.FB_LEVEL)
+
+
+    // Test manual set active with 1sec expiration
+    verifyManualSet(true, 1000)
+    // Test manual set active with no expiration
+    verifyManualSet(true, 0)
+    // Test manual set inactive with 1sec expiration
+    verifyManualSet(false, 1000)
+    // Test manual set inactive with no expiration
+    verifyManualSet(false, 0)
+  }
+
+
+
+  //
+  // Test manual set and duration
+  //
+  static void verifyManualSet(bool bSetActive, int dur)
+  {
+    Sys.out.print("  Testing manual set ")
+    Sys.out.print(bSetActive?"active":"inactive")
+    if (dur==0) Sys.out.print(" ended by manualAuto action\n")
+    else Sys.out.print(" for $dur ms\n")
+
+    if (bSetActive)
+      b.manualSetActive(dur)
+    else
+      b.manualSetInactive(dur)
+
+    // Verify action succeeded
+    b.execute()
+    assert(b.out==bSetActive)
+    assert(b.sourceLevel==8)
+
+    // Verify correct value for duration (or 2sec if Permanent)
+    long expTime 
+    if (dur==0) 
+      expTime = Sys.ticks() + 2sec
+    else
+      expTime = b.overrideExpTime
+
+    while (Sys.ticks() <= expTime)
+    {
+      b.execute()
+      assert(b.out==bSetActive)
+      assert(b.sourceLevel==8)
+      Sys.sleep(100ms)
+    }
+
+    // If duration is Permanent, use manualAuto action to end immediately
+    if (dur==0) b.manualAuto()
+
+    // Call execute() once more to propagate state to output
+    b.execute()
+
+    // Either way, should be done now
+    //Sys.out.print("After loop, out = ${b.out} (should be ${PrioritizedBool.NULLVAL})\n")
+    assert(b.out==PrioritizedBool.NULLVAL)
+    assert(b.sourceLevel==Prioritized.FB_LEVEL)
+  }
+
+
+
+}

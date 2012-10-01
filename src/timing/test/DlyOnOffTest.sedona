@@ -1,0 +1,74 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   17 May 07  Andy Sunders  Creation
+//
+
+**
+** DlyOnOffTest
+**
+class DlyOnOffTest
+  extends Test
+{
+  //
+  // Test each component separately to avoid race conditions in test
+  //
+  static inline DlyOn dlyOn
+  static inline DlyOff dlyOff
+
+  static void test()
+  {
+    long startTicks = 0L
+
+    // Not run in app context, so we need to call start() explicitly
+    dlyOn.start()
+
+    // Set delay to 1 sec
+    dlyOn.delayTime := 1.0
+
+    // Set input to untriggered value & verify output remains untriggered
+    dlyOn.in := false
+    dlyOn.execute()
+    assert(dlyOn.out == false)
+
+    // Change input & loop until output changes, then 
+    // check to make sure it didn't trigger early
+    dlyOn.in := true
+
+    startTicks = Sys.ticks()
+    dlyOn.execute()
+
+    while (dlyOn.out == false)
+      dlyOn.execute()
+
+    assert(Sys.ticks()-startTicks >= 1sec)
+
+
+    //
+    // Now repeat the test for dlyOff
+    //
+    dlyOff.start()
+    dlyOff.delayTime := 1.0
+
+    // Set input to triggered value & verify output remains triggered
+    dlyOff.in := true
+    dlyOff.execute()
+    assert(dlyOff.out == true)
+
+    // Change input & loop until output changes, then 
+    // check to make sure it didn't trigger early
+    dlyOff.in := false
+
+    startTicks = Sys.ticks()
+    dlyOff.execute()
+
+    while (dlyOff.out == true)
+      dlyOff.execute()
+
+    assert(Sys.ticks()-startTicks >= 1sec)
+  }
+
+
+}

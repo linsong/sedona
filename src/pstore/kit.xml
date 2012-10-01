@@ -1,0 +1,23 @@
+<!--
+  -  Sedona Kit
+  -  Copyright (c) 2009 Tridium, Inc.
+  -  Licensed under the Academic Free License version 3.0
+  -->
+
+<sedonaKit
+ name = "pstore"
+ vendor = "Tridium"
+ description = "Persistent random access, block storage for app data"
+ includeSource = "true"
+ doc = "true"
+>
+
+  <!-- Dependencies -->
+  <depend on="sys 1.2+"  />
+
+  <!-- Source Directories -->
+  <source dir="."/>
+  <source dir="test" testonly="true" />
+
+</sedonaKit>
+

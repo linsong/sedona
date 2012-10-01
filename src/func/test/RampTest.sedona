@@ -1,0 +1,185 @@
+//
+// Copyright (c) 2011 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   08 Dec 11  Elizabeth McKenney  Creation
+//
+
+**
+** RampTest
+**
+class RampTest
+  extends Test
+{
+  static inline Ramp  r
+  static inline IRamp ir
+
+  define int MAXTESTPTS = 100
+  static inline float[MAXTESTPTS] signal
+  static inline long[MAXTESTPTS]  tsig
+  
+ 
+  static void test()
+  {
+    float margin = 0.05f
+
+    // Ramp produces triangle or sawtooth; float output; fixed delta; set period in seconds
+    r.min := 12f
+    r.max := 24f
+    r.period := 1f
+
+    r.rampType := Ramp.TRIANGLE   // triangle
+    valueChk(12f, 1000ms, margin)
+    valueChk(18f, 1250ms, margin)
+    valueChk(24f, 1500ms, margin)
+    valueChk(18f, 1750ms, margin)
+    valueChk(12f, 2000ms, margin)
+
+    r.rampType := Ramp.SAWTOOTH   // sawtooth
+    valueChk(12f, 1000ms, margin)
+    valueChk(15f, 1250ms, margin)
+    valueChk(18f, 1500ms, margin)
+    valueChk(21f, 1750ms, margin)
+    valueChk(24f, 1980ms, margin)
+
+    r.min := 12f
+    r.max := 24f
+    r.period := 2f
+
+    r.rampType := Ramp.TRIANGLE   // triangle
+    valueChk(15f, 250ms, margin)
+    valueChk(18f, 500ms, margin)
+    valueChk(21f, 750ms, margin)
+    valueChk(24f, 1000ms, margin)
+    valueChk(12f, 2000ms, margin)
+
+    r.rampType := Ramp.SAWTOOTH   // sawtooth
+    valueChk(13.5f, 250ms, margin)
+    valueChk(15f, 500ms, margin)
+    valueChk(16.5f, 750ms, margin)
+    valueChk(18f, 1000ms, margin)
+    valueChk(24f, 1980ms, margin)
+
+
+
+    // IRamp produces triangle only; int output; prop delta (int); set change time in seconds
+    ir.min := 12
+    ir.max := 24
+    ir.delta := 2
+    ir.secs  := 1L
+    IwaveChk(14, 500ms)   // very first call to execute ALWAYS increments
+    IwaveChk(14, 1sec)
+    IwaveChk(16, 1500ms)
+    IwaveChk(18, 2500ms)
+
+    ir.delta := 3
+    ir.secs  := 2L
+    IwaveChk(15, 500ms)   // very first call to execute ALWAYS increments
+    IwaveChk(15, 2sec)
+    IwaveChk(18, 2500ms)
+
+  }
+
+
+  //
+  // From beginning of waveform, wait 'dur' nanos and then check output
+  //
+  static void valueChk(float x, long dur, float margin)
+  {
+    Str rtype = r.rampType==Ramp.SAWTOOTH?"SAWTOOTH":"TRIANGLE"
+    float pdur  = (float)dur / (float)1sec
+
+    long pd = (long)r.period*1sec
+
+    // Margin (how close does it need to be?)
+    float e = (r.max - r.min) * margin
+
+    // How often to check for start of waveform (need to get pretty close for test to work)
+    long ivl = pd / 1000L
+    
+    r.execute()
+
+    float amin = r.out
+    float amax = r.out
+
+    Sys.out.print("  Scanning....")
+
+    // Wait for beginning of waveform (time out after 2 cycles)
+    long now  = Sys.ticks()
+    long fail = now + pd*2L
+
+    while ( !approx(r.out, r.min, e) && (now < fail) )
+    {
+      if (r.out<amin) amin = r.out
+      if (r.out>amax) amax = r.out
+
+      long sleepTill = now + ivl
+      while (now<sleepTill) now = Sys.ticks()
+      r.execute()
+    }
+
+    // Fail if we timed out (and skip rest of test)
+    assert( now < fail )
+    if (now>fail) 
+    {
+      Sys.out.print("  RampTest failed to find start of cycle (min=$amin, max=$amax)\n")
+      return
+    }
+
+    Sys.out.print("  $rtype, $pdur sec test\n")
+
+    // OK if we got here, we're at the beginning of the waveform (approx)
+    long snap = now + dur
+
+    while (now<snap) now = Sys.ticks()
+
+    r.execute()
+      
+    //Sys.out.print("    Comparing out=$r.out to x=$x (e=$e)\n")
+    assert( approx(r.out, x, e) )
+  }
+
+
+
+
+  //
+  // From beginning of waveform, waits 'dur' nanos and then checks output
+  //
+  static void IwaveChk(int x, long dur)
+  {
+    Sys.out.print("  IRamp: ${(float)dur / (float)1sec} sec test\n")
+
+    long pd = ir.secs*1sec
+
+    // Reset to beginning of waveform
+    ir.start()
+
+    // IRamp is time-based but incremental, so we can't just spin until time is up
+    long now = Sys.ticks()
+    long end = now + dur
+    while (now<end) 
+    {
+      long pdEnd = now + pd
+      while (now<pdEnd) now = Sys.ticks()
+      ir.execute()
+      now = Sys.ticks()
+    }
+
+    //Sys.out.print(" IwaveChk: o = ${ir.out}, expected $x\n")
+
+    assert( ir.out == x )
+  }
+
+
+  //
+  // True if values are "nearly" equal
+  //
+  static bool approx(float x, float v, float epsilon)
+  {
+    //Sys.out.print("  Comparing x=$x to v=$v (e=$epsilon)\n")
+    return (x > v-epsilon) && (x < v+epsilon) 
+  }
+
+
+}
