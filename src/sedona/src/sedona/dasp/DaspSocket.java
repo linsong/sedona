@@ -139,7 +139,7 @@ public class DaspSocket
     }
 
     if (routefaces.isEmpty()) 
-      throw new IllegalStateException(" no interfaces to send Discover request"); 
+      throw new IllegalStateException(" no interfaces for addr, port"); 
 
     return (DaspSocketInterface[])routefaces.toArray(new DaspSocketInterface[0]);
   }
@@ -427,7 +427,7 @@ public class DaspSocket
 
 
 ////////////////////////////////////////////////////////////////
-// IO Hooks
+// Discovery
 ////////////////////////////////////////////////////////////////
   
   /**
@@ -437,24 +437,34 @@ public class DaspSocket
   {
     return (DiscoveredNode[])discovered.toArray(new DiscoveredNode[0]);
   }
+  
+  /**
+   * Get the InetAddress to use for discovery.
+   * @param useIPv6
+   * @return
+   */
+  protected InetAddress getDiscoveryAddress(boolean useIPv6)
+  {
+    String addrstr = useIPv6 ? DaspConst.IPv6_MULTICAST_ADDR : DaspConst.IPv4_MULTICAST_ADDR;
+    try
+    {
+      return InetAddress.getByName(addrstr);
+    }
+    catch (UnknownHostException e)
+    { 
+      System.out.println("ERROR Creating multicast address (" + addrstr + "): " + e.getMessage());
+      e.printStackTrace();
+      return null;
+    }
+  }
 
   /**
    * Send device discovery multicast msg
    */                         
   public void discover(int port, boolean useIPv6)
   {
-    InetAddress mcaddr;
-    String addrstr = useIPv6 ? DaspConst.IPv6_MULTICAST_ADDR : DaspConst.IPv4_MULTICAST_ADDR;
-    try
-    {
-      mcaddr = InetAddress.getByName(addrstr);
-    }
-    catch (UnknownHostException e)
-    { 
-      System.out.println("ERROR Creating multicast address (" + addrstr + "): " + e.getMessage());
-      e.printStackTrace();
-      return;
-    }
+    InetAddress mcaddr = getDiscoveryAddress(useIPv6);
+    if (mcaddr == null) return;
 
     // Clear list of discovered nodes (create if necessary)
     if (discovered==null) discovered = new ArrayList();
@@ -481,6 +491,7 @@ public class DaspSocket
       System.out.println(" === Found " + iface.length + " interfaces for discover multicast");
       for (int i=0; i<iface.length; i++)
       {
+        System.out.println(" Sending discover on interface "+iface[i]);
         iface[i].send(dgPacket);
       }
     }
@@ -493,6 +504,11 @@ public class DaspSocket
       }
     }
   }
+
+
+////////////////////////////////////////////////////////////////
+// IO Hooks
+////////////////////////////////////////////////////////////////
 
   /**
    * All sends route thru here, except Discovery
