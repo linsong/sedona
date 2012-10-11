@@ -43,7 +43,7 @@ class Ramp
 
   ** Specifies whether ramp is sawtooth (min to max and repeat), or
   ** triangle (min to max/max to min and repeat)
-  ** Defaults to sawtooth.
+  ** Defaults to triangle.
   @trueText="triangle"
   @falseText="sawtooth"
   @config property bool rampType = TRIANGLE
