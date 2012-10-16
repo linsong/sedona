@@ -54,7 +54,7 @@ class Ramp
   **
   virtual override void start()
   {
-    periodInNanos = (long)period * 1sec
+    periodInNanos = (long)(period * (float)1sec)
     range = max - min
   }
  
@@ -66,7 +66,7 @@ class Ramp
     super.changed(slot)
 
     if (slot == Ramp.period)
-      periodInNanos = (long)period * 1sec
+      periodInNanos = (long)(period * (float)1sec)
 
     if ((slot == Ramp.min) || (slot == Ramp.max))
       range = max - min

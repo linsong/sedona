@@ -82,36 +82,33 @@ class RampTest
     long ivl = (long)r.period*1sec / (long)nsamps 
 
     // Sample waveform over one period
-    long now = Sys.ticks()
     for (int t=0; t<nsamps; t++)
     {
-      long sleepTill = now + ivl
-      while (now<sleepTill) now = Sys.ticks()
+      Sys.sleep(ivl)
       r.execute()
       signal[t] = r.out
-      tsig[t]   = now
+      tsig[t]   = Sys.ticks()      //+ 365days   // add 1 yr to test larger timestamp
     }
 
     // Compare each sampled value to expected value based on timestamp
     for (int t=0; t<nsamps; t++)
     {
-      float tsec = (float)tsig[t] / (float)1sec
-      float cval = calcValue(r, tsec)
+      float cval  = calcValue(r, tsig[t])
 
       // Check for special fencepost case in sawtooth, where sample is
-      // approx(min) and calc value is approx(max)
+      // approx(max) and calc value is approx(min)
       if (r.rampType==Ramp.SAWTOOTH)
       {
         if ( approx(signal[t], r.max, e/2.0) && approx(cval, r.min, e/2.0) )
         {
-          Sys.out.print("    Allowing: ${signal[t]} != $cval (e=$e)\n")
+          Sys.out.print("    Allowing: ${signal[t]} != $cval   t=${tsig[t]}\n")
           continue
         }
       }
 
       // Print useful info on failure
       bool enuf = approx(signal[t], cval, e)
-      if (!enuf) Sys.out.print("    Failed: ${signal[t]} != $cval (e=$e)\n")
+      if (!enuf) Sys.out.print("    Failed: ${signal[t]} != $cval   t=${tsig[t]}\n")
       assert( enuf )
     }
 
@@ -121,12 +118,14 @@ class RampTest
   //
   // Calculating expected ramp value based on given timestamp in seconds.
   // 
-  static float calcValue(Ramp r, float tsec)
+  static float calcValue(Ramp r, long ts)
   {
-    // Calc current position in cycle
-    int secThisCycle = (int)(tsec / r.period)
-    float fracOfCycle = tsec / r.period - (float)secThisCycle
     float range = r.max - r.min
+    long  periodInNanos = (long)r.period * 1sec
+
+    // Calc current position in cycle
+    long  ticksThisCycle = ts % periodInNanos
+    float fracOfCycle    = (float)ticksThisCycle / (float)periodInNanos
 
     if (r.rampType==Ramp.TRIANGLE)
     {

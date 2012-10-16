@@ -72,7 +72,7 @@ class TimerTest
     }
 
     stoptime = Sys.ticks() + duration
-    fleft    = (float)duration / (float)1sec
+    fleft    = (float)((double)duration / (double)1sec)
 
     doCycle("start", which!=NONE)
 
@@ -88,7 +88,7 @@ class TimerTest
       if (which==ENB_OFF)  t.run := false
 
       stoptime = Sys.ticks() + duration
-      fleft    = (float)duration / (float)1sec
+      fleft    = (float)((double)duration / (double)1sec)
 
       doCycle("start", false)
 
