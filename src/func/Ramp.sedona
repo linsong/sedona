@@ -43,7 +43,7 @@ class Ramp
 
   ** Specifies whether ramp is sawtooth (min to max and repeat), or
   ** triangle (min to max/max to min and repeat)
-  ** Defaults to sawtooth.
+  ** Defaults to triangle.
   @trueText="triangle"
   @falseText="sawtooth"
   @config property bool rampType = TRIANGLE
@@ -54,7 +54,7 @@ class Ramp
   **
   virtual override void start()
   {
-    periodInNanos = (long)period * 1sec
+    periodInNanos = (long)(period * (float)1sec)
     range = max - min
   }
  
@@ -66,7 +66,7 @@ class Ramp
     super.changed(slot)
 
     if (slot == Ramp.period)
-      periodInNanos = (long)period * 1sec
+      periodInNanos = (long)(period * (float)1sec)
 
     if ((slot == Ramp.min) || (slot == Ramp.max))
       range = max - min

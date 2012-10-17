@@ -15,52 +15,35 @@ class RampTest
   static inline Ramp  r
   static inline IRamp ir
 
-  define int MAXTESTPTS = 100
-  static inline float[MAXTESTPTS] signal
-  static inline long[MAXTESTPTS]  tsig
+  define int MAXTESTPTS = 100 
+  static inline float[MAXTESTPTS] signal      // waveform sample
+  static inline  long[MAXTESTPTS] tsig        // timestamp at time of sample (in ticks)
   
  
   static void test()
   {
     float margin = 0.05f
 
-    // Ramp produces triangle or sawtooth; float output; fixed delta; set period in seconds
+    // Ramp produces triangle or sawtooth; float output; set period in seconds
     r.min := 12f
     r.max := 24f
     r.period := 1f
 
     r.rampType := Ramp.TRIANGLE   // triangle
-    valueChk(12f, 1000ms, margin)
-    valueChk(18f, 1250ms, margin)
-    valueChk(24f, 1500ms, margin)
-    valueChk(18f, 1750ms, margin)
-    valueChk(12f, 2000ms, margin)
+    analyze(r, MAXTESTPTS, margin)
 
     r.rampType := Ramp.SAWTOOTH   // sawtooth
-    valueChk(12f, 1000ms, margin)
-    valueChk(15f, 1250ms, margin)
-    valueChk(18f, 1500ms, margin)
-    valueChk(21f, 1750ms, margin)
-    valueChk(24f, 1980ms, margin)
+    analyze(r, MAXTESTPTS, margin)
 
     r.min := 12f
     r.max := 24f
     r.period := 2f
 
     r.rampType := Ramp.TRIANGLE   // triangle
-    valueChk(15f, 250ms, margin)
-    valueChk(18f, 500ms, margin)
-    valueChk(21f, 750ms, margin)
-    valueChk(24f, 1000ms, margin)
-    valueChk(12f, 2000ms, margin)
+    analyze(r, MAXTESTPTS, margin)
 
     r.rampType := Ramp.SAWTOOTH   // sawtooth
-    valueChk(13.5f, 250ms, margin)
-    valueChk(15f, 500ms, margin)
-    valueChk(16.5f, 750ms, margin)
-    valueChk(18f, 1000ms, margin)
-    valueChk(24f, 1980ms, margin)
-
+    analyze(r, MAXTESTPTS, margin)
 
 
     // IRamp produces triangle only; int output; prop delta (int); set change time in seconds
@@ -83,63 +66,76 @@ class RampTest
 
 
   //
-  // From beginning of waveform, wait 'dur' nanos and then check output
+  // Analyze entire period of waveform
   //
-  static void valueChk(float x, long dur, float margin)
+  static void analyze(Ramp r, int nsamps, float margin)
   {
     Str rtype = r.rampType==Ramp.SAWTOOTH?"SAWTOOTH":"TRIANGLE"
-    float pdur  = (float)dur / (float)1sec
+    Sys.out.print("  $rtype, $r.period sec test\n")
 
-    long pd = (long)r.period*1sec
+    assert(nsamps<=MAXTESTPTS)
 
     // Margin (how close does it need to be?)
     float e = (r.max - r.min) * margin
 
-    // How often to check for start of waveform (need to get pretty close for test to work)
-    long ivl = pd / 1000L
-    
-    r.execute()
+    // How often to sample (in time ticks)
+    long ivl = (long)r.period*1sec / (long)nsamps 
 
-    float amin = r.out
-    float amax = r.out
-
-    Sys.out.print("  Scanning....")
-
-    // Wait for beginning of waveform (time out after 2 cycles)
-    long now  = Sys.ticks()
-    long fail = now + pd*2L
-
-    while ( !approx(r.out, r.min, e) && (now < fail) )
+    // Sample waveform over one period
+    for (int t=0; t<nsamps; t++)
     {
-      if (r.out<amin) amin = r.out
-      if (r.out>amax) amax = r.out
-
-      long sleepTill = now + ivl
-      while (now<sleepTill) now = Sys.ticks()
+      Sys.sleep(ivl)
       r.execute()
+      signal[t] = r.out
+      tsig[t]   = Sys.ticks()      //+ 365days   // add 1 yr to test larger timestamp
     }
 
-    // Fail if we timed out (and skip rest of test)
-    assert( now < fail )
-    if (now>fail) 
+    // Compare each sampled value to expected value based on timestamp
+    for (int t=0; t<nsamps; t++)
     {
-      Sys.out.print("  RampTest failed to find start of cycle (min=$amin, max=$amax)\n")
-      return
+      float cval  = calcValue(r, tsig[t])
+
+      // Check for special fencepost case in sawtooth, where sample is
+      // approx(max) and calc value is approx(min)
+      if (r.rampType==Ramp.SAWTOOTH)
+      {
+        if ( approx(signal[t], r.max, e/2.0) && approx(cval, r.min, e/2.0) )
+        {
+          Sys.out.print("    Allowing: ${signal[t]} != $cval   t=${tsig[t]}\n")
+          continue
+        }
+      }
+
+      // Print useful info on failure
+      bool enuf = approx(signal[t], cval, e)
+      if (!enuf) Sys.out.print("    Failed: ${signal[t]} != $cval   t=${tsig[t]}\n")
+      assert( enuf )
     }
 
-    Sys.out.print("  $rtype, $pdur sec test\n")
-
-    // OK if we got here, we're at the beginning of the waveform (approx)
-    long snap = now + dur
-
-    while (now<snap) now = Sys.ticks()
-
-    r.execute()
-      
-    //Sys.out.print("    Comparing out=$r.out to x=$x (e=$e)\n")
-    assert( approx(r.out, x, e) )
   }
 
+
+  //
+  // Calculating expected ramp value based on given timestamp in seconds.
+  // 
+  static float calcValue(Ramp r, long ts)
+  {
+    float range = r.max - r.min
+    long  periodInNanos = (long)r.period * 1sec
+
+    // Calc current position in cycle
+    long  ticksThisCycle = ts % periodInNanos
+    float fracOfCycle    = (float)ticksThisCycle / (float)periodInNanos
+
+    if (r.rampType==Ramp.TRIANGLE)
+    {
+      if (fracOfCycle > 0.5)
+        fracOfCycle = 1.0 - fracOfCycle
+      fracOfCycle *= 2.0
+    }
+
+    return fracOfCycle * range + r.min
+  }
 
 
 
@@ -177,7 +173,6 @@ class RampTest
   //
   static bool approx(float x, float v, float epsilon)
   {
-    //Sys.out.print("  Comparing x=$x to v=$v (e=$epsilon)\n")
     return (x > v-epsilon) && (x < v+epsilon) 
   }
 
