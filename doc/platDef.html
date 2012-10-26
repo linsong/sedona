@@ -156,14 +156,25 @@ The following is an example platform definition file for a win32 platform.
   a PAR file. For this reason, it is better to try and specify an id variable
   pattern in your platform definition.</p>
 
-  <p>This attribute supports <a href="sedonac.html#variables">variable
-  substitution</a>. <code>sedonac</code> will define the following variables for use
-  when compiling a platform definition:</p>
+  <p>This attribute supports <a href="sedonac.html#variables">variable substitution</a>. 
+  There are a number of variables that <code>sedonac</code> will recognize when compiling 
+  a platform definition.  These two are the most commonly used:</p>
   <ul>
-    <li><code>${stage.nativeChecksum}</code>: <code>sedonac</code> will calculate a
+    <li>
+    <b>${stage.nativeChecksum}</b>: <code>sedonac</code> will calculate a
     native checksum for all native methods that are supported by this platform
-    SVM. This variable represents that checksum value.</li>
+    SVM. This variable represents that checksum value.
+    </li>
+    <br>
+    <li>
+    <b>${sedona.env.version}</b>: <code>sedonac</code> will look up the
+    value of the environment variable <code>sedona.env.version</code> and substitute
+    it wherever it occurs in the platform definition XML.
+    </li>
   </ul>
+
+  <p>See the section on <a href="sedonac.html#variables">Variable Substitution</a> 
+  for other variables <code>sedonac</code> will recognize.</p>
   </li>
 </ul>
 
