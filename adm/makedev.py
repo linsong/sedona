@@ -21,23 +21,31 @@ import makewinvm
 import compilekit
 import argparse
 
+# Default app & scode files, assumed to be in <sedona>/apps and <sedona>/scode
+defaultapp   = "test.sax"
+defaultscode = "x86-test.xml"
+
+
 # initParser
 def initParser():
   global parser
   parser = argparse.ArgumentParser(description='Build and run Sedona VM for Windows')
 
   parser.add_argument('-v', '--version', action='store', default=env.buildVersion(), 
-                             help='Set SVM version string to VERSION', metavar="VERSION")
-  parser.add_argument('-t', '--test', action='append', help='Run the specified test',
+                             help='Set SVM version string to VER', metavar="VER")
+  parser.add_argument('-t', '--test', action='append', 
+                             help='Run specified test (default is all)',
                              default=['all'], choices=['sedonac', 'svm', 'all', 'none'], 
                              metavar="TEST")
   parser.add_argument('-r', '--run', action='store_true', default=False,
                              help='Run an app after building')
-  parser.add_argument('-a', '--app', action='store', help='Specify app (.sax) to run',
-                             default=os.path.join(env.apps, "test.sax"), metavar="APP")
-  parser.add_argument('-s', '--scode', action='store', help='Specify the scode (.xml) to run',
-                             default=os.path.join(env.scode, "x86-test.xml"), 
-                             metavar="SCODE")
+  parser.add_argument('-a', '--app', action='store', 
+                             help='Specify app SAX to run (default is %s)' % defaultapp,
+                             default=os.path.join(env.apps, defaultapp), metavar="SAX")
+  parser.add_argument('-s', '--scode', action='store', 
+                             help='Specify scode XML to run (default is %s)' % defaultscode,
+                             default=os.path.join(env.scode, defaultscode), 
+                             metavar="XML")
 
 
 # Main
@@ -49,11 +57,11 @@ if __name__ == '__main__':
   options = parser.parse_args()
 
   # Print options
-  print 'options.version = ', options.version
-  print 'options.test    = ', options.test
-  print 'options.run     = ', options.run
-  print 'options.scode   = ', options.scode
-  print 'options.app     = ', options.app
+  #print 'options.version = ', options.version
+  #print 'options.test    = ', options.test
+  #print 'options.run     = ', options.run
+  #print 'options.scode   = ', options.scode
+  #print 'options.app     = ', options.app
 
   scodefile = os.path.splitext(options.scode)[0] + '.scode'
   sabfile   = os.path.splitext(options.app)[0]   + '.sab'
@@ -68,8 +76,8 @@ if __name__ == '__main__':
       run_sc = False
       run_sv = False
 
-    if run_sc: print '  Running sedonac tests'
-    if run_sv: print '  Running svm tests'
+    if not run_sc: print '  Skipping sedonac tests'
+    if not run_sv: print '  Skipping svm tests'
 
   # Make sure OS is Windows
   if os.name != "nt":
