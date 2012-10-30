@@ -294,13 +294,6 @@ ASCII characters (clear high bit) for future UTF-8 and Unicode support.
 </p>
 
 <p>
-The internal representation of a Str differs between the SVM and the
-Java VM.  For the most part the Str APIs hide any storage differences between
-the SVM and JVM platforms.  But it helps to know what is going on under
-the covers:
-</p>
-
-<p>
 In the SVM, the <code>Str</code> class makes use of the
 <a href="arrays.html#unsizedClasses">unsized class</a> feature such that
 it contains a variable length, inline <code>byte[]</code>.  No other fields
@@ -308,13 +301,6 @@ are declared, which means that an instance of <code>Str</code> is stored
 in memory just like a <code>byte[]</code>.  You can also treat a <code>Str</code>
 reference as a normal C string (<code>char*</code>) when writing your
 <a href="nativeMethods.html">native methods</a>.
-</p>
-
-<p>
-On the Java VM, Str is represented by the <code>sedona.vm.StrRef</code> class
-that encapsulates a reference to a <code>byte[]</code> and an offset
-into that byte array.  This allows the simulation of "pointer arithmetic" when
-parsing strings out of static buffers.
 </p>
 
 <p>

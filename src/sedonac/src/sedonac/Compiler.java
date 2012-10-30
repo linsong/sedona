@@ -183,7 +183,7 @@ public class Compiler
     new Assemble(this).run();
     new FieldLayout(this).run();
     new BuildManifest(this).run();
-    new AssembleJava(this).run();
+    //new AssembleJava(this).run();
     new OptimizeIr(this).run();
     new WriteKit(this).run();
     new WriteDoc(this).run(); 

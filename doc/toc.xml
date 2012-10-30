@@ -42,7 +42,6 @@
 </section>
 
 <section name="Development">
-  <chapter name="Java VM" href="jvm.html" blurb="running Sedona on the Java VM"/>
   <chapter name="Testing" href="testing.html" blurb="how to use Sedona's built-in test harness"/>
   <chapter name="Porting" href="porting.html" blurb="how to port the VM to new platforms"/>
   <chapter name="Sedonac" href="sedonac.html" blurb="command line sedonac tool"/>
