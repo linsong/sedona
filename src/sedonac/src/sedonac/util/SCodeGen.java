@@ -6,6 +6,8 @@
 //   13 Feb 07  Brian Frank  Creation
 //
 
+package sedonac.util;
+
 import java.io.*;
 import java.util.*;
 
