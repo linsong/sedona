@@ -22,7 +22,6 @@ packages = [
   "sedonac.ast",
   "sedonac.gen",
   "sedonac.ir",
-  "sedonac.jasm",
   "sedonac.namespace",
   "sedonac.parser",
   "sedonac.platform",

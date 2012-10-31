@@ -31,7 +31,6 @@ import sedonac.SourceFile;
 import sedonac.ir.IrKit;
 import sedonac.ir.IrType;
 import sedonac.ir.IrWriter;
-import sedonac.jasm.JavaClass;
 
 
 /**
@@ -92,11 +91,6 @@ public class WriteKit
       for (int i=0; i<kit.types.length; ++i)
         writeType(zout, kit.types[i]);
 
-      // Java bytecode files
-      if (compiler.java!=null)
-        for (int i=0; i<compiler.java.length; ++i)
-          writeJava(zout, compiler.java[i]);
-
       // write source
       if (compiler.ast.includeSource)
         writeSource(zout);
@@ -127,14 +121,6 @@ public class WriteKit
     IrWriter out = new IrWriter(zout);
     out.writeType(t);
     out.flush();
-    zout.closeEntry();
-  }
-
-  private void writeJava(ZipOutputStream zout, JavaClass cls)
-    throws IOException
-  {
-    zout.putNextEntry(new ZipEntry(cls.path()));
-    zout.write(cls.classfile.bytes, 0, cls.classfile.count);
     zout.closeEntry();
   }
 
