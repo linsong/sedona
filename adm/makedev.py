@@ -35,7 +35,7 @@ def initParser():
                              help='Set SVM version string to VER', metavar="VER")
   parser.add_argument('-t', '--test', action='append', 
                              help='Run specified test (default is all)',
-                             default=['all'], choices=['sedonac', 'svm', 'all', 'none'], 
+                             default=None, choices=['sedonac', 'svm', 'all', 'none'], 
                              metavar="TEST")
   parser.add_argument('-r', '--run', action='store_true', default=False,
                              help='Run an app after building')
@@ -57,27 +57,30 @@ if __name__ == '__main__':
   options = parser.parse_args()
 
   # Print options
-  #print 'options.version = ', options.version
-  #print 'options.test    = ', options.test
-  #print 'options.run     = ', options.run
-  #print 'options.scode   = ', options.scode
-  #print 'options.app     = ', options.app
+  print 'options.version = ', options.version
+  print 'options.test    = ', options.test
+  print 'options.run     = ', options.run
+  print 'options.scode   = ', options.scode
+  print 'options.app     = ', options.app
 
   scodefile = os.path.splitext(options.scode)[0] + '.scode'
   sabfile   = os.path.splitext(options.app)[0]   + '.sab'
 
+  # If no test specified, default to 'all'
+  if not options.test: options.test = ['all']
+
   # Figure out which tests to run
-  if options.test:
-    run_sc = options.test.count('sedonac') > 0 or options.test.count('all') > 0 
-    run_sv = options.test.count('svm') > 0     or options.test.count('all') > 0 
+  run_sc = options.test.count('sedonac') > 0 or options.test.count('all') > 0 
+  run_sv = options.test.count('svm') > 0     or options.test.count('all') > 0 
 
-    # Specifying 'none' overrides any other selections
-    if options.test.count('none') > 0:
-      run_sc = False
-      run_sv = False
+  # Specifying 'none' overrides any other selections
+  if options.test.count('none') > 0:
+    run_sc = False
+    run_sv = False
 
-    if not run_sc: print '  Skipping sedonac tests'
-    if not run_sv: print '  Skipping svm tests'
+  if not run_sc: print '  Skipping sedonac tests'
+  if not run_sv: print '  Skipping svm tests'
+
 
   # Make sure OS is Windows
   if os.name != "nt":
