@@ -16,17 +16,17 @@
   <chapter name="Classes" href="classes.html" blurb="class types"/>
   <chapter name="Fields" href="fields.html" blurb="field slots"/>
   <chapter name="Methods" href="methods.html" blurb="method slots"/>
-  <chapter name="Components" href="components.html" blurb="the Sedona component model"/>
-  <chapter name="Reflection" href="reflection.html" blurb="the Sedona reflection APIs"/>
-  <chapter name="Arrays" href="arrays.html" blurb="how Sedona arrays work"/>
+  <chapter name="Components" href="components.html" blurb="the Sedona Framework component model"/>
+  <chapter name="Reflection" href="reflection.html" blurb="the Sedona Framework reflection APIs"/>
+  <chapter name="Arrays" href="arrays.html" blurb="how arrays work"/>
   <chapter name="Memory" href="memory.html" blurb="how memory is laid out and utilized"/>
-  <chapter name="Native Methods" href="nativeMethods.html" blurb="binding Sedona APIs to native implementations written in C"/>
+  <chapter name="Native Methods" href="nativeMethods.html" blurb="binding APIs to native implementations written in C"/>
   <chapter name="Logging" href="logging.html" blurb="how to embed logging into Sedona code"/>
 </section>
 
 <section name="Apps">
-  <chapter name="Apps" href="apps.html" blurb="the Sedona application model"/>
-  <chapter name="Security" href="security.html" blurb="Sedona's security model"/>
+  <chapter name="Apps" href="apps.html" blurb="the Sedona Framework application model"/>
+  <chapter name="Security" href="security.html" blurb="the Sedona Framework's security model"/>
 </section>
 
 <section name="Deployment">
@@ -34,23 +34,22 @@
   <chapter name="Schema" href="schema.html" blurb="manifests: type meta-data and schemas"/>
 </section>
 
-<section name="Sedona Platforms">
+<section name="Sedona Framework Platforms">
   <chapter name="Platform Definition" href="platDef.html" blurb="the platform definition XML file" />
-  <chapter name="Platform Archive" href="par.html" blurb="metadata about a unique Sedona platform" />
+  <chapter name="Platform Archive" href="par.html" blurb="metadata about a unique Sedona Framework platform" />
   <chapter name="Platform Tutorial" href="platTutorial.html" blurb="how to create a Sedona platform" />
-  <chapter name="Sedona Certified Platforms" href="platCertified.html" blurb="creating platforms that pass Sedona certification" />
+  <chapter name="Sedona Framework Certified Platforms" href="platCertified.html" blurb="creating platforms that pass Sedona Framework certification" />
 </section>
 
 <section name="Development">
-  <chapter name="Java VM" href="jvm.html" blurb="running Sedona on the Java VM"/>
-  <chapter name="Testing" href="testing.html" blurb="how to use Sedona's built-in test harness"/>
-  <chapter name="Porting" href="porting.html" blurb="how to port the VM to new platforms"/>
+  <chapter name="Testing" href="testing.html" blurb="how to use the built-in test harness"/>
+  <chapter name="Porting" href="porting.html" blurb="how to port the SVM to new platforms"/>
   <chapter name="Sedonac" href="sedonac.html" blurb="command line sedonac tool"/>
   <chapter name="Niagara AX" href="niagara.html" blurb="how to integrate Sedona components with the Niagara AX Framework"/>
 </section>
 
 <section name="Networking">
-  <chapter name="Networking" href="networking.html" blurb="Overview of network communications in Sedona"/>
+  <chapter name="Networking" href="networking.html" blurb="Overview of network communications"/>
   <chapter name="DASP" href="dasp.html" blurb="Datagram Authenticated Session Protocol"/>
   <chapter name="Sox" href="sox.html" blurb="Sox protocol: provisioning and configuration"/>
 </section>  
@@ -59,7 +58,6 @@
   <chapter name="License" href="license.html" blurb="Academic Free License 3.0"/>
   <chapter name="Conventions" href="conventions.html" blurb="Coding conventions"/>
   <chapter name="SCode Format" href="scodeFormat.html" blurb="reference for scode image binary format"/>
-  <chapter name="Change Log" href="changeLog.html" blurb="history of changes"/>
   <chapter name="Sedona Grammar" href="grammar.html" blurb="Sedona language grammar" />
 </section>
 

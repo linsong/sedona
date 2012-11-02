@@ -14,8 +14,6 @@ import compilewin
 
 
 exeFileA = os.path.join(env.bin, "sedonac.exe")
-exeFileB = os.path.join(env.bin, "soxclient.exe")
-exeFileC = os.path.join(env.bin, "jsvm.exe")
 exeFileD = os.path.join(env.bin, "sedonacert.exe")
 
 srcFiles = [
@@ -32,18 +30,18 @@ libs = [
   "advapi32.lib",
 ]
 
-defsA = [ ('LAUNCHER_MAIN', '\\"sedonac/Main\\"') ]           
-defsB = [ ('LAUNCHER_MAIN', '\\"sedona/sox/Main\\"') ]           
-defsC = [ ('LAUNCHER_MAIN', '\\"sedona/vm/Jsvm\\"') ]           
-defsD = [ ('LAUNCHER_MAIN', '\\"sedonacert/Main\\"') ]           
+
+#
+# Dictionaries of compiler args - may be modified by cmd line
+#
+defsA = { 'LAUNCHER_MAIN':'\\"sedonac/Main\\"' }
+defsD = { 'LAUNCHER_MAIN':'\\"sedonacert/Main\\"' }
 
 
 # Make
 def compile():
   try:
     compilewin.compile(exeFileA, srcFiles, includes, libs, defsA)
-    #compilewin.compile(exeFileB, srcFiles, includes, libs, defsB)
-    compilewin.compile(exeFileC, srcFiles, includes, libs, defsC)
     compilewin.compile(exeFileD, srcFiles, includes, libs, defsD)
   except env.BuildError:
     print "**"

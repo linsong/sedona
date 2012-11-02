@@ -28,10 +28,6 @@ packages = [
   "sedona.util.sedonadev",
   "sedona.web",
   "sedona.xml",
-  "sedona.vm",
-  "sedona.vm.sys",
-  "sedona.vm.inet",
-  "sedona.vm.datetimeStd",
 ]
 
 # Compile

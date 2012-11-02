@@ -21,12 +21,10 @@ import sedonac.ast.KitDef;
 import sedonac.ir.IrFlat;
 import sedonac.ir.IrKit;
 import sedonac.ir.IrMethod;
-import sedonac.jasm.JavaClass;
 import sedonac.namespace.Namespace;
 import sedonac.platform.PlatformDef;
 import sedonac.scode.SCodeImage;
 import sedonac.steps.Assemble;
-import sedonac.steps.AssembleJava;
 import sedonac.steps.AssignSlotIds;
 import sedonac.steps.BuildManifest;
 import sedonac.steps.CheckErrors;
@@ -183,7 +181,6 @@ public class Compiler
     new Assemble(this).run();
     new FieldLayout(this).run();
     new BuildManifest(this).run();
-    new AssembleJava(this).run();
     new OptimizeIr(this).run();
     new WriteKit(this).run();
     new WriteDoc(this).run(); 
@@ -419,7 +416,6 @@ public class Compiler
   public SourceFile[] sourceFiles; // InitKitCompile
   public boolean[] testOnly;       // InitKitCompile
   public IrKit ir;                 // Assemble
-  public JavaClass[] java;         // AssembleJava
   public KitManifest manifest;     // BuildManifest
 
   // compile scode pipeline

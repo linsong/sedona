@@ -19,7 +19,6 @@ import sedona.Double;
 import sedona.Str;
 import sedona.Buf;
 import sedonac.Location;
-import sedonac.jasm.JavaClassAsm;
 import sedonac.namespace.Method;
 import sedonac.namespace.Namespace;
 import sedonac.namespace.Slot;
@@ -788,10 +787,6 @@ public abstract class Expr
       if (!ret.isVoid())
         stack = Math.max(stack, ret.isWide() ? 2 : 1);
       
-      // Java pushes extra Context parameter
-      if (JavaClassAsm.isJavaNative(method)) 
-        stack++;
-
       return stack; 
     }
 

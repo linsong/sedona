@@ -48,9 +48,7 @@ final class BufInStream extends InStream
 
   **
   ** Read the current position as a null terminated
-  ** string.  Return null on error.  The string passed in 
-  ** must be defined as a field (cannot be a local variable) 
-  ** or this call will not work in the Java VM. 
+  ** string.  Return null on error.  
   **
   Str readStrInPlace(Str str)
   {

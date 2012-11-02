@@ -145,10 +145,7 @@ the classes in the kit are checked for validity, and compiled
 into a special format called <i>IR</i> for <i>intermediate
 representation</i>.  The IR format is a text based "assembly
 language".  IR code is portable, which means one kit
-file can be deployed for all platforms.  During this step the compiler
-also generates a Java classfile for each of the Sedona classes,
-which can be run on the <a href='#java'>Java
-VM</a>.
+file can be deployed for all platforms.  
 </p>
 
 <!--/////////////////////////////////////////////////////////-->
@@ -204,37 +201,6 @@ chapter for instructions to get the SVM running on your target
 device.
 </p>
 
-<!--/////////////////////////////////////////////////////////-->
-<h1 id="java">Sedona Framework on the Java VM</h1>
-<!--/////////////////////////////////////////////////////////-->
-
-<p>
-The Sedona Framework may also be run on a Java Virtual Machine.  When Sedona
-source code is compiled into a kit file, the compiler generates
-Java bytecode.  This allows you to use kit files like Java JAR
-files.
-</p>
-
-<p>
-Running on the Java VM has a couple advantages over the SVM.
-First, a Java VM such as HotSpot uses a sophisticated JIT to
-compile and optimize Java bytecode to machine code at runtime.
-This potentially allows Sedona to run much faster on Java.  Another
-advantage is that you can tap into Java ecosystem for tools such
-as debuggers.  You will probably find Java an easier environment
-to use for testing and debugging your code.  Java will enforce
-array bounds checking and give you print stack traces with line
-numbers when exceptions are raised.
-</p>
-
-<p>
-However the resources and cost required to run Sedona Framework applications
-on Java make it an
-unsuitable solution for most embedded devices. Java typically requires
-dozens of megabytes of RAM and depending on the vendor might require a
-runtime license fee.  The SVM is designed to run in as little as a 100KB
-making it ideal for embedded devices.
-</p>
 
 <!--/////////////////////////////////////////////////////////-->
 <h1 id="apps">Sedona Framework Applications</h1>

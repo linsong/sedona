@@ -26,7 +26,6 @@
   <package name="sedonac.platform"  doc="true" src="true" />
   <package name="sedonac.scode"     doc="true" src="true" />
   <package name="sedonac.steps"     doc="true" src="true" />
-  <package name="sedonac.jasm"      doc="true" src="true" />
   <package name="sedonac.test"      doc="true" src="true" />
   <package name="sedonac.translate" doc="true" src="true" />
   <package name="sedonac.util"      doc="true" src="true" />

@@ -79,8 +79,12 @@ def compile(exeFile, srcFiles, includes, libs, defs, opts=[]):
   status = os.system(cmd)
   
   # cleanup      
-  os.system("del *.obj")
-  os.system("del *.tlh")   
+  #os.system("del *.obj")
+  #os.system("del *.tlh")   
+  for f in os.listdir("."):
+    if f.endswith(".obj") or f.endswith(".tlh"):
+      #print " removing %s" % f
+      os.remove(f)
   
   if status:
     raise env.BuildError("FATAL: compilewin " + exeFile)     
