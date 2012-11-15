@@ -97,12 +97,11 @@ def archive():
   xplatform = filter(lambda x:x.nodeName=="platformManifest", xml.dom.minidom.parse(manifest).childNodes)[0]
   platformId = xplatform.getAttribute("platformId")
   
+  # Default outFile, if not specified
   if not outFile:
     outFile = os.path.join(stageDir, "out", platformId+".par")
-  outDir = os.path.dirname(outFile)
-  if os.path.isdir(outDir): shutil.rmtree(outDir)
-  os.makedirs(outDir)
   
+  # Zip it up - the manifest, plus all contents of the svmDir if requested
   zip = zipfile.ZipFile(outFile, "w", zipfile.ZIP_DEFLATED)
   zip.write(manifest, "platformManifest.xml")
   if doSvm and os.path.isdir(svmDir):
