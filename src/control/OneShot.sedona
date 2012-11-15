@@ -1,0 +1,73 @@
+//
+// Copyright (c) 2009-2011 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   22 Apr 2009  Elizabeth McKenney  Creation
+//   09 Aug 2011  Added @min and @unit facets to pulseWidth property
+//
+
+**
+** OneShot:  Boolean one-shot pulse generator
+**    out = true for pulseWidth sec, beginning at rising edge of in
+**    pulse retriggers on each rising edge of in, if canRetrig = true
+**
+@niagaraIcon="module://icons/x16/control/control.png"
+class OneShot
+  extends Component
+{
+  ** Output signal
+  @readonly property bool out
+
+  ** Input signal
+  property bool in
+  
+  ** Width of desired output pulse, in seconds
+  @unit=Units.second
+  @min=0
+  @config property float pulseWidth
+
+  ** If true, subsequent edges on input will restart pulse width measurement
+  **    (resulting in wider overall output pulse)
+  @config property bool  canRetrig 
+
+  **
+  ** Clears the output immediately, cancelling any pulse in progress
+  **
+  action void clear()
+  {
+    pulseEnd = 0L
+    out := false
+  }
+
+  **
+  ** Callback when component is first started in an app.
+  **
+  virtual override void start()
+  {
+    lastIn = in    // must initialize lastIn before first call to execute()
+  }
+
+
+  **
+  ** Execute is called once every scan.
+  **
+  virtual override void execute()
+  {
+    now = Sys.ticks()
+
+    if (in && !lastIn)                // rising edge detected
+    {
+      if (!out || canRetrig)           // start output pulse, or restart if canRetrig==true
+        pulseEnd = now + (long)( (double)pulseWidth * (double)1sec )
+    }
+
+    out := pulseEnd > now
+
+    lastIn = in
+  }
+
+  private long now = 0L
+  private long pulseEnd = 0L
+  private bool lastIn
+}

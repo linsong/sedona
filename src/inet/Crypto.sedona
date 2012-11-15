@@ -1,0 +1,21 @@
+//
+// Copyright (c) 2008 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   06 May 08  Brian Frank  Creation
+//
+
+**
+** Crypto provides some cryptographic utility functions used by DASP.
+**
+class Crypto
+{ 
+
+  **
+  ** Generate the SHA-1 hash for the input bytes.  
+  ** The 20 byte result is stored in the output pointer.
+  **
+  native static void sha1(byte[] in, int inOff, int len, byte[] output, int outOff)
+  
+}

@@ -1,0 +1,101 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   23 Aug 07  Andy Saunders  Creation
+//
+
+**
+** Base class to model a data point in a Device.
+**
+class Point
+  extends Component 
+{
+  ////////////////////////////////////////////////////////////////
+  // Properties
+  ////////////////////////////////////////////////////////////////
+
+  ** Whether the device is in fault.
+  property bool fault = false
+
+  ** Status bitmask for device.
+  property int status = 0
+
+  ** Address of point
+  @defaultOnClone 
+  @config property int address = 0
+
+
+  ////////////////////////////////////////////////////////////////
+  // Life cycle
+  ////////////////////////////////////////////////////////////////
+
+  **
+  ** Propagates down & fault status from device
+  **
+  virtual override void execute()
+  {
+    Device device = getDevice()
+    if(device != null)
+      setDown(device.isDown())
+    fault := status != 0
+  }
+  
+  ////////////////////////////////////////////////////////////////
+  // app support
+  ////////////////////////////////////////////////////////////////
+
+  **
+  ** Returns reference to parent device
+  **
+  Device getDevice()
+  {
+  	App app = Sys.app
+    for (Component c = app.lookup(parent); c != null; c = app.lookup(c.parent))
+      if (c.type.is(Device.type))
+        return (Device)c
+    return null
+  }
+
+  ////////////////////////////////////////////////////////////////
+  // status support
+  ////////////////////////////////////////////////////////////////
+
+  **
+  ** Returns true if down bit is set
+  **
+  public bool isDown()
+  {
+    return status == Status.DOWN;
+  }
+
+  **
+  ** Sets/clears down bit in status bitmask
+  **
+  virtual void setDown(bool isDown)
+  {
+    if(isDown)
+      status := status | Status.DOWN
+    else
+    {
+      status := status & ~Status.DOWN
+    }	
+  }  	
+
+  **
+  ** Sets/clears fault bit in status bitmask
+  **
+  virtual void setFault(bool isFault)
+  {
+    if(isFault)
+      status := status | Status.FAULT
+    else
+    {
+      status := status & ~Status.FAULT
+    }	
+  }  	
+
+
+  
+}

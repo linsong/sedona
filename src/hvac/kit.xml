@@ -1,0 +1,24 @@
+<!--
+  -  Sedona Kit
+  -  Copyright (c) 2011 Tridium, Inc.
+  -  Licensed under the Academic Free License version 3.0
+  -->
+
+<sedonaKit
+ name = "hvac"
+ vendor = "Tridium"
+ description = "HVAC function block library"
+ includeSource = "true"
+ doc = "true"
+>
+
+  <!-- Dependencies -->
+  <depend on="sys   1.2+" />
+  <depend on="types 1.2+" />
+
+  <!-- Source Directories -->
+  <source dir="." />
+  <source dir="test" testonly="true"/>
+
+</sedonaKit>
+

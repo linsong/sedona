@@ -1,0 +1,140 @@
+//
+// Copyright (c) 2012 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   26 Oct 11  Elizabeth McKenney  Creation
+//
+
+**
+** PrioritizedInt 
+**
+class PrioritizedInt
+  extends Prioritized
+{
+  **
+  ** Sys.minInt
+  **   Min value of a 32-bit signed integer: -2,147,483,648 
+  **                   
+  define int NULLVAL = 0x8000_0000
+
+////////////////////////////////////////////////////////////////
+// Properties
+////////////////////////////////////////////////////////////////
+
+  @readonly 
+  @summary=false property int in1 := NULLVAL
+
+  @summary=false property int in2 := NULLVAL
+  @summary=false property int in3 := NULLVAL
+  @summary=false property int in4 := NULLVAL
+  @summary=false property int in5 := NULLVAL
+  @summary=false property int in6 := NULLVAL
+  @summary=false property int in7 := NULLVAL
+
+  @readonly 
+  @summary=false property int in8 := NULLVAL
+
+  @summary=false property int in9 := NULLVAL
+  @summary=true  property int in10 := NULLVAL
+  @summary=false property int in11 := NULLVAL
+  @summary=false property int in12 := NULLVAL
+  @summary=false property int in13 := NULLVAL
+  @summary=false property int in14 := NULLVAL
+  @summary=false property int in15 := NULLVAL
+  @summary=true  property int in16 := NULLVAL
+
+  @config 
+  @summary=false property int fallback := NULLVAL
+
+  @readonly 
+  @summary=true  property int out
+
+
+////////////////////////////////////////////////////////////////
+// Actions
+////////////////////////////////////////////////////////////////
+
+  action void emergencySet(int newValue)
+  {
+    in1 := newValue
+  }
+
+  action void emergencyAuto()
+  {
+    setToDefault(PrioritizedInt.in1)
+  }
+
+  ** 
+  ** manualSet - Override value.
+  **  Arg to action is 8-byte long; first 4 bytes are new value,
+  **    last 4 are override duration in milliseconds.
+  **
+  action void manualSet(long valAndExpTime)
+  {
+    in8 := (int)(valAndExpTime>>32)
+    long overtime = (valAndExpTime & 0xffffffffL) * 1ms
+    if (overtime>0L) overtime += Sys.ticks()
+    overrideExpTime := overtime
+  }
+
+  action void manualAuto()
+  {
+    setToDefault(PrioritizedInt.in8)
+    overrideExpTime := 0L
+  }
+
+
+
+
+////////////////////////////////////////////////////////////////
+// Component
+////////////////////////////////////////////////////////////////
+
+  **
+  ** Execute is called once every scan using the
+  ** simple round-robin scan engine.
+  **
+  override virtual void execute()
+  {
+    int value = fallback
+    int level = FB_LEVEL
+
+    // Expire manual override if any 
+    if ( (overrideExpTime>0L) && (Sys.ticks()>overrideExpTime) )
+      manualAuto()
+
+    //
+    // Big if/else if block 
+    //   (believe it or not this is the fastest & smallest strategy)
+    //
+    if (in1 != NULLVAL)       {  value = in1;   level = 1 }
+    else if (in2 != NULLVAL)  {  value = in2;   level = 2 }
+    else if (in3 != NULLVAL)  {  value = in3;   level = 3 }
+    else if (in4 != NULLVAL)  {  value = in4;   level = 4 }
+    else if (in5 != NULLVAL)  {  value = in5;   level = 5 }
+    else if (in6 != NULLVAL)  {  value = in6;   level = 6 }
+    else if (in7 != NULLVAL)  {  value = in7;   level = 7 }
+    else if (in8 != NULLVAL)  {  value = in8;   level = 8 }
+    else if (in9 != NULLVAL)  {  value = in9;   level = 9 }
+    else if (in10 != NULLVAL) {  value = in10;  level = 10 }
+    else if (in11 != NULLVAL) {  value = in11;  level = 11 }
+    else if (in12 != NULLVAL) {  value = in12;  level = 12 }
+    else if (in13 != NULLVAL) {  value = in13;  level = 13 }
+    else if (in14 != NULLVAL) {  value = in14;  level = 14 }
+    else if (in15 != NULLVAL) {  value = in15;  level = 15 }
+    else if (in16 != NULLVAL) {  value = in16;  level = 16 }
+    
+
+    // Update output value & level
+    out         := value
+    sourceLevel := level
+  }
+
+  
+
+////////////////////////////////////////////////////////////////
+// Fields
+////////////////////////////////////////////////////////////////
+
+}

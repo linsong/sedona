@@ -1,0 +1,244 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   28 Mar 07  Brian Frank  Creation
+//
+
+**
+** Str encapsulates a byte array which stores a string of ASCII
+** characters terminated by the null character.  The characters must
+** be less then 128 (the high bit must clear) for future UTF-8
+** support.
+**
+final class Str
+{
+
+//////////////////////////////////////////////////////////////////////////
+// Constructor
+//////////////////////////////////////////////////////////////////////////
+
+  **
+  ** The inline constructor for Str requires the max size
+  ** of the character buffer including the space for the null
+  ** terminator.  For the following declaration declares a Str
+  ** with enough memory to store 3 ASCII characters:
+  **   inline Str(4) mystr
+  **
+  Str(int bufLen)
+  {
+    buf.length = bufLen
+  }
+
+//////////////////////////////////////////////////////////////////////////
+// Methods
+//////////////////////////////////////////////////////////////////////////
+
+  **
+  ** Get the character at the specified index.
+  **
+  int get(int index) 
+  {
+    return buf[index]
+  }
+
+  **
+  ** Set the character at the specified index.
+  **
+  void set(int index, int ch) 
+  {
+    buf[index] = ch
+  }                  
+  
+  **
+  ** Get the backing byte array of this String.
+  **
+  byte[] toBytes()
+  {
+    return buf
+  }
+  
+  **
+  ** Return if two strings contain the exact same characters.
+  **
+  bool equals(Str that)
+  {             
+    int ch = 1
+    for (int i=0; ch != 0; ++i)
+    {
+      ch = buf[i]
+      if (ch != that.buf[i]) return false
+    }
+    return true
+  }    
+
+  **
+  ** Return if this entire string equals a region within 
+  ** the specified string.  Start index is inclusive and 
+  ** end index is exclusive.  The start index must be a valid index 
+  ** into the specified string's memory space, but the end 
+  ** index can be larger than the memory size.
+  **
+  bool equalsRegion(Str that, int start, int end)
+  {                                
+    int count = end-start
+    for (int i=0; i<count; ++i)
+    {             
+      int thatIndex = i+start
+      int thisChar = buf[i]
+      int thatChar = that.buf[thatIndex]
+      if (thisChar != thatChar) return false
+      if (thisChar == 0) return thatChar == 0 ? true : false
+    }
+    return true
+  }                                 
+  
+  **
+  ** Return if this string starts with the specified string.
+  **
+  bool startsWith(Str that)
+  {
+    int ch = 1
+    for (int i=0; ch != 0; ++i)
+    {
+      ch = buf[i]
+      int x = that.buf[i]
+      if (x == 0) return true
+      if (ch != x) return false
+    }
+    return false
+  }
+
+  **
+  ** Return if the index of the specified character 
+  ** or -1 if not found in this string.
+  **
+  int index(int ch)
+  {
+    int x = -1
+    for (int i=0; x != 0; ++i)
+    {
+      x = buf[i]
+      if (x == ch) return i
+    }
+    return -1
+  }
+
+  **
+  ** Copy the specified string into this string's memory
+  ** buffer.  If the specified string contains more than max
+  ** characters including the null terminator then return false
+  ** and truncate the copy.  Max should always be the size
+  ** of this string's buffer.
+  **
+  bool copyFromStr(Str from, int max)
+  {
+    for (int i=0; i<max; ++i)
+    {
+      int ch = from.buf[i]
+      this.buf[i] = ch
+      if (ch == 0) return true
+    }
+    this.buf[max-1] = 0
+    return false
+  }           
+
+  **
+  ** Return a Str reference into the byte array at the specified
+  ** offset.  In the SVM we return a pointer to buf+off.  In the JVM
+  ** we return a new StrRef with the specified offset.  No guarantee 
+  ** is made that the buffer contains the null terminator.
+  **  
+  native static Str fromBytes(byte[] buf, int off)   
+  
+  **
+  ** Return number of characters in the string not including
+  ** the null terminating character.
+  **
+  int length()
+  {
+    int len = 0
+    while (buf[len] != 0) ++len
+    return len
+  }
+
+  **
+  ** Perform an in-place trim on the string pointer by
+  ** removing any leading or trailing space characters.
+  ** Note this method will change the characters in the
+  ** string's buffer and will return a different reference
+  ** the starting position of the new string.
+  **
+  Str trim()
+  {
+    // trim front     
+    byte[] buf = this.buf     
+    int off = 0
+    while (buf[off] == ' ') ++off
+
+    // trim back
+    int len = ((Str)buf).length()
+    for (int i=len-1; i>=0; --i)
+    {
+      if (buf[i] == ' ') buf[i] = 0
+      else break
+    }
+
+    return Str.fromBytes(buf, off)
+  }
+
+
+  **
+  ** Perform an in-place trim on the string pointer by
+  ** removing leading characters up to index 'newStart'.
+  ** Note this method will return a different reference,
+  ** the starting position of the new string, but the
+  ** underlying memory does not change.
+  **
+  Str suffix(int newStart)
+  {
+    return Str.fromBytes(buf, newStart)
+  }
+
+
+
+  **
+  ** Parse this string into an integer or return -1.
+  **
+  int parseInt()
+  {
+    int val = 0
+    int i = 0
+    bool neg = false
+
+    if (buf[0] == '-')
+    {
+      i++
+      neg = true
+    }
+
+    if (buf[i] == 0) return -1
+
+    int c
+    while((c = buf[i++]) != 0)
+    {
+      if (c < '0' || c > '9') return -1
+      val = (val*10) + (c-'0')
+    }
+
+    if (neg) val = -val
+    return val
+  }
+
+//////////////////////////////////////////////////////////////////////////
+// Fields
+//////////////////////////////////////////////////////////////////////////
+
+  ** The array of character bytes.
+  private inline byte[] buf
+
+  internal define int tempLen = 32
+  internal static inline Str(tempLen) temp
+
+}
