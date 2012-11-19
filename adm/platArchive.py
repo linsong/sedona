@@ -100,8 +100,10 @@ def archive():
   # Default outFile, if not specified (create path if it doesn't exist)
   if not outFile:
     outFile = os.path.join(stageDir, "out", platformId+".par")
-  outDir = os.path.dirname(outFile)
-  if not os.path.isdir(outDir): 
+  outDir = os.path.dirname( os.path.realpath(outFile) )
+  #print "   outDir = %s" % outDir
+  if not os.path.exists(outDir): 
+    print 'Creating folder %s' % outDir
     os.makedirs(outDir)
   
   # Zip it up - the manifest, plus all contents of the svmDir if requested
