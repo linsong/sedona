@@ -67,10 +67,11 @@ int err(const char* msg) { return err(msg, "ignored", "ignored"); }
  */
 int readRegistry(const char* subKey, char* name, char* buf, int bufLen)
 {
-  // open key
+  // open key (try again as 64-bit key if first attempt fails)
   HKEY hKey;
   if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, subKey, 0, KEY_QUERY_VALUE, &hKey) != ERROR_SUCCESS)
-    return err("Cannot read registry: %s %s", subKey, name);
+    if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, subKey, 0, KEY_QUERY_VALUE|KEY_WOW64_64KEY, &hKey) != ERROR_SUCCESS)
+      return err("[launcher] Cannot open registry key: HKEY_LOCAL_MACHINE\\%s.%s", subKey, name);
 
   // query
   int query = RegQueryValueEx(hKey, name, NULL, NULL, (LPBYTE)buf, (LPDWORD)&bufLen);
@@ -80,7 +81,7 @@ int readRegistry(const char* subKey, char* name, char* buf, int bufLen)
 
   // return result
   if (query != ERROR_SUCCESS)
-    return err("Cannot read registry: %s %s", subKey, name);
+    return err("[launcher] Cannot query registry key: HKEY_LOCAL_MACHINE\\%s.%s", subKey, name);
 
   return 0;
 }
@@ -107,7 +108,7 @@ int init(int argc, char** argv)
   // get my module
   char p[MAX_PATH];
   if (!GetModuleFileName(NULL, p, MAX_PATH))
-    return err("GetModuleFileName");
+    return err("[launcher] GetModuleFileName");
 
   // walk up three levels of the path to get sedona home:
   //   {sedonaHome}\bin\me.exe
@@ -257,13 +258,13 @@ int loadJava()
   if (debug) printf("--   load %s...\n", jvmPath);
   HINSTANCE dll = LoadLibrary(jvmPath);
   if (dll == NULL)
-    return err("Cannot load library: %s", jvmPath);
+    return err("[launcher] Cannot load library: %s", jvmPath);
 
   // query for create VM procedure
   if (debug) printf("--   query procedure...\n");
   CreateJavaVMFunc createVM = (CreateJavaVMFunc)GetProcAddress(dll, "JNI_CreateJavaVM");
   if (createVM == NULL)
-    return err("Cannot find JNI_CreateJavaVM in %s", jvmPath);
+    return err("[launcher] Cannot find JNI_CreateJavaVM in %s", jvmPath);
 
   // setup args
   JavaVMInitArgs vm_args;
@@ -275,7 +276,7 @@ int loadJava()
   // create vm
   if (debug) printf("--   create java vm...\n");
   if (createVM(&vm, (void**)&env, &vm_args) < 0)
-    return err("Cannot launch Java VM");
+    return err("[launcher] Cannot launch Java VM");
 
   return 0;
 }
@@ -300,13 +301,13 @@ int runJavaMain()
   if (debug) printf("--   find class %s...\n", mainClassName);
   jclass mainClass = env->FindClass(mainClassName);
   if (mainClass == NULL)
-    return err("Cannot find Java main %s", mainClassName);
+    return err("[launcher] Cannot find Java main %s", mainClassName);
 
   // find the main method
   if (debug) printf("--   find method %s.main(String[])...\n", mainClassName);
   jmethodID mainMethod = env->GetStaticMethodID(mainClass, "main", "([Ljava/lang/String;)V");
   if (mainMethod == NULL)
-    return err("Cannot find %s.main(String[])", mainClassName);
+    return err("[launcher] Cannot find %s.main(String[])", mainClassName);
 
   // map C string args to Java string args
   if (debug) printf("--   c args to java args...\n");
