@@ -24,7 +24,7 @@ public class Env
   public static File home;
   public static final String hostname;
   public static final String version;
-  public static final String copyright = "Copyright (c) 2007-2009 Tridium, Inc.";
+  public static final String copyright = "Copyright (c) 2007-2013 Tridium, Inc.";
 
 ////////////////////////////////////////////////////////////////
 // Formatting

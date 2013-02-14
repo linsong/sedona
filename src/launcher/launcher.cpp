@@ -28,7 +28,7 @@ typedef jint (JNICALL *CreateJavaVMFunc)(JavaVM **pvm, void **penv, void *vm_arg
 // Globals
 //////////////////////////////////////////////////////////////////////////
 
-const char* LAUNCHER_VERSION = "16-Jun-09";
+const char* LAUNCHER_VERSION = "28-Jan-13";
 
 bool debug;                        // is debug turned on
 char sedonaHome[MAX_PATH];         // dir path of sedona installation
