@@ -128,8 +128,8 @@ public class WriteDoc
       out.w("  <li><a href='").w(home).w("'>Home</a></li>\n");
       out.w("  <li><a class='active' href='index.html'>Documentation</a></li>\n");
       out.w("  <li><a href='../../community.html'>Community</a></li>\n");
-      out.w("  <li><a href='/download/'>Download</a></li>\n");
-      out.w("  <li><a href='http://groups.google.com/group/sedonadev'>Forum</a></li>\n");
+      out.w("  <li><a href='/download/'>Downloads</a></li>\n");
+      out.w("  <li><a href='../../forum.html'>Forum</a></li>\n");
       out.w("</ul>\n");    
     }
     
