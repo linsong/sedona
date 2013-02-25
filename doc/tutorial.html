@@ -69,12 +69,13 @@ In our kit we will create a component called <code>Add</code>,
 which adds two inputs together.
 </p>
 <p>
-First let's create a directory called "tutorial" with two files:
+First let's create a directory under <code>src</code> called "tutorial", with two text files:
 </p>
 <pre>
-tutorial/
-  +- kit.xml
-  +- Add.sedona
+src/
+  tutorial/
+    +- kit.xml
+    +- Add.sedona
 </pre>
 
 <p>
@@ -87,10 +88,10 @@ The "kit.xml" file is used to define the kit's meta-data for the compiler:
 </p>
 
 <pre>
-&lt;sedonaKit name="tutorial" vendor="Tridium" description="blah">
-  &lt;depend on="sys 1.0" />
-  &lt;source dir="." />
-&lt;/sedonaKit>
+&lt;sedonaKit name="tutorial" vendor="Tridium" description="blah"&gt;
+  &lt;depend on="sys 1.2+" /&gt;
+  &lt;source dir="." /&gt;
+&lt;/sedonaKit&gt;
 </pre>
 
 <p>
@@ -98,8 +99,8 @@ The "kit.xml" file specifies the name of our kit, a short description,
 dependencies, and the directories of source code. The vendor attribute
 specifies the company that developed the kit - for the purposes of the tutorial
 leave this as "Tridium" because otherwise the kit name must be prefixed with
-the vendor name. For more information see <a href='kits.html'>Kits</a> and
-<a href='sedonac.html#compileKit'>Sedonac</a>.
+the vendor name.  For more information see <a href='kits.html'>Kits</a> and
+<a href='sedonac.html#compileKit'>Compile Kit</a>.
 </p>
 
 <p>
@@ -129,16 +130,23 @@ or the "kit.xml" file:
 </p>
 
 <pre>
-D:\sedona\src\tutorial>dir
+C:\Sedona\Sedona-1.2.27\src\tutorial&gt;dir
+ Volume in drive C has no label.
+ Volume Serial Number is 50BC-4286
 
- Directory of D:\sedona\src\tutorial
+ Directory of C:\Sedona\Sedona-1.2.27\src\tutorial
 
-01/19/2009  01:55 PM   149 Add.sedona
-01/19/2009  01:55 PM   258 kit.xml
+02/25/2013  09:57 AM    &lt;DIR&gt;          .
+02/25/2013  09:57 AM    &lt;DIR&gt;          ..
+02/25/2013  09:52 AM               160 Add.sedona
+02/25/2013  09:55 AM               131 kit.xml
+               2 File(s)            291 bytes
+               2 Dir(s)  170,500,431,872 bytes free
 
-D:\sedona\src\tutorial>sedonac kit.xml
+C:\Sedona\Sedona-1.2.27\src\tutorial&gt;sedonac kit.xml
   Parse [1 files]
-  WriteKit [D:\sedona\kits\tutorial\tutorial-89858e3e-1.0.30.kit]
+  WriteKit [C:\Sedona\Sedona-1.2.27\kits\tutorial\tutorial-89858e3e-1.2.27.kit]
+  WriteManifest [C:\Sedona\Sedona-1.2.27\manifests\tutorial\tutorial-89858e3e.xml]
 *** Success! ***
 </pre>
 
@@ -176,20 +184,19 @@ an image:
   endian="little" blockSize="4"
   refSize="4" main="sys::Sys.main" debug="true" test="true"
 &gt;
-  &lt;depend on="sys 1.0" /&gt;
-  &lt;depend on="sox 1.0" /&gt;
-  &lt;depend on="inet 1.0" /&gt;
-  &lt;depend on="web 1.0" /&gt;
-  &lt;depend on="control 1.0" /&gt;
-  &lt;depend on="tutorial 1.0" /&gt;
+  &lt;depend on="sys 1.2+" /&gt;
+  &lt;depend on="sox 1.2+" /&gt;
+  &lt;depend on="inet 1.2+" /&gt;
+  &lt;depend on="web 1.2+" /&gt;
+  &lt;depend on="func 1.2+" /&gt;
+  &lt;depend on="platWin32 1.2+" /&gt;
+  &lt;depend on="tutorial 1.2+" /&gt;
 &lt;/sedonaCode&gt;
 </pre>
 
 <p>
-If you are running on 32-bit x86 then you can use the exact file
-listed above.  Otherwise you might need to tweak your settings for
-endian and refSize.  See <a href='sedonac.html#compileCode'>Sedonac</a>
-for more information.
+See <a href='sedonac.html#compileCode'>Sedonac</a> for more information
+on these settings.
 </p>
 
 <p>
@@ -197,22 +204,28 @@ Run sedonac on this file to produce an scode image:
 </p>
 
 <pre>
-D:\sedona\tutorialApp>sedonac kits.xml
-  ReadKits [6 kits]
-  WriteImage [D:\sedona\tutorialApp\kits.scode] (79340 bytes)
+C:\Sedona\Sedona-1.2.27\tutorialApp>sedonac kits.xml
+  ReadKits [7 kits]
+  WriteImage [C:\Sedona\Sedona-1.2.27\tutorialApp\kits.scode] (89088 bytes)
   +----------------------------------
-  |  Data:      6.3kb (6448 bytes)
-  |  Code:     77.5kb (79340 bytes)
-  |  Total:    83.8kb (85788 bytes)
+  |  Data:      7.8kb (8020 bytes)
+  |  Code:       87kb (89088 bytes)
+  |  Total:    94.8kb (97108 bytes)
   +----------------------------------
 *** Success! ***
 
-D:\sedona\tutorialApp>dir
+C:\Sedona\Sedona-1.2.27\tutorialApp&gt;dir
+ Volume in drive C has no label.
+ Volume Serial Number is 50BC-4286
 
- Directory of D:\sedona\pub\tutorialApp
+ Directory of C:\Sedona\Sedona-1.2.27\tutorialApp
 
-01/19/2009  02:24 PM    79,340 kits.scode
-01/19/2009  02:20 PM       342 kits.xml
+02/25/2013  10:30 AM    &lt;DIR&gt;          .
+02/25/2013  10:30 AM    &lt;DIR&gt;          ..
+02/25/2013  10:30 AM            89,088 kits.scode
+02/25/2013  09:57 AM               336 kits.xml
+               2 File(s)         89,424 bytes
+               2 Dir(s)  170,506,817,536 bytes free
 </pre>
 
 <p>
@@ -235,53 +248,58 @@ create a new "app.sax" file:
 </p>
 
 <pre>
-&lt;sedonaApp>
-&lt;schema>
-  &lt;kit name='sys'/>
-  &lt;kit name='sox'/>
-  &lt;kit name='inet'/>
-  &lt;kit name='web'/>
-  &lt;kit name='control'/>
-  &lt;kit name='tutorial'/>
-&lt;/schema>
-&lt;app>
-  &lt;comp name="plat" type="sys::PlatformService"/>
-  &lt;comp name="users" type="sys::UserService">
-    &lt;comp name="admin" type="sys::User">
-      &lt;prop name="cred" val="hE49ksThgAeLkWB3NUU1NWeDO54="/>
-      &lt;prop name="perm" val="2147483647"/>
-      &lt;prop name="prov" val="255"/>
-    &lt;/comp>
-  &lt;/comp>
-  &lt;comp name="sox" type="sox::SoxService"/>
-  &lt;comp name="web" type="web::WebService">
-    &lt;prop name="port" val="8080"/>
-  &lt;/comp>
-  &lt;comp name="rampA" type="control::Ramp"/>
-  &lt;comp name="rampB" type="control::Ramp"/>
-  &lt;comp name="add"   type="tutorial::Add" id="12"/>
-&lt;/app>
-&lt;links>
-  &lt;link from="/rampA.out" to="/add.in1"/>
-  &lt;link from="/rampB.out" to="/add.in2"/>
-&lt;/links>
-&lt;/sedonaApp>
+&lt;sedonaApp&gt;
+&lt;schema&gt;
+  &lt;kit name='sys'/&gt;
+  &lt;kit name='sox'/&gt;
+  &lt;kit name='inet'/&gt;
+  &lt;kit name='web'/&gt;
+  &lt;kit name='func'/&gt;
+  &lt;kit name='platWin32'/&gt;
+  &lt;kit name='tutorial'/&gt;
+&lt;/schema&gt;
+&lt;app&gt;
+  &lt;comp name="plat" type="platWin32::Win32PlatformService"/&gt;
+  &lt;comp name="users" type="sys::UserService"&gt;
+    &lt;comp name="admin" type="sys::User"&gt;
+      &lt;prop name="cred" val="hE49ksThgAeLkWB3NUU1NWeDO54="/&gt;
+      &lt;prop name="perm" val="2147483647"/&gt;
+      &lt;prop name="prov" val="255"/&gt;
+    &lt;/comp&gt;
+  &lt;/comp&gt;
+  &lt;comp name="sox" type="sox::SoxService"/&gt;
+  &lt;comp name="web" type="web::WebService"&gt;
+    &lt;prop name="port" val="8080"/&gt;
+  &lt;/comp&gt;
+  &lt;comp name="rampA" type="func::Ramp"/&gt;
+  &lt;comp name="rampB" type="func::Ramp"/&gt;
+  &lt;comp name="add"   type="tutorial::Add" id="12"/&gt;
+&lt;/app&gt;
+&lt;links&gt;
+  &lt;link from="/rampA.out" to="/add.in1"/&gt;
+  &lt;link from="/rampB.out" to="/add.in2"/&gt;
+&lt;/links&gt;
+&lt;/sedonaApp&gt;
 </pre>
 
 <p>
 The file above declares four Service components.
 <ul>
   <li>
-  The <code>PlatformService</code> component provides access to platform properties
-  and other platform-specific features.
+  The <code>Win32PlatformService</code> component provides access to platform properties
+  and other platform-specific features.  It is a subclass of <code>sys::PlatformService</code> 
+  class which provides generic platform functionality.  Sedona running on another platform 
+  would need a different PlatformService subclass designed for that platform.
   </li>
   <li>
-The <code>UserService</code> component
-contains an entry for each authorized user, specifying the user's credentials and privileges.
+  The <code>UserService</code> component contains an entry for each authorized user, 
+  specifying the user's credentials and privileges.  The properties here set up a user
+  named "admin" with a blank password.  (Using a blank password for 'admin' should NOT 
+  be done on real Sedona devices!  We only do it here to simplify the tutorial.)
   </li>
   <li>
-The <code>SoxService</code> component
-is required in order to create and use a Sox connection to or from the device.
+  The <code>SoxService</code> component
+  is required in order to create and use a Sox connection to or from the device.
   </li>
   <li>
   The <code>WebService</code> component will run an HTTP server so we can use a
@@ -289,7 +307,7 @@ is required in order to create and use a Sox connection to or from the device.
   (Note that platforms with limited resources may not be able to run a web server.)
   </li>
 </ul>
-We then declare two <code>control::Ramp</code> components,
+We then declare two <code>func::Ramp</code> components,
 which are used to generate dummy data.
 Finally we declare a <code>tutorial::Add</code>
 component, which is the component we built ourselves in the step above.
@@ -306,11 +324,12 @@ use directly.  Do this by running sedonac on "app.sax":
 </p>
 
 <pre>
-D:\sedona\tutorialApp>sedonac app.sax
-  ConvertAppFile [D:\sedona\tutorialApp\app.sax -> D:\sedona\tutorialApp\app.sab]
+C:\Sedona\Sedona-1.2.27\tutorialApp&gt;sedonac app.sax
+  ConvertAppFile [C:\Sedona\Sedona-1.2.27\tutorialApp\app.sax -&gt; C:\Sedona\Sedona-1.2.27\tutorialApp
+\app.sab]
   +----------------------------------
-  |  RAM:     12.1kb (12432 bytes)
-  |  FLASH:    0.2kb (207 bytes)
+  |  RAM:     14.5kb (14848 bytes)
+  |  FLASH:    0.3kb (356 bytes)
   +----------------------------------
 *** Success! ***
 </pre>
@@ -340,46 +359,59 @@ we are running on Windows we can run our application as follows:
 </p>
 
 <pre>
-D:\sedona\tutorialApp>svm kits.scode app.sab
+C:\Sedona\Sedona-1.2.27\tutorialApp&gt;svm kits.scode app.sab
 
-Sedona VM 1.0
-buildDate: Dec  2 2008 12:58:55
+Sedona VM 1.2.27
+buildDate: Oct 17 2012 08:40:10
 endian:    little
 blockSize: 4
 refSize:   4
 
 -- MESSAGE [sys::App] starting
 -- MESSAGE [sox::SoxService] started port=1876
+-- MESSAGE [sox::SoxService] DASP Discovery enabled
 -- MESSAGE [web::WebService] started port=8080
 -- MESSAGE [sys::App] running
 </pre>
 
 <p>
-We just pass our code and application filenames to the "svm.exe" executable.
-If you are running on an alternate platform, you might need to compile the
-SVM from source - see <a href='porting.html'>Porting</a>.
+Here we just pass our code and application filenames to the prebuilt Win32 "svm.exe" 
+executable included with the Sedona open source.
+If you are running on a different platform you will need an SVM executable designed
+for that platform - see <a href='porting.html'>Porting</a>.  
+</p>
+<p>
+Note that if you plan to restart or reboot the Sedona VM remotely, you should start
+the Sedona VM with the <code>--plat</code> option to run it in "platform mode".  
+(See <a href='setup.html#commands'>Common Commands</a> for more details.)
 </p>
 
 <p>
-Assuming you have your SVM running the application, you should be able
-to hit it with your browser at <a href='http://localhost:8080/'>http://localhost:8080/</a>.
-If you go to the URL <a href='http://localhost:8080/spy/app/12'>http://localhost:8080/spy/app/12</a>
-you should see the current values of your <code>tutorial::Add</code> component.
+Now that the SVM is running the application, you should be able to access it with 
+your browser at <a href='http://localhost:8080/'>http://localhost:8080/</a>.
+You can use the "spy" URL 
+<a href='http://localhost:8080/spy/app/12'>http://localhost:8080/spy/app/12</a>
+to view the current values of your <code>tutorial::Add</code> component.
 Hit refresh a couple times to see how the inputs and output change in real-time.
 </p>
 
 <p>
-If you have a programming tool such as the Sedona Framework Workbench, you should now
-be able to connect to Sox port 1876 with the username "admin" and empty password.
+If you have a remote administration tool such as the Sedona Framework Workbench, you should 
+now be able to connect to Sox port 1876 with the username "admin" and empty password.
 Refer to your Sedona Framework tool documentation for more information.
 </p>
+
+<!--/////////////////////////////////////////////////////////-->
+<h1 id="success">Success!</h1>
+<!--/////////////////////////////////////////////////////////-->
+
 
 <p>
 Congratulations, you've just built and deployed your first Sedona Framework
 application!  Remember this tutorial illustrates the very basics
-using only the command line tools.  Visit
-<a href='http://www.sedonadev.org/'>sedonadev.org</a> to learn more
-about the Sedona tools available.
+using only the command line tools.  Continue to explore
+<a href='http://www.sedonadev.org/'>sedonadev.org</a> to learn more about 
+Sedona and the tools available for managing Sedona devices.
 </p>
 
 <!-- TOC-FOOTER-START -->
@@ -395,10 +427,5 @@ about the Sedona tools available.
 <!-- TOC-FOOTER-END -->
 
 </html>
-
-
-
-
-
 
 
