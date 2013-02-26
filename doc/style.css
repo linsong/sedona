@@ -19,10 +19,10 @@ ul.tabs li { display: inline; }
 ul.tabs li a 
 {
   border: 1px solid #ccc; 
-  background: #eee;
+  background: #FFFFCC;
   padding: 10px;
   text-decoration: none;      
-  color: #444;
+  color: #000066;
 }    
 ul.tabs li a.active
 {
@@ -52,6 +52,11 @@ a
 {
   color: blue;
   outline: none;
+}
+
+a:visited
+{
+  color: #000066;
 }
 
 h1
