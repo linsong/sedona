@@ -30,6 +30,16 @@ ul.tabs li a.active
   border-bottom: 1px solid #fff;
 } 
     
+ul li
+{
+  padding-bottom: 5px;   /* put a little space between items in a list */
+}
+
+ol li
+{
+  padding-bottom: 5px;   /* put a little space between items in a list */
+}
+
 .nav
 {
   color: #669;

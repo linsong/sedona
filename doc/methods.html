@@ -55,7 +55,7 @@ The following keywords may be applied to a method declaration:
 
 <p>
 In addition to the keywords above, a method may be annotated with
-a protection scope <a href='lang.html#protectionScope'>keyword</a>.
+a <a href='lang.html#protectionScope'>protection scope</a> keyword.
 If no protection scope is specified, then <code>public</code>
 is assumed.
 </p>
@@ -82,7 +82,7 @@ class Example
 <p>
 In Sedona, a method may return any primitive type, or a reference to
 any built-in or user-defined class type;
-the only exception is an action method, which always returns void.
+the only exception is an <code>action</code> method, which always returns <code>void</code>.
 </p>
 
 
@@ -212,7 +212,7 @@ Abstract methods are virtual methods without an implementation. They
 are declared using the <code>abstract</code> keyword. Abstract methods
 are implied to be virtual - it is an error to use both the <code>abstract</code>
 and <code>virtual</code> keyword. Abstract methods must not provide a
-method body.  The containing class must also be abstract.
+method body.  The containing class must also be declared <code>abstract</code>.
 </p>
 
 <!--/////////////////////////////////////////////////////////-->
@@ -242,7 +242,7 @@ kitten.talk()      // now prints meow
 <!--/////////////////////////////////////////////////////////-->
 
 <p>
-A class may have one constructor, which compiles into a method called
+A class may have one constructor, which is compiled into a method called
 <code>_iInit</code>.  Whenever a class declares instance fields with
 a <a href='fields.html#defaults'>default value</a>, the compiler auto-generates
 a constructor for you.  A class may declare an explicit constructor using
@@ -258,20 +258,30 @@ final class BufInStream extends InStream
 </pre>
 
 <p>
-A class may only declare one explicit constructor (parameter overloading
-is not supported). A class with an explicit constructor must
-be marked <code>final</code>. Subclasses of <code>sys::Component</code>
-cannot declare a constructor with parameters.  Declared constructors are
-used with <a href='arrays.html#unsizedClasses'>unsized classes</a> to
-specify an array length.
+To keep Sedona lightweight and simple, the following rules apply to 
+constructor methods:
+<ul>
+  <li>A class may only declare one explicit constructor (parameter overloading is not supported). </li>
+  <li>A class with an explicit constructor must be marked <code>final</code>. </li>
+  <li>Subclasses of <code>sys::Component</code> cannot declare a constructor with parameters.  </li>
+  <li>Declared constructors are used with <a href='arrays.html#unsizedClasses'>unsized classes</a> 
+  to specify an array length.</li>
+</ul>
 </p>
 
 <p>
-All object allocation in happens through static memory
-management or when a new component is created via <code>App.add</code>.
-When allocating a component via <code>App.add</code> the constructor
-is called automatically.  All other instances get their constructors
-called whenever they are declared as an inline field:
+The constructor method for a class is called whenever an object of that type is instantiated.
+For static inline fields, this happens as soon as the scode is loaded when the Sedona VM boots up.
+For instance inline fields, this happens when the Sedona VM loads the Sedona application and 
+calls the constructors for the application's components as well as each component's inline 
+object fields.
+If the running app is modified remotely, however, any new components will be instantiated
+immediately by <code>App.add()</code>, which will call the component's constructor (and all its
+non-static inline object fields) at that time.
+</p>
+
+<p>
+For example:
 </p>
 
 <pre>
