@@ -47,17 +47,17 @@ are used to create a native method:
 
 <ol>
 
-<li><b>Native Id</b>: every native method is assigned a unique two
-  byte identifier in <code>kit.xml</code></li>
+<li><b>Native Id</b>: Every native method is assigned a unique two
+  byte identifier in the kit's <code>kit.xml</code> file</li>
 
-<li><b>Stub</b>: every native method is declared as a normal
-  method using the <code>native</code> modifier</li>
+<li><b>Stub</b>: Every native method is declared in the Sedona code 
+  using the <code>native</code> modifier</li>
 
-<li><b>Native Implementation</b>: native methods are implemented as
+<li><b>Native Implementation</b>: Native methods are implemented as
   functions in the C programming language</li>
 
-<li><b>Native Tables</b>: function pointers to all native implementations
-   are mapped into tables for dispatch by the SVM</li>
+  <li><b>Native Tables</b>: At staging, function pointers to the native 
+  implementations are mapped into tables for dispatch by the SVM at runtime</li>
 
 </ol>
 
@@ -68,25 +68,28 @@ are used to create a native method:
 
 <p>
 Every native method is assigned a two byte identifier used to dispatch a
-call to the proper C function.  The top byte is the <i>kitId</i>
-and the bottom byte is the <i>methodId</i>.  Native ids are formatted as
+call to the proper C function.  The first byte is the <i>kitId</i>
+and the second byte is the <i>methodId</i>.  Native ids are expressed as
 "kitId::methodId".
 </p>
 
 <p>
 Each kit that contains native methods should be assigned a unique kitId.
-Technically kitIds don't need to be globally unique, but should be unique
+Technically kitIds don't need to be globally unique, but they must be unique
 across all the kits that might be used together for a given platform.  The
 range of kitIds from 0 to 99 is reserved for core Sedona Framework kits.  Third
-parties should use kitIds from 100 to 255, or coordinate with the core Sedona Framework
-development team.  The <code>sys</code> kit itself is assigned the kitId of zero.
+parties should use kitIds from 100 to 255 (or contact the Sedona Framework
+development team).  The <code>sys</code> kit itself is assigned the kitId of zero.
+Any <a href='platTutorial.html'>platform service</a> kit 
+(i.e. a platform-specific kit containing a PlatformService
+subclass) can be given a kitId of 1, since there will never be more than one such
+kit loaded on a Sedona device at any given time.
 </p>
 
 <p>
 Within a kit, every native method is assigned a unique methodId.  Because
 the methodId is only a byte, there can be at most 255 native methods in
-a single kit.  Although if necessary a given kit could consume multiple
-kitIds (this is not currently supported by the sedonac stub tool).
+a single kit.  
 </p>
 
 <p>
@@ -107,7 +110,8 @@ The <code>natives</code> element contains one or more <code>native</code>
 elements for each native method in the kit.  The <code>native</code> element
 contains two required attributes: <code>qname</code> specifies the qualified
 name of the native method and <code>id</code> specifies the native id formatted
-as "kitId::methodId".
+as "kitId::methodId".  In this example, the kitId for kit <code>foo</code> is 6,
+and the native method methodIds are 0, 1, and 2.
 </p>
 
 <!-- /////////////////////////////////////////////////////// -->
@@ -115,7 +119,7 @@ as "kitId::methodId".
 <!-- /////////////////////////////////////////////////////// -->
 
 <p>
-Native methods are declared as normal methods but without a
+Native methods are declared like normal methods but without a
 method body (just like abstract methods).  Native methods must be flagged
 with the <code>native</code> keyword.  Native methods cannot be
 <code>abstract</code> or <code>virtual</code>.  For example:
@@ -160,12 +164,12 @@ Cell;
 </pre>
 
 <p>
-Every native method must be implemented in C as a function that takes a
-SedonaVM pointer, and a Cell pointer into the stack and returns a Cell (native
-methods that return a <code>long</code> or a <code>double</code> require special
-handling, described in more detail below). The typedef for SedonaVM_s is
-defined in <code>sedona.h</code>.  The typedef for a native method
-pointer in <code>sedona.h</code> is:
+Every native method must be implemented in C as a function that takes two arguments:
+a <code>SedonaVM_s</code> pointer and a <code>Cell</code> pointer into the stack, 
+and returns a <code>Cell</code>. 
+(Native methods that return a <code>long</code> or a <code>double</code> require 
+special handling, described in more detail below). The definition for SedonaVM_s is
+in <code>sedona.h</code>.  The typedef for a native method pointer is:
 </p>
 
 <pre>
@@ -173,18 +177,18 @@ typedef Cell (*NativeMethod)(struct SedonaVM_s* vm, Cell* params);
 </pre>
 
 <p>
-The parameters are passed as a Cell pointer to the second parameter.  You
-can manually extract the individual parameters using array indexing.  If
-the native method is not static, then the implicit <code>this</code> pointer
-is always parameter 0.
+The method parameters are accessed from the stack via the Cell pointer <code>params</code>.  
+You can manually extract the individual parameters using array indexing.  
+If the native method is not static, then parameter 0 is always the implicit 
+<code>this</code> pointer.
 </p>
 
 <p>
-It is important to note that all native methods return a Cell value even
-when the signature has a <code>void</code> return. You can use the
+It is important to note that all native method implementations return a Cell value even
+when the Sedona signature for the method returns <code>void</code>. You can use the
 constant <code>nullCell</code> to return from a method that returns <code>void</code>.
-Constants <code>trueCell</code> and <code>falseCell</code> can similarly be used
-for <code>bool</code> returns.
+Other predefined Cell constants are <code>trueCell</code>, <code>falseCell</code>,
+<code>zeroCell</code>, <code>oneCell</code>, and <code>negOneCell</code>.
 </p>
 
 <p>
@@ -350,7 +354,7 @@ When the SVM is compiled, the SVM is bound to a lookup table
 for all the native methods available.  This lookup table is a two
 level array of function pointers.  The first level of the array
 maps to the kitIds and the second level maps to the methodIds.  For
-example to lookup the function pointer for the native id of
+example the function pointer for the native id of
 "2::7" would be <code>nativeTable[2][7]</code>.
 </p>
 

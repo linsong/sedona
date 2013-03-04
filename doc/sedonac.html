@@ -66,7 +66,7 @@ or "sedoanc.jar".</li>
 
 <p>
 Sedonac compiles Sedona source files into a kit file when run
-on a "kit.xml" file or a directory that contains a "kit.xml" file.
+on a "kit.xml" file (or a directory that contains a "kit.xml" file).
 </p>
 
 <pre>
@@ -76,28 +76,22 @@ on a "kit.xml" file or a directory that contains a "kit.xml" file.
  description = "Serial I/O support"
  includeSource = "true"
  doc = "true"
->
+&gt;
 
-  &lt;!-- Dependencies -->
-  &lt;depend on="sys 1.0" />
+  &lt;!-- Dependencies --&gt;
+  &lt;depend on="sys 1.0" /&gt;
 
-  &lt;!-- Includes -->
-  &lt;include from="otherKit 1.0">
-    &lt;type name="Foo" />
-    &lt;type name="Bar" />
-  &lt;/include>
+  &lt;!-- Source Directories --&gt;
+  &lt;source dir="."/&gt;
+  &lt;source dir="test" testonly="true"/&gt;
 
-  &lt;!-- Source Directories -->
-  &lt;source dir="."/>
-  &lt;source dir="test" testonly="true"/>
+  &lt;!-- Natives --&gt;
+  &lt;native qname="serial::SerialPort.doInit"   id="4::0" /&gt;
+  &lt;native qname="serial::SerialPort.doClose"  id="4::1" /&gt;
+  &lt;native qname="serial::SerialPort.doRead"   id="4::2" /&gt;
+  &lt;native qname="serial::SerialPort.doWrite"  id="4::3" /&gt;
 
-  &lt;!-- Natives -->
-  &lt;native qname="serial::SerialPort.doInit"   id="4::0" />
-  &lt;native qname="serial::SerialPort.doClose"  id="4::1" />
-  &lt;native qname="serial::SerialPort.doRead"   id="4::2" />
-  &lt;native qname="serial::SerialPort.doWrite"  id="4::3" />
-
-&lt;/sedonaKit>
+&lt;/sedonaKit&gt;
 </pre>
 
 <p>Specification of elements and attributes:</p>
@@ -123,27 +117,6 @@ See <a href='kits.html#versioning'>versioning</a></li>
 <li><b>on</b>: (required) <a href='kits.html#depends'>dependency</a> as a kit
 name and version constraint.</li>
 </ul>
-
-<p><b>&lt;include></b> specifies types from other kits to be included in this kit.
-The include directive in the example will cause two <i>new</i> types to be
-added to the serial kit:
-</p>
-<ul>
-<li>serial::Foo</li>
-<li>serial::Bar</li>
-</ul>
-
-<p>
-This makes the two types from "otherKit" available to any application that
-uses the serial kit, even though otherKit itself is not included in the scode image.
-</p>
-
-
-<p>
-Restrictions:  An included type cannot be from a kit in the dependency list, and must be
-included from the kit where its code resides.  You cannot include any type
-from a kit with native methods.
-</p>
 
 <p><b>&lt;source></b> specifies a directory of source code:</p>
 
@@ -211,13 +184,13 @@ e.g. if the input file is "foo.xml" sedonac will create a file called
    main="sys::Sys.main"
    debug="true"
    test="true"
->
+&gt;
 
-  &lt;depend on="sys 1.0" />
-  &lt;depend on="sox 1.0" />
-  &lt;depend on="inet 1.0" />
+  &lt;depend on="sys 1.0" /&gt;
+  &lt;depend on="sox 1.0" /&gt;
+  &lt;depend on="inet 1.0" /&gt;
 
-&lt;/sedonaCode>
+&lt;/sedonaCode&gt;
 </pre>
 
 <p><b>&lt;sedonaCode></b> top level element for scode compile:</p>
@@ -227,7 +200,7 @@ e.g. if the input file is "foo.xml" sedonac will create a file called
 <li><b>blockSize</b>: size of a scode block in bytes (see "sedona.h")</li>
 <li><b>refSize</b>: size of a memory pointer in bytes for target processor
 (4 for 32-bit processor).</li>
-<li><b>main</b>: qualified method name of main method (typically always "sys::Sys.main").</li>
+<li><b>main</b>: qualified method name of main method (typically <code>sys::Sys.main</code>).</li>
 <li><b>debug</b>: (optional) boolean to include debug meta-data in image.  Defaults to false</li>
 <li><b>test</b>: (optional) boolean to include test code in image.  Defaults to false</li>
 <li><b>armDouble</b>: (optional) set to true if using an ARM microprocessor where 64-bit
@@ -284,7 +257,7 @@ D:\sedona\pub\apps>sedonac test.sax
 Running sedonac on an application file also prints a memory impact report.
 The RAM value is an estimate of how much memory the application
 consumes in RAM during runtime.
-FLASH is the size required to persist the application to durable storage like FLASH
+FLASH is the size required to persist the application to durable storage like flash memory
 (always exactly the same as the size of the sab file).
 Also see the <a href='apps.html'>Apps</a> and <a href='memory.html'>Memory</a> chapters.
 </p>
@@ -294,7 +267,7 @@ Also see the <a href='apps.html'>Apps</a> and <a href='memory.html'>Memory</a> c
 <!--/////////////////////////////////////////////////////////-->
 
 <p>
-If you pass a qualified classname to sedonac it will attempt to
+If you pass a qualified Java classname to sedonac it will attempt to
 run that class's main() method:
 </p>
 
