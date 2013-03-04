@@ -45,7 +45,7 @@ OS platforms using the following steps:
 </p>
 
 <ol>
-<li>Add platform specific declarations to "sedona.h"</li>
+<li>Add platform specific declarations to <code>sedona.h</code></li>
 <li>Select the kits with native methods that you plan to support</li>
 <li>Write custom implementations for native methods where needed</li>
 <li>Write bootstrap code to start the SVM</li>
@@ -59,31 +59,32 @@ OS platforms using the following steps:
 <!--/////////////////////////////////////////////////////////-->
 
 <p>
-Porting to a new target platform begins with "<a href="../src/vm/sedona.h">sedona.h</a>",
-which is located in the "src/vm" directory.  This file is included by
+Porting to a new target platform begins with <code>sedona.h</code>
+which is located in the <code>src/vm</code> directory.  This file is included by
 every native source file, and contains essential definitions required
 for building the native layer.
 It contains sections for major target
 platforms such as Win32, QNX, and UNIX.  Each platform's section is
 wrapped by an <code>#if defined()</code> directive for the
 given target compiler/platform.  If none of the existing sections is
-matched, the preprocessor will look for a file named "sedona-local.h" in
+matched, the preprocessor will look for a file named <code>sedona-local.h</code> in
 the include path, and include its contents in place of the other target
 sections.
 </p>
 
 <p>
 Definitions for a new platform can be added in a new
-<code>#elif defined()</code> section in sedona.h, but the modified sedona.h
+<code>#elif defined()</code> section in <code>sedona.h</code>, 
+but the modified <code>sedona.h</code>
 will then need to be updated manually if any changes are made to the public
-version of the file.  A simpler solution is to create a local "sedona-local.h"
+version of the file.  A simpler solution is to create a local <code>sedona-local.h</code>
 file to hold the definitions for the new platform.  This file will then automatically
 be included in the build and can be maintained separately from the core Sedona Framework
 distribution.
 </p>
 
 <p>
-There are instructions at the top of sedona.h that describe
+There are instructions at the top of <code>sedona.h</code> that describe
 the types and macros that must be defined for each platform, such as
 the ANSI C 99 integer types and macros for endianness and block sizes.
 Definitions for key types like <code>Cell</code> and
@@ -114,20 +115,21 @@ custom implementation for each hardware or OS platform.
 </p>
 
 <p>
-All the native source code is organized under a directory called "native" in
+All the native source code is organized under a directory called <code>native</code> in
 the kit directory.  Native functions that are portable
 across <i>all</i> platforms should be contained in C files
-located directly in the "native" directory, one file per class
+located directly in the <code>native</code> directory, one file per class
 using the naming convention "<i>{kit}_{class}.c</i>".
 Any native functions that are implemented separately for each platform
-should be located in sub-directories under "native", one per platform.
+should be located in sub-directories under <code>native</code>, one per platform.
 Code files under these directories are named using the convention
 "<i>{kit}_{type}_{platform}.c</i>".  This helps avoid file name collisions.
 </p>
 
 
 <p>
-For example, given a kit "myKit" with one class "MyClass" that has native functions,
+For example, given a kit <code>myKit</code> with one class <code>MyClass</code> 
+that has native functions,
 some portable and some platform-specific, the code would be organized as follows:
 </p>
 <pre id="dirStruct">
@@ -145,17 +147,20 @@ myKit/
 </pre>
 
 <p>
-All the source code files for the native methods are stored under the folder "myKit/native".
+All the source code files for the native methods are stored under the folder 
+<code>myKit/native</code>.
 Functions that can be shared across all platforms are in the file named
-"myKit_MyClass.c", located in the "native" folder.  These functions should not need to
+<code>myKit_MyClass.c</code>, located in the <code>native</code> folder.  
+These functions should not need to
 be implemented again when porting to a new platform.
 </p>
 <p>
 Source files for platform-specific implementations are located in a separate subfolder
 for each platform, and the platform name is appended to the source file name.
-When porting the kit to a new platform "newPlat", simply create a new folder "native/newPlat"
-and put the native method implementations into a source file "myKit_MyClass_newPlat.c"
-under the new folder.
+When porting the kit to a new platform <code>newPlat</code>, 
+simply create a new folder <code>native/newPlat</code>
+and put the native method implementations into a source file 
+<code>myKit_MyClass_newPlat.c</code> under the new folder.
 </p>
 
 
@@ -167,17 +172,18 @@ under the new folder.
 In addition to the native methods for each kit, the new platform port will need
 some native bootstrapping code to start the SVM.  For sophisticated devices
 with an OS and a file system (such as a PC), it may be sufficient to build and run
-the code provided in "<a href="../src/vm/main.c">main.c</a>".  This function can
-be executed from the OS command line, giving it the filenames for the scode image
-and the app to be run.  (Even with platforms that cannot support
-"main.c", it may still be useful as a guide for writing the new bootstrap code.)
+the code provided in <code>main.c</code>, which is located in the <code>src/vm</code> 
+directory.  This function can
+be executed from the OS command line, providing on the command line the filenames for 
+the scode image and the app to be run.  (Even with platforms that cannot support
+<code>main.c</code>, it may still be useful as a guide for writing the new bootstrap code.)
 </p>
 
 <p>
 On smaller, simpler platforms, new bootstrap code will need to be written.
 Every platform will have a unique implementation, but at some point the SVM
 will need to be started by calling <code>vmRun(SedonaVM*)</code>.
-(Both <code>vmRun</code> and the <code>SedonaVM</code> struct are defined in sedona.h.)
+(Both <code>vmRun</code> and the <code>SedonaVM</code> struct are defined in <code>sedona.h</code>.)
 Before calling <code>vmRun</code>, a SedonaVM struct must be created and then initialized as
 follows:
 </p>
@@ -220,16 +226,16 @@ automatically during the VM code generation stage.  See the
 <p>When the <code>SedonaVM</code> struct has been initialized, start the SVM
 by calling the <code>vmRun()</code> function and passing a pointer to the struct.
 If <code>vmRun</code> returns a non-zero value (other than <code>ERR_HIBERNATE</code>
-or <code>ERR_YIELD</code>, discussed below), then there is a problem.  Errors in the scode
-image or the app will generally produce an error code defined in src/sys/Err.sedona;
-errors in the VM itself are usually indicated by an error code in "src/vm/errorcodes.h".
+or <code>ERR_YIELD</code>, discussed below), then there is a problem.  
+Errors in the scode image or the app will generally produce an error code defined 
+in <code>src/sys/Err.sedona</code>; errors in the VM itself are usually indicated 
+by an error code in <code>src/vm/errorcodes.h</code>.
 </p>
 
-<p>Some platforms may require the VM yield execution control to allow other task to
-run.  When <code>vmRun()</code> returns <code>ERR_YIELD</code>, the application is
+<p>Some platforms may require the Sedona VM to yield execution control to allow other 
+tasks to run.  When <code>vmRun()</code> returns <code>ERR_YIELD</code>, the application is
 yielding CPU control.
-See the <a href='apps.html#yield'>Yield</a> section for
-more details.
+See the <a href='apps.html#yield'>Yield</a> section for more details.
 </p>
 
 <p>Each platform requires the implmentation of an appropriate hibernation strategy.
@@ -258,7 +264,7 @@ the VM and native code. This copies the relevant native source files into a
 single directory in order to compile them using the appropriate native
 toolchain.</p>
 
-<p>Staging is accomplished by running sedonac with a
+<p>Staging is accomplished by running <code>sedonac</code> with a
 <a href="platDef.html#definition">platform definition</a> file and specifying
 the output directory for the staged files. The platform definition lists all the
 directories containing C source files required to build the SVM for a
@@ -295,19 +301,19 @@ This results in the following:
   <li>All source files are copied from the listed paths into <code>tempStageDir</code>
   </li>
 
-  <li>The file "nativetable.c" is generated, which defines the native
+  <li>The file <code>nativetable.c</code> is generated, which defines the native
   function <a href="nativeMethods.html#tables">lookup table</a>
   </li>
 
-  <li>If the platform id is known at staging time, a "sedonaPlatform.h"
+  <li>If the platform id is known at staging time, a <code>sedonaPlatform.h</code>
   file is created, which contains the <code>PLATFORM_ID</code> macro.
   </li>
 
   <li>The <a href="platDef.html#manifest">platform manifest</a> is staged
-  in <code>tempStageDir/.par/platformManifest.xml</code>. The toolchain later
-  add the SVM binary to into the <code>.par/svm/</code> directory and then
+  in <code>tempStageDir/.par/platformManifest.xml</code>. The toolchain can later
+  add the SVM binary to into the <code>.par/svm/</code> directory (if desired) and then
   generate a <a href="par.html">PAR file</a>. The PAR file could be
-  uploaded to <a href="http://sedonadev.org">sedonadev.org</a> or copied to the
+  uploaded to <a href="http://sedonadev.org">sedonadev.org</a> or installed in the
   local <a href="par.html#db">platform database</a>.
   </li>
 </ul>

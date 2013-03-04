@@ -110,9 +110,10 @@ public class CommonBase extends Component { ... }
 <p>If you define a facet on your Sedona component slot that has the
 same name as a Niagara flag, <em>and</em> its value is <code>true</code>
 or <code>false</code>, then the corresponding slot in the
-BSedonaComponent will be likewise set; <a href="#facets">otherwise,
-the facet will simply be treated like all other facets</a>. The most common
-slot flags to set are listed in the table below.</p>
+BSedonaComponent will be likewise set; otherwise,
+the facet will simply be treated like all other facets
+(see BComponent <a href="#facets">facet list</a>). 
+The most common slot flags to set are listed in the table below.</p>
 
 <table>
 <tr>  <th>Facet</th> <th>Description</th> </tr>
@@ -134,7 +135,7 @@ slot flags to set are listed in the table below.</p>
  properties for display.  This might be as a column in a table,
  or as a glyph in a graphical programming tool. <br/>
  <em>All Sedona runtime slots are treated as summary unless the summary
- facet was explicitly set to false: <code>@summary=false</code>.</em>
+ facet is explicitly set to false: <code>@summary=false</code>.</em>
  </td></tr>
 
  <tr><th align="left">confirmRequired</th><td>
@@ -143,8 +144,8 @@ slot flags to set are listed in the table below.</p>
  </td></tr>
 
  <tr><th align="left">operator</th><td>
- This makes a slot an operator security level.  By default
- when this flag is clear, the slot is an admin security level.
+ This gives a slot an operator security level.  By default
+ when this flag is clear, the slot has an admin security level.
  </td></tr>
 
  <tr><th align="left">noAudit</th><td>
@@ -212,7 +213,7 @@ in Niagara. This table lists some of the more common BFacets.
 
 <tr>  <th>showSeparators</th><td>bool</td>
       <td>Used with numerics to enable/disable displaying of separators
-          between every 3 digits (e.g. 10,000 vs. 10000)</td></tr>
+          between every 3 digits (e.g. 10,000 vs. 10000).</td></tr>
 
 <tr>  <th>multiLine</th><td>bool</td>
       <td>Used with Str to support a multiline editor.</td></tr>
@@ -224,9 +225,9 @@ in Niagara. This table lists some of the more common BFacets.
       <td>Tells the field editor allow the value to be set to null.</td></tr>
 
 <tr>  <th>fieldEditor</th><td>Str</td>
-      <td>The BTypeSpec of the field editor to use for editing a property
+      <td>Indicates the BTypeSpec of the field editor to use for editing a property
           value. It overrides the default field editor registered for the
-          property's value</td></tr>
+          property's value.</td></tr>
 
 <tr>  <th>trueText</th><td>Str</td>
       <td>Display text to be used for a boolean property when true.</td></tr>
@@ -269,26 +270,26 @@ views on your Sedona Framework component. Namely, <code>&lt;def/&gt;</code> bloc
 are used to define agents on specific Sedona Framework component types. An example
 follows.</p>
 
-<p>Suppose you have developed a Service called MyService in kit "foo".
+<p>Suppose you have developed a Service called MyService in kit <code>foo</code>.
 The qname for this type is <code>foo::MyService</code>. Suppose,
-further, that you have written a Niagara view - BMyServiceView - to
-manage this service and that it resides in module "bar". The BTypeSpec
+further, that you have written a Niagara view <code>BMyServiceView</code> to
+manage this service and that it resides in module <code>bar</code>. The BTypeSpec
 for this service is <code>bar:MyServiceView</code>. To register your
-view on the MyService service, you would add the following lines to the
-module-include.xml for your module.</p>
+view on the <code>MyService</code> service, you would add the following lines to the
+<code>module-include.xml</code> for your module:</p>
 
 <pre>
-&lt;defs>
-  &lt;!-- This declares the agent on the foo::MyService service -->
-  &lt;def name="sedona.foo::MyService#agent" value="bar:MyServiceView" />
-&lt;/def>
+&lt;defs&gt;
+  &lt;!-- This declares the agent on the foo::MyService service --&gt;
+  &lt;def name="sedona.foo::MyService#agent" value="bar:MyServiceView" /&gt;
+&lt;/def&gt;
 
-&lt;types>
+&lt;types&gt;
   ...
-  &lt;!-- Declare the Niagara type as usual, but no agent block is required -->
-  &lt;type name="MyServiceView" class="com.bar.BMyServiceView" />
+  &lt;!-- Declare the Niagara type as usual, but no agent block is required --&gt;
+  &lt;type name="MyServiceView" class="com.bar.BMyServiceView" /&gt;
   ...
-&lt;/types>
+&lt;/types&gt;
 </pre>
 
 <p>
@@ -306,8 +307,8 @@ protected void doLoadValue(BObject value, Context cx) throws Exception
 </pre>
 
 <p>
-<font color='red'>Note, the
-concrete class BSedonaComponent is deprecated in the TXS 1.1 release.</font>
+<font color='red'>Note: the
+concrete class BSedonaComponent is deprecated as of the TXS 1.1 release.</font>
 You should migrate your views to use the new BISedonaComponent interface instead.
 If you have questions about writing views for Sedona Framework components, ask them on
 one of the Sedona Framework forums on <a href='http://niagara-central.com/ord?portal:/discussion'>
@@ -337,13 +338,13 @@ When using Niagara tools to provision a Sedona Framework-enabled device, there a
   Hence, when Niagara writes new app and scode files to the device, it does so in three stages:
   </p>
   <ol>
-  <li>Write the app as <code>app.sab.writing</code> and the scode as <code>kits.scode.writing</code>.</li>
-  <li>Rename those files to <code>app.sab.stage</code> and <code>kits.scode.stage</code> respectively.</li>
-  <li>Restart the device.</li>
+  <li>Writes the app as <code>app.sab.writing</code> and the scode as <code>kits.scode.writing</code>.</li>
+  <li>Renames those files to <code>app.sab.stage</code> and <code>kits.scode.stage</code> respectively.</li>
+  <li>Restarts the device.</li>
   </ol>
   </dd>
   <dt>File GET</dt>
-  <dd> A file GET operation from Sedona to Niagara will prompt the user for the path
+  <dd> A file GET operation from Sedona to Niagara should prompt the user for the path
   and filename to be used on the local host for the received file.  The name of the file
   as it is being transferred is normally not visible (or relevant) to the user.</dd>
 </dl>

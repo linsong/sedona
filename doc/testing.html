@@ -81,13 +81,13 @@ in your "kit.xml" build file:
 </pre>
 
 <p>
-The snippet of XML above illustrates a kit build file that
+The XML above illustrates a kit build file that
 contains two source directories.  The "." directory contains the
 normal runtime classes.  On the other hand, all the classes defined
 in the "test" directory are automatically marked <i>test only</i>.  If
 you look at the IR for these classes you will see each test class
 annotated with the <code>@testonly</code> facet.  Convention is to
-place all test code in a subdirectory called "test" off your source tree.
+place all test code in a subdirectory called "test" inside your source folder.
 </p>
 
 <!--/////////////////////////////////////////////////////////-->
@@ -97,7 +97,7 @@ place all test code in a subdirectory called "test" off your source tree.
 <p>
 Tests are organized into <i>test classes</i>, which are classes that
 extend <code>sys::Test</code>.  Every method inside
-a test class that starts with "test" is a <i>test method</i>.
+a test class whose name starts with "test" is a <i>test method</i>.
 Test methods are the primary unit of test execution.  Test methods
 must be public, static, non-native methods that return void and
 declare no parameters.
