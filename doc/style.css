@@ -141,11 +141,13 @@ dt
 dd
 {
   margin: 0 0 20px 0;
+  padding-left: 10px;
 }
 
 p.sig
 {
   margin: 3px 0 -10px 0;
+  padding-left: -5px;
 }
 p.sig a { color: #008000; }
 
