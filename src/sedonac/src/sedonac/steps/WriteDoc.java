@@ -126,7 +126,7 @@ public class WriteDoc
     {
       out.w("<ul class='tabs'>\n");
       out.w("  <li><a href='").w(home).w("'>Home</a></li>\n");
-      out.w("  <li><a class='active' href='index.html'>Documentation</a></li>\n");
+      out.w("  <li><a class='active' href='../index.html'>Documentation</a></li>\n");
       out.w("  <li><a href='../../community.html'>Community</a></li>\n");
       out.w("  <li><a href='/download/'>Downloads</a></li>\n");
       out.w("  <li><a href='../../forum.html'>Forum</a></li>\n");
@@ -265,13 +265,21 @@ public class WriteDoc
     out.w(t.qname).w("\n");
     out.w("</pre>\n");
 
+    out.w("<br>\n");
+
     // Print modifiers
+    out.w("<code style='color:darkgreen;font-weight:bold;font-size:120%'>");
     typeModifiers(t, out, "em");
-    out.w(" class <b>" + t.name() + "</b>  ");
+    out.w(" class <b style='font-weight:bolder'>" + t.name() + "</b>  ");
+    out.w("</code>");
 
     // Print facets
     if ((t.facets()!=null) && (!t.facets().isEmpty())) 
+    {
+      out.w("<code style='color:darkblue;font-weight:bold'>\n");
       out.safe(t.facets().toString());
+      out.w("</code>\n");
+    }
     out.w("<br>\n");
 
     out.w("<hr/>\n");
@@ -493,7 +501,17 @@ public class WriteDoc
     {
       SlotDef a = (SlotDef)o1;
       SlotDef b = (SlotDef)o2;
-      return a.name.compareTo(b.name);
+
+      // If types are the same, order by name string as usual
+      if ( ((a instanceof FieldDef) && (b instanceof FieldDef)) ||
+           ((a instanceof MethodDef) && (b instanceof MethodDef)) )
+        return a.name.compareTo(b.name);
+
+      // If types are different, FieldDef comes first
+      if (a instanceof FieldDef) return -1;
+      return 1;
+
+      //return a.name.compareTo(b.name);
     }
   }
   static SlotComparator slotCompare = new SlotComparator();
