@@ -199,6 +199,13 @@ public class WriteDoc
     header(out, kit.name);
     out.w("<h1 class='title'>").w(kit.name).w("</h1>\n");
     out.w("<ul>\n");
+    if (kit.description!=null)
+    {
+      out.w("<p>\n");
+      out.w(kit.description);
+      out.w("</p>\n");
+    }
+
     for (int i=0; i<types.length; ++i)
     {
       TypeDef t = types[i];
