@@ -97,21 +97,30 @@ with a fixed scan rate:
 </p>
 
 <ol>
-<li>Recursively execute components (children first).  For each component:
+<li>Recursively execute components.  For each component:
   <ol type='a'>
-  <li>Propagate incoming links</li>
-  <li>Call the <code>Component.execute</code> virtual method</li>
+  <li>Step through the component's list of children and execute them first</li>
+  <li>Propagate incoming links to this component</li>
+  <li>Call this component's <code>execute()</code> virtual method</li>
   </ol>
 </li>
 <li>Give any remaining time in the scan cycle to services via
-<code>Service.work</code></li>
+<code>Service.work()</code></li>
 <li>If no services have remaining work, then relinquish CPU (via yield or sleep) until next cycle</li>
 </ol>
 
+<h2 id="multirate">Controlling child execution rate</h2>
 <p>
-Note that beginning with Sedona Framework 1.2, components may be selected to execute
-at a slower rate than the main loop by making them children of a 
-<code>sys::RateFolder</code> component.
+For Sedona 1.2 a new virtual method was added to the <code>Component</code> class.
+If a component's <code>allowChildExecute()</code> returns <code>false</code>, then the
+app will skip (1a), the recursive step through the component's child components.  
+It will simply call <code>execute()</code> on the current component and then go on to 
+the next one at the same hierarchy level.  
+(The base class version of the method always returns
+<code>true</code>, which preserves pre-1.2 behavior.)
+This method can be overridden to force child components to be executed at a slower
+rate than the main loop.  As an example, there is a new component <code>sys::RateFolder</code> 
+that uses this strategy to provide multi-rate app functionality.
 </p>
 
 <!--/////////////////////////////////////////////////////////-->
