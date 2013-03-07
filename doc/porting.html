@@ -183,8 +183,8 @@ the scode image and the app to be run.  (Even with platforms that cannot support
 On smaller, simpler platforms, new bootstrap code will need to be written.
 Every platform will have a unique implementation, but at some point the SVM
 will need to be started by calling <code>vmRun(SedonaVM*)</code>.
-(Both <code>vmRun</code> and the <code>SedonaVM</code> struct are defined in <code>sedona.h</code>.)
-Before calling <code>vmRun</code>, a SedonaVM struct must be created and then initialized as
+(Both <code>vmRun()</code> and the <code>SedonaVM</code> struct are defined in <code>sedona.h</code>.)
+Before calling <code>vmRun()</code>, a SedonaVM struct must be created and then initialized as
 follows:
 </p>
 
@@ -223,13 +223,38 @@ automatically during the VM code generation stage.  See the
 </li>
 </ol>
 
-<p>When the <code>SedonaVM</code> struct has been initialized, start the SVM
-by calling the <code>vmRun()</code> function and passing a pointer to the struct.
-If <code>vmRun</code> returns a non-zero value (other than <code>ERR_HIBERNATE</code>
-or <code>ERR_YIELD</code>, discussed below), then there is a problem.  
-Errors in the scode image or the app will generally produce an error code defined 
-in <code>src/sys/Err.sedona</code>; errors in the VM itself are usually indicated 
-by an error code in <code>src/vm/errorcodes.h</code>.
+<p>
+When the <code>SedonaVM</code> struct has been initialized, start the SVM
+by calling <code>vmRun()</code> and passing a pointer to the struct.
+</p>
+
+
+<!--/////////////////////////////////////////////////////////-->
+<h2 id="errcodes">Sedona VM Exit Values</h2>
+<!--/////////////////////////////////////////////////////////-->
+<p>
+When the Sedona VM exits, the calling function must decide what to do next
+based on the return code.
+</p>
+
+<p>If the VM exits normally with a return code of <code>0</code>, it generally means the VM
+is not expecting to restart.  The most common use of this is when running the test
+harness.  If so, then the global variables <code>assertSuccesses</code>
+and <code>assertFailures</code> will contain the number of calls
+to <code>assert</code> that passed and failed, respectively.
+</p>
+
+<p>When the action <code>App.restart()</code> is invoked, the app stops running and sets the
+return code to <code>Err.restart</code>.  On most platforms this leads to the SVM 
+exiting with the value <code>ERR_RESTART</code>.  If this value is received then the
+calling function should repeat the above steps to restart the SVM (possibly using 
+different <code>app.sab</code> or <code>kits.scode</code> files if the
+device is restarting after being <a href="niagara.html#prov">provisioned</a>).
+Note however that <code>App.restart()</code> also calls the platform service's 
+<code>restart()</code> method, 
+which could produce different behavior depending on how that method is implemented.  
+For example, on a device with no OS it might issue a soft restart to the CPU, in
+which case there would be no return code to process.
 </p>
 
 <p>Some platforms may require the Sedona VM to yield execution control to allow other 
@@ -238,7 +263,7 @@ yielding CPU control.
 See the <a href='apps.html#yield'>Yield</a> section for more details.
 </p>
 
-<p>Each platform requires the implmentation of an appropriate hibernation strategy.
+<p>Each platform requires the implementation of an appropriate hibernation strategy.
 When <code>vmRun()</code> returns <code>ERR_HIBERNATE</code> then the application
 has requested that the platform go into a low-power or sleep state.  Awakening from
 this state is under the control of the device, not the Sedona Framework application.
@@ -248,9 +273,13 @@ See the <a href='apps.html#hibernation'>Hibernation</a> section for
 more details.
 </p>
 
-<p>If the VM exits normally, the global variables <code>assertSuccesses</code>
-and <code>assertFailures</code> will contain the number of calls
-to <code>assert</code> that passed and failed, respectively.
+<p>
+If <code>vmRun()</code> returns a non-zero value <i>other</i> than <code>ERR_RESTART</code>,
+<code>ERR_HIBERNATE</code>, or <code>ERR_YIELD</code>, then there is a problem.  
+Error codes generated in the scode image or the app are defined in 
+<code>src/sys/Err.sedona</code>; 
+errors from the VM itself are usually indicated 
+by an error code in <code>src/vm/errorcodes.h</code>.
 </p>
 
 
