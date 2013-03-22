@@ -45,7 +45,7 @@ Statements are very close to those found in C or Java:
 
 <ul>
 <li><a href='#expr'>Expression</a>: expression statement</li>
-<li><a href='#localDef'>Local Def</a>: declare a local variable</li>
+<li><a href='#localDef'>Locals</a>: declare a local variable</li>
 <li><a href='#return'>Return</a>: exit from a method</li>
 <li><a href='#if'>If/Else</a>: conditional branching</li>
 <li><a href='#while'>While</a>: conditional looping</li>
@@ -169,8 +169,8 @@ else
 </pre>
 
 <p>
-Like C/Java, the blocks may be a single statement, or a block of
-statements wrapped in "{}" curly braces.
+Like C/Java, each block may be a single statement, or a block of
+statements wrapped in "{ }" curly braces.
 </p>
 
 <!--/////////////////////////////////////////////////////////-->
@@ -178,9 +178,10 @@ statements wrapped in "{}" curly braces.
 <!--/////////////////////////////////////////////////////////-->
 
 <p>
-Sedona supports the traditional while, do-while, and for loops
-of C like languages.  Sedona also has a foreach statement for
-iterating arrays.
+Sedona supports the traditional while, do-while, and for loops of C like languages.  
+Sedona also has a foreach statement for iterating arrays.
+In each case, the repeated code can be a single statement or a sequence
+of statements wrapped in "{ }" curly braces.
 </p>
 
 <!--/////////////////////////////////////////////////////////-->
@@ -188,7 +189,7 @@ iterating arrays.
 <!--/////////////////////////////////////////////////////////-->
 
 <p>
-The while statement is used to loop while a bool expression
+The while statement is used to loop while a boolean expression
 evaluates to true:
 </p>
 
@@ -197,10 +198,6 @@ while (cond)
   block
 </pre>
 
-<p>
-The cond must be a boolean expression.  The block can be a single
-statement or a "{}" curly brace block.
-</p>
 
 <!--/////////////////////////////////////////////////////////-->
 <h2 id="doWhile">Do While</h2>
@@ -240,7 +237,7 @@ for (int i=0; i&lt;5; ++i)
 <p>
 Any of the init, cond, or update expressions may be omitted.
 If the cond is omitted, then it defaults to true and the loop
-must be terminated with a break or return statement.
+must be terminated with a break or return statement inside the block.
 </p>
 
 <!--/////////////////////////////////////////////////////////-->
@@ -265,8 +262,7 @@ foreach (type var : array, length)
 // example - prints each kit name and version
 foreach (Kit kit : Sys.kits, Sys.kitsLen)
   Sys.out.print("$kit.name  $kit.version").nl()
-</pre>
-
+</pre> 
 <p>
 The length may be omitted only if the compiler can infer the
 length of the array from its declaration.
@@ -417,8 +413,8 @@ assert(cond)
 
 <p>
 The condition must be a boolean expression.  Failed assertions result
-in a call to the VM's <code>onAssertFailure</code> callback.
-In most VMs, this will print a message to stdout.  See
+in a call to the Sedona VM's <code>onAssertFailure</code> callback.
+On most platforms, this will print a message to stdout.  See
 <a href='porting.html#bootstrap'>Porting</a> for more details.
 </p>
 

@@ -63,7 +63,7 @@ primitive types:
 </ul>
 
 <p>
-In addition to the primitive types, the following Obj types have special
+In addition to the primitive types, the following class types have special
 language support for literal representation:
 </p>
 
@@ -82,7 +82,7 @@ These types are described in more detail below.
 
 <p>
 The <code>bool</code> type stores a boolean variable.  Boolean
-literals are expressed using the <code>true</code>, <code>false</code>
+literals are expressed using the <code>true</code>, <code>false</code>,
 and <code>null</code> keywords.  Use <code>null</code> to indicate
 an invalid boolean value.  If used in a boolean expression, <code>null</code>
 will evaluate to true (it is represented as 2 in memory).
@@ -90,7 +90,7 @@ will evaluate to true (it is represented as 2 in memory).
 
 <p>
 A <code>bool</code> is stored in fields and arrays as an unsigned
-8-bit integer.  During stack manipulation <code>bools</code> are
+8-bit integer.  During stack manipulation <code>bool</code>s are
 stored on the stack as signed 32-bit integers.
 </p>
 
@@ -133,7 +133,7 @@ integer type.
 <p>
 All integer operations
 on the SVM stack are performed using signed 32-bit integers.
-When a <code>byte</code> and <code>short</code> is loaded from a
+When a <code>byte</code> or <code>short</code> is loaded from a
 field or array it is automatically expanded into a 32-bit signed
 value.  Likewise when it is stored back into a field or array it
 is narrowed from a 32-bit signed value.
@@ -142,9 +142,12 @@ is narrowed from a 32-bit signed value.
 <p id="charEscapes">
 Integer literals are decimal by default. If prefixed with "0x" they are
 hexadecimal.  You may use the underbar "_" as separator in both
-decimal or hexadecimal formats.  To specify a 64-bit long you must append
-a "l" or "L" suffix.  You may also use single quotes to specify a character
-as an integer literal.  The following character escape sequences are supported:
+decimal and hexadecimal formats.  To specify a 64-bit long value, you 
+must append an "L" to the number.
+</p>
+<p>
+You may also use single quotes to specify a character as an integer literal.  
+The following character escape sequences are supported:
 </p>
 
 <pre>
@@ -154,7 +157,7 @@ as an integer literal.  The following character escape sequences are supported:
   \t   horizontal tab
   \"   double quote
   \'   single quote
-  \\   forward slash
+  \\   backslash
   \$   dollar sign ($ is used for <a href='expr.html#interpolation'>str interpolation</a>)
 </pre>
 
@@ -227,9 +230,9 @@ The keyword <code>null</code> is used to represent not-a-number
 for situations requiring indication of an invalid float or double.
 The string representation for <code>null</code> floats and doubles
 is always "null".  The "==" operator will return true when comparing
-two <code>null</code> floating point values (different from Java
-and IEEE).  How arithmetic and comparisions operate with <code>null</code>
-is unspecified by the SVM.
+two <code>null</code> floating point values (this is different from Java
+and IEEE).  The evaluation of arithmetic and comparison operations with 
+<code>null</code> operands, however, is unspecified for the Sedona VM.
 </p>
 
 <pre>
@@ -289,28 +292,48 @@ Examples of <code>long</code> time literals and what they represent:
 <p>
 The <code>sys::Str</code> class models a string of ASCII characters.
 Strings are stored in memory like C strings using a null
-terminator (a byte value of zero).  It is recommended to use only 7-bit
-ASCII characters (clear high bit) for future UTF-8 and Unicode support.
+terminator (a byte with a value of zero).  You should use only 7-bit ASCII 
+characters (clear high bit) to allow future UTF-8 and Unicode support.
 </p>
 
 <p>
 In the SVM, the <code>Str</code> class makes use of the
-<a href="arrays.html#unsizedClasses">unsized class</a> feature such that
-it contains a variable length, inline <code>byte[]</code>.  No other fields
-are declared, which means that an instance of <code>Str</code> is stored
+<a href="arrays.html#unsizedClasses">unsized class</a> feature to create
+a <code>byte[]</code> of the correct length when the <code>Str</code> 
+object is instantiated.  
+No other fields are declared, so an instance of <code>Str</code> is stored
 in memory just like a <code>byte[]</code>.  You can also treat a <code>Str</code>
-reference as a normal C string (<code>char*</code>) when writing your
+reference as a normal C string (<code>char*</code>) when writing 
 <a href="nativeMethods.html">native methods</a>.
 </p>
 
 <p>
+Because <code>Str</code> is an unsized class,
+you must specify the length of the string when declaring a <code>Str</code>
+field.  For example to declare a <code>Str</code> that can hold a max of 8
+characters (including the null terminator):
+</p>
+
+<pre>
+Str someStr           // reference to Str stored elsewhere
+inline Str(8) myStr   // storage allocated here for 8 byte Str
+</pre>
+
+<p>
+Sedona also supports <a href='expr.html#interpolation'>string interpolation</a>
+when writing to an output stream.
+</p>
+
+<p>
 <code>Str</code> literals are written using double quotes.  You may use
-the standard <a href="#charEscapes">escape sequences</a> inside the quotes
-for special characters.  All <code>Str</code> literals are <i>interned</i>
+supported <a href="#charEscapes">escape sequences</a> 
+for special characters inside the quotes.  
+All <code>Str</code> literals are <i>interned</i>
 when compiling a scode image - this means that all <code>Str</code> literals
-with the same sequence of characters will share the same reference.  Str
-literals are stored in the scode memory space - never attempt
-to write to a Str literals memory.
+with the same sequence of characters will share the same reference.  
+<code>Str</code> literals should
+be considered read-only memory - never try to change the contents of
+a <code>Str</code> literal.
 </p>
 
 <p>
@@ -323,27 +346,9 @@ Examples of <code>Str</code> literals:
 </pre>
 
 <p>
-Note that the compiler automatically adds the null terminator.  For example
-a pointer to the literal <code>"abc"</code> is really a pointer to four bytes
-of memory containing <code>"abc\0"</code>.  <code>Str</code> literals should
-be considered read-only memory - never try to change the contents of
-a <code>Str</code> literal.
-</p>
-
-<p>
-Because <code>Str</code> is an <a href="arrays.html#unsizedClasses">unsized class</a>,
-you must specify the length of the string when declaring an inline <code>Str</code>.
-For example to declare a <code>Str</code> that can hold a max of 8
-characters (including the null terminator):
-</p>
-
-<pre>
-Str someStr           // reference to Str
-inline Str(8) myStr   // storage for 8 byte Str
-</pre>
-
-<p>
-Sedona also supports <a href='expr.html#interpolation'>str interpolation</a>.
+The compiler automatically adds the null terminator byte when interning the
+literal.  For example a pointer to the literal <code>"abc"</code> is really 
+a pointer to four bytes of memory containing <code>"abc\0"</code>.  
 </p>
 
 <!--/////////////////////////////////////////////////////////-->
@@ -351,9 +356,17 @@ Sedona also supports <a href='expr.html#interpolation'>str interpolation</a>.
 <!--/////////////////////////////////////////////////////////-->
 
 <p>
-The <code>sys::Buf</code> class models a contiguous chunk of bytes
-in memory.  The syntax for a Buf literal is <code>0x[<i>hexDigits</i>]</code>.
-You can use whitespace including newlines between bytes (not nibbles).
+The <code>sys::Buf</code> class models a contiguous chunk of bytes in memory.  
+Like <code>sys::Str</code>, it is an unsized class containing a <code>byte[]</code>
+that is allocated to the specified size when the <code>Buf</code> object is created.
+Unlike <code>Str</code>, however, <code>Buf</code> does not treat its contents
+as a string, so no null terminator is added.  It also has fields that store
+the size of the buffer and the number of bytes used.
+</p>
+
+<p>
+The syntax for a Buf literal is <code>0x[<i>hexDigits</i>]</code>.
+You can use whitespace (including newlines) between bytes.
 For example:
 </p>
 

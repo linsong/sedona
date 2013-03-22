@@ -195,7 +195,7 @@ perm = ((or|ow|oi|ar|aw|ai|ua) &lt;&lt; 16) | ((or | ow) &lt;&lt; 0)
 
 <p>
 To compute the permissions a user has on a given component,
-then we merge each of the user's configured permissions for
+we combine the user's configured permissions for
 each group the given component is a member of.  Consider
 this example of a User's configured permissions:
 </p>
@@ -217,7 +217,7 @@ Some examples of what permissions this user would be granted:
 <li>Permissions for component in group 2: or, oi</li>
 <li>Permissions for component in group 3: all</li>
 <li>Permissions for component in group 4: none</li>
-<li>Permissions for component in group 1 and 2: or, ow, oi, ar (merge of 1 and 2)</li>
+<li>Permissions for component in group 1 and 2: or, ow, oi, ar (union of 1 and 2)</li>
 </ul>
 
 <!-- /////////////////////////////////////////////////////// -->

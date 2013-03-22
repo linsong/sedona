@@ -90,10 +90,10 @@ digest. Version 1.0 does not specify encryption, but could be added via new
 handshaking headers.</li>
 
 <li>DASP will provide flow control in the delivery of datagrams between the
-endpoints using a sliding window. A common use case will be that a session
-spans both a high speed network such as Ethernet and a low speed network such
-as 6LoWPAN running over 802.15.4. Compounding the problem is that 6LoWPAN
-networks typically have few memory resources to allocate to buffering and can
+endpoints using a sliding window. For example, a session might span both a 
+high speed network such as Ethernet and a low speed network such
+as 6LoWPAN running over 802.15.4. Compounding the problem is that low speed
+networks may have few memory resources to allocate to buffering and can
 quickly be overwhelmed by bursts of packets.</li>
 
 </ol>
@@ -130,7 +130,7 @@ DASP messages are described as a data structure using the following primitive ty
 <li><b>u2</b>: an unsigned 16-bit integer in network byte order</li>
 <li><b>str</b>: UTF-8 encoded text, followed by a null terminate (zero) byte</li>
 <li><b>bytes</b>: an unsigned 8-bit length n, followed by n bytes</li>
-<li><b>x[]</b>: an array of type x that contains zero or more elements</li>
+<li><b>x[ ]</b>: an array of type x that contains zero or more elements</li>
 </ul>
 
 <p>
@@ -268,7 +268,6 @@ header field:
 <tr><td>0xe3</td><td>digestNotSupported</td><td>Client does not support digest algorithm in challenge</td></tr>
 <tr><td>0xe4</td><td>notAuthenticated</td><td>Client supplied invalid credentials</td></tr>
 <tr><td>0xe5</td><td>timeout</td><td>Remote endpoint is timing out the session</td></tr>
-<tr><td>0xe6</td><td>socketError</td><td>Error in the underlying socket /IP stack</td></tr>
 </table>
 
 <!-- /////////////////////////////////////////////////////// -->
@@ -621,7 +620,7 @@ ack=10 ackMore=15, 18, 19  -> 0x03 0x21
 
 <p>
 <font color='red'>Note: the following behavior is not currently implemented
-in the opensource Java or Sedona Framework implementations of DASP.</font>
+in the opensource Sedona Framework implementations of DASP.</font>
 </p>
 
 <p>

@@ -104,8 +104,12 @@ if __name__ == '__main__':
   # Make all kits
   compilekit.compile(env.src)
 
-  # Make windows test scode
+  # Make windows test scode (or scode specified on cmd line)
   compilekit.compile(options.scode)
+  
+  # Make windows test scode
+  if options.app:
+    compilekit.compile(options.app)
   
   # Make windows SVM
   status = makewinvm.compile()

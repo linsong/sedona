@@ -40,12 +40,12 @@
 <!--/////////////////////////////////////////////////////////-->
 
 <p>
-Fields are storage locations used to store a variable.  The following
+Fields are storage locations used to store a class variable.  The following
 keywords may be applied to a field declaration:
 </p>
 
 <ul>
-<li><code>static</code>: class-based field (versus instance-based)</li>
+<li><code>static</code>: class-based field (versus instance-based, see below)</li>
 <li><code>const</code>: indicates a field is immutable</li>
 <li><code>inline</code>: allocates memory for the variable instance</li>
 <li><code>define</code>: used to declare a constant variable</li>
@@ -65,9 +65,9 @@ is assumed.
 
 <p>
 If a field is marked with the <code>static</code> keyword,
-then the field stores one variable for the whole VM.  Static
-fields are essentially global variables scoped within a class
-type.  Instance fields on the other hand allocate storage for
+then the field is stored once for all instances of that class.  
+Static fields are essentially global variables scoped within a class type.  
+Instance fields on the other hand allocate storage for
 each instance of the declaring type:
 </p>
 
@@ -85,9 +85,8 @@ class Display
 In the code above we declare a class called <code>Display</code>
 with three instance fields <code>id</code>, <code>width</code>,
 and <code>height</code>.  Each instance of <code>Display</code>
-will have its own storage of these fields.  The static field
-<code>maxId</code> has one fixed memory location for the
-whole VM.
+will store its own copies of these fields.  The static field
+<code>maxId</code> has one fixed memory location for the whole Sedona VM.
 </p>
 
 <!--/////////////////////////////////////////////////////////-->
@@ -96,8 +95,8 @@ whole VM.
 
 <p>
 Access to instance fields is done through an implicit or explicit
-instance pointer.  The <code>this</code> keyword may be used to
-access the current instance inside an instance method.  If no
+instance pointer.  The keyword <code>this</code> may be used to
+reference the current instance inside an instance method.  If no
 instance pointer is used, then <code>this</code> is implied (only
 available inside an instance method):
 </p>
@@ -120,10 +119,9 @@ available inside an instance method):
 </pre>
 
 <p>
-Access to static fields is done through an implicit or
-explicit type literal.  Implicit static access is only
-available inside methods of the <code>Display</code>
-class:
+Access to static fields is done through an implicit or explicit type literal.  
+Implicit static access (where the type name is not specified) is only
+available inside methods of the <code>Display</code> class:
 </p>
 
 <pre>
@@ -155,7 +153,7 @@ For example in the <code>Display</code> class declared above, the
 </p>
 
 <p>
-Static fields are initialized when the VM is booted.  The
+Static fields are initialized when the Sedona VM is booted.  The
 compiler will automatically create a synthetic method called
 <code>_sInit()</code>, which executes the initialization code
 for static fields.
@@ -167,9 +165,9 @@ Instance fields are initialized in the declaring class's
 </p>
 
 <p>
-Any field without a default value has its memory initialized
-to zero.  In the case of bool fields this is false, for numeric fields
-it is 0, and for pointers it is null.
+Any field without a default value has its memory initialized to zero.  
+In the case of <code>bool</code> fields it is <code>false</code>, 
+for numeric fields it is 0, and for references it is <code>null</code>.
 </p>
 
 <!--/////////////////////////////////////////////////////////-->
@@ -177,14 +175,13 @@ it is 0, and for pointers it is null.
 <!--/////////////////////////////////////////////////////////-->
 
 <p>
-Some of the core types in the sys kit contain fields marked with
-the <code>const</code> keyword.  This indicates that these fields
-are immutable, and are actually stored within the scode
-memory itself.  So it is quite possible that these fields
-are stored in readonly memory such as ROM.  Attempts to set
-a const field will result in a compiler error.  You cannot
-create your own const fields directly - only the predefined sys types
-can use this keyword.  However you can use <code>define</code>
+Some of the core types in the <code>sys</code> kit contain fields marked 
+with the <code>const</code> keyword.  This indicates that these fields
+are immutable, and are actually stored within the scode memory itself.  
+On some platforms these fields may be stored in readonly memory such as ROM.  
+Attempts to set a const field will result in a compiler error.  You cannot
+create your own const fields directly - only the predefined <code>sys</code> types
+can use this keyword.  However you can use the <code>define</code>
 keyword to declare user defined constants.
 </p>
 
@@ -195,10 +192,10 @@ keyword to declare user defined constants.
 <p>
 The <code>define</code> keyword is used to declare a named
 constant.  Defines are like const fields - if you try to
-set a define field you will get a compiler error.  Defines
-don't actually allocate memory, rather they are inlined when
-accessed.  Because of this trait, the value of a define
-field must be expressed as a literal value:
+assign to a define field you will get a compiler error.  
+Defines don't actually allocate memory, rather they are inlined at compile time.
+Because of this trait, the value of a define field must be expressed as a 
+literal value:
 </p>
 
 <pre>
@@ -214,7 +211,7 @@ Defines are accessed just like static fields:
 </p>
 
 <pre>
-  if ((f &amp; tooBig) != 0) return true  // implicit access
+  if ((f &amp; tooBig) != 0) return true        // implicit access
   if ((f &amp; Flags.tooBig) != 0) return true  // explicit access
 </pre>
 
@@ -223,13 +220,13 @@ The following types are supported for defines:
 </p>
 
 <ul>
-<li><code>bool</code>: <code>true</code> or <code>false</code> value;</li>
-<li><code>int</code>: 32-bit integer literal value;</li>
-<li><code>long</code>: 64-bit integer literal value (or time literal);</li>
-<li><code>float</code>: 32-bit float literal value;</li>
-<li><code>double</code>: 64-bit float literal value;</li>
-<li><code>sys::Str</code>: null terminated string literal;</li>
-<li><code>sys::Log</code>: see <a href='logging.html'>Logging</a>;</li>
+  <li><code>bool</code>: <code>true</code>, <code>false</code>, or <code>null</code></li>
+<li><code>int</code>: 32-bit integer literal value</li>
+<li><code>long</code>: 64-bit integer literal value (or time literal)</li>
+<li><code>float</code>: 32-bit float literal value</li>
+<li><code>double</code>: 64-bit float literal value</li>
+<li><code>sys::Str</code>: null terminated string literal</li>
+<li><code>sys::Log</code>: see <a href='logging.html'>Logging</a></li>
 <li>Array literals: see <a href='#arrayLiterals'>next section</a></li>
 </ul>
 
@@ -268,7 +265,7 @@ define Str[] weekdays = {"sun", "mon", "tue", "wed", "thu", "fri", "sat" }
 <p>
 Array literals are treated like <code>const</code> structures and
 are read-only.  It is a compile time error to assign to a array
-literal (or any define)
+literal (or any define).
 </p>
 
 <!--/////////////////////////////////////////////////////////-->
@@ -276,12 +273,16 @@ literal (or any define)
 <!--/////////////////////////////////////////////////////////-->
 
 <p>
-Fields that store a non-primitive are always a reference to
-a <code>sys::Obj</code> object.  By default an object field is a pointer
-to an object.  For example on a 32-bit machine, an object field
-would allocate 4 bytes for a pointer.  However, often we wish the
-field to contain an instance of the object.  This is done with
-the <code>inline</code> keyword.  Let's look at an example:
+A field with a non-primitive (i.e. object) type is normally a reference to
+a <code>sys::Obj</code> object.  Inside the SVM, an object field is a 
+pointer to an object.  For example on a 32-bit machine, an object field
+would allocate 4 bytes for a pointer.  The object itself resides elsewhere
+in memory.
+</p>
+
+<p>
+However, often we wish the field to contain an <i>instance</i> of the object.  
+This is done with the <code>inline</code> keyword.  Let's look at an example:
 </p>
 
 <pre>
@@ -295,28 +296,25 @@ class Foo
 </pre>
 
 <p>
-In this example <code>Foo.a</code> is a pointer field - it allocates
+In this example <code>Foo.a</code> is a pointer field - it allocates just
 enough space to store a pointer to a <code>Point</code> instance (typically
-4 bytes).  However, <code>Foo.b</code> actually allocates storage to store
-the entire <code>Point</code> instance <i>inline</i> (8 bytes to store
-two 32-bit ints).
+4 bytes).  However, <code>Foo.b</code> actually allocates memory to store
+the entire <code>Point</code> instance (8 bytes to store two 32-bit ints).
 </p>
 
 <p>
-Inline fields play an important role in the Sedona Framwork's static memory management.
-They allow you to develop fairly complex data structures where memory
-is laid out by the compiler.  Often these structures are contained by
-a component that allows tools to determine ahead of time exactly how
-much memory a component requires (versus allowing the component to allocate
-its own memory from the heap).
+Inline fields play an important role in the Sedona Framework's static memory management.
+They allow you to develop complex data structures where memory is laid out by the compiler.  
+This makes it possible for tools to calculate ahead of time exactly how
+much memory a component requires, since they can assume the component will 
+not be allocating any additional memory during runtime.
 </p>
 
 <p>
-Inline fields can be static or instance based.  You work with pointer
-fields and inline fields the same way.  However an inline field is
-not assignable.  You cannot assign the field to another instance since
-the entire instance is already embedded (you will get a compiler error
-if you try).
+Inline fields can be static or instance based.  Inline fields use the same
+syntax as reference fields.  However an inline field is not assignable.  
+You cannot point the reference to another instance since
+the entire instance is already embedded (you will get a compiler error if you try).
 </p>
 
 <!--/////////////////////////////////////////////////////////-->
