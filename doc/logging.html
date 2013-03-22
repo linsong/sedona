@@ -209,11 +209,11 @@ log.trace("Received $numBytes bytes from $addr")
 </pre>
 
 <p>
-Couple points to note:
+A few points to note:
 </p>
 
 <ul>
-<li>Don't add a trailing newline, one will be added automatically</li>
+<li>Don't add a trailing newline to your message, one will be added automatically</li>
 <li>Don't include any severity or log identity in your message string,
 this information is automatically included (the actual format is
 implementation specific)</li>
@@ -267,9 +267,9 @@ if (log.isTrace())
 <h2>WebService Spy Page</h2>
 
 <p>
-If you are running the <code>web::WebService</code>, then you
-may use the spy page at <code>"/spy/logs"</code> to change the
-log levels for a SVM.
+If a Sedona device is running the <code>web::WebService</code>, then you
+can use the spy page at <code>"&lt;device IP&gt;/spy/logs"</code> to change the
+log levels for a SVM at runtime.
 </p>
 
 <!--/////////////////////////////////////////////////////////-->

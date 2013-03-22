@@ -50,21 +50,25 @@ memory into the following sections:
 <li><b>Data</b>: all the memory declared as static
 fields in the current scode (RAM)</li>
 <li><b>Sedona Framework App</b>: the components that define the current application (RAM)</li>
-<li><b>Sedona Framework Code</b>: the scode image for the installed kits (RAM, or possibly FLASH)</li>
-<li><b>SAB File</b>: the persistent storage of the application (FLASH) </li>
-<li><b>C Code</b>: native code and SVM (RAM, or possibly FLASH)</li>
+<li><b>Sedona Framework Code</b>: the scode image for the installed kits (RAM, or possibly flash memory)</li>
+<li><b>SAB File</b>: the compact binary representation of the application (usually stored in flash) </li>
+<li><b>C Code</b>: native code and SVM executable (RAM, or possibly flash)</li>
 <li><b>C Data</b>: native code data segment (RAM)</li>
 <li><b>C Stack</b>: the C native call stack (RAM)</li>
 </ul>
 
 <p>
-We use the terms RAM and FLASH a bit loosely here:  RAM must be high
-speed read/write memory, and FLASH is persistent memory (on a large device
-this could be a disk drive).  If FLASH is high speed you might be able to
-run code directly out of FLASH, but normally those code segments will
+We use the terms RAM and flash a bit loosely here:  RAM must be high
+speed read/write memory, and flash is persistent memory (on a large device
+this could be a disk drive).  If flash is high speed you might be able to
+run code directly out of flash, but normally those code segments will
 be loaded into RAM.
 </p>
 
+<p>
+While reading this topic you may find it useful to refer to the Sedona VM
+source code, located in the <code>src/vm</code> folder.
+</p>
 
 <!--/////////////////////////////////////////////////////////-->
 <h1 id="computing">Computing Memory Requirements</h1>
@@ -75,31 +79,31 @@ So how do you figure out how much memory each of the sections
 declared above requires?  Let's look at each section:
 </p>
 
-<h2>C Code, Data, and Stack</h2>
+<h2>C Code, C Data, and C Stack</h2>
 
 <p>
 The C code, data, and stack segments will be determined by your development
 tools and C compiler.  We use the term "C Code" to denote any non-Sedona code
 such as C, C++, or assembly.  This code typically includes boot
-code, OS code (if you aren't running on bare metal), all your native method
-implementations, comm stacks, and the SVM itself.  During provisioning we
-lump all this stuff into a single file called "svm".  The C Data segment
+code, OS code (if your device has one), all your native method
+implementations, comm stacks, and the SVM itself.  All this is normally
+lumped into a single binary executable file called "svm".  The C Data segment
 includes all the memory buffers used by this code.
 </p>
 
 <p>
 <b>Note:</b> On some platforms, part of the SVM may already be
-in ROM or other permanent storage.  In that case the "svm" file created during
-provisioning will contain only the portion of the SVM that is not in ROM, and
+in ROM or other permanent storage.  In that case the "svm" executable created during
+compilation will contain only the portion of the SVM that is not in ROM, and
 its RAM footprint will be reduced.
 </p>
 
 <h2>Stack</h2>
 
 <p>
-The stack is defined when you launch the VM in the <code>SedonaVM</code>
-struct by the <code>stackBaseAddr</code> and <code>stackMaxSize</code>.
-Typically this value is one or two KB - although you should be able to test
+The Sedona stack is defined by the <code>stackBaseAddr</code> and <code>stackMaxSize</code>
+fields of the <code>SedonaVM</code> struct when the VM is launched.
+Typically the size is one or two KB - you may wish to test
 your application to find the maximum call stack.  Heavy use of recursion and
 methods with a large number of locals will affect your call stack size.
 </p>
@@ -107,12 +111,12 @@ methods with a large number of locals will affect your call stack size.
 <h2>Code and Data</h2>
 
 <p>
-The Code and Data segments are computed when you compile your
-scode image:
+The sizes of the Sedona Code and Data segments are calculated when the scode
+image is compiled:
 </p>
 
 <pre>
-D:\sedona>sedonac scode\x86-test.xml
+D:\sedona&gt;sedonac scode\x86-test.xml
   ReadKits [5 kits]
   WriteImage [D:\sedona\scode\x86-test.scode] (29632 bytes)
   +----------------------------------
@@ -128,10 +132,10 @@ you include and the code size of those kits.
 Declaring static fields will consume memory in your Data segment;
 instance fields only affect the application size.
 If you are running your code out of RAM, then the Total size is what matters.
-If you can run your code out of FLASH, then the Code will not use any RAM
+If you can run your code out of flash, then the Code will not use any RAM
 but the Data segment must still be stored in RAM.
-Note that the <code>test</code>
-and <code>debug</code> scode flags will have a huge impact on scode size.
+Note that the scode flags <code>test</code>
+and <code>debug</code> can have a huge impact on scode size.
 </p>
 
 <p>
@@ -144,22 +148,22 @@ is allocated by the <code>malloc</code> macro - see "sedona.h" for details.
 
 <p>
 The Sedona Framework application itself is always run out of RAM.  This is where we
-instantiate the components and links.  This memory is allocated
+instantiate the components and links.  Memory for components and links is allocated
 by the <code>malloc</code> macro.  If components or links are removed
-during runtime, then this memory is freed by the <code>free</code> macro
+during runtime, then the memory is freed by the <code>free</code> macro
 (if the platform supports it).
 </p>
 
 <p>
 The Sedona Framework application runs out of RAM, but has configuration data that
 must be persistent between power cycles.  So we also store the
-application to FLASH as a <a href='apps.html#sab'>SAB file</a>.  How
-this file is loaded on startup and stored back to FLASH on save is handled
-by the platform's implementation of the <code>sys::File</code> native methods.
+application to flash as a <a href='apps.html#sab'>SAB file</a>.  How
+this file is loaded on startup and stored back to flash on save is handled
+by the platform's implementation of the <code>sys::FileStore</code> native methods.
 </p>
 
 <p>
-Sedonac will report how much RAM and FLASH a given application
+Sedonac will report how much RAM and flash a given application
 consumes when you do a conversion between SAX or SAB:
 </p>
 
@@ -196,7 +200,7 @@ require importing a huge chunk of library code into your native image.</li>
 <li><b>Custom Heap</b>: if the stdlib implementation of malloc and free is
 too big, you might consider writing your own simple heap manager.</li>
 <li><b>Malloc Only</b>: many devices might require only a static application
-in which case there is no requirement for freeing memory.  In severely
+in which case there is no requirement for freeing memory.  In resource
 limited devices, the ability to free memory might be outweighed by the risk
 of heap fragmentation.  In this case your heap management might be
 nothing more than a pointer to the next chunk of memory to allocate.  A
@@ -209,7 +213,7 @@ application the memory would not be recovered until the system is reset.</li>
 <!--/////////////////////////////////////////////////////////-->
 
 <p>
-You can use pass the <code>-layout</code> flag to sedonac when compiling
+You can pass the <code>-layout</code> flag to sedonac when compiling
 your scode image to dump the memory layout of each type.  This
 gives you exact details for how memory is being consumed:
 </p>
@@ -232,7 +236,7 @@ will consume.
 <p>
 Note that sedonac has no visibility into the behavior of native methods.
 Any dynamic memory allocation that occurs at the native level must be
-calculated separately and added manually to the totals provided by using
+calculated separately and added manually to the totals provided by 
 the <code>-layout</code> flag.
 </p>
 
@@ -247,7 +251,7 @@ in RAM (managed by the heap <code>malloc</code> and  <code>free</code>
 calls) will not be affected.  The device can either maintain RAM
 during hibernation or save and restore to the same memory addresses.
 
-See <a href='apps.html#hibernation'>hibernation</a>.
+See <a href='apps.html#hibernation'>Hibernation</a>.
 </p>
 
 

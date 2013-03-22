@@ -56,11 +56,33 @@ public class ManifestZipUtil
     }
     catch (Exception e)
     {
+      // Empty catch blocks are EVIL!!!!
     }
     finally
     {
       try { zin.close(); } catch (Exception e) { }
     }
+
+    // If only looking for one manifest, and no zipped entries found,
+    // assume 'zipped' arg is not a zip file, but a plain XML file;
+    // open it as regular stream and create KitManifest instance
+    if ( (parts.length==1) && (found==0) )
+    {
+      final String filename = parts[0] + ".xml";
+      Buf plainXml = zipped;
+
+      try
+      {
+        plainXml.seek(0);
+        map.put(filename, KitManifest.fromXml(
+              XParser.make("manifest", plainXml.getInputStream()).parse()));
+      }
+      catch (Exception e2)
+      {
+        System.out.println("  Error parsing file '" + filename + "': " + e2);
+      }
+    }
+
     KitManifest[] manifests = new KitManifest[parts.length];
     int i = 0;
     Iterator iter = map.keySet().iterator();

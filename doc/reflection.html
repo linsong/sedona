@@ -43,7 +43,7 @@
 Despite its tiny runtime footprint, the Sedona Framework has powerful reflection
 support for accessing kit, type, and slot meta-data at runtime.
 However unlike the general purpose reflection found in Java,
-Reflection is only supported for <i>Component</i> types, and
+Sedona reflection is only supported for <i>Component</i> types and
 <i>Property/Action</i> slots.
 </p>
 
@@ -57,11 +57,11 @@ You can access the installed kits with the
 </p>
 
 <pre>
-// iterate the installed kits
+// iterate over the installed kits
 foreach (Kit kit : Sys.kits, Sys.kitsLen)
   Sys.out.print("$kit.name $kit.version ${Sys.hexStr(kit.checksum)}").nl()
 
-// lookup a kit by name
+// look up a kit by name
 Kit kit = Sys.findKit("sys")
 </pre>
 
@@ -84,7 +84,7 @@ foreach (Type t : kit.types, kit.typesLen)
 // lookup a type by qname
 Type t = Sys.findType("control::Ramp")
 
-// type literals
+// type literal for class User
 Type t = User.type
 </pre>
 
@@ -116,7 +116,7 @@ foreach (Slot slot : t.slots, t.slotsLen)
 // lookup a slot by name
 Slot restart = t.findSlot("restart")
 
-// slot literal
+// slot literal for the App action "restart"
 Slot restart = App.restart
 </pre>
 
@@ -131,8 +131,8 @@ slot literals since they are most efficient.
 
 <p>
 Note that <code>Kit</code>, <code>Type</code>, and <code>Slot</code>
-all have an <code>id</code> field, which is a direct index into their
-associated arrays:
+each have an <code>id</code> field, which is a direct index into the
+corresponding array:
 </p>
 
 <table>

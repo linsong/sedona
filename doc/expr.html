@@ -67,7 +67,7 @@ The same operator precedence rules apply:
 <!--/////////////////////////////////////////////////////////-->
 
 <p>
-The following operators may be used with numeric primitives:
+The following arithmetic operators may be used with numeric primitives:
 </p>
 
 <table>
@@ -103,7 +103,7 @@ old value:</p>
 <!--/////////////////////////////////////////////////////////-->
 
 <p>
-The following operators may be used with integer primitives (byte,
+The following bitwise operators may be used with integer primitives (byte,
 short, int, long):
 </p>
 
@@ -122,7 +122,7 @@ short, int, long):
 <!--/////////////////////////////////////////////////////////-->
 
 <p>
-The following operators may be used with booleans:
+The following logical operators may be used with booleans:
 </p>
 
 <table>
@@ -175,7 +175,7 @@ fields, and array indices.
 </p>
 
 <p>
-The compound assignment operators <code>= += -= *= /= |= ^= &amp;= &gt;&gt;= &lt;&lt;=</code>
+The compound assignment operators <code>+= -= *= /= |= ^= &amp;= &gt;&gt;= &lt;&lt;=</code>
 can be used to combine an arithmetic or bitwise operator with
 assignment:
 </p>
@@ -229,16 +229,16 @@ void myfunc()
 
 <p>
 Sedona uses a syntax just like C or Java to perform a cast.  Casts
-are required when the compiler cannot confirm a static type check.
+are required when the compiler cannot perform a static type check.
 For example, if you need to assign an Obj to a Component, then you
-must use a cast: <code>c = (Component)obj</code>.  A cast is for
+must use a cast: <code>c = (Component)obj</code>.  This type of cast is for
 compile time checking only, at runtime it is basically a no-op like C.
 </p>
 
 <p>
 Casts are also used with numeric types to perform a type conversion.
 For example to convert an int into a float: <code>f = (float)i</code>.
-Note that unlike C and Java, upcasts such an int to a long are
+Note that unlike C and Java, upcasts such as from an int to a long are
 not implicit - you must be explicitly use a cast.
 </p>
 
@@ -343,7 +343,7 @@ for string formatting is to embed the expressions directly into
 the string literal itself using the <code>'$'</code> character.  You
 can embed any arbitrary expression into a string literal using
 the syntax <code>"${expr}"</code>.  If the expression is a simple
-variable name or a variable name followed by dot field accesses,
+variable name or a variable name followed by a dot field access,
 then you can omit the curly braces.  Use the <code>'\$'</code>
 escape sequence to print the dollar sign itself.  Some examples:
 </p>

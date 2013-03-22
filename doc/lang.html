@@ -28,7 +28,7 @@
 </p>
 <div class='nav'>
   <a href='index.html'>Index</a>
- | <a href='tutorial.html'>Prev</a>
+ | <a href='newFor12.html'>Prev</a>
  | <a href='primitives.html'>Next</a>
 </div>
 <h1 class='title'>Language</h1>
@@ -54,7 +54,7 @@ together pre-built components.</li>
 Java and C# with explicit typing of fields, methods, and local variables.
 This allows the compiler to perform type checking.</li>
 <li><b>Static Memory</b>: Manages memory statically at compile time,
-making it ideal for low level and real-time embedded platforms.
+making it ideal for embedded platforms with limited resources.
 </li>
 </ul>
 
@@ -67,13 +67,16 @@ Sedona Framework code is organized into a three unit hierarchy:
 </p>
 
 <ol>
-<li><b>Kits</b>: Modules of deployment and versioning.
+<li><b>Kit</b>: A module of deployment and versioning.
 Kits form the top of the namespace and must be globally unique.
 Kit names are required to be prefixed with the vendor's name.
 </li>
-<li><b>Classes</b>: Object oriented units of organization.
+<li><b>Class</b>: An object oriented unit of organization.
 Classes are always scoped within a kit.</li>
-<li><b>Slots</b>: Fields and methods defined within a class.</li>
+<li><b>Slot</b>: Special fields and methods defined within a class 
+are called <i>slots</i>.  Slots are the externally visible "wiring
+points" on a component that can be linked to other components in
+a Sedona application.</li>  
 </ol>
 
 <p>
@@ -81,8 +84,8 @@ Kits are globally unique and used to scope classes which in turn
 scope slots.  We use this structure to define globally unique
 <i>qualified names</i> or <i>qnames</i> for classes and slots.
 A Class qname consists of the kit name and class name joined by
-the "::" separator.  A slot qname is the class's qname and the
-slot's simple name joined by the "." separator:
+the "::" separator.  A slot qname is the class's qname joined to the
+slot's simple name by the "." separator:
 </p>
 
 <pre>
@@ -98,7 +101,7 @@ control::Ramp.out  // slot qname
 Sedona Framework software is packaged up into modules called <i>kits</i>.
 The source code for a kit is managed as a set of text files
 with the ".sedona" extension.  A "kit.xml" file instructs the
-compiler how to compile the kit and what directories to look in for
+compiler how to compile the kit and what directories contain the
 source code.  A typical source directory is structured as follows:
 </p>
 
@@ -112,11 +115,9 @@ source code.  A typical source directory is structured as follows:
 </pre>
 
 <p>
-If your kit uses native methods, you'll have <a href="porting.html#dirStruct">additional
-directories</a> for your native C code.  You can then compile the kit using
-either the directory or "kit.xml" file.  Assuming your current directory
-is the parent of "myCoolKit" you could use either of the following commands
-to compile:
+You can then compile the kit using either the directory or "kit.xml" file.  
+Assuming your current directory is the parent of "myCoolKit" you could use 
+either of the following commands to compile:
 </p>
 
 <pre>
@@ -190,7 +191,7 @@ scope if no keyword is specified [applies to classes and slots]</li>
 </div>
 <div class='nav'>
   <a href='index.html'>Index</a>
- | <a href='tutorial.html'>Prev</a>
+ | <a href='newFor12.html'>Prev</a>
  | <a href='primitives.html'>Next</a>
 </div>
 <div class='copyright'><script type='text/javascript'>document.write("Copyright &#169; " + new Date().getFullYear() + " Tridium, Inc.")</script></div>

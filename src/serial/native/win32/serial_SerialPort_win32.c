@@ -42,7 +42,6 @@ Cell serial_SerialPort_doInit(SedonaVM* vm, Cell* params)
   memset(pData,0,sizeof(SerialData));
 
   sprintf(port, "\\\\.\\COM%d",portNum);
- // printf("CommPort=%s.\n",port);
   pData->hFile = CreateFile(port,
                        GENERIC_READ | GENERIC_WRITE,
                        0,
@@ -139,10 +138,10 @@ Cell serial_SerialPort_doRead(SedonaVM* vm, Cell* params)
 Cell serial_SerialPort_doWrite(SedonaVM* vm, Cell* params)
 {
   int32_t  portNum = params[1].ival;
-  uint8_t* pu8Buf  = params[2].aval;
+  uint8_t  ch      = (uint8_t)params[2].ival;
   int32_t bytesWritten;
 
-  bytesWritten = write(pSd[portNum], pu8Buf, 1);
+  bytesWritten = write(pSd[portNum], &ch, 1);
   if(bytesWritten != 1) return negOneCell;
   return zeroCell;
 }
@@ -185,8 +184,6 @@ Cell serial_SerialPort_doWriteBytes(SedonaVM* vm, Cell* params)
 
   pu8Buf = pu8Buf + off;
 
-//printf("serial_SerialPort_doWriteBytes portNum=%d\n", portNum);
-
   bytesWritten = write(pSd[portNum], pu8Buf, nbytes);
   if(bytesWritten==-1) return negOneCell;
   ret.ival = bytesWritten;
@@ -206,7 +203,7 @@ int read(SerialData *pData, uint8_t* pu8Buf, int32_t  nbytes)
   if (pData->err)
   {
     bytesRead = -2;
-    SetEvent(pData->hWait);// signal read thread to read new data
+    SetEvent(pData->hWait);                // signal read thread to read new data
   }
   else
   {
@@ -214,7 +211,6 @@ int read(SerialData *pData, uint8_t* pu8Buf, int32_t  nbytes)
 
     if(bytesAvail>0)
     {
-//     printf("serial_SerialPort read: count=%d pos=%d bytesAvail=%d\n",pData->count,pData->pos,bytesAvail);
       bytesRead = bytesAvail > nbytes ? nbytes : bytesAvail;
       memcpy(pu8Buf, &pData->inMsg[pData->pos], bytesRead);
 
@@ -223,7 +219,7 @@ int read(SerialData *pData, uint8_t* pu8Buf, int32_t  nbytes)
       else
       {
         pData->count = pData->pos = 0;
-        SetEvent(pData->hWait);// signal read thread to read new data
+        SetEvent(pData->hWait);            // signal read thread to read new data
       }
     }
   }
@@ -255,7 +251,6 @@ int write(SerialData *pData, uint8_t* pu8Buf, int32_t  nbytes)
                 &os ) )        // __inout_opt  LPOVERLAPPED lpOverlapped
   {
     DWORD dwLastErr = GetLastError();
-    //printf("WriteFile() returns %d GetLastError() = %d\n",bRet, dwLastErr);
     switch(dwLastErr)
     {
       case ERROR_IO_PENDING:
@@ -266,7 +261,7 @@ int write(SerialData *pData, uint8_t* pu8Buf, int32_t  nbytes)
         }
         break;
 
-      // Handle eof and aborts the same
+     // Handle eof and aborts the same
      // case ERROR_OPERATION_ABORTED:
       default:
         printf("ERROR in WriteVserialPort\n");
@@ -369,7 +364,6 @@ DWORD WINAPI readThreadEntry(LPVOID param)
           if(!bRet)
           {
             printf("serial win32 error: GetOverlappedResult returns err %d\n", GetLastError());
-//            continue;
             pData->done = TRUE;
             CloseHandle(pData->hFile);
             CloseHandle(pData->readThreadHandle);

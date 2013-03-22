@@ -40,8 +40,8 @@
 <!--/////////////////////////////////////////////////////////-->
 
 <p>
-The Sedona Framework is designed to empower non-programmers to graphically
-assemble applications by wiring together predefined components.
+One of the goals of the Sedona Framework is to empower non-programmers to 
+graphically assemble applications by wiring together predefined components.
 It is useful to consider two primary <i>actors</i> involved
 in building Sedona Framework applications:
 </p>
@@ -49,7 +49,7 @@ in building Sedona Framework applications:
 <ul>
 <li><b>Developers</b> are software engineers who write <i>components</i>
 using the Sedona programming language.  These components include
-function blocks, IO drivers, and packaged applications.  Components
+function blocks, I/O drivers, and packaged applications.  Components
 are then bundled into modules and deployed as <i>kits</i>.
 </li>
 
@@ -62,7 +62,7 @@ and wired together with <i>links</i>.
 
 <p>
 In the real world, users don't fit into these two buckets
-so cleanly - most users fit into both camps.  But characterizing
+so cleanly - many belong to both camps.  But characterizing
 users according to these two actors is useful for discussion.
 </p>
 
@@ -84,7 +84,7 @@ characteristics of the Sedona language include:
 <li>Component oriented (first class properties and actions, reflection,
     graphical assembly)</li>
 <li>Single inheritance only (no interfaces)</li>
-<li>Static memory model (no <code>new</code> keyword)</li>
+<li>Static memory model (components cannot create new objects at runtime)</li>
 <li>Semicolons are optional as statement separator</li>
 </ul>
 
@@ -130,18 +130,18 @@ is like a Java JAR file or a .NET DLL.
 
 <p>
 Kits are stored as a single file that ends with the ".kit" extension.
-The file itself is a standard PKZIP file you can open using
-your favorite zip tool.  Inside the kit file is an XML
+The file itself is a standard archive file you can open using
+your favorite 'zip' tool.  Inside the kit file is an XML
 <a href="schema.html#manifest">manifest</a>  file that specifies
 meta-data about the kit such as its name, version, vendor,
 and description.  The manifest also enumerates all the kit's
-component types that are available for application assembly.
+component types that are available for constructing applications.
 </p>
 
 <p>
 Kits are compiled from Sedona language source code using
-the <code>sedonac</code> compiler.  During the compilation all
-the classes in the kit are checked for validity, and compiled
+the <code>sedonac</code> compiler.  During compilation, all
+the classes in the kit are checked for validity and compiled
 into a special format called <i>IR</i> for <i>intermediate
 representation</i>.  The IR format is a text based "assembly
 language".  IR code is portable, which means one kit
@@ -158,7 +158,7 @@ Even though we've compiled source language down to IR, we still
 don't have a format suitable for machine execution.  The next step
 is to compile a set of kits into a single file called an <i>scode
 image</i>.  SCode is a very compact, binary representation of the
-code, which is designed to be executed directly by the Sedona VM.
+code, designed to be executed directly by the Sedona VM.
 </p>
 
 <p>
@@ -177,10 +177,9 @@ following tasks are performed:
 </ul>
 
 <p>
-For performance, we optimize scode for a specific endianness
-and pointer size - which means that an scode image is not
-portable.  Typically this compilation step happens automatically
-under the covers during device commissioning.
+To maximize performance, sedonac optimizes the scode for a specific 
+platform's endianness and pointer size; this means that an scode image is not
+portable to other platforms.  
 </p>
 
 <!--/////////////////////////////////////////////////////////-->
@@ -219,18 +218,19 @@ Due to their dynamic nature, Sedona Framework applications are modeled and
 persisted differently from kits and scode.  A Sedona Framework application
 is modeled as a tree of components.  Each component is assigned
 a unique two byte identifier and a custom name.  Components
-instances may also be customized by their configuration properties.
+instances may also be customized via their configuration properties.
 Links are used to establish relationships between components
 to specify data and event flow within the application.
 </p>
 
 <p>
 Sedona Framework applications may be stored in two different file formats.
-The <i>Sedona Application - XML</i> format uses the ".sax" file
-extension.  The <i>Sedona Application - Binary</i> format uses
+The <i>Sedona Application XML</i> format uses the ".sax" file
+extension, and is a human-readable XML file.
+The <i>Sedona Application Binary</i> format uses
 the ".sab" file extension and is a compact binary representation
-of the application database.  The binary format is the one used
-by the runtime on Sedona Framework-enabled devices.  The <code>sedonac</code>
+of the application.  The binary format is the one used
+at runtime on Sedona Framework-enabled devices.  The <code>sedonac</code>
 tool can be used to convert between the file formats.
 </p>
 
@@ -245,18 +245,16 @@ The typical process of Sedona Framework-enabling a device:
 </p>
 
 <ul>
-<li>Port the SVM to the device's hardware platform</li>
-<li>Enable the SVM to run (typically loaded or run from FLASH on startup)</li>
-<li>Enable commissioning of an scode image.  This allows integrators
-to pick their own kits to use for applications.  In some low-end
-devices the scode may be fixed or even in ROM.  Typically the scode is
-loaded or stored in FLASH, and a pointer to the base address is passed to
-the VM at boot time.</li>
-<li>Enable load/save of the sab application file.  In some
-cases an integrator may dump a whole new application into FLASH;
-other times the application is assembled on the fly at runtime
-and then saved to FLASH.  In dedicated devices the application might
-be fixed or even stored in ROM.</li>
+<li>Port the SVM to the device's hardware platform.</li>
+<li>Run the SVM on the device (typically loaded or run from flash memory on startup).</li>
+<li>Commissionthe device with an scode image.  <br/>This allows integrators
+to pick their own kits to use for applications.  In devices with limited 
+resources the scode may be fixed or even in ROM.  More typically, the scode is 
+stored in flash memory and the location of the image passed to the VM at boot time.</li>
+<li>Load the sab application file.  <br/>The integrator may write a complete application 
+to the device; applications can also be modified dynamically on the device while it is 
+running.  At the other extreme, such as for a small, dedicated device, 
+the application might be fixed or stored in ROM.</li>
 </ul>
 
 <!--/////////////////////////////////////////////////////////-->
@@ -273,7 +271,7 @@ deploying Sedona Framework applications to devices.
 </p>
 
 <p>
-The developer workflow typically involves these steps:
+The Sedona <b>developer</b> workflow typically involves these steps:
 </p>
 
 <ol>
@@ -288,12 +286,12 @@ over the network using the Sox protocol.</li>
 </ol>
 
 <p>
-System integrators are often domain experts who build applications by wiring
-together the components built by developers. These users typically use
-graphical tools to assemble applications. Applications may be built on-line
-with a live device using the Sox protocol. Or they may be built offline and
+System <b>integrators</b> are usually domain experts who build Sedona applications 
+by "wiring together" the components provided by developers. These users typically use
+graphical tools to assemble applications. Applications may be modified remotely
+on a running device using the Sox protocol, or they may be built offline and
 stored in a "sax" file. If the app is built offline, then it compiled into
-a "sab" file with sedonac and installed onto the device at commissioning time
+a "sab" file with sedonac and installed on the device at commissioning time
 using the Sox protocol.
 </p>
 

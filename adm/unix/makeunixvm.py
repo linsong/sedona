@@ -25,7 +25,7 @@ platFile = ""
 stageDir = ""
 includes = []
 libs = []
-defs = [("__UNIX__", "1")]
+defs = [ ("__UNIX__", "1"), ("SOCKET_FAMILY_INET", "1") ]
 
 # usage
 def usage():
