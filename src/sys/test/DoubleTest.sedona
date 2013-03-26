@@ -1,0 +1,84 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   11 Mar 07  Brian Frank  Creation
+//
+
+**
+** DoubleTest
+**
+class DoubleTest
+  extends Test
+{
+  static double x(double v) { return v }
+
+  static double nullval() { return x(0d) / x(0d) }
+
+  static void testOps()
+  {
+    // arithmetic operators
+    assert(x(1.0d) + 2d == 3.0d)
+    assert(x(2.0d) + 123456d == 123458d)
+    assert(x(938.8563d) - 1.8563d == 937.0d)
+    assert(x(24.02d) * 0.5d == 12.01d)
+    assert(-x(6312.0d) / 0.3d == -21040.0d)
+
+    // comparision operators
+    assert(x(2.0d) != -2.0d)
+    assert(x(12.34d) >= 12.34d)
+    assert(x(12.34d) >= 1.234d)
+    assert(x(-1.0d) > -2.0d)
+    assert(x(99000000d) <= 99000000d)
+    assert(x(1234.6789d) <= 1234.6789d)
+    assert(-x(707.025d) < -707.01d)
+    assert(x(0d) != null)
+    assert(null == x(null))
+    assert(x(null) == nullval())
+    assert(null == x(null)+1d)
+    assert(null != x(1d))
+    assert(!(x(10.0d) == 10.2d))
+    assert(!(x(null) != null))
+  }
+
+  static void testAssigns()
+  {
+    verifyAssigns(2d)
+  }
+
+  static void verifyAssigns(double p)
+  {
+    // param increment/decrement
+    p = 3.2d; ++p; assert(p == 4.2d)
+    p = 3.2d; p--; assert(p == 2.2d)
+    p = 3.2d; assert(++p == 4.2d); assert(p == 4.2d)
+    p = 3.2d; assert(p++ == 3.2d); assert(p == 4.2d)
+    p = 3.2d; assert(--p == 2.2d); assert(p == 2.2d)
+    p = 3.2d; assert(p-- == 3.2d); assert(p == 2.2d)
+
+    // local increment/decrement
+    double x
+    x = 3.002d; x++; assert(x == 4.002D)
+    x = 3.002d; --x; assert(x == 2.002D)
+    x = 3.002d; assert(++x == 4.002d); assert(x == 4.002d)
+    x = 3.002d; assert(x++ == 3.002d); assert(x == 4.002d)
+    x = 3.002d; assert(--x == 2.002d); assert(x == 2.002d)
+    x = 3.002d; assert(x-- == 3.002d); assert(x == 2.002d)
+
+    // param +=, -=, etc
+    p = 2d;
+    p += 3d;   assert(p == 5.0d)
+    p -= 1d;   assert(p == 4.0d)
+    p *= 5d;   assert(p == 20.0d)
+    assert((p /= 2d) == 10.0d); assert(p == 10.0d)
+
+    // local +=, -=, etc
+    x = 5d
+    x += (-3d);  assert(x == 2.0d)
+    x *= 8d;     assert(x == 16.0d)
+    x /= 2d;     assert(x == 8.0d)
+    assert((x -= 3d) == 5.0d); assert(x == 5.0d)
+  }
+
+}

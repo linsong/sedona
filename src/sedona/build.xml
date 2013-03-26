@@ -1,0 +1,30 @@
+<!--  
+     Niagara Build File 
+     Note: open source developers use adm python scripts
+-->
+
+<module
+ name = "sedona"
+ bajaVersion = "0"
+ preferredSymbol = "s"
+ description = "Sedona Java API"
+ vendor = "Tridium"
+>
+
+  <!-- Java Packages -->
+  <package name="sedona"                doc="true" src="true" />
+  <package name="sedona.manifest"       doc="true" src="true" />
+  <package name="sedona.kit"            doc="true" src="true" />
+  <package name="sedona.platform"       doc="true" src="true" />
+  <package name="sedona.offline"        doc="true" src="true" />
+  <package name="sedona.dasp"           doc="true" src="true" />
+  <package name="sedona.sox"            doc="true" src="true" />
+  <package name="sedona.util"           doc="true" src="true" />
+  <package name="sedona.util.sedonadev" doc="true" src="true" />
+  <package name="sedona.web"            doc="true" src="true" />
+  <package name="sedona.xml"            doc="true" src="true" />
+
+  <!-- Resources -->
+  <resources name="/version.txt" />
+</module>
+

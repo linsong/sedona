@@ -1,0 +1,502 @@
+//
+// Copyright (c) 2008 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   06 Sep 06  Brian Frank  Creation
+//   07 Jun 07  Brian Frank  Port from Java to Sedona
+//   31 Mar 08  Brian Frank  Rework to use DASP
+//
+
+**
+** SoxService implements the Dasp/Sox protocol for network
+** provisioning, programming, and data access to a Sedona device.
+**
+class SoxService
+  extends Service
+{
+
+////////////////////////////////////////////////////////////////
+// Properties
+////////////////////////////////////////////////////////////////
+
+  ** UDP port for listening
+  @defaultOnClone
+  @config property short port = 1876
+
+  ** Max of number of messages in receiving window.
+  @config property byte receiveMax = 8
+
+  ** Max of number of async events sent per second.
+  ** Tuning this number down towards zero will decrease
+  ** the number of messages sent, but increase the latency
+  ** of real-time change propogation.  If set all the way
+  ** down to zero, then no change of value events are sent.
+  @config property short eventsPerSec = 100
+
+////////////////////////////////////////////////////////////////
+// Sessions
+////////////////////////////////////////////////////////////////
+
+  **
+  ** Lookup the session by id, update the receive ticks
+  ** and return it.  If the session id is invalid or has been
+  ** closed then return null.
+  **
+  SoxSession session(int sessionId)
+  {
+    int index = sessionId & 0xff
+    if (0 <= index && index < Watch.max)
+    {
+      SoxSession s = sessions[index]
+      if (s.id() == sessionId)
+      {
+        if (s.closed) return null
+        s.lastReceiveTicks = Sys.ticks()
+        return s
+      }
+    }
+    return null
+  }
+
+  **
+  ** Open a new session or return null.
+  **
+  private SoxSession openSession()
+  {
+    // allocate watch slot in the application
+    SoxSession s = (SoxSession)Sys.app.openWatch(sessions)
+    if (s == null) return null
+
+    // set the watch into the open state
+    s.reset()
+    datagram.getSocketAddr(s.addr)
+
+    // log open
+    log.message("opened ${Sys.hexStr(s.id())}")
+
+    return s
+  }
+
+  **
+  ** Close a session.
+  **
+  internal void closeSession(SoxSession s, Str cause)
+  {
+    // free watch slot in the application
+    Sys.app.closeWatch(s)
+
+    // reset transfer (i.e. close it)
+    s.transfer.reset()
+
+    // log close
+    log.message("closed ${Sys.hexStr(s.id())} ($cause)")
+  }
+
+////////////////////////////////////////////////////////////////
+// Service
+////////////////////////////////////////////////////////////////
+
+  **
+  ** Start the SoxService:
+  **  - init datagram.buf to use packet.bytes
+  **  - initWatches
+  **  - initTransfers
+  **  - open UDP port
+  **  - lookup user service
+  **
+  virtual override void start()
+  {
+    Sys.app.initWatches(sessions)
+    datagram.buf = packet.bytes
+    openPort(true)
+
+    lastHouseKeeping = Sys.ticks()   // avoid large delta on first app cycle
+
+    userService = (UserService)Sys.app.lookupService(UserService.type)
+    if (userService == null) SoxService.log.error("Missing UserService")
+  }
+
+  **
+  ** Open the UDP port using the configured port field.
+  ** Return true on success.
+  **
+  private bool openPort(bool logError)
+  {
+    if (socket.isClosed() && !socket.open())
+    {
+      if (logError) log.warning("cannot open socket")
+      return false
+    }
+
+    if (!socket.bind(port))
+    {
+      if (logError) log.error("cannot bind to port=$port")
+      return false
+    }
+
+    log.message("started port=$port")
+
+    if (socket.join())
+      log.message("DASP Discovery enabled")
+    else
+      log.message("DASP Discovery not enabled")
+
+    Sys.app.platform.notify("sox", Sys.intStr(port))
+    return isPortOpen = true
+  }
+
+  **
+  ** Stop the SoxService.
+  **
+  virtual override void stop()
+  {
+    socket.close()
+    isPortOpen = false
+  }
+
+  **
+  ** Execute - called once per cycle.
+  **
+  virtual override void execute()
+  {
+    // reset event counter every 250ms
+    long ticks = Sys.ticks()
+    if (ticks >= periodEnd)
+    {
+      numEventsThisPeriod = 0
+      periodEnd = ticks + 250ms
+    }
+  }
+
+  **
+  ** Check for service work:
+  **  - check if we should retry port open
+  **  - check for received packet
+  **  - if received process it
+  **  - check watches
+  **  - check events
+  **
+  virtual override bool work()
+  {
+    // check if we still need to open the port
+    if (!isPortOpen && !openPort(false))
+      return false
+
+    // check if there is a pending message
+    int size = receive()
+
+    // process the message just received
+    if (size > 0)
+    {
+      in.rewind()
+      packet.size = size
+      dispatch()
+      // fall thru to ensure house keeping and transfers
+    }
+
+    houseKeeping()
+
+    // check any file transfers in progress
+    if (checkFileTransfers()) return true
+
+    // at this point if we processed a received
+    // message we are done this work slice
+    if (size > 0) return true
+
+    // if we haven't exceed our event threshold for the
+    // cycle, then check for pending events to fire;
+    // we configure events/sec - but actually distribute
+    // over 250ms period so UI isn't jerky
+    int eventsPer250ms = eventsPerSec < 4 ? eventsPerSec : eventsPerSec >> 2
+    if (numEventsThisPeriod < eventsPer250ms)
+    {
+      if (checkForEvents())
+      {
+        numEventsThisPeriod++
+        return true
+      }
+    }
+    return false
+  }
+
+  **
+  ** Return true if this Service will allow hibernation.
+  ** The SoxService should not allow hibernation if any
+  ** SoxSessions are open.
+  **
+  virtual override bool canHibernate()
+  {
+    foreach (SoxSession s : sessions, Watch.max)
+    {
+      if (!s.closed) return false
+    }
+    return true
+  }
+
+////////////////////////////////////////////////////////////////
+// Dispatch
+////////////////////////////////////////////////////////////////
+
+  **
+  ** Dispatch a received dasp/sox message.
+  **
+  void dispatch()
+  {
+    // parse standard header
+    BufInStream in = this.in
+    int sessionId = in.readU2()
+    int seqNum    = in.readU2()
+    int msgType   = in.read()
+    int numFields = msgType & 0xf
+    msgType       = (msgType >> 4) & 0xf
+
+    // if hello try to allocate new session, right
+    // now we just ignore the hello when busy instead
+    // of sending back proper busy error
+    SoxSession session = null
+    if ( (msgType == Dasp.HELLO) || (msgType == Dasp.DISCOVER) )
+      session = openSession()
+    else
+      session = session(sessionId)
+
+    // ignore messages for an invalid session id
+    if (session == null) return
+
+    // keep track of last time message is received
+    session.lastReceiveTicks = Sys.ticks()
+
+    // process control messages (these don't ever
+    // check receive or send window)
+    switch (msgType)
+    {
+      case Dasp.HELLO:
+        session.challenge(this, numFields);
+        session.receiveWindow.init(seqNum);
+        return
+      case Dasp.AUTHENTICATE:
+        session.welcome(this, numFields);
+        return
+      case Dasp.CLOSE:
+        closeSession(session, "Recd cmd");
+        return
+      case Dasp.DISCOVER:
+        session.discoverResponse(this);
+        closeSession(session, "Discovered");
+        return
+    }
+
+    // let send window check for acks, if the sending window
+    // if full, then we can't accept this message b/c we won't
+    // be able to send a response
+    if (!session.sendWindow.checkAckHeaders(this, numFields)) return
+
+    // if datagram message type
+    if (msgType == Dasp.DATAGRAM)
+    {
+      // if not within the receiving window then toss it,
+      // otherwise do sox level processing
+      if (session.receiveWindow.receive(seqNum))
+        SoxCommands.process(this, session)
+    }
+  }
+
+////////////////////////////////////////////////////////////////
+// File Transfers
+////////////////////////////////////////////////////////////////
+
+  **
+  ** If any sessions have a file transfer in progress,
+  ** then give them a chance to do their work.
+  **
+  private bool checkFileTransfers()
+  {
+    bool worked = false
+    foreach (SoxSession s : sessions, Watch.max)
+    {
+      if (s.closed) continue
+      switch (s.transfer.mode)
+      {
+        case FileTransfer.get: worked |= s.transfer.checkGet(this, s); break
+        case FileTransfer.put: worked |= s.transfer.checkPut(this, s); break
+      }
+    }
+    return worked
+  }
+
+////////////////////////////////////////////////////////////////
+// Eventing
+////////////////////////////////////////////////////////////////
+
+  **
+  ** Scan the list of subscribed components to check for
+  ** pending change events.
+  **
+  private bool checkForEvents()
+  {
+    App app = Sys.app
+    int compsLen = app.compsLen
+    int off = this.lastCompId + 1
+
+    // walk thru each component starting from where we left
+    // off last (to give each component its fair shake)
+    for (int i=0; i<compsLen; ++i)
+    {
+      // lookup next component
+      Component c = app.lookup((i + off) % compsLen)
+      if (c == null) continue
+
+      // check if this component has any pending
+      // events to fire on any of the open watches
+      bool fired = false
+      foreach (SoxSession session : sessions, Watch.max)
+      {
+        if (session.closed) continue
+
+        // get a bitmask merge of the subscription (top 4
+        // bits) with the pending events (bottom 4 bits)
+        int flags = c.watchFlags[session.index]
+        if (session.allTreeEvents) flags |= Watch.subTree
+        int events = (flags >> 4) & (flags & 0xf)
+
+        if (events != 0)
+        {
+          if ((events & Watch.eventTree)    != 0) fired |= enqueueEvent(session, c, Watch.subTree)
+          if ((events & Watch.eventConfig)  != 0) fired |= enqueueEvent(session, c, Watch.subConfig)
+          if ((events & Watch.eventRuntime) != 0) fired |= enqueueEvent(session, c, Watch.subRuntime)
+          if ((events & Watch.eventLinks)   != 0) fired |= enqueueEvent(session, c, Watch.subLinks)
+        }
+      }
+
+      // if we fired events, then save the id so we know where
+      // to pick up again, and return true that we have pending work
+      if (fired)
+      {
+        this.lastCompId = c.id
+        return true
+      }
+    }
+
+    // no pending work
+    return false
+  }
+
+  **
+  ** If we have room in the session's sending window, then
+  ** fire the event, reset the event bit on the component,
+  ** and return true.
+  **
+  private bool enqueueEvent(SoxSession session, Component c, int subMask)
+  {
+    // allocate event packet
+    SendPacket res = session.sendWindow.nextPacket()
+    if (res == null) return false
+
+    // build response
+    res.cmd      = 'e'
+    res.replyNum = 0xff
+    res.u2Data1  = c.id
+    res.u2Data2  = Watch.fromSubBit(subMask)  // map sub mask bit to ascii code and event bit
+
+    // fire the event
+    SoxCommands.send(this, session, res)
+
+    // at this point we've fired an event and enqueued it into
+    // the sending window for retries, so we clear the event bit
+    // to let us start trapping changes again
+    c.watchFlags[session.index] &= ~(subMask >> 4)
+    return true
+  }
+
+////////////////////////////////////////////////////////////////
+// House keeping
+////////////////////////////////////////////////////////////////
+
+  **
+  ** Periodically we walk through all our open sessions
+  ** and check for send retries, keep alives, and timeouts.
+  ** Return true if we did work.
+  **
+  private bool houseKeeping()
+  {
+    long now = Sys.ticks()
+    int deltaMs
+    int houseKeepingTicks
+
+    deltaMs = (int)((now - lastHouseKeeping) / 1ms)
+    if (deltaMs  < HOUSE_KEEPING_INTERVAL)
+      return false
+
+    //  In Apps with long scanPeriods, it's possible that multiple house 
+    //  keeping ticks have elapsed since the last time we ran housekeeping.  
+    //  Calculate the  elapsed of number of housekeeping ticks. 
+    //  If more than half an additional housekeeping tick has elapsed,
+    //  round up to avoid too much drift
+    houseKeepingTicks = deltaMs / HOUSE_KEEPING_INTERVAL
+    if ((deltaMs % HOUSE_KEEPING_INTERVAL) > (HOUSE_KEEPING_INTERVAL / 2))
+      houseKeepingTicks++
+
+    // give each open session a chance to do house keeping
+    bool worked = false
+    foreach (SoxSession s : sessions, Watch.max)
+    {
+      if (s.closed) continue
+      worked |= s.houseKeeping(this, now, houseKeepingTicks)
+    }
+
+    // update last house keeping time
+    lastHouseKeeping = now
+    return worked
+  }
+
+////////////////////////////////////////////////////////////////
+// IO
+////////////////////////////////////////////////////////////////
+
+  **
+  ** Receive the next packet from the network for processing.
+  ** Return the number of bytes received or -1 if no packet
+  ** is pending.
+  **
+  private int receive()
+  {
+    datagram.len = packet.bytesLen
+    if (!socket.receive(datagram)) return -1
+    return datagram.len
+  }
+
+  **
+  ** Send the packet over the network to the specified session.
+  ** Return true on success, false on failure.
+  **
+  bool send(SoxSession s)
+  {
+    s.lastSendTicks = Sys.ticks()
+    datagram.setSocketAddr(s.addr)
+    datagram.len = packet.size
+    return socket.send(datagram)
+  }
+
+////////////////////////////////////////////////////////////////
+// Fields
+////////////////////////////////////////////////////////////////
+
+  define Log log
+  define int HOUSE_KEEPING_INTERVAL = 100   // (ms) do houskeeping no more frequently than this
+
+  inline SoxSession[Watch.max] sessions = {...}
+  inline UdpSocket socket           // socket used for send/receive
+  inline UdpDatagram datagram       // datagram reused for both send/receive
+  inline Buf(512) packet            // reusable message packet
+  inline BufInStream(packet) in     // for reading packet
+  inline BufOutStream(packet) out   // for writing packet
+  bool isPortOpen                   // have we successfully opened the port
+  long lastHouseKeeping             // time we last performed house keeping
+  short lastCompId                  // last comp we fired events on in checkForEvents()
+  UserService userService           // user service
+  long periodEnd                    // in current 250ms second period
+  short numEventsThisPeriod         // number of events fired this 250ms period
+}
+
+
+

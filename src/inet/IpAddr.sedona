@@ -1,0 +1,252 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   05 Sep 06  Brian Frank  Creation
+//   07 May 07  Brian Frank  Port from Java to Sedona
+//   07 Jan 08  Brian Frank  IPv6 support
+//
+
+**
+** IpAddr models an Internet IPv4 or IPv6 address.
+**
+class IpAddr
+{
+
+////////////////////////////////////////////////////////////////
+// Parsing
+////////////////////////////////////////////////////////////////
+
+  **
+  ** Parse the specified string from an IPv4 dotted-quad
+  ** notation or IPv6 colon-hexdecimal notation into this IpAddr.  
+  ** This method will not resolve a hostname.  Return true on 
+  ** success, or false on failure (if the address is illegally 
+  ** formatted).
+  **
+  bool parse(Str notation)  
+  {
+    if (notation.index('.') > 0)
+      return parseIPv4(notation)
+    else
+      return parseIPv6(notation)
+  }
+  
+	
+
+  **  
+  ** Parse dotted quad IPv4 "d.d.d.d"
+  **
+  private bool parseIPv4(Str notation)
+  {                            
+    byte[] addr = this.addr
+    int n = 0  // index into addr          
+    int i = 0  // current index into buf
+    int v = 0  // current segment value
+
+    // fix top 12 bytes as "::ffff"
+    while (n<10) addr[n++] = 0
+    while (n<12) addr[n++] = 0xff     
+
+    // parse next four bytes as decimal digits
+    while (true)
+    {        
+      int c = notation.get(i++)
+      if (c == 0 || c == '.') 
+      {
+        if (n == 16) return false
+        if (v > 0xff) return false
+        addr[n++] = v
+        v = 0    
+        if (c == 0) break
+      }               
+      else
+      {
+        int d = Sys.fromDigit(c)
+        if (d < 0) return false
+        v = (v*10) + d
+      }
+    }       
+    return n == 16     
+  }
+
+  **  
+  ** Parse hex IPv6 "xxxx:xxxx:..."
+  **
+  private bool parseIPv6(Str notation)
+  {          
+    byte[] addr = this.addr
+    int n = 0  // index into addr          
+    int i = 0  // current index into buf
+    int v = 0  // current segment value
+    int shift = -1  // value of n at ::   
+
+    while (true)
+    {        
+      int c = notation.get(i++)
+      if (c == 0 || c == ':') 
+      {
+        if (n == 16) return false
+        if (v > 0xffff) return false
+        addr[n++] = (v >> 8) & 0xff
+        addr[n++] = v & 0xff
+        v = 0    
+        if (c == 0) break  
+        if (notation.get(i) == ':')
+        {
+          if (shift >= 0) return false
+          shift = n
+          i++
+        }
+      }          
+      else
+      {   
+        int d = Sys.fromHexDigit(c)
+        if (d < 0)  return false        
+        v = (v << 4) | d
+      }
+    }     
+
+    if (shift >= 0)
+    {              
+      int off = 16-n    
+      for (int j=15; j-off>=shift; --j)
+        addr[j] = addr[j-off]      
+      for (int j=shift; j<shift+off; ++j)
+        addr[j] = 0
+      return true
+    } 
+    else
+    {        
+      return n == 16     
+    }
+  }
+
+////////////////////////////////////////////////////////////////
+// Access
+////////////////////////////////////////////////////////////////
+  
+  **
+  ** Return if this is a IPv4 mapped address.  IPv4 addresses
+  ** have the first 80 bits set to zero, the next 16 set to one,
+  ** and the last 32 bits represent the IPv4 address.
+  **
+  bool isIPv4()
+  {            
+    byte[] a = this.addr
+    if (a[10] != 0xff || a[11] != 0xff) return false
+    for (int i=0; i<10; ++i)  if (a[i] != 0) return false
+    return true
+  }                        
+  
+  **
+  ** This method is used to copy the address
+  ** of "addr" into this instance.
+  **
+  void set(IpAddr addr)
+  {
+    Sys.copy(addr.addr, 0, this.addr, 0, 16)
+  }           
+  
+  **
+  ** Convenience for loadBytes(addr.bytes, addr.size)
+  **
+  bool loadBuf(Buf addr)
+  {
+  	return loadBytes(addr.bytes, addr.size)
+  }
+  
+  **
+  ** Set the IpAddr using a raw byte array.  Returns true if the length
+  ** of the addr is 4-bytes (IPv4) or 16 bytes (IPv6).  No validation
+  ** is done on the raw addr.
+  **
+  bool loadBytes(byte[] addr, int len)
+  {
+  	if (len == 16)
+  	{
+  		Sys.copy(addr, 0, this.addr, 0, 16)
+  		return true
+  	}
+  	else if (len == 4) 
+  	{
+  		Sys.setBytes(0, this.addr, 0, 10)
+  		this.addr[10] = 0xff
+  		this.addr[11] = 0xff
+  		Sys.copy(addr, 0, this.addr, 12, 4)
+  		return true
+  	}
+  	
+  	return false
+  }
+  
+  **
+  ** Return if this address is equivalent to that address.
+  **
+  bool equals(IpAddr that)
+  {                    
+    return Sys.compareBytes(this.addr, 0, that.addr, 0, 16) == 0
+  }
+
+  **
+  ** Get the address in string format - dotted-quad
+  ** notation for IPv4 or colon-hexidecimal notation
+  ** for IPv6.  The string is stored in a static
+  ** shared buffer.
+  **
+  Str toStr()              
+  {  
+    byte[] addr = this.addr
+    int n = 0          
+    if (isIPv4())
+    {   
+      for (int i=12; i<16; ++i)
+        n = append(temp, n, Sys.intStr(addr[i]), i!=12, '.')
+    }
+    else
+    {              
+      for (int i=0; i<16; i+=2)
+      {                      
+        int x = addr[i]
+        int y = addr[i+1]
+        if (x == 0)
+        {      
+          n = append(temp, n, Sys.hexStr(y), i>0, ':')
+        }
+        else
+        {
+          n = append(temp, n, Sys.hexStr(x), i>0, ':')
+          Str s = Sys.hexStr(y)
+          n = append(temp, n, s, s.get(1) == 0, '0')       
+        }
+      }          
+    }         
+    temp.set(n, 0)
+    return temp
+  }     
+  
+  private int append(Str buf, int n, Str s, bool addSep, int sep)
+  {      
+    if (addSep) buf.set(n++, sep)
+    for (int i=0; true; ++i)
+    {
+      int ch = s.get(i)
+      if (ch == 0) break
+      buf.set(n++, ch)
+    }
+    return n
+  }
+
+////////////////////////////////////////////////////////////////
+// Fields
+////////////////////////////////////////////////////////////////
+  
+  private static inline Str(42) temp
+  
+  ** 128-bit address in network byte order, if IPv4 
+  ** this is is a masked address (80 bits zero, 16 bits 
+  ** set, 32 bits of IPv4)
+  @javaPublic private inline byte[16] addr
+
+}

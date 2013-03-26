@@ -1,0 +1,39 @@
+//
+// Copyright (c) 2009-2011 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   07 Aug 2009  Clif Turman    Creation
+//   04 Aug 2011  Clif Turman    Add comments
+//
+
+**
+** ISW Integer Switch object
+**
+** out = s1 ? in2 : in1
+**
+@niagaraIcon="module://icons/x16/control/util/switch.png"
+class ISW
+  extends Component
+{
+  ** out = s1 ? in2 : in1
+  @readonly property int out
+
+  ** input 1
+  property int in1
+
+  ** input 2
+  property int in2
+
+  ** switch input
+  property bool s1
+
+  **
+  ** Execute is called once every scan.
+  **
+  virtual override void execute()
+  {
+    out := s1 ? in2 : in1
+  }
+
+}

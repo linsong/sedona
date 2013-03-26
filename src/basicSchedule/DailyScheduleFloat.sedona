@@ -1,0 +1,54 @@
+//
+// Copyright (c) 2009 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   30 Apr 09  Dan Giorgis   creation
+//
+
+**
+**  DailyScheduleFloat extends DailySchedule to provide a float output
+** 
+class DailyScheduleFloat extends DailySchedule
+{    
+
+  **
+  **  Output value for active period 1
+  ** 
+  @config property float val1
+
+  **
+  **  Output value for active period 2
+  ** 
+  @config property float val2  
+
+  **
+  **  Output value for periods other than active1 / active2   
+  **
+  @config property float defVal
+  
+  **
+  **  Current schedule output
+  **  
+  property float out
+
+
+  override void setOutValue(int activeVal)
+  {
+    switch (activeVal)
+    {
+      case output1:
+        out := val1
+        break
+      case output2:
+        out := val2
+        break        
+      case outputDefault:     
+      default:
+        out := defVal
+        break
+
+    }  
+  }    
+ 
+}

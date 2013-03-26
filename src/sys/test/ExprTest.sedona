@@ -1,0 +1,78 @@
+//
+// Copyright (c) 2008 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   14 Jul 08  Brian Frank  Creation
+//
+
+**
+** ExprTest
+**
+class ExprTest
+  extends Test
+{   
+
+
+  static void testSafeNav()
+  {
+    Str s = "hello"
+    Str sx = null
+    
+    TestComp c = CompTest.a
+    TestComp cx = null
+    c.f2 := 2.04
+    c.d1 := 0d       
+    c.d2 := 256d       
+    c.j2 := -3sec
+
+    // safe calls with leave
+    assert(s?.length() == 5)
+    assert(sx?.length() == 0)
+    assert(c?.self()?.self() == c)
+    assert(cx?.self()?.self() == null)
+    assert(c?.mj2() == -3sec)
+    assert(cx?.mj2() == 0L)
+    assert(c?.md2() == 256d)
+    assert(cx?.md2() == 0d)
+    
+    // safe calls no leaves
+    s?.length()
+    sx?.length() 
+    cx?.self()?.mj2()
+
+    // void calls no leave
+    c?.addD1(100d)
+    cx?.addD1(100d)
+    assert(c.d1 == 100d)
+    c.d1 := 0d       
+    
+    // safe field access
+    assert(c?.f2 == 2.04)
+    assert(cx?.f2 == 0.0)
+    assert(c?.j2 == -3sec)
+    assert(cx?.j2 == 0L)
+    assert(c?.d2 == 256d)
+    assert(cx?.d2 == 0d)
+    assert(cx?.self()?.d2 == 0d)    
+  }
+
+  static void testElvis()
+  {
+    Str s = "hello"
+    Str sx = null      
+    
+    assert((s ?: "xyz") == s)
+    assert((sx ?: "xyz") == "xyz")
+    
+    assert((s ?: "xyz")?.length() == 5)
+    assert((sx ?: "xyz")?.length() == 3)     
+  }
+
+  static void test_23145()
+  {
+    TestComp c = new TestComp()
+    assert(c.m2() == 2)
+    delete c
+  }
+}

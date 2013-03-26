@@ -1,0 +1,73 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   26 Jul 06  Brian Frank  Creation
+//   24 May 07  Brian Frank  Port from Java to Sedona
+//   10 Sep 07  Brian Frank  Split out from from Buf
+//
+
+**
+** BufInStream is used to read bytes from a memory Buf.
+**
+final class BufInStream extends InStream
+{
+
+  **
+  ** Construct for specified Buf instance.
+  **
+  BufInStream(Buf buf)
+  {
+    this.buf = buf
+  }
+
+  **
+  ** Read the next byte at pos and increment pos.
+  ** Return -1 if pos >= size.
+  override int read()
+  {
+    Buf buf = this.buf
+    if (pos >= buf.size) return -1
+    return buf.bytes[pos++]
+  }
+
+  **
+  ** Read the next block of available bytes starting from pos.
+  ** Return the number of bytes copied into b and advance
+  ** the position likewise.
+  **
+  override int readBytes(byte[] b, int off, int len)
+  {
+    Buf buf = this.buf
+    if (buf.size-pos < len) len = buf.size-pos
+    Sys.copy(buf.bytes, pos, b, off, len)
+    pos += len
+    return len
+  }
+
+  **
+  ** Read the current position as a null terminated
+  ** string.  Return null on error.  
+  **
+  Str readStrInPlace(Str str)
+  {
+    Buf buf = this.buf   
+    int off = pos
+    while (buf.bytes[pos++] != 0)
+      if (pos >= buf.size) return null
+    return Str.fromBytes(buf.bytes, off)
+  }
+
+  **
+  ** Rewind sets the pos back to zero to begin
+  ** reading the Buf from the beginning.
+  **
+  void rewind()
+  {
+    pos = 0
+  }
+
+  Buf buf
+  short pos
+}

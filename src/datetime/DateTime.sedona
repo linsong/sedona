@@ -1,0 +1,233 @@
+//
+// Copyright (c) 2009 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   03 Feb 09  Dan Giorgis   creation
+//
+
+class DateTime extends Virtual
+{    
+  **
+  **  Year (2000-2099).  Only valid after successful fromNanos() call.
+  ** 
+  short year
+
+  **
+  **  Month of year (1-based).  Only valid after successful fromNanos() call.
+  ** 
+  byte month 
+
+  **
+  **  Day of month (1-based).  Only valid after successful fromNanos() call.
+  ** 
+  byte day
+
+  **
+  **  Day of week (Sun = 0).  Only valid after successful fromNanos() call.
+  **  
+  byte dayOfWeek
+
+  **
+  **  Hour of day (0-23).  Only valid after successful fromNanos() call.
+  ** 
+  byte hour
+
+  **
+  **  Minute of hour (0-59).  Only valid after successful fromNanos() call.
+  ** 
+  byte minute
+
+  **
+  **  Seconds of minute (0-59).  Only valid after successful fromNanos() call.
+  ** 
+  byte second
+
+  **
+  **  Fractional seconds in nanoseconds (0 - 999,999)
+  **  Only valid after successful fromNanos() call.
+  ** 
+  int nanosecond
+
+  
+  **
+  **  UTC offset in seconds.  Used in to/from Nanos calculations.  
+  ** 
+  @unit=Units.second int utcOffset
+
+
+  **
+  **  Reset DateTime instance to default value of 1 Jan 2000 00:00:00 
+  **  with UTC offset of 0L
+  **
+  void reset()
+  {
+    year = 2000
+    month = 1
+    day = 1
+    hour = minute = second = nanosecond = 0 
+    utcOffset = 0
+  }   
+
+
+  **
+  **  Initialize a DateTime given nanoseconds since epoch.
+  ** 
+  **  Return -1 if parameters are out of range
+  **  
+  int fromNanos(long nanos)
+  {   
+    int daysSinceEpoch = 0;
+    
+    //  Range check
+    if ((nanos < 0L) || (nanos > DateTime.nanosMax))
+      return -1;
+       
+    //  Determine year    
+    long rem = nanos;
+    
+    //  Adjust for utcOffset 
+    rem += (long)utcOffset * 1sec
+    
+    int y = 0;    
+    for(;;)
+    {     
+      bool isLeap = DateTime.isLeapYear(y+2000)
+      long nanosInYear = isLeap ? 366days : 365days
+      int daysInYear = isLeap ? 366 : 365
+      if (rem < nanosInYear)
+        break;
+
+      y++;          
+      daysSinceEpoch += daysInYear
+      rem -= nanosInYear;                            
+    }         
+    
+    //  Determine month 
+    int m = 1
+    bool isLeap = DateTime.isLeapYear(y+2000)
+    for (;;)
+    {
+      int daysInMonth = (int)DateTime.daysPerMonth[m-1]
+      long nanosInMonth = (long)daysInMonth * 1days;      
+      if ((m == Month.feb) && isLeap)
+      {
+        nanosInMonth += 1days
+        daysInMonth++
+      }
+              
+      if (rem < nanosInMonth)      
+        break;      
+               
+      rem -= nanosInMonth
+      daysSinceEpoch += daysInMonth 
+                 
+      m++;
+    }
+   
+    year = y + 2000;
+    month = m;
+    day = (int)(rem / 1days)+1; rem %= 1days; // days are 1-based  
+     
+    hour = (int)(rem / 1hr); rem %= 1hr
+    minute = (int)(rem / 1min); rem %= 1min;
+    second = (int)(rem / 1sec); rem %= 1sec;
+    nanosecond = (int)rem;
+    
+    daysSinceEpoch+=day
+    dayOfWeek = ((daysSinceEpoch-1) + epochDayOfWeek) % 7 
+     
+    return 0;
+  }         
+
+  **  Convert a local time to nanos since the Sedona epoch of 1 Jan 2000
+  **  Returns DateTime.invalid if any parameters are out of range
+  **
+  **  Year must be between 2000 and 2099
+  **  Month is 1 based, 1-12
+  **  day is 1-based
+  **  hour must be 0-23
+  **  min, sec are 0-59
+  **  ns represents fraction seconds, must be <= 999,999,999
+  **  utcOffset represents the local time offset (in seconds) from UTC,
+  **    including daylight savings time adjustment (if any)
+  long toNanos()
+  {   
+    //  validate        
+    if (year < 2000 || year > 2099) return invalid
+    if (month < Month.jan || month > Month.dec)    return invalid
+    if (day < 1) return invalid
+    if (day > (int)daysPerMonth[month-1])
+    {
+      if ((month != Month.feb) || (day != 29) || !isLeapYear(year)) 
+        return invalid
+    }         
+    if (hour < 0 || hour > 23)      return invalid
+    if (minute < 0 || minute > 59)        return invalid
+    if (second < 0 || second > 59)        return invalid
+    if (nanosecond < 0 || nanosecond > 999_999_999)  return invalid
+ 
+    long nse = 0L;
+    int yse = year - 2000;
+  
+    //  calculate hours, mins, seconds
+    nse =  (long)nanosecond + 
+           ((long)second * 1sec) +  
+           ((long)minute * 1min) +
+           ((long)hour * 1hr) 
+
+    //  calculate the days into the year
+    int dayOfYear = day - 1;    
+    
+    //  could optimize by calculating dayOfYear for each start of each month    
+    for (int i = 1; i < month; i++)    
+     dayOfYear += (int)daysPerMonth[i-1]
+   
+    //  add another day if it's a leap and it's after Feb
+    if ((month > Month.feb) && isLeapYear(year))
+      dayOfYear++;         
+
+    //  account for years and day of year         
+    nse += (long)dayOfYear * 1days + 
+           (long)yse * 365days;  
+  
+    //  Now account for all the leap years     
+    for (int i = 0; i < yse; i++)   
+      if (isLeapYear(i + 2000)) nse += 1days; 
+                                        
+    // Adjust for UTC offset
+    nse -= (long)utcOffset * 1sec;
+        
+    return nse;
+  }              
+      
+  **
+  **  Return true if given absolute year is a leap year
+  **    
+  static bool isLeapYear(int year)
+  {
+     return (((year) % 4) == 0 && (((year) % 100) != 0 || (((year) % 400) == 0)))
+  }   
+  
+  //  Jan 1,2000 was a Saturday
+  define int epochDayOfWeek = 6;
+    
+  define byte[] daysPerMonth = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}
+     
+  define long invalid = -1L    
+  
+  //  Max nanos is Sedona is 1 ns before 1 Jan 2100 
+  //    100 years + 25 leap days - 1 nanosecond
+  define long nanosMax = (100L * 365days + 25days - 1L)
+
+  
+}
+
+
+  
+ 
+  
+    
+
+
+

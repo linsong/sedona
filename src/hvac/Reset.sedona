@@ -1,0 +1,105 @@
+//
+// Copyright (c) 2007-2011 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   10 Jan 2007  Andy Saunders  Creation
+//   27 Apr 2007  Brian Frank    Port from Java to Sedona
+//   22 Apr 2009  Elizabeth McKenney   Updated
+//   04 Aug 2011  Clif Turman    Add comments
+//
+
+**
+** Reset re-scales in value to out value object
+**
+**
+** This function performs a "reset" on the input value.
+**
+** "Reset" is a HVAC term for scaling a number between two limits.  
+**
+** When inMin < inA < inMax, the output value scales linearly 
+** between outMin and outMax.  
+**
+** If inA < inMin, the value is capped at outMin.  
+** 
+** If inA > inMax, the value is capped at outMax.
+** 
+** To calculate out, the following equation is used:
+** <pre>
+**         (outMax-outMin)
+**   out = --------------- * (in - inMin) + outMin
+**          (inMax-inMin)  
+** </pre>
+
+@niagaraIcon="module://icons/x16/control/math/reset.png"
+class Reset
+  extends Component
+{
+
+  ** re-scaled output
+  @readonly property float out
+
+  ** input
+  property float in
+
+  ** scaling constant inMin
+  @config property float inMin = 0.0
+
+  ** scaling constant inMax
+  @config property float inMax = 4095.0
+
+  ** scaling constant outMin
+  @config property float outMin = 0.0
+
+  ** scaling constant outMax
+  @config property float outMax = 100.0
+
+  **
+  ** Callback when component is first started in an app.
+  **
+  virtual override void start()
+  {
+    updateRatio()
+  }
+
+
+  **
+  ** Execute is called once every scan.
+  **
+  virtual override void execute()
+  {
+    if (in <= inMin)
+      out := outMin
+    else if (in >= inMax)
+      out := outMax
+    else
+      out := outInRatio * (in-inMin) + outMin
+  }
+
+
+  **
+  ** Behavior to execute when a property is changed externally
+  ** 
+  override void changed(Slot slot)
+  {
+    super.changed(slot)
+
+    if ((slot == Reset.inMin)  || (slot == Reset.inMax) ||
+        (slot == Reset.outMin) || (slot == Reset.outMax))
+    {
+      updateRatio()
+    }
+  }
+
+
+  private void updateRatio()
+  {
+    if (inMax==inMin)
+      outInRatio = 0.0
+    else
+      outInRatio = (outMax - outMin) / (inMax - inMin)
+  }
+
+
+  private float outInRatio
+}

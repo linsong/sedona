@@ -1,0 +1,59 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   17 May 07  Andy Sunders  Creation
+//
+
+**
+** SRLatchTest
+**
+class SRLatchTest
+  extends Test
+{
+  static inline SRLatch srl
+
+  static void test()
+  {
+    srl.s := true
+    srl.r := false
+    srl.execute()
+    assert(srl.out == true)
+    srl.execute()
+    assert(srl.out == true)
+    srl.s := false
+    srl.execute()
+    assert(srl.out == true)
+
+    srl.r := true
+    srl.execute()
+    assert(srl.out == false)
+    srl.execute()
+    assert(srl.out == false)
+    srl.r := false
+    srl.execute()
+    assert(srl.out == false)
+
+    srl.s := true
+    srl.r := true
+    srl.execute()
+    assert(srl.out == false)
+    srl.r := false
+    srl.execute()
+    assert(srl.out == false)
+
+    srl.r := true
+    srl.s := false
+    srl.execute()
+    assert(srl.out == false)
+    srl.s := true
+    srl.execute()
+    assert(srl.out == true)
+    srl.s := false
+    srl.execute()
+    assert(srl.out == true)
+  }
+
+
+}

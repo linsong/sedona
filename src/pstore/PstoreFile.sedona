@@ -1,0 +1,271 @@
+//
+// Copyright (c) 2009 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   27 Apr 09  Brian Frank  Creation
+//
+
+**
+** PstoreFile is added as a direct child of a PstoreService 
+** to reserves a range of bytes for application use as determined 
+** by the "resvOffset" and "resvSize" properties.
+**
+@niagaraIcon="module://icons/x16/file.png"
+ class PstoreFile
+  extends Component
+{                                       
+
+//////////////////////////////////////////////////////////////////////////
+// Status Codes
+//////////////////////////////////////////////////////////////////////////
+
+  ** File is mapped to storage correctly
+  define Str statusRange = "ok, inactive, badParent, serviceErr, badOffset, badSize, dupRange, formatErr"
+
+  ** File is mapped to storage correctly
+  define int statusOk = 0 
+  
+  ** File component is not actively running
+  define int statusInactive = 1 
+
+  ** Indicates that PstoreFile is not directly mounted under PstoreService
+  define int statusBadParent = 2
+
+  ** Indicates that the parent PstoreService is in an error state.
+  define int statusServiceErr = 3 
+
+  ** Reservation offset is out of range
+  define int statusBadOffset = 4 
+
+  ** Reservation size is out of range
+  define int statusBadSize = 5 
+
+  ** Reservation overlaps with another PstoreFile
+  define int statusDupRange = 6 
+  
+  ** Used by subclasses when an format error is detected
+  define int statusFormatErr = 7 
+
+//////////////////////////////////////////////////////////////////////////
+// Properties
+//////////////////////////////////////////////////////////////////////////
+
+  **
+  ** Status code for storage file access, see the
+  ** statusXXX defines for the various codes.
+  **                              
+  @range=statusRange
+  @readonly property byte status = statusInactive           
+          
+  **     
+  ** Offset of this file's storage reservation relative to the
+  ** storage device modeled by the parent PstoreService.
+  **
+  @defaultOnClone
+  @config property int resvOffset
+
+  **     
+  ** Size of this file's reservation in bytes.
+  **
+  @config property int resvSize
+
+//////////////////////////////////////////////////////////////////////////
+// I/O
+//////////////////////////////////////////////////////////////////////////
+  
+  **
+  ** Is this PstoreFile currently the owner of the backing store 
+  ** file. See the <code>claim</code> method to claim ownership.
+  **
+  bool isOwner()
+  {           
+    return service != null && service.owner == this
+  }                           
+  
+  **
+  ** Claim temporary ownership ofthe backing store file to 
+  ** perform IO.  Return true on success, false on failure.
+  **
+  bool claim()
+  {   
+    // short circuit if not under service or already owner
+    if (service == null) return false
+    if (service.owner == this) return true
+    
+    // save away old owner
+    PstoreFile old = service.owner
+    if (old != null)
+    {
+      old.pos = old.tell()
+    }     
+    
+    // update with myself as new owner    
+    service.owner = this
+    seek(pos)
+    return true
+  }
+
+  **
+  ** Get the backing store file's pointer relative to this 
+  ** PstoreFile's reserved offset.  This PstoreFile must
+  ** the current owner.  Return -1 on error.
+  **
+  int tell()
+  {                                      
+    if (service == null || service.owner != this) return -1
+    return service.file.tell() - resvOffset
+  }  
+
+  **
+  ** Seek to a specific byte offset position in the service's
+  ** backing store file relative to this PstoreFile's reserved
+  ** offset.  This PstoreFile must the current owner.  Return false
+  ** on error.
+  **
+  bool seek(int pos)
+  {
+    if (service == null || service.owner != this || pos < 0 || pos >= resvSize) 
+      return false
+    return service.file.seek(resvOffset + pos)
+  }
+    
+  **
+  ** Get the input stream used to read this PstoreFile's reserved
+  ** range from the backing store file.  If this PstoreFile is
+  ** not the current owner, then return <code>Sys.nullIn</code>.
+  ** No validation is performed to prevent reading past the
+  ** end of this PstoreFile's reserved range.
+  **
+  InStream in() 
+  {              
+    if (service == null || service.owner != this) return Sys.nullIn  
+    return service.file.in
+  }
+
+  **
+  ** Get an output stream to write this PstoreFile's reserved
+  ** range to the backing store file.  If this PstoreFile is
+  ** not the current owner, then return <code>Sys.nullOut</code>.
+  ** No validation is performed to prevent writing past the
+  ** end of this PstoreFile's reserved range.
+  **
+  OutStream out() 
+  {              
+    if (service == null || service.owner != this) return Sys.nullOut  
+    return service.file.out
+  }
+
+//////////////////////////////////////////////////////////////////////////
+// Component
+//////////////////////////////////////////////////////////////////////////
+ 
+  **
+  ** If the reservation props are changed, re-validate.
+  ** If this method is override, must call super!
+  **
+  override virtual void changed(Slot slot)
+  {
+    super.changed(slot)
+    if (!Sys.app.isRunning()) return
+    if (slot == PstoreFile.resvOffset || slot == PstoreFile.resvSize)
+    {                   
+      validate()
+    }
+  }
+
+  **
+  ** On startup we need to validate our reservation range.
+  ** If this method is override, must call super!
+  **
+  override virtual void start()
+  {   
+    validate()
+  } 
+  
+  **
+  ** Validate this file's reservation range and update its status.
+  **
+  virtual void validate()
+  {               
+    // clear service
+    service = null  
+   
+    // validate parent as PstoreService               
+    Component p = Sys.app.lookup(parent)
+    if (p == null || !p.type.is(PstoreService.type))
+    {
+      status := statusBadParent
+      return
+    }                               
+    PstoreService service = (PstoreService)p
+    
+    // validate parent size
+    if (service.size <= 0)
+    {
+      status := statusServiceErr
+      return
+    }
+    
+    // validate starting offset    
+    if (resvOffset < 0 || resvOffset >= service.size)
+    {                                     
+      status := statusBadOffset
+      return
+    }
+
+    // validate ending size    
+    if (resvSize <= 0 || resvOffset+resvSize >= service.size)
+    {                                     
+      status := statusBadSize
+      return
+    }
+
+    // validate that this file doesn't overlap 
+    // with any other file defined under the service
+    Component kid = Sys.app.lookup(service.children)
+    while (kid != null)
+    {                 
+      if (overlaps(kid))
+      {                                              
+        status := statusDupRange
+        return
+      }
+      kid = Sys.app.lookup(kid.nextSibling)       
+    }
+    
+    // file is now active   
+    this.status := statusOk
+    this.service = service
+  }                 
+  
+  **
+  ** If the given component is a PstoreFile, then 
+  ** compute if this file's range overlaps with it.
+  **
+  private bool overlaps(Component c)
+  {                                
+    if (this == c) return false
+    if (!c.type.is(PstoreFile.type)) return false
+    PstoreFile x = (PstoreFile)c
+    
+    int s1 = this.resvOffset
+    int e1 = s1 + this.resvSize
+    int s2 = x.resvOffset
+    int e2 = s2 + x.resvSize   
+    
+    // !(e1 <= s2 || e2 <= s1)
+    return e1 > s2 && e2 > s1
+  }
+
+//////////////////////////////////////////////////////////////////////////
+// Fields
+//////////////////////////////////////////////////////////////////////////
+  
+  ** Parent service is this file is configured correctly 
+  ** or null if this file is in error.
+  private PstoreService service
+
+  ** Current pos relative to resvOffset saved between ownership changes  
+  private int pos
+}

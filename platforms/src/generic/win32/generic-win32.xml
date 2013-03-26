@@ -1,0 +1,39 @@
+<!--
+  -  Sedona Platform Manifest
+  -  Copyright 2009 Tridium Inc
+  -  Licensed under the Academic Free License version 3.0
+  -->
+
+<sedonaPlatform vendor="Tridium" id="tridium-generic-win32-${sedona.env.version}" >
+
+  <compile endian="little" blockSize="4" refSize="4" debug="true" test="true" embedManifest="true">
+  
+    <!-- Native Kits -->
+    <nativeKit depend="sys 1.0+" />
+    <nativeKit depend="inet 1.0+" />
+    <nativeKit depend="datetimeStd 1.0+" />
+    <nativeKit depend="platWin32 1.0+" />
+
+    <!-- Native Sources -->
+    <nativeSource path="/src/vm" />
+    <nativeSource path="/src/sys/native" />
+    <nativeSource path="/src/sys/native/std" />
+    <nativeSource path="/src/sys/native/win32" />
+    <nativeSource path="/src/inet/native" />
+    <nativeSource path="/src/inet/native/std" />
+    <nativeSource path="/src/inet/native/sha1" />
+    <nativeSource path="/src/datetimeStd/native/std" />
+    <nativeSource path="/platforms/src/generic/win32/native" />
+
+  </compile>
+  
+  <manifestInclude>
+    <schemes>
+      <!-- win32 supports manifest transfer -->
+      <scheme id="m"/>
+    </schemes>
+  </manifestInclude>
+       
+</sedonaPlatform>
+
+

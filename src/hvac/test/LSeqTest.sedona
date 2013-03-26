@@ -1,0 +1,122 @@
+//
+// Copyright (c) 2007-2011 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   17 May 07  Andy Sunders  Creation
+//   18 Aug 2011  Clif Turman    Fix functionality.  See issue 20422.
+//   18 Aug 2011  Clif Turman    Test for all possibilities of numOuts
+//
+
+**
+** LSeqTest
+**
+class LSeqTest
+  extends Test
+{
+  static inline LSeq seq
+  static inline B2F  b2f
+
+  static void test()
+  {
+    seq.inMin := 0.0
+    seq.inMax := 100.0
+    seq.numOuts := 2
+
+    for(int numberOfOuts = 1; numberOfOuts < 17; numberOfOuts++)
+    {
+      // not in an app, so call this explicitly
+      seq.numOuts := numberOfOuts
+      seq.start()
+
+      //Sys.out.print("testing ${seq.numOuts} outputs\n")
+  
+      // test 16 outputs
+      for(int i = 0; i <=100; i++)
+      {
+        seq.in := (float)i
+        seq.execute()
+        validateOutputs(true)
+      }
+  
+      for(int i = 100; i >= 0; i--)
+      {
+        seq.in := (float)i
+        seq.execute()
+        validateOutputs(false)
+      }
+    }
+  }
+
+
+  **
+  ** test outputs.  Arg "rising" allows applying hysteresis check to decreasing in's
+  ** 
+  static void validateOutputs(bool rising)
+  {
+    float in = seq.in
+    float delta = (seq.max - seq.min) / (float)(seq.numOuts + 1)
+    int requiredStages = 0
+    
+    requiredStages = (int)((in-seq.min)/delta)
+    //if we currently have more stages on than required, first
+    //apply hysteresis before turning a stage off
+    if(!rising)  //apply hysteresis on decreasing input only
+    {
+      if(in > seq.min + (((float)requiredStages + 0.5) * delta))
+        requiredStages++
+    }
+  
+    if(requiredStages > seq.numOuts) requiredStages = seq.numOuts
+
+    //Sys.out.print("seq.in:${seq.in} delta:${delta} requiredStages:${requiredStages} rising:${rising}\n")
+
+    assert(seq.out1 == (requiredStages >= 1))
+    assert(seq.out2 == (requiredStages >= 2))
+    assert(seq.out3 == (requiredStages >= 3))
+    assert(seq.out4 == (requiredStages >= 4))
+    assert(seq.out5 == (requiredStages >= 5))
+    assert(seq.out6 == (requiredStages >= 6))
+    assert(seq.out7 == (requiredStages >= 7))
+    assert(seq.out8 == (requiredStages >= 8))
+    assert(seq.out9 == (requiredStages >= 9))
+    assert(seq.out10 == (requiredStages >= 10))
+    assert(seq.out11 == (requiredStages >= 11))
+    assert(seq.out12 == (requiredStages >= 12))
+    assert(seq.out13 == (requiredStages >= 13))
+    assert(seq.out14 == (requiredStages >= 14))
+    assert(seq.out15 == (requiredStages >= 15))
+    assert(seq.out16 == (requiredStages >= 16))
+
+
+    b2f.in1  := seq.out1
+    b2f.in2  := seq.out2
+    b2f.in3  := seq.out3
+    b2f.in4  := seq.out4
+    b2f.in5  := seq.out5
+    b2f.in6  := seq.out6
+    b2f.in7  := seq.out7
+    b2f.in8  := seq.out8
+    b2f.in9  := seq.out9
+    b2f.in10 := seq.out10
+    b2f.in11 := seq.out11
+    b2f.in12 := seq.out12
+    b2f.in13 := seq.out13
+    b2f.in14 := seq.out14
+    b2f.in15 := seq.out15
+    b2f.in16 := seq.out16
+    b2f.execute()
+
+    float b2fValue = 0.0
+    int mask = 1
+    for(int i = 0; i < requiredStages; i++)
+    {
+      b2fValue = b2fValue + (float)mask
+      mask = mask * 2
+    }
+    //Sys.out.print("b2f.count=${b2f.count}\n")
+    assert(b2f.count == (float)requiredStages)
+
+  }
+
+}

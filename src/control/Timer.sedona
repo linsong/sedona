@@ -1,0 +1,122 @@
+//
+// Copyright (c) 2010-2011 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   12 Feb 2010  Clif Turman
+//
+
+**
+** Timer outputs a pulse for the configured amount of time
+** "in" is used to fire the timer:
+**    - if low, out is forced to false
+**    - if high, out = 1 until timer reaches "time" seconds
+**  Alternatively, the pulse can be fired from the "Start Timer" action if run is not linked.
+**
+@niagaraIcon="module://icons/x16/clock.png"
+class Timer
+  extends Component
+{
+  **
+  ** The timed output pulse
+  **
+  @readonly property bool out
+
+  **
+  ** Used to fire the timer on transition from false -> true
+  **
+  @trueText = "run"
+  @falseText = "stop"
+  property bool run
+
+  **
+  ** Desired duration of the output pulse, in seconds
+  **
+  @unit=Units.second
+  @summary
+  @config property int time
+
+  **
+  ** Time left on the timer if running, in seconds
+  ** If not running, this value is 0
+  **
+  @unit=Units.second
+  @summary
+  @readonly property int left
+  
+  **
+  ** Action to reset the timer.  Any time already in progress is immediately canceled,
+  ** and the "left" is set to 0 sec
+  **
+  action void resetTimer()
+  {
+    out := false
+    lastRun = false
+    run := false
+    left := 0
+  }
+  
+  **
+  ** Used to manually start the timer in cases where there is no link to "in" property
+  ** Issuing this command while the timer is already active will reset/restart the timer
+  **
+  action void startTimer()
+  {
+    run := true
+    lastRun = false
+  }
+  
+  **
+  ** start computes the ms length of the timer
+  **
+  virtual override void start()
+  {
+    timems = (long)time * 1sec
+  }
+
+  **
+  ** override changed to recompute ms length of the timer if the time changes
+  **
+  virtual override void changed(Slot slot)
+  {
+    super.changed(slot)
+    if(slot == Timer.time)
+      timems = (long)time * 1sec
+  }
+
+  **
+  ** Execute is called once every scan.
+  **
+  virtual override void execute()
+  {
+    if(run)
+    {
+      long now = Sys.ticks()
+      if(!lastRun)
+      {
+        deadline = now + timems
+        out := true
+        lastRun = run
+        left := time
+      }
+      else
+      {
+        left := (deadline - now > 0L) ? (int)((deadline - now)/1sec) : 0
+        if(now > deadline)
+        {
+          out := false
+        }
+      }
+    }
+    else
+    {
+      out := false
+      lastRun = false
+      left := 0
+    }
+  }
+
+  private bool lastRun  = false
+  private long deadline = 0L
+  private long timems
+}

@@ -1,0 +1,27 @@
+<!--
+  -  Sedona Kit
+  -  Copyright 2009 Tridium Inc
+  -  Licensed under the Academic Free License version 3.0
+  -->
+
+<sedonaKit
+ name = "platWin32"
+ vendor = "Tridium"
+ description = "Platform support for Windows based devices"
+ includeSource = "true"
+ doc = "true"
+>
+
+  <!-- Dependencies -->
+  <depend on="sys 1.0+"  />
+
+  <!-- Source Directories -->
+  <source dir="."/>
+
+  <!-- Natives -->
+  <native qname="platWin32::Win32YieldPlatformService.doYield" id="1::0" />
+  <native qname="platWin32::PlatformManifestServer.getPmSize" id="1::1" />
+  <native qname="platWin32::PlatformManifestServer.getPmBytes" id="1::2" />
+
+</sedonaKit>
+

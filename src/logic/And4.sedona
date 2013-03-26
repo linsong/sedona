@@ -1,0 +1,42 @@
+//
+// Copyright (c) 2007-2011 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   10 Jan 07  Andy Saunders  Creation
+//   27 Apr 07  Brian Frank    Port from Java to Sedona
+//   17 Feb 11  Ignore null inputs
+//   04 Aug 11  Clif Turman    Add comments
+
+**
+** And4 4 input AND logic object
+** Null inputs are ignored.  If all inputs are null output is null
+** out = in1 && in2 && in3 && in4
+**
+class And4
+  extends And2
+{
+  ** input 3
+  property bool in3
+
+  ** input 4
+  property bool in4
+
+  **
+  ** Execute is called once every scan.
+  **
+  virtual override void execute()
+  {
+    bool allNull = true;
+    bool tmp = true
+    if (in1 != null) { tmp &= in1; allNull = false; }
+    if (in2 != null) { tmp &= in2; allNull = false; }      
+    if (in3 != null) { tmp &= in3; allNull = false; }
+    if (in4 != null) { tmp &= in4; allNull = false; }      
+
+    if (allNull) tmp = null 
+    
+    out := tmp
+  }
+
+}

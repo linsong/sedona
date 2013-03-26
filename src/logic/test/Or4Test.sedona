@@ -1,0 +1,99 @@
+//
+// Copyright (c) 2011 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   16 Feb 10  Dan Giorgis  creation
+//
+
+**
+** Or4Test
+**
+class Or4Test
+  extends Test
+{
+  static inline Or4 or4
+
+  static void bitTest(int bits, int nullBits)
+  {       
+    int trueCnt = 0;
+    int nullCnt = 0;
+       
+    if ((nullBits & 0x01) != 0)
+    {   
+      or4.in1 := null; 
+      nullCnt++;
+    }
+    else if ((bits & 0x01) != 0) 
+    { 
+      or4.in1 := true; 
+      trueCnt++;
+    }
+    else
+      or4.in1 := false;
+         
+    if ((nullBits & 0x02) != 0)
+    {   
+      or4.in2 := null; 
+      nullCnt++;
+    }
+    else if ((bits & 0x02) != 0) 
+    { 
+      or4.in2 := true; 
+      trueCnt++;
+    }
+    else
+      or4.in2 := false;
+
+    if ((nullBits & 0x04) != 0)
+    {   
+      or4.in3 := null; 
+      nullCnt++;
+    }
+    else if ((bits & 0x04) != 0) 
+    { 
+      or4.in3 := true; 
+      trueCnt++;
+    }
+    else
+      or4.in3 := false;
+
+    if ((nullBits & 0x08) != 0)
+    {   
+      or4.in4 := null; 
+      nullCnt++;
+    }
+    else if ((bits & 0x08) != 0) 
+    { 
+      or4.in4 := true; 
+      trueCnt++;
+    }
+    else
+      or4.in4 := false;
+    
+    or4.execute()
+        
+    //Sys.out.print("bits $bits nullBits $nullBits  nullCnt $nullCnt trueCnt $trueCnt").nl();
+    //Sys.out.print("in1 $or4.in1 in2 $or4.in2 in3 $or4.in3 in4 $or4.in4 out $or4.out").nl();    
+    //  If all input are null output should be null
+    if (nullCnt == 4)
+      assert(or4.out == null)
+    else
+    {  
+      if (trueCnt != 0)
+        assert(or4.out == true)
+      else   
+        assert(or4.out == false)
+    }   
+  }  
+
+  static void test()
+  {
+    bitTest(0x0, 0xF)
+
+    for (int inBits = 0; inBits <= 0xF; inBits++)
+      for (int nullBits = 0; nullBits <= 0xF; nullBits++)
+        bitTest(inBits, nullBits)    
+      
+  }
+}

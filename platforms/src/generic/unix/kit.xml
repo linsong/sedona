@@ -1,0 +1,24 @@
+<!--
+  -  Sedona Kit
+  -  Copyright 2009 Tridium Inc
+  -  Licensed under the Academic Free License version 3.0
+  -->
+
+<sedonaKit
+ name = "platUnix"
+ vendor = "Tridium"
+ description = "Platform support for Unix based devices"
+ includeSource = "true"
+ doc = "true"
+>
+
+  <!-- Dependencies -->
+  <depend on="sys 1.0+"  />
+
+  <!-- Source Directories -->
+  <source dir="."/>
+
+  <!-- Natives -->
+
+</sedonaKit>
+

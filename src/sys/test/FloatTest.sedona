@@ -1,0 +1,84 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   11 Mar 07  Brian Frank  Creation
+//
+
+**
+** FloatTest
+**
+class FloatTest
+  extends Test
+{
+  static float x(float v) { return v }
+
+  static float nullval() { return x(0f) / x(0f) }
+
+  static void testOps()
+  {
+    // arithmetic operators
+    assert(x(1.0) + 2f == 3.0)
+    assert(x(2.0) + 123456f == 123458f)
+    assert(x(938.8563) - 1.8563f == 937.0)
+    assert(x(24.02) * 0.5 == 12.01)
+    assert(-x(6312.0) / 0.3 == -21040.0)
+
+    // comparision operators
+    assert(x(2.0) != -2.0)
+    assert(x(12.34) >= 12.34)
+    assert(x(12.34) >= 1.234)
+    assert(x(-1.0) > -2.0)
+    assert(x(99000000f) <= 99000000f)
+    assert(x(1234.6789) <= 1234.6789)
+    assert(-x(707.025) < -707.01)
+    assert(x(0f) != null)
+    assert(x(null) == null)
+    assert(x(null) == nullval())
+    assert(x(null)+1f == null)
+    assert(null != x(1f))
+    assert(!(x(10.0f) == 10.2f))
+    assert(!(x(null) != null))
+  }
+
+  static void testAssigns()
+  {
+    verifyAssigns(2f)
+  }
+
+  static void verifyAssigns(float p)
+  {
+    // param increment/decrement
+    p = 3.2f; ++p; assert(p == 4.2F)
+    p = 3.2f; p--; assert(p == 2.2F)
+    p = 3.2f; assert(++p == 4.2f); assert(p == 4.2)
+    p = 3.2f; assert(p++ == 3.2f); assert(p == 4.2)
+    p = 3.2f; assert(--p == 2.2f); assert(p == 2.2)
+    p = 3.2f; assert(p-- == 3.2f); assert(p == 2.2)
+
+    // local increment/decrement
+    float x
+    x = 3.002f; x++; assert(x == 4.002F)
+    x = 3.002f; --x; assert(x == 2.002F)
+    x = 3.002f; assert(++x == 4.002f); assert(x == 4.002)
+    x = 3.002f; assert(x++ == 3.002f); assert(x == 4.002)
+    x = 3.002f; assert(--x == 2.002f); assert(x == 2.002)
+    x = 3.002f; assert(x-- == 3.002f); assert(x == 2.002)
+
+    // param +=, -=, etc
+    p = 2f;
+    p += 3f;   assert(p == 5.0)
+    p -= 1f;   assert(p == 4.0)
+    p *= 5f;   assert(p == 20.0)
+    assert((p /= 2f) == 10.0); assert(p == 10.0)
+
+    // local +=, -=, etc
+    x = 5f
+    x += (-3f);  assert(x == 2.0)
+    x *= 8f;     assert(x == 16.0)
+    x /= 2f;     assert(x == 8.0)
+    assert((x -= 3f) == 5.0); assert(x == 5.0)
+  }
+
+}

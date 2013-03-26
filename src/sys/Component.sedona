@@ -1,0 +1,542 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   28 Mar 07  Brian Frank  Creation
+//
+
+**
+** Component is the base class for all Sedona component classes.
+**
+class Component
+  extends Virtual
+{
+
+//////////////////////////////////////////////////////////////////////////
+// Identity
+//////////////////////////////////////////////////////////////////////////
+
+  **
+  ** Get the path of this component from the root App.
+  ** The end of the path is denoted by null.  The list
+  ** is a shared static buffer.  Return null on error or
+  ** if not mounted under an Sys.app.
+  **
+  Component[] path()
+  {
+    // first compute depth
+    int depth = 0
+    Component p = this
+    while (p.id != 0)
+    {
+      p = Sys.app.lookup(p.parent)
+      if (p == null) return null
+      depth++
+    }
+
+    // if too deep return null, otherwise
+    // terminate the path list at depth
+    if (depth >= pathBufLen) return null
+    pathBuf[depth--] = null
+
+    // now map names into list backwards
+    p = this
+    while (p.id != 0)
+    {
+      pathBuf[depth--] = p
+      p = Sys.app.lookup(p.parent)
+    }
+    return pathBuf
+  }
+
+  private define int pathBufLen = 16
+  private static inline Component[pathBufLen] pathBuf
+
+  **
+  ** Lookup a child by name or return null.
+  **
+  Component lookupByName(Str name)
+  {
+    App app = Sys.app
+    for (Component c = app.lookup(children); c != null; c = app.lookup(c.nextSibling))
+      if (c.name.equals(name))
+        return c
+    return null
+  }
+
+//////////////////////////////////////////////////////////////////////////
+// Slots
+//////////////////////////////////////////////////////////////////////////
+
+  //
+  // Invokes
+  //
+
+  ** Invoke an action which takes no arguments.
+  native void invokeVoid(Slot slot)
+
+  ** Invoke an action which takes a boolean argument.
+  native void invokeBool(Slot slot, bool arg)
+
+  ** Invoke an action which takes an int argument.
+  native void invokeInt(Slot slot, int arg)
+
+  ** Invoke an action which takes a long argument.
+  native void invokeLong(Slot slot, long arg)
+
+  ** Invoke an action which takes a float argument.
+  native void invokeFloat(Slot slot, float arg)
+
+  ** Invoke an action which takes a double argument.
+  native void invokeDouble(Slot slot, double arg)
+
+  ** Invoke an action which takes a Buf argument.
+  native void invokeBuf(Slot slot, Buf arg)
+
+  //
+  // Getters
+  //
+
+  ** Get a bool property using reflection.
+  native bool getBool(Slot slot)
+
+  ** Get an integer (byte, short, or int) property using reflection.
+  native int getInt(Slot slot)
+
+  ** Get a long property using reflection.
+  native long getLong(Slot slot)
+
+  ** Get a float property using reflection.
+  native float getFloat(Slot slot)
+
+  ** Get a double property using reflection.
+  native double getDouble(Slot slot)
+
+  ** Get a Buf property using reflection.
+  native Buf getBuf(Slot slot)
+
+  //
+  // Setters
+  //
+
+  ** Set a bool property using reflection.
+  void setBool(Slot slot, bool val) { if (doSetBool(slot, val)) slotChanged(slot) }
+
+  ** Set an integer (byte, short, or int) property using reflection.
+  void setInt(Slot slot, int val) { if (doSetInt(slot, val)) slotChanged(slot) }
+
+  ** Set a long property using reflection.
+  void setLong(Slot slot, long val) { if (doSetLong(slot, val)) slotChanged(slot) }
+
+  ** Set a float property using reflection.
+  void setFloat(Slot slot, float val) { if (doSetFloat(slot, val)) slotChanged(slot) }
+
+  ** Set a double property using reflection.
+  void setDouble(Slot slot, double val) { if (doSetDouble(slot, val)) slotChanged(slot) }
+
+  private native bool doSetBool(Slot slot, bool val)
+  private native bool doSetInt(Slot slot, int val)
+  private native bool doSetLong(Slot slot, long val)
+  private native bool doSetFloat(Slot slot, float val)
+  private native bool doSetDouble(Slot slot, double val)
+
+  **
+  ** The changed method must be called when a slot is modified.
+  ** It is automatically called whenever setting a property
+  ** field with a primitive type (bool, byte, short, int, and
+  ** float).  However it must be manually called after updating
+  ** the contents of a Buf property.  If you override this
+  ** method, you MUST call super!
+  **
+  virtual void changed(Slot slot)
+  {
+    Sys.orBytes(slot.watchEvent(), watchFlags, 0, Watch.max)
+  }
+  
+  private void slotChanged(Slot slot)
+  {
+    if (Sys.app.isRunning())
+      changed(slot)
+  }
+
+  **
+  ** Set property to a default value.  
+  ** Called when a link is removed from an input slot.
+  **
+  virtual void setToDefault(Slot slot)
+  {
+    // default input - we can't really do this using the
+    // actual property default because we don't have that
+    // information available at runtime - but we can default
+    // things to zero which seems better than just leaving
+    // a dangling value
+    switch (slot.type.id)
+    {
+      case Type.boolId:   setBool(slot, false); break
+      case Type.byteId:
+      case Type.shortId:
+      case Type.intId:    setInt(slot, 0); break
+      case Type.longId:   setLong(slot, 0L); break
+      case Type.floatId:  setFloat(slot, 0.0F); break
+      case Type.doubleId: setDouble(slot, 0.0D); break
+      case Type.bufId:    getBuf(slot).clear(); break
+    }
+  }
+
+//////////////////////////////////////////////////////////////////////////
+// Lifecycle
+//////////////////////////////////////////////////////////////////////////
+
+  **
+  ** Callback when component is loaded into an app.  This occurs
+  ** before the start phase.  Only called if app is running.
+  **
+  virtual void loaded()
+  {
+  }
+
+  **
+  ** Callback when component is first started in an app.  This occurs
+  ** only after all components have had their loaded callback invoked. 
+  ** Only called if app is running
+  **
+  virtual void start()
+  {
+  }
+
+  **
+  ** Callback when component is first stopped in an app.  Only called
+  ** if app is running.
+  **
+  virtual void stop()
+  {
+  }
+
+  **
+  ** Execute is called once every scan using the
+  ** simple round-robin scan engine.
+  **
+  virtual void execute()
+  {
+  }
+
+  **
+  ** Propagate data across links to myself.
+  **
+  internal void propagateLinksTo()
+  {
+    for (Link link = linksTo; link != null; link = link.nextTo)
+      link.propagate()
+  }
+
+
+  **
+  ** allowChildExecute returns false if child components of this
+  ** should not have execute() called this app cycle.
+  **
+  virtual bool allowChildExecute()
+  {
+    return true
+  }
+
+
+  
+//////////////////////////////////////////////////////////////////////////
+// Component event callbacks
+//////////////////////////////////////////////////////////////////////////
+
+  define int REMOVED   = 0
+  define int ADDED     = 1
+  define int REORDERED = 2
+
+  **
+  ** Called on parent when a child event occurs.  Only called if app is
+  ** running.
+  **
+  ** Defined event types are:
+  **
+  ** REMOVED - notification that child has been removed from component.  
+  **   Should always return 0.  Called after stop() on child.
+  ** ADDED   - notification that child has been added to component.  
+  **   Should always return 0.   Called prior to loaded() / start() on child.
+  ** REORDERED - notification that component's children have been reordered.  
+  **   Should always return 0.   Called after the reordering is complete.
+  **   Only called once per reorder event; child arg is always null.
+  **
+  ** Future event types may make use of return code.
+  **
+  virtual int childEvent(int eType, Component child)
+  {
+    return 0
+  }
+
+
+  **
+  ** Called on a child when a parent event occurs.  Only called if app is
+  ** running.
+  **
+  ** Defined event types are:
+  **
+  ** REMOVED - notification that child has been removed/unparented.  
+  **   Should always return 0.  Called after stop() on child.
+  ** ADDED   - notification this child has been parented.  
+  **   Should always return 0.  Called prior to loaded() / start() on child.
+  **
+  ** Future event types may make use of return code. 
+  **
+  virtual int parentEvent(int eType, Component parent)
+  {
+    return 0
+  }
+
+
+  **
+  ** Called on a component when a link event occurs.  Only called
+  ** if app is running.
+  **
+  ** Defined event types are:
+  **
+  ** REMOVED - link has been removed from the component.  
+  **   Should always return 0
+  ** ADDED   - link has been added to the component.  
+  **   Should always return 0. 
+  **
+  ** Future event types may make use of return code. 
+  **
+  virtual int linkEvent(int eType, Link link)
+  {
+    return 0
+  }
+
+
+  
+
+//////////////////////////////////////////////////////////////////////////
+// Watch Eventing
+//////////////////////////////////////////////////////////////////////////
+
+  **
+  ** Fire a tree changed event on this component by marking
+  ** the tree event bit for each watch's bitmask.
+  **
+  void fireTreeChanged()
+  {
+    Sys.orBytes(Watch.eventTree, watchFlags, 0, Watch.max)
+  }
+
+  **
+  ** Fire the links changed event on this component by marking
+  ** the link event bit for each watch's bitmask.
+  **
+  void fireLinksChanged()
+  {
+    Sys.orBytes(Watch.eventLinks, watchFlags, 0, Watch.max)
+  }
+
+////////////////////////////////////////////////////////////////
+// Save
+////////////////////////////////////////////////////////////////
+
+  **
+  ** Save the component's application information in
+  ** binary format to the output stream:
+  **
+  **   appComp
+  **   {
+  **     u2      id
+  **     u1      kitId
+  **     u1      typeId
+  **     str     name
+  **     u2      parent
+  **     u2      children
+  **     u2      nextSibling
+  **     val[]   configProps
+  **     u1      ';' end marker
+  **   }
+  **
+  void saveAppComp(OutStream out)
+  {
+    out.writeI2(id)
+    out.write(type.kit.id)
+    out.write(type.id)
+    out.writeStr(name)
+    out.writeI2(parent)
+    out.writeI2(children)
+    out.writeI2(nextSibling)
+    saveProps(out, 'c')
+    out.write(';')
+  }
+
+  **
+  ** Save the property values to the output stream.
+  ** Filter:
+  **   0   = all
+  **   'c' = config only
+  **   'r' = runtime only
+  **
+  void saveProps(OutStream out, int filter)
+  {
+    foreach (Slot slot : type.slots, type.slotsLen)
+      if (slot.matchProp(filter))
+        saveProp(out, slot)
+  }
+
+  **
+  ** Save a property value to the output stream.
+  **
+  void saveProp(OutStream out, Slot prop)
+  {
+    switch (prop.type.id)
+    {
+      case Type.boolId:   out.writeBool(getBool(prop)); break
+      case Type.byteId:   out.write(getInt(prop));      break
+      case Type.shortId:  out.writeI2(getInt(prop));    break
+      case Type.intId:    out.writeI4(getInt(prop));    break
+      case Type.longId:   out.writeI8(getLong(prop));   break
+      case Type.floatId:  out.writeF4(getFloat(prop));  break
+      case Type.doubleId: out.writeF8(getDouble(prop)); break
+      case Type.bufId:
+        Buf b = getBuf(prop)
+        out.writeI2(b.size)
+        out.writeBytes(b.bytes, 0, b.size)
+        break
+    }
+  }
+
+////////////////////////////////////////////////////////////////
+// Load
+////////////////////////////////////////////////////////////////
+
+  **
+  ** Load the component's configuration from a binary
+  ** format input stream - see saveAppComp() for format.
+  ** We assume component id and type id have already been
+  ** read.  Return 0 on success or non-zero on error.
+  **
+  int loadAppComp(InStream in)
+  {
+    // meta
+    if (!in.readStr(name, 8)) return Err.nameTooLong
+    parent      = in.readU2()
+    children    = in.readU2()
+    nextSibling = in.readU2()
+
+    // load config properties
+    loadProps(in, 'c')
+
+    // safety marker byte
+    return (in.read() == ';') ? 0 : Err.invalidCompEndMarker
+  }
+
+  **
+  ** Load the property values to the output stream.
+  ** Filter:
+  **   0   = all
+  **   'c' = config only
+  **   'r' = runtime only
+  void loadProps(InStream in, int filter)
+  {
+    foreach (Slot slot : type.slots, type.slotsLen)
+      if (slot.matchProp(filter))
+        loadProp(in, slot)
+  }
+
+  **
+  ** Decode a value from the input stream
+  ** and set for the specified property.
+  **
+  void loadProp(InStream in, Slot slot)
+  {
+    switch (slot.type.id)
+    {
+      case Type.boolId:   setBool(slot, in.readBool());     break
+      case Type.byteId:   setInt(slot, (byte)in.read());    break
+      case Type.shortId:  setInt(slot, (short)in.readU2()); break
+      case Type.intId:    setInt(slot, in.readS4());        break
+      case Type.longId:   setLong(slot, in.readS8());       break
+      case Type.floatId:  setFloat(slot, in.readF4());      break
+      case Type.doubleId: setDouble(slot, in.readF8());     break
+      case Type.bufId:
+        Buf b = getBuf(slot)
+        int size = b.size = in.readU2()
+        if (size > b.bytesLen) b.size = b.bytesLen
+        in.readBytes(b.bytes, 0, b.size)
+        in.skip(size - b.size)
+        if (slot.isAsStr()) b.bytes[b.bytesLen-1] = 0 // always cap with \0
+        slotChanged(slot) // must explicitly call
+        break
+    }
+  }
+
+  **
+  ** Decode a value from the input stream
+  ** and invoke for the specified action.
+  **
+  void invokeAction(InStream in, Slot slot)
+  {
+    switch (slot.type.id)
+    {
+      case Type.voidId:   invokeVoid(slot);                    break
+      case Type.boolId:   invokeBool(slot, in.readBool());     break
+      case Type.byteId:   invokeInt(slot, (byte)in.read());    break
+      case Type.shortId:  invokeInt(slot, (short)in.readU2()); break
+      case Type.intId:    invokeInt(slot, in.readS4());        break
+      case Type.longId:   invokeLong(slot, in.readS8());       break
+      case Type.floatId:  invokeFloat(slot, in.readF4());      break
+      case Type.doubleId: invokeDouble(slot, in.readF8());     break
+      /* case Type.bufId: this should never happen */
+    }
+  }            
+
+//////////////////////////////////////////////////////////////////////////
+// Defines
+//////////////////////////////////////////////////////////////////////////
+
+  ** This value represents a null two byte id as 0xffff
+  define int nullId = 0xffff
+
+//////////////////////////////////////////////////////////////////////////
+// Fields
+//////////////////////////////////////////////////////////////////////////
+
+  ** Reference to the Type instance which describes this Component.
+  const Type type
+
+  ** Identifier in application (do not modify directly)
+  short id
+
+  ** Human name for this component which is unique
+  ** within its parent (do not modify directly)
+  define int nameLen = 8
+  inline Str(nameLen) name
+
+  ** Parent id or nullId if root App or unmounted (do not modify directly)
+  short parent = nullId
+
+  ** First child id in linked list of children (do not modify directly)
+  short children = nullId
+
+  ** Next sibling id for linked list of components under
+  ** a given parent (do not modify directly)
+  short nextSibling = nullId
+
+  ** Linked list of Links where this is the "to" component
+  Link linksTo
+
+  ** Linked list of Links where this is the "from" component
+  Link linksFrom
+
+  ** Bitmask for each watch's subscriptions and events
+  inline byte[Watch.max] watchFlags
+
+//////////////////////////////////////////////////////////////////////////
+// Slots
+//////////////////////////////////////////////////////////////////////////
+ 
+  ** Metadata common to all components is packed into 32-bits:
+  **   00-03: nibble for security groups
+  **   16-23: byte logical x coordinate on wiresheet
+  **   23-31: byte logical y coordinate on wiresheet
+  @config property int meta = 0x01
+} 
