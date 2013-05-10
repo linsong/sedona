@@ -69,6 +69,10 @@ class App
     services = null
     children = nullId
 
+    // free kit ID map
+    delete kitIdMap
+    kidIdMap = null
+
     // free comps array
     compsLen = 0
     delete comps
