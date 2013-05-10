@@ -104,6 +104,9 @@ static int runInPlatformMode()
   SedonaVM vm;
   bool quit = FALSE;
 
+  // Clear the VM struct (ensure NULL pointers at start)
+  memset((void*)&vm , 0 , sizeof(SedonaVM));
+
   printf("Running SVM in Platform Mode\n");
   do
   {
@@ -247,6 +250,8 @@ static int commonVmSetup(SedonaVM* vm, const char* scodeFile)
 {
   int result;
 
+  if (vm->codeBaseAddr!=NULL) free((void*)vm->codeBaseAddr);   // Avoid memory leak
+
   // load scode
   result = loadFile(scodeFile, (uint8_t**)&(vm->codeBaseAddr), &(vm->codeSize));
   if (result != 0)
@@ -254,6 +259,8 @@ static int commonVmSetup(SedonaVM* vm, const char* scodeFile)
     printf("Cannot load input file (%d): %s\n", result, scodeFile);
     return result;
   }
+
+  if (vm->stackBaseAddr!=NULL) free((void*)vm->stackBaseAddr);  // Avoid memory leak
 
   // alloc stack (hardcoded for now)
   vm->stackMaxSize  = 16384;

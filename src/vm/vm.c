@@ -142,6 +142,8 @@ static int vmInit(SedonaVM* vm)
   u4 = *(uint32_t*)(cb+8);
   if (u4 != vm->codeSize) return ERR_BAD_IMAGE_CODE_SIZE;
 
+  if (vm->dataBaseAddr!=NULL) free((void*)vm->dataBaseAddr);    // Avoid memory leak on restart
+
   // initialize static data section
   u4 = *(uint32_t*)(cb+12);
   vm->dataBaseAddr = (uint8_t*)malloc(u4);
