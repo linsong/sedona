@@ -71,7 +71,7 @@ class App
 
     // free kit ID map
     delete kitIdMap
-    kidIdMap = null
+    kitIdMap = null
 
     // free comps array
     compsLen = 0
