@@ -164,6 +164,9 @@ static int runInStandaloneMode(const char* filename, int vmArgc, char* vmArgv[])
   SedonaVM vm;
   int64_t t1, t2;
 
+  // Clear the VM struct (ensure NULL pointers at start)
+  memset((void*)&vm , 0 , sizeof(SedonaVM));
+
   if ((result = commonVmSetup(&vm, filename)) != 0)
     return result;
 
