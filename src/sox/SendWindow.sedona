@@ -1,0 +1,228 @@
+//
+// Copyright (c) 2008 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   1 Apr 08  Brian Frank  Creation
+//
+
+**
+** SendWindow manages the outgoing messages and keeps enough
+** information needed to recreate the message on a retry.
+**
+class SendWindow
+{
+
+////////////////////////////////////////////////////////////////
+// Methods
+////////////////////////////////////////////////////////////////
+
+  **
+  ** Reset into a clean state for new session.
+  **
+  void reset()
+  {
+    seqNum = Sys.rand()
+    foreach (SendPacket p : packets, max)
+    {
+      p.age = 0
+    }
+    numUnacked = 0
+  }
+
+  **
+  ** Allocate the next outgoing sequence number.
+  **
+  int nextSeqNum()
+  {
+    return seqNum++
+  }
+
+  **
+  ** Allocate a SendPacket which stores how to resend the message.
+  **
+  SendPacket nextPacket()
+  {
+    foreach (SendPacket p : packets, max)
+    {
+      if (p.age == 0)
+      {
+        p.cmd = '?'
+        p.age = 1
+        p.seqNum = seqNum++
+        numUnacked++
+        return p
+      }
+    }
+    return null
+  }
+
+  **
+  ** If we have any ack headers then process them.  Return true if
+  ** the sending window isn't full - if we return false, then we
+  ** don't have room to store any additional outgoing messages.
+  **
+  bool checkAckHeaders(SoxService service, int numFields)
+  {
+    // if no headers
+    if (numFields == 0) return numUnacked < max
+
+    // ack headers
+    int ackNum = -1
+    byte[] ackMore = null
+    int ackMoreOff = 0
+    int ackMoreLen = 0
+
+    // parse ack fields
+    BufInStream in = service.in
+    for (int i=0; i<numFields; ++i)
+    {
+      int headerId = in.read()
+      int typeId = headerId & 0x3
+      headerId >>= 2
+
+      switch (headerId)
+      {
+        case Dasp.ACK:
+          ackNum = in.readU2()
+          break
+        case Dasp.ACK_MORE:
+          ackMoreLen = in.read()
+          ackMoreOff = in.pos
+          ackMore    = in.buf.bytes;
+          in.skip(ackMoreLen)
+          break
+        default:
+          SoxSession.skipHeader(in, typeId)
+      }
+    }
+
+    // if no ack header
+    if (ackNum < 0) return numUnacked < max
+
+    // create the new "unacked window" - anything outside
+    // of start and end inclusive is now considered ack'ed
+    int unackStart = (ackNum + 1) & 0xffff
+    int unackEnd   = (unackStart + 10000) & 0xffff
+
+    // check each packet for ack, and slide head as appriopiate
+    foreach (SendPacket p : packets, max)
+    {
+      if (p.age == 0) continue
+      if (isAcked(unackStart, unackEnd, ackNum, ackMore, ackMoreOff, ackMoreLen, p.seqNum))
+      {
+        p.age = 0
+        numUnacked--
+      }
+    }
+
+    // return if we have room left
+    return numUnacked < max
+  }
+
+
+  **
+  ** Return if the specified seqNum should be considered
+  ** acked.  The unackStart and unackEnd define the inclusive
+  ** range of what the remote endpoint has not acked (which
+  ** means anything outside of that range is immediately
+  ** considered acked).  We also check our ackMore mask for
+  ** unordered acks.
+  **
+  bool isAcked(int unackStart, int unackEnd, int ackNum, byte[] ackMore, int ackMoreOff, int ackMoreLen, int seqNum)
+  {
+    // if outside the unacked range, then definitely acked
+    if (unackStart <= unackEnd)
+    {
+      if (seqNum < unackStart || seqNum > unackEnd)
+        return true;
+    }
+    else
+    {
+      if (seqNum < unackStart && seqNum > unackEnd)
+        return true;
+    }
+
+    // if we have an ackMore header, then check for unordered acks
+    if (ackMoreLen > 0)
+    {
+      int diff = (seqNum - ackNum) & 0xffff;
+      int index = ackMoreLen - (diff>>3) - 1
+      if (0 <= index && index < ackMoreLen)
+      {
+        int ackMoreByte = ackMore[ackMoreOff+index];
+        int ackMoreMask = 1 << (diff & 0x7);
+        if ((ackMoreMask & ackMoreByte) != 0) return true;
+      }
+    }
+
+    return false;
+  }
+
+  **
+  ** If we have any unacked outgoing messages, then
+  ** resend them.  Return if we did work.
+  **
+  bool sendRetries(SoxService service, SoxSession session, int houseKeepingTicks)
+  {
+    if (numUnacked == 0) return false
+
+    bool work = false
+    foreach (SendPacket p : packets, max)
+    {
+      // if age 0 this isn't an used, unacked packet
+      if (p.age == 0) continue
+
+      // increment age which is a counter
+      // of house keeping ticks
+      p.age += houseKeepingTicks
+
+      //  If more than one retry interval has elapsed, send a retry
+      if (p.age > (PKT_RETRY_INTERVAL / SoxService.HOUSE_KEEPING_INTERVAL))
+      {
+        SoxCommands.send(service, session, p)
+        p.age = 1
+        work = true
+      }
+    }
+    return work
+  }
+
+////////////////////////////////////////////////////////////////
+// Fields
+////////////////////////////////////////////////////////////////
+
+  define int PKT_RETRY_INTERVAL = 1000    // (ms) if a packet goes unacked this long, send retry
+  define int max = 8                      // max number of unacked messages we can store
+
+  short seqNum        // Sending sequence number
+  byte numUnacked     // how many pending unacked messages
+  inline SendPacket[max] packets = {...}
+
+}
+
+****************************************************************
+** SendPacket
+****************************************************************
+
+class SendPacket
+{
+  void error(Str cause)
+  {
+    cmd = '!'
+    refData = cause
+  }
+
+  // managed by SendWindow
+  short seqNum
+  byte age        // zero if unused, 1-255 for every house keeping tick
+
+  // managed by SoxCommands
+  byte cmd        // sox command
+  byte replyNum   // sox reply number
+  Obj   refData   // pointer data for retry
+  short u2Data1   // two byte data for retry
+  short u2Data2   // two byte data for retry
+}
+
+

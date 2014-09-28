@@ -1,0 +1,238 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   16 May 07  Andy Sunders  Creation
+//
+
+**
+** MathTest
+**
+class MathTest
+  extends SSTest
+{
+  static inline Add2 add2
+  static inline Add4 add4
+  static inline Sub2 sub2
+  static inline Sub4 sub4
+  static inline Mul2 mul2
+  static inline Mul4 mul4
+  static inline Div2 div2
+  static inline Avg10 avg10
+  static inline Min min
+  static inline Max max
+  static inline MinMax minmax
+  static inline FloatOffset foff
+  static inline Round rnd
+
+  static void test()
+  {
+    add2.in1 := 1.0f
+    add2.in2 := 2.0f
+    add2.execute()
+    assert(add2.out == 3.0f)
+    add2.in2 := -1.0f
+    add2.execute()
+    assert(add2.out == 0.0f)
+
+    add4.in1 := 1.0f
+    add4.in2 := 2.0f
+    add4.in3 := 3.0f
+    add4.in4 := 4.0f
+    add4.execute()
+    assert(add4.out == 10.0f)
+    add4.in4 := -6.0f
+    add4.execute()
+    assert(add4.out == 0.0f)
+
+    sub2.in1 := 2.0f
+    sub2.in2 := 1.0f
+    sub2.execute()
+    assert(sub2.out == 1.0f)
+    sub2.in2 := 2.0f
+    sub2.execute()
+    assert(sub2.out == 0.0f)
+
+    sub4.in1 := 100.0f
+    sub4.in2 := 25.0f
+    sub4.in3 := 25.0f
+    sub4.in4 := 25.0f
+    sub4.execute()
+    assert(sub4.out == 25.0f)
+    sub4.in4 := 50.0f
+    sub4.execute()
+    assert(sub4.out == 0.0f)
+
+    mul2.in1 := 2.0f
+    mul2.in2 := 2.0f
+    mul2.execute()
+    assert(mul2.out == 4.0f)
+    mul2.in2 := -2.0f
+    mul2.execute()
+    assert(mul2.out == -4.0f)
+
+    mul4.in1 := 0.1f
+    mul4.in2 := 10.0f
+    mul4.in3 := 0.01f
+    mul4.in4 := 100.0f
+    mul4.execute()
+    assert(mul4.out == 1.0f)
+    mul4.in4 := 200.0f
+    mul4.execute()
+    assert(mul4.out == 2.0f)
+
+    div2.in1 := 1.0f
+    div2.in2 := 2.0f
+    div2.execute()
+    assert(div2.out == 0.5f)
+    div2.in2 := -2.0f
+    div2.execute()
+    assert(div2.out == -0.5f)
+
+
+    avg10.start()     // not in an app, so call this explicitly
+
+    avg10.maxTime := 40
+    doAvg(1.0)
+    assert(avg10.out == 1.0)
+    doAvg(2.0)
+    doAvg(3.0)
+    doAvg(4.0)
+    doAvg(5.0)
+    doAvg(6.0)
+    doAvg(7.0)
+    doAvg(8.0)
+    doAvg(9.0)
+    doAvg(10.0)
+    assert(avg10.out == 5.5)
+    doAvg(11.0)
+    assert(avg10.out == 6.5)
+    long startTime = Sys.ticks()
+    while( (Sys.ticks() - startTime) < 500ms )
+    {
+      avg10.execute()
+    }
+    assert(avg10.out == 11.0)
+
+    avg10.maxTime := 0
+    doAvg(1.0)
+    float value = avg10.out
+    startTime = Sys.ticks()
+    while( (Sys.ticks() - startTime) < 500ms )
+    {
+      avg10.execute()
+    }
+    assert(avg10.out == value)
+
+
+    min.in1 := 10f
+    min.in2 := 9f
+    min.execute()
+    assert(min.out == 9f)
+
+    min.in1 := -8f
+    min.in2 := -9f
+    min.execute()
+    assert(min.out == -9f)
+
+    max.in1 := 10f
+    max.in2 := 9f
+    max.execute()
+    assert(max.out == 10f)
+
+    max.in1 := -8f
+    max.in2 := -9f
+    max.execute()
+    assert(max.out == -8f)
+
+    validateMinMax()
+
+    foff.offset := 1.0f
+    foff.in := 2.0f
+    foff.execute()
+    assert(foff.out == 3.0f)
+    foff.in := -1.0f
+    foff.execute()
+    assert(foff.out == 0.0f)
+
+    rnd.start()
+    doRound(3.56723, 1, 3.6)
+    doRound(-3.56723, 1, -3.6)
+    doRound(3.56723, 2, 3.57)
+    doRound(-3.56723, 2, -3.57)
+    doRound(3.56723, 3, 3.567)
+    doRound(-3.56723, 3, -3.567)
+  }
+
+
+   static void doAvg(float value)
+   {
+     avg10.in := value
+     avg10.execute()
+   }
+
+
+  static void doMinMax(float f)
+  {
+    minmax.in := f
+    minmax.execute()
+  }
+
+  static void checkMinMax(float n, float x)
+  {
+    assert(minmax.minOut == n)
+    assert(minmax.maxOut == x)
+  }
+
+
+  static void validateMinMax()
+  {
+    waitForSteadyState()
+
+    minmax.reset()
+    doMinMax(10f)
+    checkMinMax(10f, 10f)       // 1
+
+    doMinMax(9f)
+    checkMinMax(9f, 10f)        // 2
+
+    doMinMax(0f)
+    doMinMax(-1f)
+    doMinMax(-1000f)
+    doMinMax(0f)
+    doMinMax(1f)
+    doMinMax(1000f)
+    checkMinMax(-1000f, 1000f)  // 3
+
+    minmax.reset()
+    minmax.execute()
+    checkMinMax(1000f, 1000f)   // 4
+
+    doMinMax(1f)
+    doMinMax(-10f)
+    checkMinMax(-10f, 1000f)    // 5
+
+    minmax.r := true
+    minmax.execute()
+    checkMinMax(-10f, -10f)     // 6
+
+    minmax.r := false
+    doMinMax(1f)
+    checkMinMax(-10f, 1f)       // 7
+
+    minmax.r := true
+    minmax.execute()
+    checkMinMax(1f, 1f)         // 8
+  }
+
+
+  static void doRound(float val, int places, float checkVal)
+  {
+    rnd.in := val
+    rnd.decimalPlaces := places
+    rnd.execute()
+    assert(rnd.out == checkVal)
+  }
+
+}

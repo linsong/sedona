@@ -1,0 +1,31 @@
+<!--
+  -  Sedona Kit
+  -  Copyright (c) 2007 Tridium, Inc.
+  -  Licensed under the Academic Free License version 3.0
+  -->
+
+<sedonaKit
+ name = "serial"
+ vendor = "Tridium"
+ description = "Serial I/O support"
+ includeSource = "true"
+ doc = "true"
+>
+
+  <!-- Dependencies -->
+  <depend on="sys 1.2+" />
+
+  <!-- Source Directories -->
+  <source dir="."/>
+  <source dir="test" testonly="true"/>
+
+  <!-- Natives -->
+  <native qname="serial::SerialPort.doInit"        id="3::0" />
+  <native qname="serial::SerialPort.doClose"       id="3::1" />
+  <native qname="serial::SerialPort.doRead"        id="3::2" />
+  <native qname="serial::SerialPort.doWrite"       id="3::3" />
+  <native qname="serial::SerialPort.doReadBytes"   id="3::4" />
+  <native qname="serial::SerialPort.doWriteBytes"  id="3::5" />
+  
+ </sedonaKit>
+

@@ -1,0 +1,113 @@
+//
+// Copyright (c) 2007-2011 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   26 Oct 2007  Brian Frank    Creation
+//   27 Apr 2007  Brian Frank    Port from Java to Sedona
+//   04 Aug 2011  Clif Turman    Add comments
+//   13 Aug 2011  Clif Turman    Rework logic; use period instead of delta, add rampType
+//   24 Aug 2011  Clif Turman    Old: If period is 0, out = 0. New: If period is 0, out = min  
+//   24 Aug 2011  Clif Turman    If min/max/period changed, restart ramp function smoothly
+//   11 Sep 2012  Elizabeth McKenney  Redesign to avoid assumptions about execution rate
+//
+
+**
+** Ramp
+**   Triangle or sawtooth wave between min & max.
+**   New value calculated every execute cycle (does not rely on execution rate).
+**
+@niagaraIcon="module://icons/x16/control/util/sine.png"
+class Ramp
+  extends Component
+{
+  ** Ramp output
+  @readonly property float out
+  
+  ** Minimum value
+  @config property float min   = 0.0
+  
+  ** Maximum value
+  @config property float max   = 100.0
+
+  ** Ramp period
+  ** If rampType is true (triangle) then this is the time it 
+  ** takes to complete up/down cycle.
+  ** If rampType is false (sawtooth) then this is the time it 
+  ** takes to complete up cycle.
+  ** A value of 0 forces output to min value.
+  @unit = Units.second
+  @precision = 0
+  @min=0
+  @config property float period = 10f
+
+  ** Specifies whether ramp is sawtooth (min to max and repeat), or
+  ** triangle (min to max/max to min and repeat)
+  ** Defaults to triangle.
+  @trueText="triangle"
+  @falseText="sawtooth"
+  @config property bool rampType = TRIANGLE
+  
+
+  **
+  ** compute internal constants at startup
+  **
+  virtual override void start()
+  {
+    periodInNanos = (long)(period * (float)1sec)
+    range = max - min
+  }
+ 
+  **
+  ** recompute internal constants if ramp parameters change
+  **
+  virtual override void changed(Slot slot)
+  {
+    super.changed(slot)
+
+    if (slot == Ramp.period)
+      periodInNanos = (long)(period * (float)1sec)
+
+    if ((slot == Ramp.min) || (slot == Ramp.max))
+      range = max - min
+  }
+
+  
+  **
+  ** Execute is called once every scan.
+  **
+  virtual override void execute()
+  {
+    // Disable if period is 0
+    if (period == 0f)
+    {
+      out := min
+      return
+    }
+
+    long now = Sys.ticks()
+
+    // Calc current position in cycle
+    long  ticksThisCycle  = now % periodInNanos
+    float fracOfCycle = (float)ticksThisCycle / (float)periodInNanos
+
+    if (rampType==TRIANGLE)
+    {
+      if (fracOfCycle > 0.5)
+        fracOfCycle = 1.0 - fracOfCycle
+      fracOfCycle *= 2.0
+    }
+
+    out := fracOfCycle * range + min
+  }
+
+
+  //
+  //  Internal vars
+  //
+  define bool TRIANGLE = true
+  define bool SAWTOOTH = false
+
+  float range
+  long  periodInNanos
+}

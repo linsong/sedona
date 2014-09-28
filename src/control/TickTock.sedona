@@ -1,0 +1,63 @@
+//
+// Copyright (c) 2007-2011 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   21 Aug 2006  Andy Saunders  Creation
+//   27 Apr 2007  Brian Frank    Port from Java to Sedona
+//   16 May 2007  Andy Saunders  completed required time processing
+//   22 Apr 2009  Elizabeth McKenney   Simplified logic
+//   04 Aug 2011  Clif Turman    Add comments
+//
+
+**
+** TickTock component
+**   Generates boolean square wave with ticksPerSec pulses per second
+**
+@niagaraIcon="module://icons/x16/control/util/sine.png"
+class TickTock
+  extends Component
+{
+  ** output pulses
+  @readonly property bool out
+
+  ** can configure 1 to 10 pulses per second
+  @min=1 @max=10 
+  @unit=Units.per_second
+  @config property int ticksPerSec = 1 
+
+  **
+  ** Callback when component is first started in an app.
+  **
+  virtual override void start()
+  {
+    halfPeriod = 500ms / (long)ticksPerSec
+  }
+
+
+  **
+  ** Execute is called once every scan.
+  **
+  virtual override void execute()
+  {
+    // Assume waveform began at time==0, and determine which half of the cycle 
+    // we are in now.  If first half, set out=true; if second half, set out=false.
+
+    out := ((Sys.ticks() / halfPeriod) % 2L) == 0L
+  }
+
+
+  **
+  ** Behavior to execute when a property is changed externally
+  ** 
+  override void changed(Slot slot)
+  {
+    super.changed(slot)
+
+    if (slot == TickTock.ticksPerSec)
+      halfPeriod = 500ms / (long)ticksPerSec
+  }
+
+
+  private long halfPeriod   // cached value of 1/2 period, avoids calculating every cycle
+}

@@ -1,0 +1,96 @@
+//
+// Copyright (c) 2010-2011 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   15 Feb 2010  Clif Turman         Creation
+//   11 Sep 2012  Elizabeth McKenney  Redesign to avoid assumptions about execution rate
+//
+
+**
+** TimeAvg object averages "in" over the configured time.
+**
+** Note that this is NOT a running or moving average - this object caches the average over
+** the previous time as the out value, and updates out every "time" ms.
+**
+** Until the first full cycle has elapsed, out is set to average of all samples so far.
+**
+** The average may be reset/restarted at any time using the "reset" action.
+**
+@niagaraIcon="module://icons/x16/control/math/average.png"
+class TimeAvg
+  extends Component
+{
+  
+  **
+  ** Value averaged over last "time" period
+  **
+  @readonly property float out
+  
+  **
+  ** The value to average
+  **
+  property float in
+  
+  **
+  ** The time period over which to average the in value to get the out value
+  **
+  @unit=Units.millisecond
+  @summary
+  @config property int time = 10000
+
+  **
+  ** Reset the average computation
+  **
+  action void reset()
+  {
+    first = true
+    sum = 0.0
+    execCount = 0
+  }
+
+  **
+  ** Override start to initialize averaging variables
+  **
+  virtual override void start()
+  {
+    reset()
+    avgEndTime = Sys.ticks() + (long)time * 1ms
+  }
+
+  **
+  ** calculate the average.  If not enough samples collected, then average the ones we have.
+  **
+  virtual override void execute()
+  {
+    if(!Sys.app.isSteadyState())
+      return
+
+    execCount++
+    sum += in
+
+    long now = Sys.ticks()
+
+    if (first || (now > avgEndTime))
+    {
+      out := sum/(float)execCount
+    }
+
+    if (now > avgEndTime)
+    {
+      first = false
+      sum = 0.0
+      execCount = 0
+
+      // Time of next avg
+      avgEndTime = now + (long)time * 1ms
+    }
+  }
+
+  private bool first
+  private float sum
+  private int execCount
+  private long avgEndTime
+
+}
+

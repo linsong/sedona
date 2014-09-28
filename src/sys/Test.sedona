@@ -1,0 +1,36 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   26 Apr 07  Brian Frank  Creation
+//
+
+**
+** Test is the base class for test classes which are
+** automatically registered into the test suite.  Any
+** method which begins with "test" is automatically
+** added as a test case for the test class.  Tests themselves
+** are written as a series of assert statements.
+**
+abstract class Test
+  extends Virtual
+{
+
+  **
+  ** This is the main routine for running the test suite.
+  ** The compiler generates the table of test functions
+  ** during scode compilation.
+  **
+  static int main()
+  {
+    // so that changed() callbacks will still be fired (issue 20667)
+    Sys.app.running = true
+    
+    doMain()
+    return 0
+  }
+
+  private static native int doMain()
+
+}

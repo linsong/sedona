@@ -1,0 +1,73 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   05 Sep 06  Brian Frank  Creation
+//   07 May 07  Brian Frank  Port from Java to Sedona
+//
+
+**
+** UdpDatagram is used to encapsulate the buffer of data and
+** the IP address for sending and receiving UDP packets with
+** a UdpSocket.
+**
+class UdpDatagram
+{
+
+////////////////////////////////////////////////////////////////
+// Methods
+////////////////////////////////////////////////////////////////
+
+  **
+  ** Copy the datagram to the socket address (makes a 
+  ** deep copy of the host addr).
+  **
+  void getSocketAddr(SocketAddr sockAddr)
+  {
+    sockAddr.addr.set(this.addr)
+    sockAddr.port = this.port
+  }
+
+  **
+  ** Copy this address to the datagram (makes a 
+  ** shallow copy of the host addr).
+  **
+  void setSocketAddr(SocketAddr sockAddr)
+  {
+    this.addr = sockAddr.addr
+    this.port = sockAddr.port
+  }
+
+////////////////////////////////////////////////////////////////
+// Fields
+////////////////////////////////////////////////////////////////
+
+  // these fields must match layout used in C code
+
+  ** The IP address to send this packet to, or the
+  ** address we received this packet from.  Note this is
+  ** a shared instance during receive and must be copied
+  ** to a new memory location if you wish to keep it.
+  IpAddr addr
+
+  ** The IP port for address to send or receive
+  int port
+
+  ** The buffer of data to send (must never be null)
+  byte[] buf      
+  
+  ** Offset into buffer
+  int off
+
+  ** Number of bytes past buf+off to send or receive, after
+  ** receive() specified the number of bytes actually read
+  int len
+
+  ** IPv6 address scope ID
+  int scopeId;
+
+  ** IPv6 address flow info
+  int flowinfo;
+
+}

@@ -1,0 +1,34 @@
+<!--
+     Niagara Build File
+     Note: open source developers use adm python scripts
+-->
+
+<module
+ name = "sedonac"
+ bajaVersion = "0"
+ preferredSymbol = "sc"
+ description = "Sedona Compiler"
+ vendor = "Tridium"
+>
+
+  <!-- Dependencies -->
+  <dependency name="sedona" />
+
+  <!-- Java Packages -->
+  <package name="sedonac"           doc="true" src="true" />
+  <package name="sedonac.analysis"  doc="true" src="true" />
+  <package name="sedonac.asm"       doc="true" src="true" />
+  <package name="sedonac.ast"       doc="true" src="true" />
+  <package name="sedonac.gen"       doc="true" src="true" />
+  <package name="sedonac.ir"        doc="true" src="true" />
+  <package name="sedonac.namespace" doc="true" src="true" />
+  <package name="sedonac.parser"    doc="true" src="true" />
+  <package name="sedonac.platform"  doc="true" src="true" />
+  <package name="sedonac.scode"     doc="true" src="true" />
+  <package name="sedonac.steps"     doc="true" src="true" />
+  <package name="sedonac.test"      doc="true" src="true" />
+  <package name="sedonac.translate" doc="true" src="true" />
+  <package name="sedonac.util"      doc="true" src="true" />
+
+</module>
+

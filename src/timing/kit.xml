@@ -1,0 +1,23 @@
+<!--
+  -  Sedona Kit
+  -  Copyright (c) 2011 Tridium, Inc.
+  -  Licensed under the Academic Free License version 3.0
+  -->
+
+<sedonaKit
+ name = "timing"
+ vendor = "Tridium"
+ description = "Timing function block library"
+ includeSource = "true"
+ doc = "true"
+>
+
+  <!-- Dependencies -->
+  <depend on="sys 1.2+" />
+
+  <!-- Source Directories -->
+  <source dir="." />
+  <source dir="test" testonly="true"/>
+
+</sedonaKit>
+

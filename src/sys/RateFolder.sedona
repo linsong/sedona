@@ -1,0 +1,50 @@
+//
+// Copyright (c) 2012 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   30 May 12  Elizabeth McKenney   Creation
+//
+
+**
+** RateFolder is a folder that controls how often its children execute.
+** It can be used to implement an app with components that execute at
+** different rates.
+**
+@niagaraIcon="module://icons/x16/folder.png"
+class RateFolder
+  extends Folder
+{
+  **
+  ** How many app cycles to skip between child executes.
+  ** Set to 0 to disable, i.e. children execute every cycle.
+  **
+  @min=0
+  @config property int appCyclesToSkip = 0
+
+
+  **
+  ** Override loaded() to init execCount.
+  **
+  override virtual void loaded()
+  {
+    execCount = appCyclesToSkip
+  }
+
+  
+  **
+  ** Calculate when to allow children to execute.
+  **
+  override virtual bool allowChildExecute()
+  {
+    if (execCount<=0)
+    {
+      execCount = appCyclesToSkip
+      return true
+    }
+    execCount--
+    return false
+  }
+
+  internal int execCount = 0
+}

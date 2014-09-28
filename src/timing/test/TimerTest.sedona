@@ -1,0 +1,127 @@
+//
+// Copyright (c) 2011 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   09 Dec 11  Elizabeth McKenney  Creation
+//
+
+**
+** TimerTest
+**
+class TimerTest
+  extends Test
+{
+  static inline Timer  t
+
+  static long  appPeriod = 0L
+  static float fleft     = 0f
+  static long  stoptime  = 0L
+ 
+  define int NONE     = 0
+  define int TRIG_ON  = 1
+  define int TRIG_OFF = 2
+  define int ENB_ON   = 3
+  define int ENB_OFF  = 4
+
+
+  static void test()
+  {
+    // Set up const
+    appPeriod = (long)Sys.app.scanPeriod*1ms
+
+    // Initial conditions
+    t.time := 3  // sec
+    t.run  := false
+
+    checkPulse(NONE, 0sec )       // Test nothing
+    checkPulse(TRIG_ON, 3sec )    // Test action trigger
+    checkPulse(TRIG_OFF, 3sec )   // Test action stop
+    checkPulse(ENB_ON, 3sec )     // Test bool trigger start
+    checkPulse(ENB_OFF, 3sec )    // Test bool trigger stop
+  }
+
+
+  //
+  // checkPulse 
+  //   observes out & left to make sure they behave
+  //   properly over the course of 'duration' nanos
+  //
+  static void checkPulse(int which, long duration)
+  {
+    Sys.out.print("  Test #$which\n")
+
+    switch (which)
+    {
+      case NONE    : break
+      case TRIG_ON : t.startTimer() 
+                     break
+      case TRIG_OFF: duration /= 2L 
+                     t.startTimer() 
+                     break
+      case ENB_ON  : t.run := false 
+                     t.execute()
+                     t.run := true 
+                     break
+      case ENB_OFF : duration /= 2L 
+                     t.run := false 
+                     t.execute()
+                     t.run := true 
+                     break
+      default : break
+    }
+
+    stoptime = Sys.ticks() + duration
+    fleft    = (float)((double)duration / (double)1sec)
+
+    doCycle("start", which!=NONE)
+
+    // Do cycles until "time left" reaches 0
+    while (fleft>=0f)
+      doCycle("", true)
+
+
+    // If we're testing an async stop... do it again
+    if ( (which==TRIG_OFF) || (which==ENB_OFF) )
+    {
+      if (which==TRIG_OFF) t.resetTimer()
+      if (which==ENB_OFF)  t.run := false
+
+      stoptime = Sys.ticks() + duration
+      fleft    = (float)((double)duration / (double)1sec)
+
+      doCycle("start", false)
+
+      while (fleft>=0f) 
+        doCycle("", false)
+    }
+
+
+    // OK it should be false now - did it?
+    doCycle("(+1)", false)
+
+    // If not, is it false now?
+    doCycle("(+2)", false)
+
+  }
+
+
+  //
+  // doCycle - one app cycle
+  //
+  static void doCycle(Str tag, bool expected)
+  {
+    long t1 = Sys.ticks()
+    t.execute()
+    //Sys.out.print("      out = ${t.out}, left = ${fleft} sec   $tag\n")
+
+    assert(t.out == expected)
+
+    // sleep rest of cycle
+    long st = t1 + appPeriod - Sys.ticks()
+    Sys.sleep(st)
+
+    fleft = (float)(stoptime - Sys.ticks()) / (float)1sec
+  }
+
+}

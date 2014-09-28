@@ -1,0 +1,26 @@
+<!--
+  -  Sedona Kit
+  -  Copyright (c) 2009 Tridium, Inc.
+  -  Licensed under the Academic Free License version 3.0
+  -  
+  -  This kit exists for the sole purpose of doing provisioning tests
+  -  in the soxcert test suite. We need a stand-alone kit that we can
+  -  add/remove to the device that is being tested.
+  -->
+
+<sedonaKit
+ name = "soxcert"
+ vendor = "Tridium"
+ description = "Kit for use in sox certification tests"
+ includeSource = "true"
+ doc = "true"
+>
+
+  <!-- Dependencies -->
+  <depend on="sys 1.2+" />
+
+  <!-- Source Directories -->
+  <source dir="."/>
+
+</sedonaKit>
+

@@ -1,0 +1,66 @@
+//
+// Copyright (c) 2007 Tridium, Inc
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   23 Aug 07  Andy Saunders  Creation
+//
+
+**
+** Models a network of devices.  Provides access to child components of type
+** Device or a subclass of it.
+**
+class DeviceNetwork
+  extends Service 
+{
+  ////////////////////////////////////////////////////////////////
+  // Properties
+  ////////////////////////////////////////////////////////////////
+
+  @unit=Units.second
+  @config property int pingTimeSec = 30  
+
+  ////////////////////////////////////////////////////////////////
+  // Life cycle
+  ////////////////////////////////////////////////////////////////
+
+  virtual override void start()
+  {
+    this.app = Sys.app
+  }
+
+  
+  ////////////////////////////////////////////////////////////////
+  // App support
+  ////////////////////////////////////////////////////////////////
+
+  **
+  ** Get first child component of type Device (or subclass).
+  ** Returns null if no Device objects found.
+  **
+  Device getFirstDevice()
+  {
+    for (Component c = app.lookup(children); c != null; c = app.lookup(c.nextSibling))
+      if (c.type.is(Device.type))
+        return (Device)c
+    return null
+  }
+
+  **
+  ** Get next child component after 'device' that is of type Device (or subclass).
+  ** Returns null if it reaches the end of the list without finding one.
+  **
+  Device getNextDevice(Device device)
+  {
+    for (Component c = app.lookup(device.id); c != null; c = app.lookup(c.nextSibling))
+      if (c.id != device.id && c.type.is(Device.type))
+        return (Device)c
+    return null
+  }
+  
+  
+  ////////////////////////////////////////////////////////////////
+  // Fields
+  ////////////////////////////////////////////////////////////////
+  App app
+}
