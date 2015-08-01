@@ -232,7 +232,7 @@ int doReadBytes(SerialData *pData, uint8_t* pu8Buf, int32_t  nbytes)
 // return number of bytes written -
 int doWriteBytes(SerialData *pData, uint8_t* pu8Buf, int32_t  nbytes)
 {
-  int32_t bytesWritten;
+  DWORD bytesWritten;
   OVERLAPPED   os;
   unsigned i;
 
