@@ -32,7 +32,7 @@ Cell serial_SerialPort_doInit(SedonaVM* vm, Cell* params)
   //
   // Initialize physical port here
   //
-  if(portNum<0 || portNum>=HANDLE_ARRAY_LEN)
+  if(portNum<=0 || portNum>=HANDLE_ARRAY_LEN)
   {
     printf("Invalid port %d\n",portNum);
     return negOneCell;
@@ -47,12 +47,12 @@ Cell serial_SerialPort_doInit(SedonaVM* vm, Cell* params)
                        0,
                        NULL,
                        OPEN_EXISTING,
-                       FILE_FLAG_OVERLAPPED,
+                       0,
                        NULL);
   if(pData->hFile==INVALID_HANDLE_VALUE)
   {
     DWORD dwLastErr = GetLastError();
-    printf("Error: CreateFile  err=%d\n",dwLastErr);
+    printf("Error: CreateFile '%s' err=%d\n", port, dwLastErr);
     return negOneCell;
   }
 
@@ -86,6 +86,7 @@ Cell serial_SerialPort_doInit(SedonaVM* vm, Cell* params)
     return negOneCell;
   }
 
+  printf("SerialPort.doInit COM%d.\n",portNum);
   // Return zero if nothing went wrong
   return zeroCell;
 }
@@ -100,7 +101,12 @@ Cell serial_SerialPort_doClose(SedonaVM* vm, Cell* params)
   //
   // Shut down physical port here
   //
-  printf("SerialPort.doClose COM%d platform 'default'.\n",portNum);
+
+  if (!pData) {
+	  printf("SerialPort.doClose COM%d was not open.\n", portNum);
+	  return zeroCell;
+  }
+  printf("SerialPort.doClose COM%d.\n",portNum);
 
   pData->done = TRUE;
   CloseHandle(pData->hFile);
