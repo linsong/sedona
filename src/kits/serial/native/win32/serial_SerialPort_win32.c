@@ -124,7 +124,7 @@ Cell serial_SerialPort_doRead(SedonaVM* vm, Cell* params)
   Cell  ret;
   int32_t portNum = params[1].ival;
 
-  bytesRead = read(pSd[portNum], &ch, 1);
+  bytesRead = doReadBytes(pSd[portNum], &ch, 1);
 
   if (bytesRead < 0) return errCell;
   if(bytesRead != 1) return negOneCell;
@@ -141,7 +141,7 @@ Cell serial_SerialPort_doWrite(SedonaVM* vm, Cell* params)
   uint8_t  ch      = (uint8_t)params[2].ival;
   int32_t bytesWritten;
 
-  bytesWritten = write(pSd[portNum], &ch, 1);
+  bytesWritten = doWriteBytes(pSd[portNum], &ch, 1);
   if(bytesWritten != 1) return negOneCell;
   return zeroCell;
 }
@@ -163,7 +163,7 @@ Cell serial_SerialPort_doReadBytes(SedonaVM* vm, Cell* params)
   
   pu8Buf = pu8Buf + off;
 
-  bytesRead = read(pSd[portNum], pu8Buf, nbytes);
+  bytesRead = doReadBytes(pSd[portNum], pu8Buf, nbytes);
   ret.ival = bytesRead;
   return ret;
 
@@ -184,7 +184,7 @@ Cell serial_SerialPort_doWriteBytes(SedonaVM* vm, Cell* params)
 
   pu8Buf = pu8Buf + off;
 
-  bytesWritten = write(pSd[portNum], pu8Buf, nbytes);
+  bytesWritten = doWriteBytes(pSd[portNum], pu8Buf, nbytes);
   if(bytesWritten==-1) return negOneCell;
   ret.ival = bytesWritten;
   return ret;
@@ -192,7 +192,7 @@ Cell serial_SerialPort_doWriteBytes(SedonaVM* vm, Cell* params)
 
 
 // return number of bytes read
-int read(SerialData *pData, uint8_t* pu8Buf, int32_t  nbytes)
+int doReadBytes(SerialData *pData, uint8_t* pu8Buf, int32_t  nbytes)
 {
   DWORD bytesAvail;
   DWORD bytesRead = 0;
@@ -230,7 +230,7 @@ int read(SerialData *pData, uint8_t* pu8Buf, int32_t  nbytes)
 }
 
 // return number of bytes written -
-int write(SerialData *pData, uint8_t* pu8Buf, int32_t  nbytes)
+int doWriteBytes(SerialData *pData, uint8_t* pu8Buf, int32_t  nbytes)
 {
   int32_t bytesWritten;
   OVERLAPPED   os;
