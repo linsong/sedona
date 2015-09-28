@@ -19,7 +19,7 @@ export sedona_home=~/sedonadev
 export PATH=$PATH:$sedona_home/bin:$sedona_home/adm:$sedona_home/adm/unix
 
 # python environment
-export PYTHONPATH=$PYTHONPATH:$sedona_home/adm
+export PYTHONPATH=$PYTHONPATH:$sedona_home/adm:$sedona_home/adm/unix
 
 # java environment - use JAVA_HOME from environment if set, otherwise hard code it
 java_home=$JAVA_HOME
@@ -27,7 +27,7 @@ java_home=$JAVA_HOME
 export java_home
 
 # check to make sure that programs we need are in the path
-for p in jikes gcc python
+for p in gcc python
 do
   if ! which $p > /dev/null
   then
@@ -43,6 +43,8 @@ find $sedona_home/bin -name "*.sh" -exec chmod 755 '{}' \; 2> /dev/null
 # aliases
 alias makeunixvm='makeunixvm.py'
 alias makeunixdev='makeunixdev.py'
+alias makewinvm='makewinvm.py'
+alias makedev='makedev.py'
 alias makesedona='makesedona.py'
 alias makesedonac='makesedonac.py'
 alias makesedonacert='makesedonacert.py'
@@ -57,7 +59,7 @@ alias jsvm='jsvm.sh'
 function scodegen
 {
   rt=$java_home/jre/lib/rt.jar
-  jikes +E -classpath $rt $sedona_home/adm/SCodeGen.java
+  jikes -classpath $rt $sedona_home/adm/SCodeGen.java
   $java_home/bin/java -cp $sedona_home/adm SCodeGen "java" $sedona_home/adm/scode.txt $sedona_home/adm/scode.java $sedona_home/src/sedonac/src/sedonac/scode/SCode.java
   $java_home/bin/java -cp $sedona_home/adm SCodeGen "h" $sedona_home/adm/scode.txt $sedona_home/adm/scode.h $sedona_home/src/vm/scode.h
   rm -rf $sedona_home/adm/*.class
