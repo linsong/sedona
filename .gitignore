@@ -1,2 +1,11 @@
 .hgignore
 .hgtags
+*.pyc
+*.kit
+*.par
+*.sab
+*.scode
+*.pstore
+sedona*.jar
+temp
+manifests

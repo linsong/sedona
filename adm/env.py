@@ -62,7 +62,7 @@ cpSep        = ";" # classpath separator char for javac
 # Platform (os) dependent configuration/re-configuration
 if os.name == "posix":
   cpSep       = ":"
-  jikes       = "jikes"   # assume in the PATH
+  jikes       = os.path.join(javaBin, "javac") # Java Compiler on Unix, Linux and Mac
   jar         = os.path.join(javaBin, "jar")
   sedonacExe  = os.path.join(bin, "sedonac.sh")
   svmExe      = os.path.join(bin, "svm")
@@ -92,4 +92,3 @@ def dump():
 # Main
 if __name__ == '__main__':     
   dump()
-

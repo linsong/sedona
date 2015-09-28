@@ -18,6 +18,7 @@ import makesedona
 import makesedonac
 import makesedonacert
 import makewinvm
+import makeunixvm
 import compilekit
 import argparse
 
@@ -29,7 +30,7 @@ defaultscode = "x86-test.xml"
 # initParser
 def initParser():
   global parser
-  parser = argparse.ArgumentParser(description='Build and run Sedona VM for Windows')
+  parser = argparse.ArgumentParser(description='Build and run Sedona VM')
 
   parser.add_argument('-v', '--version', action='store', default=env.buildVersion(), 
                              help='Set SVM version string to VER', metavar="VER")
@@ -81,11 +82,6 @@ if __name__ == '__main__':
   if not run_sc: print '  Skipping sedonac tests'
   if not run_sv: print '  Skipping svm tests'
 
-
-  # Make sure OS is Windows
-  if os.name != "nt":
-    raise env.BuildError("FATAL: makedev.py can only run on windows.")
-     
   # Make sedona.jar  
   status = makesedona.compile()
   if status:
@@ -110,12 +106,15 @@ if __name__ == '__main__':
   # Make windows test scode
   if options.app:
     compilekit.compile(options.app)
-  
-  # Make windows SVM
-  status = makewinvm.compile()
+
+  # Make Sedona VM (svm)
+  if os.name == "posix": # unix, OSX
+    status = makeunixvm.main([])
+  else: # win32
+    status = makewinvm.compile()
   if status:
-    raise env.BuildError("FATAL: makewinvm failed")   
-  
+    raise env.BuildError("FATAL: make svm failed")
+
   # Run sedonac tests
   if run_sc:
     print "\n\n"
