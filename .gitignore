@@ -9,3 +9,7 @@
 sedona*.jar
 temp
 manifests
+doc
+stage
+version.txt
+svm
