@@ -23,6 +23,7 @@ import fileutil
 import makesedona
 import makesedonac
 import makewinvm
+import makeunixvm
 import compilekit
 
 # exact copies; tuple is (dirName, exclude regex)
@@ -83,8 +84,11 @@ def compile():
   # make docs
   compilekit.compile(os.path.join(env.doc, "toc.xml"))
 
-  # make windows svm
-  makewinvm.compile()
+  # Make Sedona VM (svm)
+  if os.name == "posix": # unix, OSX
+    makeunixvm.main([])
+  else: # win32
+    makewinvm.compile()
 
 ################################################################
 # Stage
