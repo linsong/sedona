@@ -6,6 +6,7 @@
 *.sab
 *.scode
 *.pstore
+*.swp
 sedona*.jar
 temp
 manifests
