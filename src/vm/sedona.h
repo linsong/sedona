@@ -207,9 +207,13 @@ typedef short             int_least16_t;
 #endif
 
 
-#define ISNANF(f) (isnanf(f))
-#define ISNAN(d)  (isnan(d))
-
+#ifdef __DARWIN__
+  #define ISNANF(f) (isnan(f))
+  #define ISNAN(d)  (isnan(d))
+#else
+  #define ISNANF(f) (isnanf(f))
+  #define ISNAN(d)  (isnan(d))
+#endif
 
 #endif   
 
