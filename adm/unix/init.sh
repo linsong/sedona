@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#! /usr/bin/env bash
 #
 # init.sh
 #
@@ -9,11 +9,10 @@
 #
 
 # Setup sedona_home. This is the directory that contains adm/, src/, bin/, etc...
-# This assumes you have set up a symbolic link in your home directory called
-# "sedonadev" that points to the repository you want to be working with.
-# You can always change this to be the explicit path.This
+# use the sedona source code directory as the home 
 
-export sedona_home=~/sedonadev
+DIR=$(dirname "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )")
+export sedona_home=$(dirname $DIR)
 
 # path
 export PATH=$PATH:$sedona_home/bin:$sedona_home/adm:$sedona_home/adm/unix
