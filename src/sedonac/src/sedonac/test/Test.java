@@ -140,6 +140,7 @@ public class Test extends Verifies
   {
     if (isWindows()) return "svm.exe";
     else if (isLinux()) return "svm";
+    else if (isMacOSX()) return "svm";
     else throw new IllegalStateException("Unsupported OS: " + System.getProperty("os.name"));
   }
   
@@ -157,6 +158,14 @@ public class Test extends Verifies
   public boolean isLinux()
   {
     return System.getProperty("os.name").toLowerCase().indexOf("linux") > -1;
+  }
+
+  /**
+   * Are we running on a Mac OS X?
+   */
+  public boolean isMacOSX()
+  {
+    return System.getProperty("os.name").toLowerCase().indexOf("mac os x") > -1;
   }
 
   /**
