@@ -349,7 +349,7 @@ Cell inet_UdpSocket_receive(SedonaVM* vm, Cell* params)
   void* receiveIpAddr;
 
   struct sockaddr_storage addr;
-  int addrLen = sizeof(addr);
+  unsigned int addrLen = sizeof(addr);
 
   memset(&addr, 0, sizeof(addr));
 
@@ -382,6 +382,7 @@ Cell inet_UdpSocket_receive(SedonaVM* vm, Cell* params)
   }
 
   inet_fromSockaddr(&addr, receiveIpAddr, &datagram.port, &datagram.scope, &datagram.flow);
+
   datagram.len  = r;
   datagram.addr = receiveIpAddr;
   setUdpDatagram(sDatagram, &datagram);
