@@ -2,7 +2,7 @@
 #
 # makeunixvm.py
 #
-#    Compile svm 
+#    Compile svm
 #
 # Author:    Matthew Giannini
 # Creation:  10 Dec 08
@@ -27,6 +27,13 @@ includes = []
 libs = []
 defs = [ ("__UNIX__", "1"), ("SOCKET_FAMILY_INET", "1") ]
 
+if sys.platform == "darwin":
+  # path to find endian.h under Darwin
+  includes.append('/usr/include/machine')
+
+  # define darwin system environment variable
+  defs.append(("__DARWIN__", "1"))
+
 # usage
 def usage():
 # print "12345678902234567890323456789042345678905234567890623456789072345678908234567890"
@@ -40,7 +47,7 @@ def usage():
   print "                       be checked. If that variable is not set, then"
   print "                       $sedona_home/platforms/src/generic/unix/generic-unix.xml"
   print "                       will be used."
-  print "   -l                  List the supported compilers."   
+  print "   -l                  List the supported compilers."
   print "   -h, --help          Show this usage"
 
 # list compilers
@@ -70,7 +77,7 @@ def compile():
 
   except env.BuildError, err:
     print "**"
-    print "** " + str(err) 
+    print "** " + str(err)
     print "** FAILED [" + env.svmExe + "]"
     print "**"
 
@@ -80,11 +87,11 @@ def verifyOpts():
     platFile = os.environ.get("SVM_PLATFORM")
     if not platFile:
       platFile = os.path.join(env.platforms,"src","generic","unix","generic-unix.xml")
-    
+
   if not getattr(compileunix, compiler, None):
     print "Error: Compiler '" + compiler + "' is not supported."
     sys.exit(1)
-  
+
 # main
 def main(argv):
   global compiler, platFile, stageDir

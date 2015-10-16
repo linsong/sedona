@@ -1,16 +1,20 @@
 #! /usr/bin/env python
 #
 # compileunix.py
-# 
+#
 #    Standard code used to compile a UNIX executable
 #
 # Author:    Matthew Giannini
 # Creation:  10 Dec 08
-#                 
+#
 
 import os
+import sys
 import env
 import fileutil
+
+def is64bit():
+  return sys.maxsize > 2**32
 
 #
 # Compile C source to a unix executable
@@ -20,28 +24,31 @@ import fileutil
 #   libs:     list of filenames
 #   defs:     list of name/value tuples
 #
-#def compile(exeFile, srcFiles, includes, libs, defs):  
-def gcc(exeFile, srcFiles, includes, libs, defs):  
-  # standard includes                                                                   
+#def compile(exeFile, srcFiles, includes, libs, defs):
+def gcc(exeFile, srcFiles, includes, libs, defs):
+  # standard includes
   cmd = "gcc"
+  if is64bit():
+      cmd += " -m32" # always compile in 32bit mode
+
   for include in includes:
     cmd += " -I\"" + include + "\""
-    
+
   # defines (tuples)
   for d in defs:
-    cmd += " -D" + d[0] + "=" + d[1]      
+    cmd += " -D" + d[0] + "=" + d[1]
 
   cmd += " -DPLAT_BUILD_VERSION=" + '\\"' + env.buildVersion() + '\\"'
 
-  # libs     
+  # libs
   for lib in libs:
     cmd += " -L\"" + lib + "\""
 
-  # src     
+  # src
   for src in srcFiles:
     cmd += " " + src
-  
-  # remaining options  
+
+  # remaining options
   cmd += " -O2"
   cmd += " -o " + exeFile
 
@@ -49,7 +56,7 @@ def gcc(exeFile, srcFiles, includes, libs, defs):
   print cmd
   status = os.system(cmd)
   if status:
-    raise env.BuildError("FATAL: compileunix " + exeFile)     
+    raise env.BuildError("FATAL: compileunix " + exeFile)
 
   print "  Success [" + exeFile + "]"
-    
+
