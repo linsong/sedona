@@ -32,7 +32,7 @@ RUN groupadd --non-unique -g ${GROUP_ID} ${USER_NAME} \
 ENV HOME /home/${USER_NAME}
 # SOXPORT 1876
 # WEBSERVER 8080
-EXPOSE  1876 8080
+EXPOSE  8080 1876/udp
 UserSpecificDocker
 
 # Go to root
