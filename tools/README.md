@@ -18,10 +18,8 @@ Then you can use filter like this:
 
 Docker Build Environment
 =================================
-1. Make sure that docker is installed and started. On OSX, you can install boot2docker and run following command in the terminal window:
-```
- $ boot2docker up
-```
+1. Make sure that docker is installed and started. On OSX, you can install Docker Toolbox and run Docker Quickstart Terminal
+
 2. In terminal window, go to sedona's folder /tools/docker and initialize the build environment:
 ```
  $ cd /path/to/sedona/tools/docker 
