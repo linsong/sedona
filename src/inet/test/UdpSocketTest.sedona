@@ -42,7 +42,11 @@ class UdpSocketTest
     assert(!s.isClosed())
 
     // check nothing to read
-    assert(!s.receive(in))
+    if (s.receive(in)) {
+      //"If no messages are available to be received and the peer has performed
+      //an orderly shutdown, the value 0 is returned." from recvfrom's manual
+      assert(in.len == 0);
+    }
     in.len = 1024
     assert(!s.receive(in))
     assert(in.len  == 0)
