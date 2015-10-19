@@ -16,3 +16,4 @@ version.txt
 svm
 sedona-*.zip
 *.log
+*.swo
