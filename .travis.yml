@@ -1,0 +1,20 @@
+sudo: required
+
+language: 
+  - c
+  - java
+
+jdk:
+  - oraclejdk8
+
+services:
+  - docker
+
+before_install:
+  - sudo apt-get update && sudo apt-get -y install --fix-missing libc6-dev-i386 
+
+install:
+  - source ./adm/unix/init.sh
+
+script:
+  - python adm/makedev.py
