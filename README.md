@@ -4,7 +4,7 @@ This is a git fork of Sedona Framework that is hosted using Mercurial.
 
 More details about the Sedona Framework at http://www.sedonadev.org.
 
-[![Build Status](https://travis-ci.org/linsong/sedona.svg?branch=develop)](https://travis-ci.org/linsong/sedona.svg?branch=develop)
+[![Build Status](https://travis-ci.org/linsong/sedona.svg?branch=develop)](https://travis-ci.org/linsong/sedona)
 
 ## How To Build
 ### Mac OS X 
