@@ -1,10 +1,18 @@
+# Sedona [![Build Status](https://travis-ci.org/linsong/sedona.svg?branch=master)](https://travis-ci.org/linsong/sedona)
+
 The Sedona Framework is designed to make it easy to build smart, networked embedded devices. 
 
-This is a git fork of Sedona Framework that is hosted using Mercurial. 
+This is a git fork of Sedona Framework that is hosted using Mercurial, our goal is to enhance sedona platform to be more powerful and easy to be used.
 
 More details about the Sedona Framework at http://www.sedonadev.org.
 
-[![Build Status](https://travis-ci.org/linsong/sedona.svg?branch=master)](https://travis-ci.org/linsong/sedona)
+***
+
+## Major Improvements/Features
+* Remove jikes dependency for POSIX OS platforms
+* Wireshark protocol dissector for Sox/Dasp [More Info](./tools/README.md)
+* Linux Docker image [More Info](./tools/README.md)
+* Fix build issues under Mac OS X
 
 ## How To Build
 ### Mac OS X 
@@ -20,3 +28,7 @@ More details about the Sedona Framework at http://www.sedonadev.org.
 ```
  $ python adm/makedist.py
 ```
+
+### Linux
+We build a shell script that uses docker to build sedona under linux, read [here](./tools/README.md) for more details.
+
