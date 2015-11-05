@@ -25,7 +25,7 @@ Docker Build Environment
  $ cd /path/to/sedona/tools/docker 
  $ ./makeDev-docker.sh
 ```
- This pulls a 32-bit (CentOS) linux image and installs JDK, git and few other libraries
+ This pulls a 32-bit (CentOS) linux image and installs JDK, git and few other libraries. If you want a ubuntu linux image, you can just rename Dockerfile.ubuntu to Dockerfile before running the above command.
 
 3. In terminal window, start the sedona build environment:
 ```
