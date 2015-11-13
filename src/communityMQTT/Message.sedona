@@ -1,0 +1,90 @@
+@palette=false
+abstract class Message extends Component
+{
+  define Str QoSLevels = "FireAndForget, GuaranteeReceived, GuaranteeReceivedOnce"
+
+  @range=QoSLevels
+  @config property byte QoS = 0
+
+  @config @asStr property Buf(16) topic = ""
+
+  define int Ok = 0
+  define int Err_InvalidParent = 1
+  define int Err_InvalidTopic = 2
+  define Str StatusMessages = "Ok, Invalid Parent, Invalid Topic"
+
+  @range=StatusMessages
+  @readonly property byte status = 0
+  
+  // 0: publish when changed; 1: publish per 1 sec; 2: per 2 secs; 3: ...
+  @unit=Units.second
+  @config property int publishInterval = 5
+  
+  bool readyToPublish = false
+  long lastPublishTime = 0L
+  
+  define Log log
+  
+  void validateStatus() 
+  {
+    Component parentComponent = Sys.app.lookup(parent)
+    Str parentName = parentComponent?.type?.name
+    if (parentName != "Publisher" && parentName != "Subscriber")
+      status := Err_InvalidParent; 
+    else if (topic.toStr().length() > 0)
+      status := Ok
+    else
+      status := Err_InvalidTopic
+  }
+  
+  override virtual void start() 
+  {
+    validateStatus()
+  }
+  
+  override virtual void execute()
+  {
+    if (status != Ok)
+      return
+
+    if (publishInterval > 0)
+      readyToPublish = (Sys.ticks()-lastPublishTime) >= (long)publishInterval*1sec
+  }
+  
+  override int parentEvent(int eType, Component parent)
+  {
+    if (eType == Component.ADDED && (parent.type.name != "Publisher" && parent.type.name != "Subscriber"))
+      status := Err_InvalidParent; 
+    return 0
+  }
+  
+  @asStr virtual void publish(Buf host, int port)
+  {
+    if (!readyToPublish)
+      return
+
+    Str shost = host.toStr()
+    log.message("PUBLISH: topic=${topic.toStr()}, host=$shost, port=$port")
+
+    lastPublishTime = Sys.ticks()
+    readyToPublish = false
+  }
+  
+  @asStr virtual void subscribe(Buf host, int port)
+  {
+    Str shost = host.toStr()
+    log.message("SUBSCRIBE: topic=${topic.toStr()}, host=$shost, port=$port")
+  }
+  
+  virtual override void changed(Slot slot) 
+  {
+    super.changed(slot)
+    if (slot.name == "topic")
+      validateStatus()
+    else {
+      if (status == Ok && slot.name == "payload" && publishInterval == 0)
+        readyToPublish = true
+    }
+  }
+
+}

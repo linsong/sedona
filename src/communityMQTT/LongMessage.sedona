@@ -1,0 +1,4 @@
+class LongMessage extends Message
+{
+  property long payload = 0L
+}

@@ -1,0 +1,22 @@
+<!--
+  -  Sedona Kit
+  -  Copyright (c) 2015 Sedona Community
+  -  Licensed under the Academic Free License version 3.0
+  -->
+
+<sedonaKit
+ name = "communityMQTT"
+ vendor = "community"
+ description = "MQTT client library"
+ includeSource = "true"
+ doc = "true"
+>
+
+  <!-- Dependencies -->
+  <depend on="sys 1.2+" />
+
+  <!-- Source Directories -->
+  <source dir="." />
+
+</sedonaKit>
+

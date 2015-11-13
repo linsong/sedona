@@ -1,0 +1,69 @@
+@palette=false
+abstract class Worker extends Component
+{
+  @config @asStr property Buf(64) host
+  @config property int port = 1883
+
+  define int Ok = 0
+  define int Err_InvalidParent = 1
+  define int Err_InvalidHost = 2
+  define int Err_InvalidPort = 3
+
+  define Str WorkerStatus = "Ok, Invaid Parent, Invalid Host, Invalid Port"
+  @range=WorkerStatus
+  @readonly property byte status = 0
+
+  abstract void doWork(Message m) 
+  
+  void validateStatus() 
+  {
+    Component parentComponent = Sys.app.lookup(parent)
+    Str parentName = parentComponent?.type?.name
+    if (parentName != "MQTTService")
+      status := Err_InvalidParent
+    else if (host.toStr().length() > 0)
+      status := Ok
+    else if (port == 0)
+      status := Err_InvalidPort
+    else
+      status := Err_InvalidHost
+  }
+
+  override virtual void start() 
+  {
+    validateStatus()
+  }
+
+  override int parentEvent(int eType, Component parent)
+  {
+    if (eType == Component.ADDED && parent.type.name != "MQTTService")
+      status := Err_InvalidParent; 
+    return 0
+  }
+  
+  virtual override void changed(Slot slot) 
+  {
+    super.changed(slot)
+    if (slot.name == "host" || slot.name == "port")
+      validateStatus()
+  }
+
+  virtual override void execute() 
+  {
+    if (status != Ok)
+      return 
+
+    if (children == nullId)
+      return;
+
+    Component child = Sys.app.lookup(children)
+    while(child != null) {
+      if (child.type.is(Message.type)) {
+        Message m = (Message)child;
+        if (m.status == Ok)
+          doWork(m)
+      }
+      child = Sys.app.lookup(child.nextSibling)
+    }
+  }
+}

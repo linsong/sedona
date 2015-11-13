@@ -1,0 +1,8 @@
+class MQTTService extends Service
+{
+  override bool work() 
+  {
+    //TODO: iterate all children and publish them
+    return false
+  } 
+}

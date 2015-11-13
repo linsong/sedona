@@ -1,0 +1,13 @@
+class Publisher extends Worker
+{
+  override void doWork(Message m) 
+  {
+    if (m != null)
+      m.publish(host, port) 
+  }
+
+  override void execute() 
+  {
+    super.execute()
+  } 
+}
