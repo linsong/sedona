@@ -1,0 +1,4 @@
+class BoolMessage extends Message
+{
+  property bool payload = false
+}

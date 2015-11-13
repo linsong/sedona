@@ -1,0 +1,4 @@
+class IntMessage extends Message
+{
+  property int payload = 0
+}
