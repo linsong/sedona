@@ -18,5 +18,12 @@
   <!-- Source Directories -->
   <source dir="." />
 
+  <!-- Natives -->
+  <native qname="communityMQTT::Worker.startSession"    id="50::0"  />
+  <native qname="communityMQTT::Worker.yield"           id="50::1"  />
+  <native qname="communityMQTT::Worker.stopSession"     id="50::2"  />
+
+  <native qname="communityMQTT::Message.doPublish"      id="50::3"  />
+
 </sedonaKit>
 

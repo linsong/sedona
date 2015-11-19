@@ -25,6 +25,9 @@ abstract class Message extends Component
   
   define Log log
   
+  // natives
+  static native void doPublish(Obj handle, Str topic, Str payload)
+
   void validateStatus() 
   {
     Component parentComponent = Sys.app.lookup(parent)
@@ -58,13 +61,14 @@ abstract class Message extends Component
     return 0
   }
   
-  @asStr virtual void publish(Buf host, int port)
+  @asStr virtual void publish(Obj handle)
   {
     if (!readyToPublish)
       return
 
-    Str shost = host.toStr()
-    log.message("PUBLISH: topic=${topic.toStr()}, host=$shost, port=$port")
+    // log.message("PUBLISH: topic=${topic.toStr()}, host=$shost, port=$port")
+    Str payload = "hello"
+    doPublish(handle, topic.toStr(), payload)
 
     lastPublishTime = Sys.ticks()
     readyToPublish = false
