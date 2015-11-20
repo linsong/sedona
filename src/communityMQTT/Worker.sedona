@@ -1,10 +1,10 @@
 @palette=false
 abstract class Worker extends Component
 {
-  @config @asStr property Buf(64) host
+  @config @asStr property Buf(64) host = "192.168.1.128"
   @config property int port = 1883
 
-  @config @asStr property Buf(16) clientid
+  @config @asStr property Buf(16) clientid = "vincent"
   @config @asStr property Buf(16) username
   @config @asStr property Buf(16) password
 
@@ -12,8 +12,9 @@ abstract class Worker extends Component
   define int Err_InvalidParent = 1
   define int Err_InvalidHost = 2
   define int Err_InvalidPort = 3
+  define int Err_InvalidClientId = 4
 
-  define Str WorkerStatus = "Ok, Invaid Parent, Invalid Host, Invalid Port"
+  define Str WorkerStatus = "Ok, Invaid Parent, Invalid Host, Invalid Port, Invalid ClientId"
   @range=WorkerStatus
   @readonly property byte status = 0
   
@@ -37,12 +38,14 @@ abstract class Worker extends Component
     Str parentName = parentComponent?.type?.name
     if (parentName != "MQTTService")
       status := Err_InvalidParent
-    else if (host.toStr().length() > 0)
-      status := Ok
     else if (port == 0)
       status := Err_InvalidPort
-    else
+    else if (host.toStr().length() == 0)
       status := Err_InvalidHost
+    else if (clientid.toStr().length() == 0)
+      status := Err_InvalidClientId
+    else
+      status := Ok
 
     if (status == Ok)
       onStatusOk()
@@ -93,5 +96,7 @@ abstract class Worker extends Component
       }
       child = Sys.app.lookup(child.nextSibling)
     }
+    
+    yield(handle)
   }
 }
