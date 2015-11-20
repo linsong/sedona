@@ -26,7 +26,7 @@ abstract class Message extends Component
   define Log log
   
   // natives
-  static native void doPublish(Obj handle, Str topic, Str payload)
+  static native void doPublish(Obj handle, Str topic, Str payload, int qos)
 
   void validateStatus() 
   {
@@ -63,12 +63,19 @@ abstract class Message extends Component
   
   @asStr virtual void publish(Obj handle)
   {
+    if (handle == null)
+    {
+      log.message("PUBLISH: null handle")
+      return
+    }
+
     if (!readyToPublish)
       return
 
     // log.message("PUBLISH: topic=${topic.toStr()}, host=$shost, port=$port")
-    Str payload = "hello"
-    doPublish(handle, topic.toStr(), payload)
+    // FIXME: use the actual payload slot
+    Str msg = "hello"
+    doPublish(handle, topic.toStr(), msg, QoS)
 
     lastPublishTime = Sys.ticks()
     readyToPublish = false
