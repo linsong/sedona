@@ -20,20 +20,20 @@ import compilekit
 
 # exact copies; tuple is (dirName, exclude regex)
 xcopies  = [
-  ("adm",       [".*\.pyc"]),
-  ("apps",      [".*\.sab"]),
-  ("bin",       []),
-  ("doc",       []),
-  ("kits",      []),
-  ("lib",       []),
-  ("manifests", []),
-  ("platforms", ["tridium"]),
-  ("scode",     [".*\.scode"]),
-  ("src",       [".*\.class"]),
+  ("adm",               [".DS_Store", ".*\.pyc"]),
+  ("apps",              [".DS_Store", ".*\.sab"]),
+  ("bin",               [".DS_Store", ".*\.exe"]),
+  ("lib",               [".DS_Store"]),
+  ("build/doc",         [".DS_Store"]),
+  ("build/kits",        [".DS_Store"]),
+  ("build/manifests",   [".DS_Store"]),
+  ("platforms",         [".DS_Store", "tridium"]),
+  ("scode",             [".DS_Store", ".*\.scode"]),
+  ("src",               [".DS_Store", ".*\.iml", ".*\.class"]),
 ]
 
 # directories
-stageDir = os.path.join(env.home, "stage")
+stageDir = os.path.join(env.build, "stage")
 
 ################################################################
 # Main
@@ -51,12 +51,7 @@ def main():
 
 def nuke():
   print "====== makedist.nuke ======"
-  fileutil.rmdir(env.kits)
-  fileutil.rmdir(env.manifests)
-  fileutil.rmsubdirs(env.doc)
-  fileutil.rmdir(env.temp)
-  os.path.join(env.home, "test")
-  fileutil.rmdir(stageDir)
+  fileutil.rmdir(env.build)
 
 ################################################################
 # Compile
@@ -71,10 +66,12 @@ def compile():
   makesedonac.compile()
 
   # make all kits
-  compilekit.compile(env.src, ["-doc"])
+  compilekit.compile(env.kits, ["-doc", "-outDir", env.build])
 
   # make docs
-  compilekit.compile(os.path.join(env.doc, "toc.xml"))
+  docOut = os.path.join(env.build, "doc")
+  fileutil.cpdir(env.doc, docOut)
+  compilekit.compile(os.path.join(docOut, "toc.xml"), ["-doc"])
 
   # Make Sedona VM (svm)
   if os.name == "posix": # unix, OSX
@@ -111,4 +108,3 @@ def zip():
 
 if __name__ == '__main__':
   main()
-

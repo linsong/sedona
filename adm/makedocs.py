@@ -12,8 +12,8 @@ import sys
 import os
 import subprocess
 import optparse 
-import shutil 
-
+import shutil
+import fileutil
 import env
 
 
@@ -53,8 +53,10 @@ def main():
 
   (options, args) = parser.parse_args()
 
-  buildsrcdocs = env.sedonacExe + " -doc " + env.src
-  buildpubdocs = env.sedonacExe + " -doc " + os.path.join(env.doc, "toc.xml")
+  buildsrcdocs = env.sedonacExe + " -doc -outDir " + env.build + " " + env.kits
+  docOut = os.path.join(env.build, "doc")
+  fileutil.cpdir(env.doc, docOut)
+  buildpubdocs = env.sedonacExe + " -doc " + os.path.join(docOut, "toc.xml")
 
   #print "\n\n   Executing cmd = { " + cmd + " }\n\n"
   
@@ -75,4 +77,3 @@ if __name__ == '__main__':
 
   # Call the main function
   main()
-

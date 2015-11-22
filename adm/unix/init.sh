@@ -36,14 +36,16 @@ done
 
 # Ensure permissions are correct for adm python scripts
 find $sedona_home/adm -name "*.py" -exec chmod 755 '{}' \; 2> /dev/null
+find $sedona_home/adm/unix -name "*.py" -exec chmod 755 '{}' \; 2> /dev/null
 find $sedona_home/adm -name "*.sh" -exec chmod 755 '{}' \; 2> /dev/null
 find $sedona_home/bin -name "*.sh" -exec chmod 755 '{}' \; 2> /dev/null
 
 # aliases
 alias makeunixvm='makeunixvm.py'
-alias makeunixdev='makeunixdev.py'
 alias makewinvm='makewinvm.py'
 alias makedev='makedev.py'
+alias makedocs='makedocs.py'
+alias makedist='makedist.py'
 alias makesedona='makesedona.py'
 alias makesedonac='makesedonac.py'
 alias makesedonacert='makesedonacert.py'
