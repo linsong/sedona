@@ -23,7 +23,7 @@ import fileutil
 def compile(srcDir, depends, packages, jarFile, func=None):  
   print "Compile [" + os.path.basename(jarFile) + "]"
   # init jarTemp dir
-  temp = os.path.join(env.home, "tempJar")  
+  temp = os.path.join(env.build, "tempJar")
   fileutil.rmdir(temp, [], 0)
   fileutil.mkdir(temp)
   

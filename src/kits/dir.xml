@@ -20,8 +20,8 @@
   <target name="basicSchedule" />
   <target name="pstore" />
   <target name="logManager" />
-  <target name="../platforms/src/generic/win32" />
-  <target name="../platforms/src/generic/unix" />
+  <target name="../../platforms/src/generic/win32" />
+  <target name="../../platforms/src/generic/unix" />
 
   <!-- modular versions of the control kit -->
   <target name="types" />
@@ -33,4 +33,3 @@
   <target name="pricomp" />
 
 </sedonaDir>
-
