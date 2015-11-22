@@ -15,14 +15,14 @@
     <nativeKit depend="platUnix 1.0+" />
  
     <!-- Sources -->
-    <nativeSource path="/src/vm" />
-    <nativeSource path="/src/sys/native" />
-    <nativeSource path="/src/sys/native/std" />
-    <nativeSource path="/src/sys/native/unix" />
-    <nativeSource path="/src/inet/native" />
-    <nativeSource path="/src/inet/native/std" />
-    <nativeSource path="/src/inet/native/sha1" />
-    <nativeSource path="/src/datetimeStd/native/std" />
+    <nativeSource path="/src/native/vm" />
+    <nativeSource path="/src/kits/sys/native" />
+    <nativeSource path="/src/kits/sys/native/std" />
+    <nativeSource path="/src/kits/sys/native/unix" />
+    <nativeSource path="/src/kits/inet/native" />
+    <nativeSource path="/src/kits/inet/native/std" />
+    <nativeSource path="/src/kits/inet/native/sha1" />
+    <nativeSource path="/src/kits/datetimeStd/native/std" />
   </compile>    
   
   <manifestInclude>
@@ -33,5 +33,3 @@
   </manifestInclude>
   
 </sedonaPlatform>
-
-
