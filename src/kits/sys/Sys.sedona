@@ -449,10 +449,13 @@ class Sys
         
     // process args
     Str appFile = null
+    bool uTest = false
     foreach (Str arg : args, argsLen)
     {
       if (arg.equals("-test")) { return Test.main() }
       if (arg.equals("-ver")) { printVer(Sys.out); return 1 }
+      if (uTest) { return Test.unitTest(arg) } // the second argument is a qname
+      if (arg.equals("-utest")) {uTest = true}
       if (appFile == null) appFile = arg
     }
 
