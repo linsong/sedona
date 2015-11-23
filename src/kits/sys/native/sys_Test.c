@@ -8,18 +8,24 @@
 
 #include "sedona.h"
 
-// int Test.doMain()
+// int Test.doMain(Obj testToRun)
 Cell sys_Test_doMain(SedonaVM* vm, Cell* params)
 {
-  uint8_t* cb       = (uint8_t*)vm->codeBaseAddr;
-  uint16_t testsBix = *(uint16_t*)(cb+18);
+  const char* testName = params[0].aval;
+  uint8_t* cb          = (uint8_t*)vm->codeBaseAddr;
+  uint16_t testsBix    = *(uint16_t*)(cb+18);
   uint16_t* tests;
   int numTests;
   uint16_t method;
-  int i;
+  int i, currAsserts = 0;
+  int index = strlen(testName);
+  const char* qname;
   Cell ret;
 #ifdef SCODE_DEBUG
-  const char* qname;
+  if ((strcmp(testName, "") == 0))
+    printf("-- Running all svm tests...\n");
+  else
+    printf("-- Running svm test: %s\n", testName);
 #endif
 
   // lookup tests table
@@ -32,16 +38,20 @@ Cell sys_Test_doMain(SedonaVM* vm, Cell* params)
   ++tests;
   for (i=0; i<numTests; ++i)
   {
-#ifdef SCODE_DEBUG
     qname  = qnameSlot(vm, tests[i*2]);
-    printf("-- Test %s\n", qname);
+    currAsserts = vm->assertSuccesses;
+    if ( (index > 0) && (strncmp(testName, qname, index) != 0)) continue;
+#ifdef SCODE_DEBUG
+    printf("-- svm test %s", qname);
 #endif
     method = tests[i*2+1];
     vm->call(vm, method, NULL, 0);
+#ifdef SCODE_DEBUG
+    printf(" [%i verifies]\n", vm->assertSuccesses - currAsserts);
+#endif
   }
 
   // return number of failures
   ret.ival = vm->assertFailures;
   return ret;
 }
-
