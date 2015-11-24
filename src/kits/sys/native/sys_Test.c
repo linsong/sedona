@@ -40,7 +40,7 @@ Cell sys_Test_doMain(SedonaVM* vm, Cell* params)
   {
     qname  = qnameSlot(vm, tests[i*2]);
     currAsserts = vm->assertSuccesses;
-    if ( (index > 0) && (strncmp(testName, qname, index) != 0)) continue;
+    if ( (index > 0) && !strstr(qname, testName) ) continue;
 #ifdef SCODE_DEBUG
     printf("-- svm test %s", qname);
 #endif
