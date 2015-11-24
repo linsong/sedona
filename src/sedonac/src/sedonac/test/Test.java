@@ -127,7 +127,7 @@ public class Test extends Verifies
 
   public File testDir()
   {
-    File dir = new File(Env.home, "test");
+    File dir = new File(Env.home, "build/test");
     dir.mkdirs();
     verify(dir.exists());
     return dir;

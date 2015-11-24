@@ -18,6 +18,24 @@ abstract class Test
 {
 
   **
+  ** Start the App. 
+  ** Helpful for calling tests individually
+  **
+  static void startApp()
+  {
+    Sys.app.running = true
+  }
+
+  **
+  ** This is to call individual test of a given type
+  **
+  static int unitTest(Str qname)
+  {
+    startApp()
+    doMain(qname)
+    return 0
+  }
+  **
   ** This is the main routine for running the test suite.
   ** The compiler generates the table of test functions
   ** during scode compilation.
@@ -25,12 +43,12 @@ abstract class Test
   static int main()
   {
     // so that changed() callbacks will still be fired (issue 20667)
-    Sys.app.running = true
+    startApp()
     
-    doMain()
+    doMain("")
     return 0
   }
-
-  private static native int doMain()
+  // Specific testToRun or empty string to run all tests
+  private static native int doMain(Str testToRun)
 
 }

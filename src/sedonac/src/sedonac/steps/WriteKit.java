@@ -31,6 +31,7 @@ import sedonac.SourceFile;
 import sedonac.ir.IrKit;
 import sedonac.ir.IrType;
 import sedonac.ir.IrWriter;
+import sedonac.namespace.TypeUtil;
 
 
 /**
@@ -117,7 +118,8 @@ public class WriteKit
   private void writeType(ZipOutputStream zout, IrType t)
     throws IOException
   {
-    zout.putNextEntry(new ZipEntry(t.name + ".ir"));
+    String prefix = TypeUtil.isaTest(t) ? "test/" : "";
+    zout.putNextEntry(new ZipEntry(prefix + t.name + ".ir"));
     IrWriter out = new IrWriter(zout);
     out.writeType(t);
     out.flush();

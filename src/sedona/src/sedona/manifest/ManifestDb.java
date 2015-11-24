@@ -36,7 +36,7 @@ public class ManifestDb
 // Fields
 //////////////////////////////////////////////////////////////////////////
 
-  public static final File dir = new File(Env.home, "manifests");
+  public static final File dir = new File(Env.home, "build/manifests");
   public static final Log log = new Log("manifestdb");
   private static HashMap cache = new HashMap();
 

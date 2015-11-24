@@ -98,7 +98,7 @@ if __name__ == '__main__':
     raise env.BuildError("FATAL: makesedonacert failed")   
   
   # Make all kits
-  compilekit.compile(env.src)
+  compilekit.compile(env.kits, ["-outDir", env.build])
 
   # Make windows test scode (or scode specified on cmd line)
   compilekit.compile(options.scode)
@@ -156,6 +156,3 @@ if __name__ == '__main__':
     status = os.system(env.svmExe + " " + scodefile + " " + sabfile)
     if status:
       raise env.BuildError("FATAL: svm failed to run")      
-
-
-
