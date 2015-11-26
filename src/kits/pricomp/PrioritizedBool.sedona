@@ -13,14 +13,14 @@ class PrioritizedBool
   extends Prioritized
 {
 
-  define bool NULLVAL := null
+  define bool NULLVAL = null
 
 ////////////////////////////////////////////////////////////////
 // Properties
 ////////////////////////////////////////////////////////////////
 
   @readonly 
-  @summary=false property bool in1 = NULLVAL
+  @summary=false property bool in1 := NULLVAL
 
   @summary=false property bool in2 := NULLVAL
   @summary=false property bool in3 := NULLVAL

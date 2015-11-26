@@ -113,8 +113,7 @@ final class File
   **
   static internal FileStore toStore(Str name)
   {
-    FileStore fs = FileStore.lookup(name)
-    return fs?:FileStore.sys
+    return FileStore.lookup(name)
   }
 
 
