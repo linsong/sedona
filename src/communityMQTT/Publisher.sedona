@@ -5,9 +5,4 @@ class Publisher extends Worker
     if (m != null)
       m.publish(handle) 
   }
-  
-  override void execute() 
-  {
-    super.execute()
-  } 
 }

@@ -1,6 +1,9 @@
 @palette=false
 abstract class Message extends Component
 {
+  ////////////////////////////////////////////////////////////////
+  // Properties
+  ////////////////////////////////////////////////////////////////
   define Str QoSLevels = "FireAndForget, GuaranteeReceived, GuaranteeReceivedOnce"
 
   @range=QoSLevels
@@ -21,18 +24,24 @@ abstract class Message extends Component
   @config property int publishInterval = 5
   
   bool readyToPublish = false
+  bool subscribedToTopic = false
   long lastPublishTime = 0L
   
   define Log log
   
+  ////////////////////////////////////////////////////////////////
+  // Methods
+  ////////////////////////////////////////////////////////////////
   // natives
-  static native void doPublish(Obj handle, Str topic, Str payload, int qos)
+  static native void doPublish(Obj handle, Str topic, Str payload, int payload_len, int qos)
+
+  virtual Str getPayload() { return "" }
 
   void validateStatus() 
   {
     Component parentComponent = Sys.app.lookup(parent)
     Str parentName = parentComponent?.type?.name
-    if (parentName != "Publisher" && parentName != "Subscriber")
+    if (!parentComponent.type.is(Publisher.type) && !parentComponent.type.is(Subscriber.type))
       status := Err_InvalidParent; 
     else if (topic.toStr().length() > 0)
       status := Ok
@@ -56,7 +65,7 @@ abstract class Message extends Component
   
   override int parentEvent(int eType, Component parent)
   {
-    if (eType == Component.ADDED && (parent.type.name != "Publisher" && parent.type.name != "Subscriber"))
+    if (eType == Component.ADDED && (!parent.type.is(Publisher.type) && !parent.type.is(Subscriber.type)))
       status := Err_InvalidParent; 
     return 0
   }
@@ -72,19 +81,27 @@ abstract class Message extends Component
     if (!readyToPublish)
       return
 
-    // log.message("PUBLISH: topic=${topic.toStr()}, host=$shost, port=$port")
-    // FIXME: use the actual payload slot
-    Str msg = "hello"
-    doPublish(handle, topic.toStr(), msg, QoS)
+    Str msg = getPayload()
+    doPublish(handle, topic.toStr(), msg, msg.length()+1, QoS)
 
     lastPublishTime = Sys.ticks()
     readyToPublish = false
   }
   
-  @asStr virtual void subscribe(Buf host, int port)
+  @asStr virtual void subscribe(Obj handle, Buf host, int port)
   {
+    if (subscribedToTopic)
+      return 
+
+    if (handle == null)
+    {
+      log.message("SUBSCRIBE: null handle")
+      return
+    }
+
     Str shost = host.toStr()
     log.message("SUBSCRIBE: topic=${topic.toStr()}, host=$shost, port=$port")
+    subscribedToTopic = true
   }
   
   virtual override void changed(Slot slot) 

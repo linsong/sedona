@@ -3,11 +3,6 @@ class Subscriber extends Worker
   override void doWork(Message m) 
   {
     if (m != null)
-      m.subscribe(host, port) 
+      m.subscribe(handle, host, port) 
   }
-
-  override void execute() 
-  {
-    super.execute()
-  } 
 }

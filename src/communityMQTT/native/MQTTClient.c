@@ -333,15 +333,20 @@ int MQTTConnect(Client* c, MQTTPacket_connectData* options)
     if (options == 0)
         options = &default_options; // set default options if none were supplied
     
+    printf("### before conn\n");
     c->keepAliveInterval = options->keepAliveInterval;
     countdown(&c->ping_timer, c->keepAliveInterval);
     if ((len = MQTTSerialize_connect(c->buf, c->buf_size, options)) <= 0)
         goto exit;
+    printf("### after conn\n");
     if ((rc = sendPacket(c, len, &connect_timer)) != SUCCESS)  // send the connect packet
         goto exit; // there was a problem
+    printf("### send packet \n");
     
     // this will be a blocking call, wait for the connack
-    if (waitfor(c, CONNACK, &connect_timer) == CONNACK)
+    int result = waitfor(c, CONNACK, &connect_timer);
+    printf("### wait result: %i\n", result);
+    if (result == CONNACK)
     {
         unsigned char connack_rc = 255;
         char sessionPresent = 0;
@@ -349,6 +354,7 @@ int MQTTConnect(Client* c, MQTTPacket_connectData* options)
             rc = connack_rc;
         else
             rc = FAILURE;
+      printf("### send packet %d \n", rc);
     }
     else
         rc = FAILURE;
