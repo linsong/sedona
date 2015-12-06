@@ -1,4 +1,6 @@
 class FloatMessage extends Message
 {
   property float payload = 0.0
+
+  override Str getPayload() { return Sys.floatStr(payload) }
 }

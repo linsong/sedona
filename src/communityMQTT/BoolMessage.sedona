@@ -1,4 +1,12 @@
 class BoolMessage extends Message
 {
   property bool payload = false
+
+  override Str getPayload() 
+  { 
+    if (payload)
+        return "1";
+    else
+        return "0";
+  }
 }

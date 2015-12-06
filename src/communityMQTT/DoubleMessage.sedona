@@ -1,4 +1,0 @@
-class DoubleMessage extends Message
-{
-  property double payload;
-}

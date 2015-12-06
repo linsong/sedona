@@ -1,4 +1,6 @@
 class IntMessage extends Message
 {
   property int payload = 0
+      
+  override Str getPayload() { return Sys.intStr(payload); }
 }

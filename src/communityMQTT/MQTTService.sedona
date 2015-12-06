@@ -1,8 +1,53 @@
+**
+** MQTT service 
+**
 class MQTTService extends Service
 {
+  ////////////////////////////////////////////////////////////////
+  // Life cycle
+  ////////////////////////////////////////////////////////////////
+
+  virtual override void start()
+  {
+    this.app = Sys.app
+  }
+
+  ////////////////////////////////////////////////////////////////
+  // Methods
+  ////////////////////////////////////////////////////////////////
+  **
+  ** Get first child component of type Worker (or subclass).
+  ** Returns null if no Worker objects found.
+  **
+  Worker getFirstWorker()
+  {
+    for (Component c = app.lookup(children); c != null; c = app.lookup(c.nextSibling))
+      if (c.type.is(Worker.type))
+        return (Worker)c
+    return null
+  }
+
+  **
+  ** Get next child component after 'worker' that is of type Worker (or subclass).
+  ** Returns null if it reaches the end of the list without finding one.
+  **
+  Worker getNextWorker(Worker worker)
+  {
+    for (Component c = app.lookup(worker.id); c != null; c = app.lookup(c.nextSibling))
+      if (c.id != worker.id && c.type.is(Worker.type))
+        return (Worker)c
+    return null
+  }
+
   override bool work() 
   {
-    //TODO: iterate all children and publish them
+    for(Worker w = getFirstWorker(); w != null; w = getNextWorker(w))
+      w.work()
     return false
   } 
+
+  ////////////////////////////////////////////////////////////////
+  // Fields
+  ////////////////////////////////////////////////////////////////
+  App app
 }

@@ -1,5 +1,7 @@
 class StrMessage extends Message
 {
   @asStr property Buf(64) payload;
+  
+  override Str getPayload() { return payload.toStr() }
 }
 
