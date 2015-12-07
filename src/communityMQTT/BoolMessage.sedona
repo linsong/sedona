@@ -9,4 +9,11 @@ class BoolMessage extends Message
     else
         return "0";
   }
+
+  override bool updateData(Obj handle) 
+  {
+    bool result = super.updateData(handle)
+    payload := strBuf.equals("true") || strBuf.equals("True") || strBuf.equals("TRUE") || strBuf.equals("1")
+    return result
+  }
 }

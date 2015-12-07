@@ -23,17 +23,13 @@ abstract class Message extends Component
   @unit=Units.second
   @config property int publishInterval = 5
   
-  bool readyToPublish = false
-  bool subscribedToTopic = false
-  long lastPublishTime = 0L
-  
-  define Log log
-  
   ////////////////////////////////////////////////////////////////
   // Methods
   ////////////////////////////////////////////////////////////////
   // natives
   static native void doPublish(Obj handle, Str topic, Str payload, int payload_len, int qos)
+  static native void doSubscribe(Obj handle, Str topic, int qos)
+  static native bool fetchData(Obj handle, Str topic, Str buf, int length);
 
   virtual Str getPayload() { return "" }
 
@@ -72,6 +68,9 @@ abstract class Message extends Component
   
   @asStr virtual void publish(Obj handle)
   {
+    if (status != Ok)
+      return
+
     if (handle == null)
     {
       log.message("PUBLISH: null handle")
@@ -88,10 +87,18 @@ abstract class Message extends Component
     readyToPublish = false
   }
   
+  virtual bool updateData(Obj handle)
+  {
+    bool result = fetchData(handle, topic.toStr(), strBuf, 63)
+    // if (result)
+    //   log.message("SUBSCRIBE: update: " + strBuf);
+    return result
+  }
+  
   @asStr virtual void subscribe(Obj handle, Buf host, int port)
   {
-    if (subscribedToTopic)
-      return 
+    if (status != Ok)
+      return
 
     if (handle == null)
     {
@@ -99,9 +106,17 @@ abstract class Message extends Component
       return
     }
 
-    Str shost = host.toStr()
-    log.message("SUBSCRIBE: topic=${topic.toStr()}, host=$shost, port=$port")
-    subscribedToTopic = true
+    if (subscribedToTopic)
+    {
+      updateData(handle)
+    }
+    else
+    {
+      Str shost = host.toStr()
+      log.message("SUBSCRIBE: topic=${topic.toStr()}, host=$shost, port=$port")
+      doSubscribe(handle, topic.toStr(), QoS);
+      subscribedToTopic = true
+    }
   }
   
   virtual override void changed(Slot slot) 
@@ -114,5 +129,22 @@ abstract class Message extends Component
         readyToPublish = true
     }
   }
+  
+  virtual void reset()
+  {
+    readyToPublish = false
+    subscribedToTopic = false
+    lastPublishTime = 0L
+  }
 
+  ////////////////////////////////////////////////////////////////
+  // Fields
+  ////////////////////////////////////////////////////////////////
+  private bool readyToPublish = false
+  private bool subscribedToTopic = false
+  private long lastPublishTime = 0L
+  
+  protected inline Str(64) strBuf; 
+
+  internal define Log log
 }

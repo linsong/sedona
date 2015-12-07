@@ -7,10 +7,10 @@ abstract class Worker extends Component
   ////////////////////////////////////////////////////////////////
   // Properties
   ////////////////////////////////////////////////////////////////
-  @config @asStr property Buf(64) host = "192.168.1.128"
+  @config @asStr property Buf(64) host
   @config property int port = 1883
 
-  @config @asStr property Buf(16) clientid = "vincent"
+  @config @asStr property Buf(16) clientid
   @config @asStr property Buf(16) username
   @config @asStr property Buf(16) password
 
@@ -24,14 +24,6 @@ abstract class Worker extends Component
   @range=WorkerStatus
   @readonly property byte status = 0
   
-  ////////////////////////////////////////////////////////////////
-  // Fields
-  ////////////////////////////////////////////////////////////////
-  // SessionHandle 
-  Obj handle = null
-  
-  define Log log
-
   ////////////////////////////////////////////////////////////////
   // Methods
   ////////////////////////////////////////////////////////////////
@@ -74,10 +66,22 @@ abstract class Worker extends Component
   
   override virtual void stop() 
   {
-    if (handle != null)
+    if (handle == null)
+      return
+
+    stopSession(handle)
+    handle = null
+    resetAllChildren()
+  }
+  
+  void resetAllChildren()
+  {
+    for(Component child = Sys.app.lookup(children); child != null; child = Sys.app.lookup(child.nextSibling))
     {
-      stopSession(handle)
-      handle = null
+      if (child.type.is(Message.type)) {
+        Message m = (Message)child
+        m.reset()
+      }
     }
   }
 
@@ -115,4 +119,12 @@ abstract class Worker extends Component
     
     return true
   }
+
+  ////////////////////////////////////////////////////////////////
+  // Fields
+  ////////////////////////////////////////////////////////////////
+  // SessionHandle 
+  protected Obj handle = null
+  
+  internal define Log log
 }
