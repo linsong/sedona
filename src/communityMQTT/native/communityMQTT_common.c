@@ -96,6 +96,13 @@ void releasePayload(Payload * pPayload)
         free(pData);
         break;
       }
+    case SubscribeTask:
+      {
+        SubscribeData * pData = pPayload->pSubscribeData;
+        free(pData->topic);
+        free(pData);
+        break;
+      }
     default:
       break;
   }

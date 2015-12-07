@@ -3,4 +3,11 @@ class FloatMessage extends Message
   property float payload = 0.0
 
   override Str getPayload() { return Sys.floatStr(payload) }
+
+  override bool updateData(Obj handle) 
+  {
+    bool result = super.updateData(handle)
+    payload := (float)strBuf.parseInt()
+    return result
+  }
 }

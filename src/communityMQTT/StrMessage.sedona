@@ -3,5 +3,13 @@ class StrMessage extends Message
   @asStr property Buf(64) payload;
   
   override Str getPayload() { return payload.toStr() }
+  
+  override bool updateData(Obj handle) 
+  {
+    bool result = super.updateData(handle)
+    payload.copyFromStr(strBuf)
+    changed(StrMessage.payload)
+    return result
+  }
 }
 

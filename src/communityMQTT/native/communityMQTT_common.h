@@ -6,6 +6,7 @@ typedef int bool;
 #define false 0
 
 #include "MQTTClient.h"
+#include "uthash.h"
 
 typedef struct 
 {
@@ -40,18 +41,32 @@ typedef struct {
     int32_t qos;
 } PublishData;
 
+typedef struct {
+    char * topic; 
+    int32_t qos;
+} SubscribeData;
+
 typedef struct _Payload {
     enum TaskType type;
     union {
         StartSessionData * pStartSessionData;
         PublishData * pPublishData;
+        SubscribeData * pSubscribeData;
     };
     struct _Payload * pNext;
 } Payload;
 
 typedef struct {
+    char * topic;
+    char * payload;
+    int32_t payload_len;
+    UT_hash_handle hh;
+} SubscribeResponse;
+
+typedef struct {
     MQTTHandle * pHandle; 
     Payload * pHead;
+    SubscribeResponse * pResponse;
 } SessionHandle;
 
 bool pushPayload(SessionHandle * pSession, Payload * pPayload);
