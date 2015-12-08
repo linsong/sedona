@@ -188,6 +188,29 @@ bool subscribe(SessionHandle * pSession, SubscribeData * pData)
   return rc == 0;
 }
 
+bool unsubscribe(SessionHandle * pSession, UnsubscribeData * pData)
+{
+  if (!pSession)
+    return false;
+
+  MQTTHandle * pHandle = pSession->pHandle;
+  if (!pHandle || !pHandle->pClient)
+  {
+    printf("Invalid Handle");
+    return false;
+  }
+  if (!pHandle->pClient->isconnected)
+  {
+    printf("Connection lost");
+    return false;
+  }
+  
+  printf("Unsubscribe to '%s'\n", pData->topic);
+
+  int rc = MQTTUnsubscribe(pHandle->pClient, pData->topic);
+  return rc == 0;
+}
+
 void yield(MQTTHandle * pHandle)
 {
   if (!pHandle || !pHandle->pClient)
@@ -251,6 +274,9 @@ void * workerThreadFunc(void * pThreadData)
           break;
         case SubscribeTask:
           result = subscribe(pSession, pPayload->pSubscribeData);
+          break;
+        case UnsubscribeTask:
+          result = unsubscribe(pSession, pPayload->pUnsubscribeData);
           break;
         case StopSessionTask:
           stopSession(pSession);

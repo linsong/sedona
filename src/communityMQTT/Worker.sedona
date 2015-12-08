@@ -2,7 +2,7 @@
 ** MQTT Worker Base Class
 **
 @palette=false
-abstract class Worker extends Component
+abstract internal class Worker extends Component
 {
   ////////////////////////////////////////////////////////////////
   // Properties

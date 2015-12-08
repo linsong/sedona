@@ -1,5 +1,5 @@
 @palette=false
-abstract class Message extends Component
+abstract internal class Message extends Component
 {
   ////////////////////////////////////////////////////////////////
   // Properties
@@ -29,6 +29,7 @@ abstract class Message extends Component
   // natives
   static native void doPublish(Obj handle, Str topic, Str payload, int payload_len, int qos)
   static native void doSubscribe(Obj handle, Str topic, int qos)
+  static native void doUnsubscribe(Obj handle, Str topic)
   static native bool fetchData(Obj handle, Str topic, Str buf, int length);
 
   virtual Str getPayload() { return "" }
@@ -66,7 +67,7 @@ abstract class Message extends Component
     return 0
   }
   
-  @asStr virtual void publish(Obj handle)
+  virtual void publish(Obj handle)
   {
     if (status != Ok)
       return
@@ -95,7 +96,7 @@ abstract class Message extends Component
     return result
   }
   
-  @asStr virtual void subscribe(Obj handle, Buf host, int port)
+  virtual void subscribe(Obj handle)
   {
     if (status != Ok)
       return
@@ -112,11 +113,29 @@ abstract class Message extends Component
     }
     else
     {
-      Str shost = host.toStr()
-      log.message("SUBSCRIBE: topic=${topic.toStr()}, host=$shost, port=$port")
+      log.message("SUBSCRIBE: topic=${topic.toStr()}")
       doSubscribe(handle, topic.toStr(), QoS);
       subscribedToTopic = true
     }
+  }
+  
+  virtual void unsubscribe(Obj handle)
+  {
+    if (status != Ok)
+      return
+
+    if (handle == null)
+    {
+      log.message("UNSUBSCRIBE: null handle")
+      return
+    }
+
+    if (!subscribedToTopic)
+      return
+    
+    log.message("UNSUBSCRIBE: topic=${topic.toStr()}")
+    doUnsubscribe(handle, topic.toStr());
+    subscribedToTopic = false
   }
   
   virtual override void changed(Slot slot) 

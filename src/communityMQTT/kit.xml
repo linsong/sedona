@@ -25,7 +25,8 @@
 
   <native qname="communityMQTT::Message.doPublish"      id="50::3"  />
   <native qname="communityMQTT::Message.doSubscribe"    id="50::4"  />
-  <native qname="communityMQTT::Message.fetchData"      id="50::5"  />
+  <native qname="communityMQTT::Message.doUnsubscribe"  id="50::5"  />
+  <native qname="communityMQTT::Message.fetchData"      id="50::6"  />
 
 </sedonaKit>
 

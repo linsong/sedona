@@ -53,6 +53,22 @@ Cell communityMQTT_Message_doSubscribe(SedonaVM* vm, Cell* params)
   return nullCell;
 }
 
+Cell communityMQTT_Message_doUnsubscribe(SedonaVM* vm, Cell* params)
+{
+  SessionHandle * pSession = (SessionHandle *)params[0].aval;
+  uint8_t * topic = params[1].aval;
+  
+  Payload * pPayload = malloc(sizeof(Payload));
+  pPayload->type = UnsubscribeTask;
+  UnsubscribeData * pData = malloc(sizeof(UnsubscribeData));
+  pData->topic = malloc(strlen(topic)+1);
+  strcpy(pData->topic, topic);
+  pPayload->pUnsubscribeData = pData;
+
+  pushPayload(pSession, pPayload);
+  return nullCell;
+}
+
 Cell communityMQTT_Message_fetchData(SedonaVM* vm, Cell* params)
 {
   SessionHandle * pSession = (SessionHandle *)params[0].aval;
