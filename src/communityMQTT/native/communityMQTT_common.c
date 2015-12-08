@@ -103,6 +103,13 @@ void releasePayload(Payload * pPayload)
         free(pData);
         break;
       }
+    case UnsubscribeTask:
+      {
+        UnsubscribeData * pData = pPayload->pUnsubscribeData;
+        free(pData->topic);
+        free(pData);
+        break;
+      }
     default:
       break;
   }

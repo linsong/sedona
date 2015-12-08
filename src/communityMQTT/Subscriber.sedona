@@ -1,8 +1,17 @@
-class Subscriber extends Worker
+internal class Subscriber extends Worker
 {
+  override int childEvent(int eType, Component child)
+  {
+    if (eType == Component.REMOVED && child.type.is(Message.type)) {
+      ((Message)child).unsubscribe(handle);   
+    }
+    return 0
+  }
+  
   override void doWork(Message m) 
   {
     if (m != null)
-      m.subscribe(handle, host, port) 
+      m.subscribe(handle) 
   }
+
 }

@@ -1,4 +1,4 @@
-class Publisher extends Worker
+internal class Publisher extends Worker
 {
   override void doWork(Message m) 
   {

@@ -23,7 +23,8 @@ enum TaskType {
     StartSessionTask,
     StopSessionTask,
     PublishTask,
-    SubscribeTask
+    SubscribeTask,
+    UnsubscribeTask
 };
 
 typedef struct {
@@ -46,12 +47,17 @@ typedef struct {
     int32_t qos;
 } SubscribeData;
 
+typedef struct {
+    char * topic; 
+} UnsubscribeData;
+
 typedef struct _Payload {
     enum TaskType type;
     union {
         StartSessionData * pStartSessionData;
         PublishData * pPublishData;
         SubscribeData * pSubscribeData;
+        UnsubscribeData * pUnsubscribeData;
     };
     struct _Payload * pNext;
 } Payload;
