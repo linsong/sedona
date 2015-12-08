@@ -76,7 +76,8 @@ bool startSession(SessionHandle * pSession, StartSessionData * pData)
 
   pHandle->pNetwork = malloc(sizeof(Network));
   pHandle->pClient = malloc(sizeof(Client));
-  pHandle->command_timeout_ms = 1000;
+  /* pHandle->command_timeout_ms = 1000; */
+  pHandle->command_timeout_ms = 3000;
 
   NewNetwork(pHandle->pNetwork);
   ConnectNetwork(pHandle->pNetwork, pData->host, pData->port);
@@ -97,7 +98,7 @@ bool startSession(SessionHandle * pSession, StartSessionData * pData)
   //FIXME: when connection failed, svm will exit
   rc = MQTTConnect(pHandle->pClient, &data);
   printf("Connected %d\n", rc);
-  return rc == 0;
+  return rc == SUCCESS;
 }
 
 bool publish(SessionHandle * pSession, PublishData * pData)
@@ -126,7 +127,7 @@ bool publish(SessionHandle * pSession, PublishData * pData)
   msg.payloadlen = pData->payload_len;
   int rc = MQTTPublish(pHandle->pClient, pData->topic, &msg);
   /* printf("Published %d\n", rc); */
-  return rc == 0;
+  return rc == SUCCESS;
 }
 
 void messageArrived(MessageData * pMsgData)
@@ -185,7 +186,7 @@ bool subscribe(SessionHandle * pSession, SubscribeData * pData)
 
   //TODO: support wildcard in topic, refer to 'deliverMessage' method
   int rc = MQTTSubscribe(pHandle->pClient, pData->topic, pData->qos, messageArrived);
-  return rc == 0;
+  return rc == SUCCESS;
 }
 
 bool unsubscribe(SessionHandle * pSession, UnsubscribeData * pData)
@@ -208,17 +209,18 @@ bool unsubscribe(SessionHandle * pSession, UnsubscribeData * pData)
   printf("Unsubscribe to '%s'\n", pData->topic);
 
   int rc = MQTTUnsubscribe(pHandle->pClient, pData->topic);
-  return rc == 0;
+  return rc == SUCCESS;
 }
 
-void yield(MQTTHandle * pHandle)
+bool yield(MQTTHandle * pHandle)
 {
   if (!pHandle || !pHandle->pClient)
   {
     printf("Invalid MQTTHandle\n");
     return;
   }
-  MQTTYield(pHandle->pClient, 1000); 
+  int rc = MQTTYield(pHandle->pClient, 1000); 
+  return rc == SUCCESS;
 }
 
 bool stopSession(SessionHandle * pSession)
@@ -282,7 +284,7 @@ void * workerThreadFunc(void * pThreadData)
           stopSession(pSession);
           pSession = NULL;
           pthread_setspecific(thread_key, pSession);
-          printf("worker thread exits \n");
+          printf("MQTT worker thread exited \n");
           pthread_exit(NULL);
           break;
         default:
@@ -339,6 +341,8 @@ Cell communityMQTT_Worker_startSession(SedonaVM* vm, Cell* params)
     releaseSession(pSession);
     pSession = NULL;
   }
+  else
+    pthread_detach(*pthread); //reclaim thread resource after it terminates
 
   Cell result;
   result.aval = (void *)pSession;
