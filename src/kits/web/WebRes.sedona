@@ -70,6 +70,31 @@ class WebRes
   }
 
 ////////////////////////////////////////////////////////////////
+// JSON Output
+////////////////////////////////////////////////////////////////
+
+  **
+  ** Write out 200 OK status, application/json content type,
+  ** and opening JSON markup.
+  **
+  WebRes json()
+  {
+    writeStatus(HttpCode.ok)
+    writeContentType("application/json")
+    writeHeader("Allow", "GET")
+    finishHeaders()
+    return w("{")
+  }
+
+  **
+  ** Write closing JSON markup.
+  **
+  WebRes jsonEnd()
+  {
+    return w("}")
+  }
+
+////////////////////////////////////////////////////////////////
 // HTML Output
 ////////////////////////////////////////////////////////////////
 
@@ -181,6 +206,24 @@ class WebRes
   WebRes wi(int i)
   {
     printInt(i)
+    return this
+  }
+
+  **
+  ** Print the specified string in JSON format
+  **
+  public WebRes jsonStr(Str str)
+  {
+    w("\"").w(str).w("\"")
+    return this
+  }
+
+  **
+  ** Print the specified key/ value pair
+  **
+  public WebRes jsonKV(Str key, Str val)
+  {
+    jsonStr(key).w(":").jsonStr(val)
     return this
   }
 
