@@ -80,8 +80,12 @@ bool startSession(SessionHandle * pSession, StartSessionData * pData)
   pHandle->command_timeout_ms = 3000;
 
   NewNetwork(pHandle->pNetwork);
-  ConnectNetwork(pHandle->pNetwork, pData->host, pData->port);
   MQTTClient(pHandle->pClient, pHandle->pNetwork, pHandle->command_timeout_ms, pHandle->buf, pHandle->buf_len, pHandle->readbuf, pHandle->readbuf_len);
+
+  int rc = 0;
+  rc = ConnectNetwork(pHandle->pNetwork, pData->host, pData->port);
+  if (rc != SUCCESS)
+    return false;
  
   MQTTPacket_connectData data = MQTTPacket_connectData_initializer;       
   data.willFlag = 0;
@@ -94,8 +98,7 @@ bool startSession(SessionHandle * pSession, StartSessionData * pData)
   data.cleansession = 1;
   printf("Connecting to %s:%d\n", pData->host, pData->port);
   
-  int rc = 0;
-  //FIXME: when connection failed, svm will exit
+  rc = 0;
   rc = MQTTConnect(pHandle->pClient, &data);
   printf("Connected %d\n", rc);
   return rc == SUCCESS;
@@ -217,8 +220,11 @@ bool yield(MQTTHandle * pHandle)
   if (!pHandle || !pHandle->pClient)
   {
     printf("Invalid MQTTHandle\n");
-    return;
+    return false;
   }
+  if (!pHandle->pClient->isconnected)
+    return false;
+
   int rc = MQTTYield(pHandle->pClient, 1000); 
   return rc == SUCCESS;
 }
@@ -235,9 +241,9 @@ bool stopSession(SessionHandle * pSession)
     return false;
   }
 
-  MQTTDisconnect(pHandle->pClient);
+  if (pHandle->pClient->isconnected)
+    MQTTDisconnect(pHandle->pClient);
   pHandle->pNetwork->disconnect(pHandle->pNetwork);
-
   releaseSession(pSession);
   return true;
 }
@@ -258,7 +264,6 @@ void * workerThreadFunc(void * pThreadData)
     {
       if (pSession->pHandle)
       {
-        //FIXME: need to handle when session timedout case
         yield(pSession->pHandle);
       }
       continue;
@@ -362,6 +367,8 @@ Cell communityMQTT_Worker_stopSession(SedonaVM* vm, Cell* params)
 Cell communityMQTT_Worker_isSessionLive(SedonaVM* vm, Cell* params)
 {
   SessionHandle * pSession = (SessionHandle *)params[0].aval;
+  if (!pSession)
+    return falseCell;
 
   MQTTHandle * pHandle = pSession->pHandle;
   if (pHandle && pHandle->pClient && pHandle->pClient->isconnected)

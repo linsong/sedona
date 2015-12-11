@@ -20,9 +20,15 @@ abstract internal class Worker extends Component
   define int Err_InvalidPort = 3
   define int Err_InvalidClientId = 4
 
-  define Str WorkerStatus = "Ok, Invaid Parent, Invalid Host, Invalid Port, Invalid ClientId"
-  @range=WorkerStatus
-  @readonly property byte status = 0
+  define Str WorkerError = "Ok, Invaid Parent, Invalid Host, Invalid Port, Invalid ClientId"
+  @range=WorkerError
+  @readonly property byte error = 0
+  
+  define int Disconnected = 0
+  define int Connected = 1
+  define Str NetworkStatus = "Disconnected, Connected"
+  @range=NetworkStatus
+  @readonly property byte status = Disconnected
   
   ////////////////////////////////////////////////////////////////
   // Methods
@@ -34,44 +40,29 @@ abstract internal class Worker extends Component
   static native void stopSession(Obj handle)
   static native bool isSessionLive(Obj handle)
 
-  virtual void onStatusOk() {
-    if (handle != null)
-      return 
-
-    handle = startSession(host.toStr(), port, clientid.toStr(), username.toStr(), password.toStr())
-  }
-  
-  void validateStatus() 
+  void validateInputs() 
   {
     Component parentComponent = Sys.app.lookup(parent)
     if (!parentComponent.type.is(MQTTService.type))
-      status := Err_InvalidParent
+      error := Err_InvalidParent
     else if (port == 0)
-      status := Err_InvalidPort
+      error := Err_InvalidPort
     else if (host.toStr().length() == 0)
-      status := Err_InvalidHost
+      error := Err_InvalidHost
     else if (clientid.toStr().length() == 0)
-      status := Err_InvalidClientId
+      error := Err_InvalidClientId
     else
-      status := Ok
-
-    if (status == Ok)
-      onStatusOk()
+      error := Ok
   }
 
   override virtual void start() 
   {
-    validateStatus()
+    validateInputs()
   }
   
   override virtual void stop() 
   {
-    if (handle == null)
-      return
-
-    stopSession(handle)
-    handle = null
-    resetAllChildren()
+    disconnect()
   }
   
   void resetAllChildren()
@@ -88,7 +79,7 @@ abstract internal class Worker extends Component
   override int parentEvent(int eType, Component parent)
   {
     if (eType == Component.ADDED && parent.type.is(MQTTService.type))
-      status := Err_InvalidParent; 
+      error := Err_InvalidParent; 
     return 0
   }
   
@@ -97,22 +88,59 @@ abstract internal class Worker extends Component
     super.changed(slot)
     int sid = slot.id
     if (sid == Worker.host.id || sid == Worker.port.id || sid == Worker.clientid.id)
-      validateStatus()
+      validateInputs()
+  }
+  
+  action void connect()
+  {
+    if (error != Ok || status == Connected || handle != null)
+      return
+
+    handle = startSession(host.toStr(), port, clientid.toStr(), username.toStr(), password.toStr())
+    sessionStartTime = Sys.ticks()
+  }
+
+  action void disconnect()
+  {
+    if (handle == null || status == Disconnected)
+      return
+
+    stopSession(handle)
+    sessionStartTime = 0L
+    handle = null
+    resetAllChildren()
+  }
+  
+  void updateStatus() 
+  {
+    if (handle == null)
+      status := Disconnected
+    else
+      status := isSessionLive(handle) ? Connected : Disconnected 
   }
   
   virtual bool work()
   {
-    if (status != Ok || handle == null || children == nullId)
+    updateStatus()
+    if (status == Disconnected)
+    {
+      // if session failed to start within sessionTimeout seconds
+      if (handle != null && Sys.ticks()-sessionStartTime>sessionTimeout)
+      {
+        log.message("session times out, stop session now ...")
+        stopSession(handle)
+        sessionStartTime = 0L
+        handle = null
+        resetAllChildren()
+      }
       return false
-
-    if (!isSessionLive(handle))
-      return false
+    }
         
     for(Component child = Sys.app.lookup(children); child != null; child = Sys.app.lookup(child.nextSibling))
     {
       if (child.type.is(Message.type)) {
         Message m = (Message)child
-        if (m.status == Ok)
+        if (m.error == Message.Ok)
           doWork(m)
       }
     }
@@ -125,6 +153,9 @@ abstract internal class Worker extends Component
   ////////////////////////////////////////////////////////////////
   // SessionHandle 
   protected Obj handle = null
+  
+  private long sessionStartTime = 0L
+  private long sessionTimeout = 30sec
   
   internal define Log log
 }
