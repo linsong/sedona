@@ -1,4 +1,4 @@
-internal class Subscriber extends Worker
+class Subscriber extends Worker
 {
   override int childEvent(int eType, Component child)
   {
