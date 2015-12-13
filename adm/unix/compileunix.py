@@ -49,9 +49,9 @@ def gcc(exeFile, srcFiles, includes, libs, defs):
 
   # lib paths
   for lib in libs:
-    if pathExists(lib)
+    if pathExists(lib):
         cmd += " -L\"" + lib + "\""
-    else
+    else:
         cmd += " -l\"" + lib + "\""
 
   # remaining options
