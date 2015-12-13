@@ -7,11 +7,9 @@
 *.scode
 *.pstore
 *.swp
+*.exe
 sedona*.jar
-temp
-manifests
-doc
-stage
+build
 version.txt
 svm
 sedona-*.zip

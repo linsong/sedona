@@ -216,7 +216,7 @@ static int runInStandaloneMode(const char* filename, int vmArgc, char* vmArgv[])
   if (vm.assertFailures == 0)
   {
     printf("--\n");
-    printf("-- All tests passed\n");
+    printf("-- All svm tests passed\n");
     printf("--\n");
     return 0;
   }
@@ -300,6 +300,10 @@ static int printUsage(const char* exe)
   printf("  --home=d  set current working directory\n");
   printf("  --plat    run in platform mode. 'kits.scode[.stage]' and 'app.sab[.stage]'\n");
   printf("            must be present in the working directory\n");
+  printf("main args:\n");
+  printf("  -ver      list the kits | versions in the image\n");
+  printf("  -test     run all tests\n");
+  printf("  -utest    run unit tests. next argument can be a kit, type or a specific test\n");
   return 0;
 }
 
