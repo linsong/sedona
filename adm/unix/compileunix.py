@@ -16,6 +16,9 @@ import fileutil
 def is64bit():
   return sys.maxsize > 2**32
 
+def pathExists(path):
+  return os.path.exists(os.path.expanduser(os.path.expandvars(path)))
+
 #
 # Compile C source to a unix executable
 #   exeFile:  absolute path of output executable
@@ -40,13 +43,16 @@ def gcc(exeFile, srcFiles, includes, libs, defs):
 
   cmd += " -DPLAT_BUILD_VERSION=" + '\\"' + env.buildVersion() + '\\"'
 
-  # libs
-  for lib in libs:
-    cmd += " -L\"" + lib + "\""
-
   # src
   for src in srcFiles:
     cmd += " " + src
+
+  # lib paths
+  for lib in libs:
+    if pathExists(lib)
+        cmd += " -L\"" + lib + "\""
+    else
+        cmd += " -l\"" + lib + "\""
 
   # remaining options
   cmd += " -O2"
