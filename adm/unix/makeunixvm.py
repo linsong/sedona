@@ -24,7 +24,7 @@ compiler = "gcc"
 platFile = ""
 stageDir = ""
 includes = []
-libs = []
+libs = ["pthread"]
 defs = [ ("__UNIX__", "1"), ("SOCKET_FAMILY_INET", "1") ]
 
 if sys.platform == "darwin":
