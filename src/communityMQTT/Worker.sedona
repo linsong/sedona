@@ -36,11 +36,30 @@ abstract internal class Worker extends Component
   abstract void doWork(Message m) 
   
   // natives 
+  **
+  ** start a MQTT session to given host:port using clientid, username and password.
+  ** a session handle object will be returned, that will be used by later
+  ** native calls on this session.
+  ** 
   static native Obj startSession(Str host, int port, Str clientid, Str username, Str password)
+
+  ** 
+  ** stop the MQTT session for given session handle object
+  ** 
   static native void stopSession(Obj handle)
+
+  ** 
+  ** check if session for given session handle object live or not 
+  ** 
   static native bool isSessionLive(Obj handle)
 
-  void validateInputs() 
+  ** 
+  ** update user's inputs for following constraints:
+  **   - parent component should be MQTTService
+  **   - host slot should not be empty 
+  **   - port slot should not be empty 
+  **   - clientid should not be empty 
+  private void validateInputs() 
   {
     Component parentComponent = Sys.app.lookup(parent)
     if (!parentComponent.type.is(MQTTService.type))
@@ -65,7 +84,10 @@ abstract internal class Worker extends Component
     disconnect()
   }
   
-  void resetAllChildren()
+  ** 
+  ** reset all children components state
+  **
+  private void resetAllChildren()
   {
     for(Component child = Sys.app.lookup(children); child != null; child = Sys.app.lookup(child.nextSibling))
     {
@@ -91,6 +113,9 @@ abstract internal class Worker extends Component
       validateInputs()
   }
   
+  ** 
+  ** connect to MQTT broker and start a new session
+  ** 
   action void connect()
   {
     if (error != Ok || status == Connected || handle != null)
@@ -100,6 +125,9 @@ abstract internal class Worker extends Component
     sessionStartTime = Sys.ticks()
   }
 
+  ** 
+  ** close the current MQTT session and disconnect to MQTT broker
+  ** 
   action void disconnect()
   {
     if (handle == null || status == Disconnected)
@@ -111,7 +139,10 @@ abstract internal class Worker extends Component
     resetAllChildren()
   }
   
-  void updateStatus() 
+  ** 
+  ** update session status 
+  **
+  private void updateStatus() 
   {
     if (handle == null)
       status := Disconnected
@@ -151,7 +182,9 @@ abstract internal class Worker extends Component
   ////////////////////////////////////////////////////////////////
   // Fields
   ////////////////////////////////////////////////////////////////
-  // SessionHandle 
+  ** 
+  ** MQTT Session Handle Object
+  ** 
   protected Obj handle = null
   
   private long sessionStartTime = 0L
