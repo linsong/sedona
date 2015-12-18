@@ -31,8 +31,9 @@ RUN groupadd --non-unique -g ${GROUP_ID} ${USER_NAME} \
  && useradd -g ${GROUP_ID} -u ${USER_ID} -k /root -m ${USER_NAME}
 ENV HOME /home/${USER_NAME}
 # SOXPORT 1876
+# MQTT 1883
 # WEBSERVER 8080
-EXPOSE  8080 1876/udp
+EXPOSE  8080 1883 1876/udp
 UserSpecificDocker
 
 # Go to root
@@ -40,7 +41,9 @@ pushd ${SCRIPT_DIR}/../..
 
 docker run -it \
   --rm=true \
+  --name sedonaDev \
   -p 8080:8080 \
+  -p 1883:1883 \
   -p 1876:1876/udp \
   -w "/home/${USER_NAME}/sedonadev" \
   -u "${USER_NAME}" \
