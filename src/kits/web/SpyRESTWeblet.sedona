@@ -32,19 +32,48 @@ class SpyRESTWeblet
   
   override Str description() { return "Sedona runtime diagnostics (REST)" }
 
-  override void get(WebReq req, WebRes res)
+  override void head(WebReq req, WebRes res)
+  {
+    res.writeStatus(HttpCode.methodNotAllowed)
+    res.writeHeader("Allow", "GET, POST")
+  }
+
+  override void put(WebReq req, WebRes res)
+  {
+    res.writeStatus(HttpCode.methodNotAllowed)
+    res.writeHeader("Allow", "GET, POST")
+  }
+
+  override void doDelete(WebReq req, WebRes res)
+  {
+    res.writeStatus(HttpCode.methodNotAllowed)
+    res.writeHeader("Allow", "GET, POST")
+  }
+
+  override void post(WebReq req, WebRes res)
   {
     // route to non-html pages
     Str p = ""
     if (req.path.size > 1) p = req.path.names[1]
-    if (p.equals("backup")) { backupApp(req, res); return }
+    if (p.equals("backup"))  backupApp(req, res)
+    else if (p.equals("logs")) updateLogLevel(req, res)
+    else
+    {
+      // Error: Method not supported
+    }
+  }
 
+  override void get(WebReq req, WebRes res)
+  {
     // start header
     res.json()
     nav(req, res)
 
     // route to html pages
-    if (p.equals("app")) app(req, res)
+    Str p = ""
+    if (req.path.size > 1) p = req.path.names[1]
+    
+    if (p.equals("app"))        app(req, res)
     else if (p.equals("kits"))  kits(req, res)
     else if (p.equals("sox"))   sox(req, res)
     else if (p.equals("echo"))  echo(req, res)
@@ -83,12 +112,16 @@ class SpyRESTWeblet
     res.jsonStr("cycleCount").w(":\"").printLong(app.cycleCount);
     res.w("\"}, ")
     
-    res.jsonStr("IndexSpy").w(": [")
+    res.jsonStr("SpyGetIndex").w(": [")
     res.jsonStr("/spyREST/app").w(", ")
     res.jsonStr("/spyREST/kits").w(", ")
     res.jsonStr("/spyREST/logs").w(", ")
     res.jsonStr("/spyREST/sox").w(", ")
     res.jsonStr("/spyREST/echo").w(" ], ")
+
+    res.jsonStr("SpyPostIndex").w(": [")
+    res.jsonStr("/spyREST/backup").w(", ")
+    res.jsonStr("/spyREST/logs").w(" ], ")
 
     res.jsonStr("Weblets").w(": {")
     Weblet wl = WebService.weblets
@@ -407,31 +440,38 @@ class SpyRESTWeblet
 ////////////////////////////////////////////////////////////////
 // Logs
 ////////////////////////////////////////////////////////////////
-
-  public void logs(WebReq req, WebRes res)
-  { /* TODO: change log level with POST
+  public void updateLogLevel(WebReq req, WebRes res)
+  {
+    res.json()
     if (req.path.size >= 4)
     {
       int id    = req.path.names[2].parseInt()
       int level = req.path.names[3].parseInt()
       Log log = Sys.log(id)
-      if (log != null) Sys.logLevels[id] = level
+      if (log != null) 
+      {
+        Sys.logLevels[id] = level
+        res.jsonKV(log.qname, Log.levelStr(level))
+      }
     }
-    */
+    res.jsonEnd()    
+  }
+  public void logs(WebReq req, WebRes res)
+  {
     res.jsonStr("Logs").w(": [")
     foreach (Log log : Sys.logs, Sys.logsLen)
     {
       res.w("{ ")
       res.jsonStr("Id").w(":\"").wi(log.id).w("\", ")
       res.jsonKV("Name", log.qname).w(", ")
-      res.jsonKV("Level", sys::Log.levelStr(log.level()))
+      res.jsonKV("Level", Log.levelStr(log.level()))
       res.w("} , ")
     }
     res.w("{} ] ")
   }
 
 ////////////////////////////////////////////////////////////////
-// Backup - TODO: enable with POST
+// Backup
 ////////////////////////////////////////////////////////////////
 
   public void backupApp(WebReq req, WebRes res)
