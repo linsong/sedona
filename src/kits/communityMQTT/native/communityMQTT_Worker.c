@@ -1,3 +1,7 @@
+#ifdef __DARWIN__
+#include <sys/types.h>
+#endif
+
 #include <stdio.h>
 #include "MQTTClient.h"
 #include "communityMQTT_common.h"
@@ -252,7 +256,7 @@ void * workerThreadFunc(void * pThreadData)
 {
   SessionHandle * pSession = (SessionHandle *)pThreadData;
   if (!pSession)
-    return;
+    return NULL;
   
   pthread_setspecific(thread_key, pSession);
 
@@ -299,6 +303,7 @@ void * workerThreadFunc(void * pThreadData)
       popPayload(pSession);
     }
   }   
+  return NULL;
 }
 
 ///////////////////////////////////////////////////////
@@ -306,11 +311,11 @@ void * workerThreadFunc(void * pThreadData)
 ///////////////////////////////////////////////////////
 Cell communityMQTT_Worker_startSession(SedonaVM* vm, Cell* params)
 {
-  uint8_t * host = params[0].aval;
+  char * host = params[0].aval;
   int32_t port = params[1].ival;
-  uint8_t * clientid = params[2].aval;
-  uint8_t * username = params[3].aval;
-  uint8_t * password = params[4].aval;
+  char * clientid = params[2].aval;
+  char * username = params[3].aval;
+  char * password = params[4].aval;
   
   pthread_once(&thread_key_once, makeThreadKey);
   
@@ -336,8 +341,8 @@ Cell communityMQTT_Worker_startSession(SedonaVM* vm, Cell* params)
   pushPayload(pSession, pPayload); 
 
   pthread_t * pthread = malloc(sizeof(pthread_t));
-  int rc = 0;
-  if (rc=pthread_create(pthread, NULL, &workerThreadFunc, pSession))
+  int rc = pthread_create(pthread, NULL, &workerThreadFunc, pSession);
+  if (rc)
   {
     printf("Thread creation failed: %d\n", rc);
     free(pthread);

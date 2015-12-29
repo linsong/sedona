@@ -1,3 +1,7 @@
+#ifdef __DARWIN__
+#include <sys/types.h>
+#endif
+
 #include <pthread.h>
 #include "communityMQTT_common.h"
 

@@ -17,7 +17,9 @@
 #ifndef __MQTT_LINUX_
 #define __MQTT_LINUX_
 
+#ifdef __DARWIN__
 #include <sys/types.h>
+#endif
 #include <sys/socket.h>
 #include <sys/param.h>
 #include <sys/time.h>

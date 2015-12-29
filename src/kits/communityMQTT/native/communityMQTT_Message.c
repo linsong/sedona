@@ -1,3 +1,7 @@
+#ifdef __DARWIN__
+#include <sys/types.h>
+#endif
+
 #include <stdio.h>
 #include "MQTTClient.h"
 #include "communityMQTT_common.h"
@@ -14,8 +18,8 @@
 Cell communityMQTT_Message_doPublish(SedonaVM* vm, Cell* params)
 {
   SessionHandle * pSession = (SessionHandle *)params[0].aval;
-  uint8_t * topic = params[1].aval;
-  uint8_t * payload = params[2].aval;
+  char * topic = params[1].aval;
+  char * payload = params[2].aval;
   int32_t payload_len = params[3].ival;
   int32_t qos = params[4].ival;
   
@@ -38,7 +42,7 @@ Cell communityMQTT_Message_doPublish(SedonaVM* vm, Cell* params)
 Cell communityMQTT_Message_doSubscribe(SedonaVM* vm, Cell* params)
 {
   SessionHandle * pSession = (SessionHandle *)params[0].aval;
-  uint8_t * topic = params[1].aval;
+  char * topic = params[1].aval;
   int32_t qos = params[2].ival;
   
   Payload * pPayload = malloc(sizeof(Payload));
@@ -56,7 +60,7 @@ Cell communityMQTT_Message_doSubscribe(SedonaVM* vm, Cell* params)
 Cell communityMQTT_Message_doUnsubscribe(SedonaVM* vm, Cell* params)
 {
   SessionHandle * pSession = (SessionHandle *)params[0].aval;
-  uint8_t * topic = params[1].aval;
+  char * topic = params[1].aval;
   
   Payload * pPayload = malloc(sizeof(Payload));
   pPayload->type = UnsubscribeTask;
@@ -72,8 +76,8 @@ Cell communityMQTT_Message_doUnsubscribe(SedonaVM* vm, Cell* params)
 Cell communityMQTT_Message_fetchData(SedonaVM* vm, Cell* params)
 {
   SessionHandle * pSession = (SessionHandle *)params[0].aval;
-  uint8_t * topic = params[1].aval;
-  uint8_t * buf = params[2].aval;
+  char * topic = params[1].aval;
+  char * buf = params[2].aval;
   int32_t length = params[3].ival;
 
   SubscribeResponse * pResponse = NULL;
