@@ -18,6 +18,10 @@
 #ifndef STACKTRACE_H_
 #define STACKTRACE_H_
 
+#ifdef __DARWIN__
+#include <sys/types.h>
+#endif
+
 #include <stdio.h>
 #define NOSTACKTRACE 1
 
