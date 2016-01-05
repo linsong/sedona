@@ -87,6 +87,9 @@ Cell communityMQTT_Message_fetchData(SedonaVM* vm, Cell* params)
 
   bool changed = false;
   int32_t strLen = strlen(buf);
+  if (strLen >= length)
+      strLen = length - 1;
+  
   if (pResponse->payload_len < strLen || (pResponse->payload_len > strLen && pResponse->payload_len < length)) 
     changed = true;
   else if (pResponse->payload_len == strLen)

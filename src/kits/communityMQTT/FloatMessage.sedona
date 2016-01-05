@@ -7,6 +7,9 @@ class FloatMessage extends Message
   override bool updateData(Obj handle) 
   {
     bool result = super.updateData(handle)
+    if (!result)
+      return result
+
     payload := (float)strBuf.parseInt()
     return result
   }
