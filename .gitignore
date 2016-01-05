@@ -12,7 +12,9 @@ sedona*.jar
 build
 version.txt
 svm
-sedona-*.zip
+sedona*.zip
 *.log
 *.swo
 tags
+manifests
+_tmp_*
