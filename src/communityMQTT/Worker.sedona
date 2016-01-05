@@ -13,6 +13,8 @@ abstract internal class Worker extends Component
   @config @asStr property Buf(16) clientid
   @config @asStr property Buf(16) username
   @config @asStr property Buf(16) password
+  
+  @config property bool autoStart = true
 
   define int Ok = 0
   define int Err_InvalidParent = 1
@@ -72,6 +74,9 @@ abstract internal class Worker extends Component
       error := Err_InvalidClientId
     else
       error := Ok
+        
+    if (autoStart && error == Ok)
+      connect()
   }
 
   override virtual void start() 
@@ -109,8 +114,22 @@ abstract internal class Worker extends Component
   {
     super.changed(slot)
     int sid = slot.id
-    if (sid == Worker.host.id || sid == Worker.port.id || sid == Worker.clientid.id)
+    if (sid == Worker.host.id || sid == Worker.port.id || sid == Worker.clientid.id || sid == Worker.autoStart.id)
       validateInputs()
+        
+    if (sid == Worker.status.id)
+    {
+      MQTTService service = (MQTTService)Sys.app.lookupService(MQTTService.type)
+      if (service == null)
+        App.log.error("MQTTService is missing")
+      else
+      {
+        if (status == Connected)
+          MQTTService.log.message("MQTT connection(${host.toStr()}:${port}) established")
+        else
+          MQTTService.log.message("MQTT connection(${host.toStr()}:${port}) lost")
+      }
+    }
   }
   
   ** 
@@ -158,7 +177,11 @@ abstract internal class Worker extends Component
       // if session failed to start within sessionTimeout seconds
       if (handle != null && Sys.ticks()-sessionStartTime>sessionTimeout)
       {
-        log.message("session times out, stop session now ...")
+        MQTTService service = (MQTTService)Sys.app.lookupService(MQTTService.type)
+        if (service == null)
+          App.log.error("MQTTService is missing")
+        else
+          MQTTService.log.message("session times out, stop session now ...")
         stopSession(handle)
         sessionStartTime = 0L
         handle = null
@@ -189,6 +212,4 @@ abstract internal class Worker extends Component
   
   private long sessionStartTime = 0L
   private long sessionTimeout = 30sec
-  
-  internal define Log log
 }

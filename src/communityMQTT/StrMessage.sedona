@@ -7,6 +7,9 @@ class StrMessage extends Message
   override bool updateData(Obj handle) 
   {
     bool result = super.updateData(handle)
+    if (!result)
+      return result
+
     payload.copyFromStr(strBuf)
     changed(StrMessage.payload)
     return result

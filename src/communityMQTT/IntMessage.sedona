@@ -7,6 +7,9 @@ class IntMessage extends Message
   override bool updateData(Obj handle) 
   {
     bool result = super.updateData(handle)
+    if (!result)
+      return result
+
     payload := strBuf.parseInt()
     return result
   }

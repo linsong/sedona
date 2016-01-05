@@ -185,7 +185,7 @@ abstract internal class Message extends Component
   private bool subscribedToTopic = false
   private long lastPublishTime = 0L
   
-  protected inline Str(64) strBuf; 
+  protected inline Str(64) strBuf = ""; 
 
   internal define Log log
 }

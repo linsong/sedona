@@ -10,6 +10,12 @@ class MQTTService extends Service
   virtual override void start()
   {
     this.app = Sys.app
+    log.message("MQTT service started")
+  }
+
+  virtual override void stop()
+  {
+    log.message("MQTT service stopped")
   }
 
   ////////////////////////////////////////////////////////////////
@@ -50,4 +56,5 @@ class MQTTService extends Service
   // Fields
   ////////////////////////////////////////////////////////////////
   App app
+  define Log log
 }
