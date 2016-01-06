@@ -1,0 +1,13 @@
+<sedonaCode
+  endian="little" blockSize="4"
+  refSize="4" main="sys::Sys.main" debug="true" test="true"
+>
+  <depend on="sys 1.2+" />
+  <depend on="sox 1.2+" />
+  <depend on="inet 1.2+" />
+  <depend on="web 1.2+" />
+  <depend on="func 1.2+" />
+  <depend on="platUnix 1.2+" />
+  <depend on="tutorial 1.2+" />
+  <depend on="communityMQTT 1.2+" />
+</sedonaCode>
