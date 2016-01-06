@@ -1,0 +1,54 @@
+<sedonaApp>
+<schema>
+  <kit name='sys'/>
+  <kit name='sox'/>
+  <kit name='inet'/>
+  <kit name='web'/>
+  <kit name='func'/>
+  <kit name='platUnix'/>
+  <kit name='tutorial'/>
+  <kit name='communityMQTT'/>
+</schema>
+<app>
+  <comp name="plat" type="platUnix::UnixPlatformService"/>
+  <comp name="users" type="sys::UserService">
+    <comp name="admin" type="sys::User">
+      <prop name="cred" val="hE49ksThgAeLkWB3NUU1NWeDO54="/>
+      <prop name="perm" val="2147483647"/>
+      <prop name="prov" val="255"/>
+    </comp>
+  </comp>
+  <comp name="sox" type="sox::SoxService">
+    <prop name="port" val="1876"/>
+  </comp>
+  <comp name="web" type="web::WebService">
+    <prop name="port" val="8080"/>
+  </comp>
+  <comp name="mqtt" type="communityMQTT::MQTTService">
+    <comp name="sub" type="communityMQTT::Subscriber">
+      <prop name="host" val="broker.hivemq.com"/>
+      <prop name="port" val="1883"/>
+      <prop name="clientid" val="sedonaSID" />
+      <comp name="strM" type="communityMQTT::StrMessage">
+        <prop name="topic" val="testtopic/sed" />
+      </comp>
+    </comp>
+    <comp name="pub" type="communityMQTT::Publisher">
+      <prop name="host" val="broker.hivemq.com"/>
+      <prop name="port" val="1883"/>
+      <prop name="clientid" val="sedonaPID" />
+      <comp name="strM" type="communityMQTT::StrMessage">
+        <prop name="topic" val="testtopic/sed" />
+        <prop name="payload" val="This is a test message from SVM!" />
+      </comp>
+    </comp>
+  </comp>
+  <comp name="rampA" type="func::Ramp"/>
+  <comp name="rampB" type="func::Ramp"/>
+  <comp name="add"   type="tutorial::Add" id="12"/>
+</app>
+<links>
+  <link from="/rampA.out" to="/add.in1"/>
+  <link from="/rampB.out" to="/add.in2"/>
+</links>
+</sedonaApp>
