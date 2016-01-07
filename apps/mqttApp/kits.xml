@@ -8,6 +8,5 @@
   <depend on="web 1.2+" />
   <depend on="func 1.2+" />
   <depend on="platUnix 1.2+" />
-  <depend on="tutorial 1.2+" />
   <depend on="communityMQTT 1.2+" />
 </sedonaCode>

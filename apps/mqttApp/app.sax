@@ -6,7 +6,6 @@
   <kit name='web'/>
   <kit name='func'/>
   <kit name='platUnix'/>
-  <kit name='tutorial'/>
   <kit name='communityMQTT'/>
 </schema>
 <app>
@@ -39,16 +38,11 @@
       <prop name="clientid" val="sedonaPID" />
       <comp name="strM" type="communityMQTT::StrMessage">
         <prop name="topic" val="testtopic/sed" />
-        <prop name="payload" val="This is a test message from SVM!" />
+        <prop name="payload" val="a test message from SVM!" />
       </comp>
     </comp>
   </comp>
-  <comp name="rampA" type="func::Ramp"/>
-  <comp name="rampB" type="func::Ramp"/>
-  <comp name="add"   type="tutorial::Add" id="12"/>
 </app>
 <links>
-  <link from="/rampA.out" to="/add.in1"/>
-  <link from="/rampB.out" to="/add.in2"/>
 </links>
 </sedonaApp>
