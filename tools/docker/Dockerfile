@@ -3,7 +3,8 @@
 # Licensed under the Academic Free License version 3.0
 #
 # History:
-#    2015 Oct 15   Divisuals   Initial Docker Image 
+#    2015 Oct 15   Divisuals   Initial Docker Image
+#    2016 Feb 23   Divisuals   Updated to latest JDK 8_73
 #
 
 FROM toopher/centos-i386:centos6
@@ -12,13 +13,13 @@ MAINTAINER Divisuals <divisuals.net@gmail.com>
 LABEL Vendor="Sedona"
 LABEL version=develop
 
-# download JDK 8 u60
-ENV	JAVA_HOME /jdk1.8.0_60
+# download JDK 8 u73
+ENV	JAVA_HOME /jdk1.8.0_73
 
 RUN	yum install -y wget which tar git gcc glibc-static python-argparse.noarch \
-	&& wget --no-cookies --no-check-certificate --header "Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie" "http://download.oracle.com/otn-pub/java/jdk/8u60-b27/jdk-8u60-linux-i586.tar.gz" \
-	&& tar xf jdk-8u60-linux-i586.tar.gz \
-	&& rm -f /jdk-8u60-linux-i586.tar.gz \
+	&& wget --no-cookies --no-check-certificate --header "Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie" "http://download.oracle.com/otn-pub/java/jdk/8u73-b02/jdk-8u73-linux-i586.tar.gz" \
+	&& tar xf jdk-8u73-linux-i586.tar.gz \
+	&& rm -f /jdk-8u73-linux-i586.tar.gz \
 	&& rm -rf $JAVA_HOME/*src.zip \
 						$JAVA_HOME/lib/missioncontrol \
 						$JAVA_HOME/lib/visualvm \
