@@ -46,6 +46,7 @@ docker run -it \
   -u "${USER_NAME}" \
   -v "$PWD:/home/${USER_NAME}/sedonadev" \
   -v "${SCRIPT_DIR}/.bashrc:/home/${USER_NAME}/.bashrc" \
+  --name sedonaDev \
   ${IMAGE_NAME}-${USER_NAME} \
   bash
 
