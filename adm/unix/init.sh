@@ -54,14 +54,5 @@ alias platformdb='platformdb.py'
 alias sedonac='sedonac.sh'
 alias sedonacert='sedonacert.sh'
 alias jsvm='jsvm.sh'
-
-# functions
-
-function scodegen
-{
-  rt=$java_home/jre/lib/rt.jar
-  jikes -classpath $rt $sedona_home/adm/SCodeGen.java
-  $java_home/bin/java -cp $sedona_home/adm SCodeGen "java" $sedona_home/adm/scode.txt $sedona_home/adm/scode.java $sedona_home/src/sedonac/src/sedonac/scode/SCode.java
-  $java_home/bin/java -cp $sedona_home/adm SCodeGen "h" $sedona_home/adm/scode.txt $sedona_home/adm/scode.h $sedona_home/src/vm/scode.h
-  rm -rf $sedona_home/adm/*.class
-}
+alias soxClient='soxClient.sh'
+alias sCodeGen='scodegen.sh'
