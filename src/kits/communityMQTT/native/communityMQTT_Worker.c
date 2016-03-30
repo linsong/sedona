@@ -180,12 +180,12 @@ bool subscribe(SessionHandle * pSession, SubscribeData * pData)
   MQTTHandle * pHandle = pSession->pHandle;
   if (!pHandle || !pHandle->pClient)
   {
-    printf(" * [MQTTService] Invalid Handle");
+    printf(" * [MQTTService] Invalid Handle\n");
     return false;
   }
   if (!pHandle->pClient->isconnected)
   {
-    printf(" * [MQTTService] Connection lost");
+    printf(" * [MQTTService] Connection lost\n");
     return false;
   }
 
@@ -322,6 +322,7 @@ Cell communityMQTT_Worker_startSession(SedonaVM* vm, Cell* params)
   SessionHandle * pSession = malloc(sizeof(SessionHandle));
   pSession->pHandle = NULL;
   pSession->pHead = NULL;
+  pSession->pResponse = NULL;
 
   StartSessionData * pData = malloc(sizeof(StartSessionData));
   pData->host = malloc(strlen(host)+1);

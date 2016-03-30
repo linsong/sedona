@@ -79,6 +79,9 @@ Cell communityMQTT_Message_fetchData(SedonaVM* vm, Cell* params)
   char * topic = params[1].aval;
   char * buf = params[2].aval;
   int32_t length = params[3].ival;
+  
+  if (!pSession || !pSession->pResponse)
+    return falseCell;
 
   SubscribeResponse * pResponse = NULL;
   HASH_FIND_STR(pSession->pResponse, topic, pResponse);
