@@ -128,7 +128,7 @@ bool publish(SessionHandle * pSession, PublishData * pData)
   /* printf(" * [MQTTService] Publish to %s\n", pData->topic); */
   MQTTMessage msg;
   msg.qos = pData->qos;
-  msg.retained = 0;
+  msg.retained = 1;
   msg.dup = 0;
   msg.payload = pData->payload;
   msg.payloadlen = pData->payload_len;
