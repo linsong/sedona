@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2015 
+// Copyright (c) 2015
 // Licensed under the Academic Free License version 3.0
 //
 // History:
@@ -29,7 +29,7 @@ class SpyRESTWeblet
 ////////////////////////////////////////////////////////////////
 
   override Str prefix() { return "spyREST" }
-  
+
   override Str description() { return "Sedona runtime diagnostics (REST)" }
 
   override void head(WebReq req, WebRes res)
@@ -71,8 +71,9 @@ class SpyRESTWeblet
 
     // route to html pages
     Str p = ""
+    // ignore
     if (req.path.size > 1) p = req.path.names[1]
-    
+
     if (p.equals("app"))        app(req, res)
     else if (p.equals("kits"))  kits(req, res)
     else if (p.equals("sox"))   sox(req, res)
@@ -87,12 +88,10 @@ class SpyRESTWeblet
   private void nav(WebReq req, WebRes res)
   {
     Path path = req.path
-    res.jsonStr("path").w(":\"")
-    for (int i=1; i<path.size; ++i)
-    {
-      for (int j=0; j<=i; ++j) res.w(" | ").w(path.names[j])
-    }
-    res.w("\",")
+//    res.jsonStrN("path").w(":\"")
+//    for (int i=1; i<path.size; ++i)
+//      res.w("/").w(path.names[i])
+    res.jsonKV("path",req.uri).w(",")
   }
 
 ////////////////////////////////////////////////////////////////
@@ -101,29 +100,29 @@ class SpyRESTWeblet
 
   public void index(WebReq req, WebRes res)
   {
-    App app = Sys.app   
+    App app = Sys.app
     PlatformService plat = app.platform
-    res.jsonStr("Summary").w(": {");
-    
-    res.jsonStr("platformType").w(":\"").w(plat.type.kit.name).w("::").w(plat.type.name).w("\", ");
+    res.jsonStrN("Summary").w(": {");
+
+    res.jsonStrN("platformType").w(":\"").w(plat.type.kit.name).w("::").w(plat.type.name).w("\", ");
     res.jsonKV("platformId", plat.platformId.toStr()).w(", ");
     res.jsonKV("name", app.name).w(", ");
-    res.jsonStr("uptime").w(":\"").printElapsed(Sys.bootTime).w("\", ");
-    res.jsonStr("cycleCount").w(":\"").printLong(app.cycleCount);
-    res.w("\"}, ")
-    
-    res.jsonStr("SpyGetIndex").w(": [")
-    res.jsonStr("/spyREST/app").w(", ")
-    res.jsonStr("/spyREST/kits").w(", ")
-    res.jsonStr("/spyREST/logs").w(", ")
-    res.jsonStr("/spyREST/sox").w(", ")
-    res.jsonStr("/spyREST/echo").w(" ], ")
+    res.jsonStrN("uptime").w(":\"").printElapsed(Sys.bootTime).w("\", ");
+    res.jsonStrN("cycleCount").w(":\"").printLong(app.cycleCount);
+    res.w("\"\n}, ")
 
-    res.jsonStr("SpyPostIndex").w(": [")
-    res.jsonStr("/spyREST/backup").w(", ")
-    res.jsonStr("/spyREST/logs").w(" ], ")
+    res.jsonStrN("SpyGetIndex").w(": [")
+    res.jsonStrN("/spyREST/app").w(", ")
+    res.jsonStrN("/spyREST/kits").w(", ")
+    res.jsonStrN("/spyREST/logs").w(", ")
+    res.jsonStrN("/spyREST/sox").w(", ")
+    res.jsonStrN("/spyREST/echo").w(" ], ")
 
-    res.jsonStr("Weblets").w(": {")
+    res.jsonStrN("SpyPostIndex").w(": [")
+    res.jsonStrN("/spyREST/backup").w(", ")
+    res.jsonStrN("/spyREST/logs").w(" ], ")
+
+    res.jsonStrN("Weblets").w(": {")
     Weblet wl = WebService.weblets
     res.jsonKV(wl.prefix(), wl.description())
     wl = wl.nextWeblet
@@ -161,10 +160,10 @@ class SpyRESTWeblet
     Type t = c.type
 
     // component fields
-    res.jsonStr("Component").w(": {")
+    res.jsonStrN("Component").w(": {")
 
     // path
-    res.jsonStr("Path").w(": \"")
+    res.jsonStrN("Path").w(": \"")
     res.w("App")
     Component[] path = c.path()
     if (path != null)
@@ -178,9 +177,9 @@ class SpyRESTWeblet
     res.w("\", ")
 
     // meta-data
-    res.jsonStr("Id").w(":\"").wi(c.id).w("\", ")
+    res.jsonStrN("Id").w(":\"").wi(c.id).w("\", ")
     res.jsonKV("Name", c.name).w(", ")
-    res.jsonStr("Type").w(":\"").w(t.kit.name).w("::").w(t.name).w("\", ")
+    res.jsonStrN("Type").w(":\"").w(t.kit.name).w("::").w(t.name).w("\", ")
 /* TODO
     res.w("<tr>").th("watches").td()
      res.w("subs = 0x").printHex(c.sessionSubscriptions)
@@ -190,55 +189,98 @@ class SpyRESTWeblet
 */
 
     // slots
-    res.jsonStr("Slots").w(": [")
-    foreach (Slot slot : t.slots, t.slotsLen)
+    res.jsonStrN("Slots").w(": [")
+    for (int i=0; i < t.slotsLen - 1; i++)
     {
-      res.w("{ ")
-      res.jsonStr("Id").w(":\"").wi(slot.id).w("\", ")
+      Slot slot = t.slots[i]
+      res.w("\n{ ")
+      res.jsonStrN("Id").w(":\"").wi(slot.id).w("\", ")
       res.jsonKV("Name", slot.name).w(", ")
       res.jsonKV("Type", slot.type.name).w(", ")
-      res.jsonStr("Value").w(":\"")
+      res.jsonStrN("Value").w(":\"")
       if (slot.isProp()) res.printProp(c, slot)
-      res.w("\" }, ")
+      res.w("\"\n}, ")
     }
-    res.w(" {} ] } ,")
+    // last element
+    Slot slot = t.slots[t.slotsLen - 1]
+    res.w("\n{ ")
+    res.jsonStrN("Id").w(":\"").wi(slot.id).w("\", ")
+    res.jsonKV("Name", slot.name).w(", ")
+    res.jsonKV("Type", slot.type.name).w(", ")
+    res.jsonStrN("Value").w(":\"")
+    if (slot.isProp()) res.printProp(c, slot)
+    res.w("\"\n} ]\n},")
 
     // children
-    res.jsonStr("Children").w(": [")
-    for (Component kid = app.lookup(c.children); kid != null; kid = app.lookup(kid.nextSibling)) 
+    res.jsonStrN("Children").w(": [")
+    // first element
+    Component kid = app.lookup(c.children)
+    if (kid != null)
     {
-      res.w("{ ")
+      res.w("\n{ ")
       res.jsonKV("Id", Sys.intStr(kid.id)).w(", ")
       res.jsonKV("Name", kid.name).w(", ")
-      res.jsonStr("Type").w(":\"").w(kid.type.kit.name).w("::").w(kid.type.name).w("\" }, ")
+      res.jsonStrN("Type").w(":\"").w(kid.type.kit.name).w("::").w(kid.type.name).w("\"\n}")
+      kid = app.lookup(kid.nextSibling)
     }
-    res.w("{} ]")
+    for (Component kido = kid; kido != null; kido = app.lookup(kido.nextSibling))
+    {
+      res.w(", \n{ ")
+      res.jsonKV("Id", Sys.intStr(kido.id)).w(", ")
+      res.jsonKV("Name", kido.name).w(", ")
+      res.jsonStrN("Type").w(":\"").w(kido.type.kit.name).w("::").w(kido.type.name).w("\"\n}")
+    }
+    res.w(" ]")
 
     // links
     if (c.linksFrom != null || c.linksTo != null)
     {
-      res.w(", ").jsonStr("Links").w(": [")
+      res.w(", ").jsonStrN("Links").w(": [")
 
       // links from
-      for (Link link = c.linksFrom; link != null; link = link.nextFrom)
+      // first 'from' link (if present)
+      Link link = c.linksFrom
+      if (link != null)
       {
         Component to = app.lookup(link.toComp)
-        res.w("{")
+        res.w("\n{")
            .jsonKV("From", t.slot(link.fromSlot).name).w(", ")
-           .jsonKV("To", to.type.slot(link.toSlot).name)
-           .w("} , ")
+           .jsonStrN("To").w(":\"").w(to.name).w(".").w(to.type.slot(link.toSlot).name)
+           .w("\"\n}")
+        link = link.nextFrom
       }
-
+      // get the rest 'from' links
+      for (Link linkF = link; linkF != null; linkF = linkF.nextFrom)
+      {
+        Component to = app.lookup(linkF.toComp)
+        res.w(",\n{")
+           .jsonKV("From", t.slot(linkF.fromSlot).name).w(", ")
+           .jsonStrN("To").w(":\"").w(to.name).w(".").w(to.type.slot(linkF.toSlot).name)
+           .w("\"\n}")
+      }
+      if (link != null) res.w(",") // add a comma if 'from' link was present
       // links to
-      for (Link link = c.linksTo; link != null; link = link.nextTo)
+      // first 'to' link (if present)
+      link = c.linksTo
+      if (link != null)
       {
         Component from = app.lookup(link.fromComp)
-        res.w("{")
-           .jsonKV("From", from.type.slot(link.fromSlot).name).w(", ")
+        res.w("\n{")
+           .jsonStrN("From").w(":\"").w(from.name).w(".").w(from.type.slot(link.fromSlot).name).w("\",")
            .jsonKV("To", t.slot(link.toSlot).name)
-           .w("} ,")
+           .w("\n}")
+        link = link.nextTo
       }
-      res.w("{} ]")
+      // get the rest 'to' links
+      for (Link linkT = link; linkT != null; linkT = linkT.nextTo)
+      {
+        Component from = app.lookup(linkT.fromComp)
+        res.w(",\n{")
+           .jsonStrN("From").w(":\"").w(from.name).w(".").w(from.type.slot(linkT.fromSlot).name).w("\",")
+           .jsonKV("To", t.slot(linkT.toSlot).name)
+           .w("\n}")
+      }
+      res.w(" ]")
     }
     res.w("")
   }
@@ -275,37 +317,51 @@ class SpyRESTWeblet
 
   public void kitsIndex(WebReq req, WebRes res)
   {
-    res.jsonStr("Kits").w(": [")
-    foreach (Kit k : Sys.kits)
+    res.jsonStrN("Kits").w(": [")
+    for (int i=0; i< Sys.kitsLen - 1; i++)
     {
-      res.w("{ ")
-      res.jsonStr("Id").w(":\"").wi(k.id).w("\", ")
+      Kit k = Sys.kits[i]
+      res.w("\n{ ")
+      res.jsonStrN("Id").w(":\"").wi(k.id).w("\", ")
       res.jsonKV("Name", k.name).w(", ")
       res.jsonKV("Version", k.version).w(", ")
-      res.jsonStr("Checksum").w(":\"").w("0x").printHex(k.checksum).print("\"")
-      res.w(" }, ")
+      res.jsonStrN("Checksum").w(":\"").w("0x").printHex(k.checksum).print("\"")
+      res.w("\n}, ")
     }
-    res.w("{} ]")
+    // last element
+    Kit k = Sys.kits[Sys.kitsLen - 1]
+    res.w("\n{ ")
+    res.jsonStrN("Id").w(":\"").wi(k.id).w("\", ")
+    res.jsonKV("Name", k.name).w(", ")
+    res.jsonKV("Version", k.version).w(", ")
+    res.jsonStrN("Checksum").w(":\"").w("0x").printHex(k.checksum).print("\"")
+    res.w("\n} ]")
   }
 
   public void kitsKit(WebReq req, WebRes res, Kit k)
   {
     // meta-data
-    res.jsonStr("Id").w(":\"").wi(k.id).w("\", ")
+    res.jsonStrN("Id").w(":\"").wi(k.id).w("\", ")
     res.jsonKV("Name", k.name).w(", ")
     res.jsonKV("Version", k.version).w(", ")
-    res.jsonStr("Checksum").w(":\"").w("0x").printHex(k.checksum).print("\",")
+    res.jsonStrN("Checksum").w(":\"").w("0x").printHex(k.checksum).print("\",")
 
     // types
-    res.jsonStr("Types").w(": [")
-    foreach (Type t : k.types, k.typesLen)
+    res.jsonStrN("Types").w(": [")
+    for (int i = 0; i < k.typesLen - 1; i++)
     {
-      res.w("{ ")
-      res.jsonStr("Id").w(":\"").wi(t.id).w("\", ")
+      Type t = k.types[i]
+      res.w("\n{ ")
+      res.jsonStrN("Id").w(":\"").wi(t.id).w("\", ")
       res.jsonKV("Name", t.name)
-      res.w(" }, ")
+      res.w("\n}, ")
     }
-    res.w("{} ]")
+    // last element
+    Type t = k.types[k.typesLen - 1]
+    res.w("\n{ ")
+    res.jsonStrN("Id").w(":\"").wi(t.id).w("\", ")
+    res.jsonKV("Name", t.name)
+    res.w("\n} ]")
   }
 
   public void kitsType(WebReq req, WebRes res, Type t)
@@ -313,24 +369,31 @@ class SpyRESTWeblet
     Type base = t.base
 
     // meta-data
-    res.jsonStr("Id").w(":\"").wi(t.kit.id).w("::").wi(t.id).w("\", ")
-    res.jsonStr("qName").w(":\"").w(t.kit.name).w("::").w(t.name).w("\", ")
-    res.jsonStr("base").w(":\"")
+    res.jsonStrN("Id").w(":\"").wi(t.kit.id).w("::").wi(t.id).w("\", ")
+    res.jsonStrN("qName").w(":\"").w(t.kit.name).w("::").w(t.name).w("\", ")
+    res.jsonStrN("base").w(":\"")
     if (base != null) res.w(base.kit.name).w("::").w(base.name)
     res.w("\", ")
-    res.jsonStr("sizeOf").w(":\"").wi(t.sizeof).w("\", ")
+    res.jsonStrN("sizeOf").w(":\"").wi(t.sizeof).w("\", ")
 
     // slots
-    res.jsonStr("Slots").w(": [")
-    foreach (Slot slot : t.slots, t.slotsLen)
+    res.jsonStrN("Slots").w(": [")
+    for (int i=0; i < t.slotsLen - 1; i++)
     {
-      res.w("{ ")
-      res.jsonStr("Id").w(":\"").wi(slot.id).w("\", ")
+      Slot slot = t.slots[i]
+      res.w("\n{ ")
+      res.jsonStrN("Id").w(":\"").wi(slot.id).w("\", ")
       res.jsonKV("Name", slot.name).w(", ")
       res.jsonKV("Type", slot.type.name)
-      res.w(" }, ")
+      res.w("\n}, ")
     }
-    res.w("{} ]")
+    // last element
+    Slot slot = t.slots[t.slotsLen - 1]
+    res.w("\n{ ")
+    res.jsonStrN("Id").w(":\"").wi(slot.id).w("\", ")
+    res.jsonKV("Name", slot.name).w(", ")
+    res.jsonKV("Type", slot.type.name)
+    res.w("\n} ]")
   }
 
 ////////////////////////////////////////////////////////////////
@@ -362,22 +425,22 @@ class SpyRESTWeblet
 
   void soxIndex(WebReq req, WebRes res, SoxService sox)
   {
-    res.jsonStr("SoxSessions").w(": [")
-    int i = 0                
-/* TODO    
+    res.jsonStrN("SoxSessions").w(": [")
+    int i = 0
+/* TODO
     foreach (SoxWatch w : sox.watches, Watch.max)
     {
-      res.w("{ ")
-      res.jsonStr("Id").w(":\"").wi(i).w("\", ")
-      res.jsonStr("Closed").w(":\"").printBool(w.closed).print("\", ")
+      res.w("\n{ ")
+      res.jsonStrN("Id").w(":\"").wi(i).w("\", ")
+      res.jsonStrN("Closed").w(":\"").printBool(w.closed).print("\", ")
       res.jsonKV("Address", w.addr.host.toStr()).w("</td>")
-      res.jsonStr("Port").w(":\"").wi(w.addr.port).w("\", ")
-      res.jsonStr("Last Receive").w(":\"").printElapsed(w.lastReceiveTicks).print("\"")
+      res.jsonStrN("Port").w(":\"").wi(w.addr.port).w("\", ")
+      res.jsonStrN("Last Receive").w(":\"").printElapsed(w.lastReceiveTicks).print("\"")
       res.w(" }, ")
       i++
     }
-*/    
-    res.w("{} ]")
+*/
+    res.w("\n ]")
   }
 
 /* TODO
@@ -448,26 +511,35 @@ class SpyRESTWeblet
       int id    = req.path.names[2].parseInt()
       int level = req.path.names[3].parseInt()
       Log log = Sys.log(id)
-      if (log != null) 
+      if (log != null)
       {
+        res.jsonKV("Service", log.qname).w(", ")
+        res.jsonKV("Old log level", Log.levelStr(Sys.logLevels[id])).w(", ")
         Sys.logLevels[id] = level
-        res.jsonKV(log.qname, Log.levelStr(level))
+        res.jsonKV("New log level", Log.levelStr(Sys.logLevels[id]))
       }
     }
-    res.jsonEnd()    
+    res.jsonEnd()
   }
   public void logs(WebReq req, WebRes res)
   {
-    res.jsonStr("Logs").w(": [")
-    foreach (Log log : Sys.logs, Sys.logsLen)
+    res.jsonStrN("Logs").w(": [")
+    for (int i=0; i < Sys.logsLen - 1; i++)
     {
-      res.w("{ ")
-      res.jsonStr("Id").w(":\"").wi(log.id).w("\", ")
+      Log log = Sys.logs[i]
+      res.w("\n{ ")
+      res.jsonStrN("Id").w(":\"").wi(log.id).w("\", ")
       res.jsonKV("Name", log.qname).w(", ")
       res.jsonKV("Level", Log.levelStr(log.level()))
       res.w("} , ")
     }
-    res.w("{} ] ")
+    // last element
+    Log log = Sys.logs[Sys.logsLen - 1]
+    res.w("\n{ ")
+    res.jsonStrN("Id").w(":\"").wi(log.id).w("\", ")
+    res.jsonKV("Name", log.qname).w(", ")
+    res.jsonKV("Level", Log.levelStr(log.level()))
+    res.w("} ]")
   }
 
 ////////////////////////////////////////////////////////////////
@@ -591,18 +663,18 @@ class SpyRESTWeblet
 
   public void echo(WebReq req, WebRes res)
   {
-    res.jsonStr("WebReq").w(": {")
-    res.jsonStr("method").w(":\"").w(req.method).w("\", ")
-    res.jsonStr("uri").w(":\"").w(req.uri).w("\", ")
-    res.jsonStr("version").w(":\"").w(req.version).w("\", ")
-    res.jsonStr("path").w(":\"")
+    res.jsonStrN("WebReq").w(": {")
+    res.jsonStrN("method").w(":\"").w(req.method).w("\", ")
+    res.jsonStrN("uri").w(":\"").w(req.uri).w("\", ")
+    res.jsonStrN("version").w(":\"").w(req.version).w("\", ")
+    res.jsonStrN("path").w(":\"")
     // Echo parsed path elements
     int count = req.path.size
     for (int i=0; i<count; ++i)
-      res.w(" | ").w(req.path.names[i])
+      res.w("/").w(req.path.names[i])
     res.w("\", ")
-    res.jsonStr("query").w(":\"").w(req.query).w("\", ")
-    res.jsonStr("params").w(": {")
+    res.jsonStrN("query").w(":\"").w(req.query).w("\", ")
+    res.jsonStrN("params").w(": {")
     // Echo HTTP request parameters
     count = req.params.size
     for (int i=0; i<count-1; ++i)
