@@ -86,11 +86,72 @@ class WebRes
   }
 
   **
-  ** Write closing JSON markup.
+  ** Write opening JSON markup.
   **
-  WebRes jsonEnd()
+  WebRes jsonStart(int indent)
   {
-    return w("\n}")
+    return spaces(indent).w("{")
+  }
+
+  **
+  ** Write closing JSON markup.
+  ** on a new line
+  **
+  WebRes jsonEnd(int indent)
+  {
+    nl()
+    return spaces(indent).w("}")
+  }
+
+  **
+  ** Print the specified string in JSON format
+  ** enclosed in double quotes
+  ** with a specified indent
+  **
+  private WebRes jsonStr(int indent, Str str)
+  {
+    spaces(indent).w("\"").w(str).w("\"")
+    return this
+  }
+
+  **
+  ** Print the specified string in JSON format
+  ** on a new line with a specified indent
+  **
+  public WebRes jsonStrNI(int indent, Str str)
+  {
+    nl()
+    return jsonStr(indent, str)
+  }
+
+  **
+  ** Print the specified string in JSON format
+  ** on a new line without indent
+  **
+  public WebRes jsonStrN(Str str)
+  {
+    nl()
+    return jsonStr(0, str)
+  }
+
+  **
+  ** Print the specified key/ value pair
+  ** on a new line without indent
+  **
+  public WebRes jsonKV(Str key, Str val)
+  {
+    jsonStrN(key).w(":").jsonStr(0, val)
+    return this
+  }
+
+  **
+  ** Print the specified key/ value pair
+  ** on a new line with a specified indent
+  **
+  public WebRes jsonKVI(int indent, Str key, Str val)
+  {
+    jsonStrNI(indent, key).w(":").jsonStr(0, val)
+    return this
   }
 
 ////////////////////////////////////////////////////////////////
@@ -142,6 +203,31 @@ class WebRes
   {
     return w("<td align='left' nowrap='true'>")
   }
+
+  **
+  ** Print the specified string escaping <, >, and &
+  ** into the &lt;, &gt;, and &amp;
+  **
+  public WebRes esc(Str s)
+  {
+    for (int i=0; true; ++i)
+    {
+      int c = s.get(i)
+      if (c == 0) break
+      switch (c)
+      {
+        case '<': print("&lt;"); break;
+        case '>': print("&gt;"); break;
+        case '&': print("&amp;"); break;
+        default: writeChar(c); break;
+      }
+    }
+    return this
+  }
+
+////////////////////////////////////////////////////////////////
+// Generic Output
+////////////////////////////////////////////////////////////////
 
   **
   ** Print the component's current value of the specified property.
@@ -205,56 +291,6 @@ class WebRes
   WebRes wi(int i)
   {
     printInt(i)
-    return this
-  }
-
-  **
-  ** Print the specified string in JSON format
-  **
-  public WebRes jsonStr(Str str)
-  {
-    w("\"").w(str).w("\"")
-    return this
-  }
-
-  **
-  ** Print the specified string in JSON format
-  ** on a new line
-  **
-  public WebRes jsonStrN(Str str)
-  {
-    w("\n \"").w(str).w("\"")
-    return this
-  }
-
-  **
-  ** Print the specified key/ value pair
-  ** Always prints on a new line
-  **
-  public WebRes jsonKV(Str key, Str val)
-  {
-    w("\n ").jsonStr(key).w(":").jsonStr(val)
-    return this
-  }
-
-  **
-  ** Print the specified string escaping <, >, and &
-  ** into the &lt;, &gt;, and &amp;
-  **
-  public WebRes esc(Str s)
-  {
-    for (int i=0; true; ++i)
-    {
-      int c = s.get(i)
-      if (c == 0) break
-      switch (c)
-      {
-        case '<': print("&lt;"); break;
-        case '>': print("&gt;"); break;
-        case '&': print("&amp;"); break;
-        default: writeChar(c); break;
-      }
-    }
     return this
   }
 
