@@ -219,7 +219,7 @@ bool unsubscribe(SessionHandle * pSession, UnsubscribeData * pData)
   return rc == SUCCESS;
 }
 
-bool yield(MQTTHandle * pHandle)
+bool yield(MQTTHandle * pHandle, int ms)
 {
   if (!pHandle || !pHandle->pClient)
   {
@@ -229,7 +229,7 @@ bool yield(MQTTHandle * pHandle)
   if (!pHandle->pClient->isconnected)
     return false;
 
-  int rc = MQTTYield(pHandle->pClient, 1000); 
+  int rc = MQTTYield(pHandle->pClient, ms); 
   return rc == SUCCESS;
 }
 
@@ -260,20 +260,25 @@ void * workerThreadFunc(void * pThreadData)
   
   pthread_setspecific(thread_key, pSession);
 
-  printf(" * [MQTTService] MQTT worker thread started \n");
+  printf(" * [MQTTService] MQTT worker thread started %x\n", pSession);
   while (true) 
   {
     Payload * pPayload = curPayload(pSession);
     if (!pPayload)
     {
+      printf("### %x null payload ...", pSession);
       if (pSession->pHandle)
       {
-        yield(pSession->pHandle);
+        if (yield(pSession->pHandle, 2000))
+          printf(" completed\n");
+        else
+          printf(" failed\n");
       }
       continue;
     }
     else
     {
+      /* printf("### valid payload\n"); */
       bool result = true;
       switch (pPayload->type)
       {
@@ -282,6 +287,10 @@ void * workerThreadFunc(void * pThreadData)
           break;
         case PublishTask:
           result = publish(pSession, pPayload->pPublishData);
+          if (result == FAILURE)
+            printf(" * [MQTTService] failed to publish msg.\n");
+          else if (result == BUFFER_OVERFLOW)
+            printf(" * [MQTTService] write buffer overflowed.\n");
           break;
         case SubscribeTask:
           result = subscribe(pSession, pPayload->pSubscribeData);
@@ -297,12 +306,14 @@ void * workerThreadFunc(void * pThreadData)
           pthread_exit(NULL);
           break;
         default:
+          printf(" * [MQTTService] invalid payload\n");
           break;
       }
       /* printf("###  * %d action result: %d \n", pPayload->type, result); */
       popPayload(pSession);
     }
   }   
+  printf(" * [MQTTService] MQTT worker thread exited %x\n", pSession);
   return NULL;
 }
 
