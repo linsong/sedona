@@ -78,5 +78,6 @@ typedef struct {
 bool pushPayload(SessionHandle * pSession, Payload * pPayload);
 Payload * curPayload(SessionHandle * pSession);
 bool popPayload(SessionHandle * pSession);
+int payloadSize(SessionHandle * pSession);
 
 #endif /* __COMMON_H__ */

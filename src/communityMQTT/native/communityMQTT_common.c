@@ -119,3 +119,24 @@ void releasePayload(Payload * pPayload)
   }
   free(pPayload);
 }
+
+int payloadSize(SessionHandle * pSession)
+{
+  int result = -1;
+  if (!pSession)
+    return result;
+  
+  result = 0;
+  if (!pSession->pHead)
+    return result; 
+  
+  Payload * pHead = pSession->pHead;
+  while (pHead)
+  {
+    pHead = pHead->pNext;
+    ++result;
+  }
+  return result;
+}
+  
+
