@@ -79,15 +79,15 @@ bool startSession(SessionHandle * pSession, StartSessionData * pData)
   pHandle->readbuf = malloc(sizeof(char)*pHandle->readbuf_len);
 
   pHandle->pNetwork = malloc(sizeof(Network));
-  pHandle->pClient = malloc(sizeof(Client));
+  pHandle->pClient = malloc(sizeof(MQTTClient));
   /* pHandle->command_timeout_ms = 1000; */
   pHandle->command_timeout_ms = 3000;
 
-  NewNetwork(pHandle->pNetwork);
-  MQTTClient(pHandle->pClient, pHandle->pNetwork, pHandle->command_timeout_ms, pHandle->buf, pHandle->buf_len, pHandle->readbuf, pHandle->readbuf_len);
+  NetworkInit(pHandle->pNetwork);
+  MQTTClientInit(pHandle->pClient, pHandle->pNetwork, pHandle->command_timeout_ms, pHandle->buf, pHandle->buf_len, pHandle->readbuf, pHandle->readbuf_len);
 
   int rc = 0;
-  rc = ConnectNetwork(pHandle->pNetwork, pData->host, pData->port);
+  rc = NetworkConnect(pHandle->pNetwork, pData->host, pData->port);
   if (rc != SUCCESS)
     return false;
  
@@ -108,21 +108,21 @@ bool startSession(SessionHandle * pSession, StartSessionData * pData)
   return rc == SUCCESS;
 }
 
-bool publish(SessionHandle * pSession, PublishData * pData)
+int publish(SessionHandle * pSession, PublishData * pData)
 {
   if (!pSession)
-    return false;
+    return FAILURE;
 
   MQTTHandle * pHandle = pSession->pHandle;
   if (!pHandle || !pHandle->pClient)
   {
     printf(" * [MQTTService] Invalid Handle");
-    return false;
+    return FAILURE;
   }
   if (!pHandle->pClient->isconnected)
   {
     printf(" * [MQTTService] Connection lost");
-    return false;
+    return FAILURE;
   }
 
   /* printf(" * [MQTTService] Publish to %s\n", pData->topic); */
@@ -134,7 +134,7 @@ bool publish(SessionHandle * pSession, PublishData * pData)
   msg.payloadlen = pData->payload_len;
   int rc = MQTTPublish(pHandle->pClient, pData->topic, &msg);
   /* printf(" * [MQTTService] Published %d\n", rc); */
-  return rc == SUCCESS;
+  return rc;
 }
 
 void messageArrived(MessageData * pMsgData)
@@ -247,7 +247,8 @@ bool stopSession(SessionHandle * pSession)
 
   if (pHandle->pClient->isconnected)
     MQTTDisconnect(pHandle->pClient);
-  pHandle->pNetwork->disconnect(pHandle->pNetwork);
+
+  NetworkDisconnect(pHandle->pNetwork);
   releaseSession(pSession);
   return true;
 }
@@ -260,13 +261,13 @@ void * workerThreadFunc(void * pThreadData)
   
   pthread_setspecific(thread_key, pSession);
 
-  printf(" * [MQTTService] MQTT worker thread started %x\n", pSession);
+  printf(" * [MQTTService] MQTT worker thread started %x\n", (unsigned int)pSession);
   while (true) 
   {
     Payload * pPayload = curPayload(pSession);
     if (!pPayload)
     {
-      printf("### %x null payload ...", pSession);
+      printf("### %x null payload ...", (unsigned int)pSession);
       if (pSession->pHandle)
       {
         if (yield(pSession->pHandle, 2000))
@@ -280,16 +281,18 @@ void * workerThreadFunc(void * pThreadData)
     {
       /* printf("### valid payload\n"); */
       bool result = true;
+      int rc = SUCCESS;
       switch (pPayload->type)
       {
         case StartSessionTask:
           result = startSession(pSession, pPayload->pStartSessionData);
           break;
         case PublishTask:
-          result = publish(pSession, pPayload->pPublishData);
-          if (result == FAILURE)
+          rc = publish(pSession, pPayload->pPublishData);
+          result = rc == SUCCESS;
+          if (rc == FAILURE)
             printf(" * [MQTTService] failed to publish msg.\n");
-          else if (result == BUFFER_OVERFLOW)
+          else if (rc == BUFFER_OVERFLOW)
             printf(" * [MQTTService] write buffer overflowed.\n");
           break;
         case SubscribeTask:
@@ -313,7 +316,7 @@ void * workerThreadFunc(void * pThreadData)
       popPayload(pSession);
     }
   }   
-  printf(" * [MQTTService] MQTT worker thread exited %x\n", pSession);
+  printf(" * [MQTTService] MQTT worker thread exited %x\n", (unsigned int)pSession);
   return NULL;
 }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corp.
+ * Copyright (c) 2014, 2017 IBM Corp.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,20 +12,26 @@
  *
  * Contributors:
  *    Allan Stockdill-Mander - initial API and implementation and/or initial documentation
+ *    Ian Craggs - return codes from linux_read
  *******************************************************************************/
 
 #include "MQTTLinux.h"
 
-char expired(Timer* timer)
+void TimerInit(Timer* timer)
+{
+	timer->end_time = (struct timeval){0, 0};
+}
+
+char TimerIsExpired(Timer* timer)
 {
 	struct timeval now, res;
 	gettimeofday(&now, NULL);
-	timersub(&timer->end_time, &now, &res);		
+	timersub(&timer->end_time, &now, &res);
 	return res.tv_sec < 0 || (res.tv_sec == 0 && res.tv_usec <= 0);
 }
 
 
-void countdown_ms(Timer* timer, unsigned int timeout)
+void TimerCountdownMS(Timer* timer, unsigned int timeout)
 {
 	struct timeval now;
 	gettimeofday(&now, NULL);
@@ -34,7 +40,7 @@ void countdown_ms(Timer* timer, unsigned int timeout)
 }
 
 
-void countdown(Timer* timer, unsigned int timeout)
+void TimerCountdown(Timer* timer, unsigned int timeout)
 {
 	struct timeval now;
 	gettimeofday(&now, NULL);
@@ -43,19 +49,13 @@ void countdown(Timer* timer, unsigned int timeout)
 }
 
 
-int left_ms(Timer* timer)
+int TimerLeftMS(Timer* timer)
 {
 	struct timeval now, res;
 	gettimeofday(&now, NULL);
 	timersub(&timer->end_time, &now, &res);
 	//printf("left %d ms\n", (res.tv_sec < 0) ? 0 : res.tv_sec * 1000 + res.tv_usec / 1000);
 	return (res.tv_sec < 0) ? 0 : res.tv_sec * 1000 + res.tv_usec / 1000;
-}
-
-
-void InitTimer(Timer* timer)
-{
-	timer->end_time = (struct timeval){0, 0};
 }
 
 
@@ -76,11 +76,14 @@ int linux_read(Network* n, unsigned char* buffer, int len, int timeout_ms)
 		int rc = recv(n->my_socket, &buffer[bytes], (size_t)(len - bytes), 0);
 		if (rc == -1)
 		{
-			if (errno != ENOTCONN && errno != ECONNRESET)
-			{
-				bytes = -1;
-				break;
-			}
+			if (errno != EAGAIN && errno != EWOULDBLOCK)
+			  bytes = -1;
+			break;
+		}
+		else if (rc == 0)
+		{
+			bytes = 0;
+			break;
 		}
 		else
 			bytes += rc;
@@ -97,28 +100,20 @@ int linux_write(Network* n, unsigned char* buffer, int len, int timeout_ms)
 	tv.tv_usec = timeout_ms * 1000;  // Not init'ing this can cause strange errors
 
 	setsockopt(n->my_socket, SOL_SOCKET, SO_SNDTIMEO, (char *)&tv,sizeof(struct timeval));
-	/* setsockopt(n->my_socket, SOL_SOCKET, SO_RCVTIMEO, (char *)&tv,sizeof(struct timeval)); */
 	int	rc = write(n->my_socket, buffer, len);
 	return rc;
 }
 
 
-void linux_disconnect(Network* n)
-{
-	close(n->my_socket);
-}
-
-
-void NewNetwork(Network* n)
+void NetworkInit(Network* n)
 {
 	n->my_socket = 0;
 	n->mqttread = linux_read;
 	n->mqttwrite = linux_write;
-	n->disconnect = linux_disconnect;
 }
 
 
-int ConnectNetwork(Network* n, char* addr, int port)
+int NetworkConnect(Network* n, char* addr, int port)
 {
 	int type = SOCK_STREAM;
 	struct sockaddr_in address;
@@ -158,11 +153,16 @@ int ConnectNetwork(Network* n, char* addr, int port)
 	{
 		n->my_socket = socket(family, type, 0);
 		if (n->my_socket != -1)
-		{
-			int opt = 1;			
 			rc = connect(n->my_socket, (struct sockaddr*)&address, sizeof(address));
-		}
+		else
+			rc = -1;
 	}
 
 	return rc;
+}
+
+
+void NetworkDisconnect(Network* n)
+{
+	close(n->my_socket);
 }
