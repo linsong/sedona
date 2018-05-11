@@ -42,7 +42,7 @@ public class PstoreTest
   public void doTest()
     throws Exception
   {                        
-    client = new SoxClient(sock, InetAddress.getLocalHost(), 1876, "admin", "pw");
+    client = new SoxClient(sock, InetAddress.getLoopbackAddress(), 1876, "admin", "pw");
     client.connect(null);   
     System.out.println("Connected to pstore VM");    
     verifyStatus();   
