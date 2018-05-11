@@ -11,10 +11,10 @@ typedef int bool;
 typedef struct 
 {
   Network * pNetwork;
-  Client * pClient;
-  char * buf;
+  MQTTClient * pClient;
+  unsigned char * buf;
   int buf_len;
-  char * readbuf;
+  unsigned char * readbuf;
   int readbuf_len;
   unsigned int command_timeout_ms;
 } MQTTHandle;
