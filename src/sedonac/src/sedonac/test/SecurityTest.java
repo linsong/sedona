@@ -484,7 +484,7 @@ public class SecurityTest
     throws Exception
   {  
     trace("Connect [" + user + "]...");
-    InetAddress addr = InetAddress.getLocalHost();
+    InetAddress addr = InetAddress.getLoopbackAddress();
     client = new SoxClient(sock, addr, 1876, user, "pw");
     client.connect(null);
     verify(!client.isClosed());
