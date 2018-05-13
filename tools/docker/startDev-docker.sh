@@ -22,8 +22,8 @@ if [ "$(uname -s)" == "Linux" ]; then
   GROUP_ID=$(id -g "${USER_NAME}")
 else # boot2docker uid and gid
   USER_NAME=$USER
-  USER_ID=1001
-  GROUP_ID=1001
+  USER_ID=1000
+  GROUP_ID=50
 fi
 
 docker build --rm=true -t "${IMAGE_NAME}-${USER_NAME}" - <<UserSpecificDocker

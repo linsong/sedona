@@ -4,7 +4,7 @@
 #
 #   Script to run Sox Client (java program) on Unix.
 #
-# Author: Nitin Lamba
+# Author: Divisuals
 # Creation: 15 Sep 15
 #
 
