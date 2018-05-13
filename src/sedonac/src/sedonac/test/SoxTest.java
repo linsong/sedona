@@ -62,7 +62,7 @@ public class SoxTest
   private void verifyConnect()
     throws Exception
   {
-    InetAddress addr = InetAddress.getLocalHost();
+    InetAddress addr = InetAddress.getLoopbackAddress();
     Exception ex;
 
     // verify invalid user name

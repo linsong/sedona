@@ -32,7 +32,7 @@ public class DaspTest
              
     // run public API black-box tests         
     System.out.println();
-    local = InetAddress.getLocalHost();
+    local = InetAddress.getLoopbackAddress();
     try
     {
       startServer(DaspSocket.SESSION_QUEUING);
