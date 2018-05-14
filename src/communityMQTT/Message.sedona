@@ -104,8 +104,8 @@ abstract internal class Message extends Component
   protected virtual bool updateData(Obj handle)
   {
     bool result = fetchData(handle, topic.toStr(), strBuf, 63)
-    // if (result)
-    //   log.message("SUBSCRIBE: update: " + strBuf);
+    if (result)
+      log.message("SUBSCRIBE: update: " + strBuf);
     return result
   }
   
@@ -163,7 +163,7 @@ abstract internal class Message extends Component
     if (slot.name == "topic")
       validateInputs()
     else {
-      if (error == Ok && slot.name == "payload" && publishInterval == 0)
+      if (error == Ok && slot.name == "payload" && publishInterval != 0)
         readyToPublish = true
     }
   }

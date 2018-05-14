@@ -80,4 +80,7 @@ Payload * curPayload(SessionHandle * pSession);
 bool popPayload(SessionHandle * pSession);
 int payloadSize(SessionHandle * pSession);
 
+// helpers 
+char * gen_fmt_str(const char * fmt, ...);
+
 #endif /* __COMMON_H__ */

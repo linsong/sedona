@@ -240,8 +240,11 @@ void MQTTCleanSession(MQTTClient* c)
 {
     int i = 0;
 
-    for (i = 0; i < MAX_MESSAGE_HANDLERS; ++i)
+    for (i = 0; i < MAX_MESSAGE_HANDLERS; ++i) {
+        if (c->messageHandlers[i].topicFilter)
+          free((void*)c->messageHandlers[i].topicFilter);
         c->messageHandlers[i].topicFilter = NULL;
+    }
 }
 
 
@@ -484,7 +487,9 @@ int MQTTSetMessageHandler(MQTTClient* c, const char* topicFilter, messageHandler
         {
             if (messageHandler == NULL) /* remove existing */
             {
-                c->messageHandlers[i].topicFilter = NULL;
+                if (c->messageHandlers[i].topicFilter)
+                  free((void *)c->messageHandlers[i].topicFilter);
+                c->messageHandlers[i].topicFilter = NULL; 
                 c->messageHandlers[i].fp = NULL;
             }
             rc = SUCCESS; /* return i when adding new subscription */
@@ -506,7 +511,10 @@ int MQTTSetMessageHandler(MQTTClient* c, const char* topicFilter, messageHandler
         }
         if (i < MAX_MESSAGE_HANDLERS)
         {
-            c->messageHandlers[i].topicFilter = topicFilter;
+            char * copy = (char *)malloc(strlen(topicFilter)+1);
+            memset(copy, 0, strlen(topicFilter)+1);
+            strcpy(copy, topicFilter);
+            c->messageHandlers[i].topicFilter = copy;
             c->messageHandlers[i].fp = messageHandler;
         }
     }

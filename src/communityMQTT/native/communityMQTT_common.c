@@ -1,8 +1,11 @@
 #ifdef __DARWIN__
 #include <sys/types.h>
 #endif
+#include <stdarg.h>
 
 #include <pthread.h>
+
+#include "log.h"
 #include "communityMQTT_common.h"
 
 void releasePayload(Payload * pPayload);
@@ -29,6 +32,7 @@ bool pushPayload(SessionHandle * pSession, Payload * pPayload)
     while (pTemp->pNext)
     {
       pTemp = pTemp->pNext;
+      //detect looped link list
       if (pTemp == pHead)
       {
         result = false;
@@ -139,4 +143,23 @@ int payloadSize(SessionHandle * pSession)
   return result;
 }
   
+char * gen_fmt_str(const char * fmt, ...)
+{
+  va_list args;
+  size_t  len;
+  char   *space = NULL;
+  va_start(args, fmt);
+  len = vsnprintf(0, 0, fmt, args);
+  va_end(args);
 
+  if ((space = malloc(len + 1)) != 0)
+  {
+    va_start(args, fmt);
+    vsnprintf(space, len+1, fmt, args);
+    va_end(args);
+  }
+  else
+    log_fatal("Error: Out of memory.");
+
+  return space;
+}

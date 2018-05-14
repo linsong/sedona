@@ -13,6 +13,7 @@
 
 #include <pthread.h>
 #include "uthash.h"
+#include "log.h"
 
 #include "sedona.h"
 
@@ -100,11 +101,10 @@ bool startSession(SessionHandle * pSession, StartSessionData * pData)
 
   data.keepAliveInterval = 10;
   data.cleansession = 1;
-  printf(" * [MQTTService] Connecting to %s:%d\n", pData->host, pData->port);
   
   rc = 0;
   rc = MQTTConnect(pHandle->pClient, &data);
-  /* printf(" * [MQTTService] Connected %d\n", rc); */
+  log_info(" * [MQTTService] Connectted to %s:%d (rc: %d)", pData->host, pData->port, rc);
   return rc == SUCCESS;
 }
 
@@ -116,16 +116,15 @@ int publish(SessionHandle * pSession, PublishData * pData)
   MQTTHandle * pHandle = pSession->pHandle;
   if (!pHandle || !pHandle->pClient)
   {
-    printf(" * [MQTTService] Invalid Handle");
+    log_warn(" * [MQTTService] Invalid Handle");
     return FAILURE;
   }
   if (!pHandle->pClient->isconnected)
   {
-    printf(" * [MQTTService] Connection lost");
+    log_info(" * [MQTTService] Connection lost");
     return FAILURE;
   }
 
-  /* printf(" * [MQTTService] Publish to %s\n", pData->topic); */
   MQTTMessage msg;
   msg.qos = pData->qos;
   msg.retained = 1;
@@ -133,7 +132,7 @@ int publish(SessionHandle * pSession, PublishData * pData)
   msg.payload = pData->payload;
   msg.payloadlen = pData->payload_len;
   int rc = MQTTPublish(pHandle->pClient, pData->topic, &msg);
-  /* printf(" * [MQTTService] Published %d\n", rc); */
+  log_trace(" * [MQTTService] Published to %s (rc: %d)", pData->topic, rc);
   return rc;
 }
 
@@ -146,6 +145,11 @@ void messageArrived(MessageData * pMsgData)
   SessionHandle * pSession = (SessionHandle *)pthread_getspecific(thread_key);
   if (!pSession)
     return;
+
+  char * buf = (char * )malloc(pMsgData->topicName->lenstring.len+1);
+  memset(buf, 0, sizeof(pMsgData->topicName->lenstring.len+1));
+  strncpy(buf, pMsgData->topicName->lenstring.data, pMsgData->topicName->lenstring.len);
+  log_trace(" * [MQTTService] Got message for topic '%s'", buf);
   
   SubscribeResponse * pResponse = NULL;
 
@@ -180,19 +184,19 @@ bool subscribe(SessionHandle * pSession, SubscribeData * pData)
   MQTTHandle * pHandle = pSession->pHandle;
   if (!pHandle || !pHandle->pClient)
   {
-    printf(" * [MQTTService] Invalid Handle\n");
+    log_warn(" * [MQTTService] Invalid Handle");
     return false;
   }
   if (!pHandle->pClient->isconnected)
   {
-    printf(" * [MQTTService] Connection lost\n");
+    log_info(" * [MQTTService] Connection lost");
     return false;
   }
 
-  printf(" * [MQTTService] Subscribe to '%s'(qos: %d)\n", pData->topic, pData->qos);
-
   //TODO: support wildcard in topic, refer to 'deliverMessage' method
+
   int rc = MQTTSubscribe(pHandle->pClient, pData->topic, pData->qos, messageArrived);
+  log_info(" * [MQTTService] Subscribed to '%s'(qos: %d) (rc: %d)", pData->topic, pData->qos, rc);
   return rc == SUCCESS;
 }
 
@@ -204,16 +208,16 @@ bool unsubscribe(SessionHandle * pSession, UnsubscribeData * pData)
   MQTTHandle * pHandle = pSession->pHandle;
   if (!pHandle || !pHandle->pClient)
   {
-    printf(" * [MQTTService] Invalid Handle");
+    log_warn(" * [MQTTService] Invalid Handle");
     return false;
   }
   if (!pHandle->pClient->isconnected)
   {
-    printf(" * [MQTTService] Connection lost");
+    log_info(" * [MQTTService] Connection lost");
     return false;
   }
   
-  printf(" * [MQTTService] Unsubscribe to '%s'\n", pData->topic);
+  log_info(" * [MQTTService] Unsubscribe to '%s'", pData->topic);
 
   int rc = MQTTUnsubscribe(pHandle->pClient, pData->topic);
   return rc == SUCCESS;
@@ -223,7 +227,7 @@ bool yield(MQTTHandle * pHandle, int ms)
 {
   if (!pHandle || !pHandle->pClient)
   {
-    printf(" * [MQTTService] Invalid MQTTHandle\n");
+    log_warn(" * [MQTTService] Invalid MQTTHandle");
     return false;
   }
   if (!pHandle->pClient->isconnected)
@@ -241,7 +245,7 @@ bool stopSession(SessionHandle * pSession)
   MQTTHandle * pHandle = pSession->pHandle;
   if (!pHandle || !pHandle->pClient || !pHandle->pNetwork) 
   {
-    printf(" * [MQTTService] Invalid MQTTHandle\n");
+    log_warn(" * [MQTTService] Invalid MQTTHandle");
     return false;
   }
 
@@ -261,25 +265,22 @@ void * workerThreadFunc(void * pThreadData)
   
   pthread_setspecific(thread_key, pSession);
 
-  printf(" * [MQTTService] MQTT worker thread started %x\n", (unsigned int)pSession);
+  log_info(" * [MQTTService] MQTT worker thread started %x", (unsigned int)pSession);
   while (true) 
   {
     Payload * pPayload = curPayload(pSession);
     if (!pPayload)
     {
-      printf("### %x null payload ...", (unsigned int)pSession);
+      /* log_debug("### %x null payload ...", (unsigned int)pSession); */
       if (pSession->pHandle)
       {
-        if (yield(pSession->pHandle, 2000))
-          printf(" completed\n");
-        else
-          printf(" failed\n");
+        if (!yield(pSession->pHandle, 2000))
+          log_warn(" failed");
       }
       continue;
     }
     else
     {
-      /* printf("### valid payload\n"); */
       bool result = true;
       int rc = SUCCESS;
       switch (pPayload->type)
@@ -291,9 +292,9 @@ void * workerThreadFunc(void * pThreadData)
           rc = publish(pSession, pPayload->pPublishData);
           result = rc == SUCCESS;
           if (rc == FAILURE)
-            printf(" * [MQTTService] failed to publish msg.\n");
+            log_warn(" * [MQTTService] failed to publish msg.");
           else if (rc == BUFFER_OVERFLOW)
-            printf(" * [MQTTService] write buffer overflowed.\n");
+            log_warn(" * [MQTTService] write buffer overflowed.");
           break;
         case SubscribeTask:
           result = subscribe(pSession, pPayload->pSubscribeData);
@@ -305,18 +306,18 @@ void * workerThreadFunc(void * pThreadData)
           stopSession(pSession);
           pSession = NULL;
           pthread_setspecific(thread_key, pSession);
-          printf(" * [MQTTService] MQTT worker thread exited \n");
+          log_info(" * [MQTTService] MQTT worker thread exited");
           pthread_exit(NULL);
           break;
         default:
-          printf(" * [MQTTService] invalid payload\n");
+          log_warn(" * [MQTTService] invalid payload");
           break;
       }
-      /* printf("###  * %d action result: %d \n", pPayload->type, result); */
+      /* log_info("###  * %d action result: %d \n", pPayload->type, result); */
       popPayload(pSession);
     }
   }   
-  printf(" * [MQTTService] MQTT worker thread exited %x\n", (unsigned int)pSession);
+  log_info(" * [MQTTService] MQTT worker thread exited %x", (unsigned int)pSession);
   return NULL;
 }
 
@@ -359,7 +360,7 @@ Cell communityMQTT_Worker_startSession(SedonaVM* vm, Cell* params)
   int rc = pthread_create(pthread, NULL, &workerThreadFunc, pSession);
   if (rc)
   {
-    printf(" * [MQTTService] Thread creation failed: %d\n", rc);
+    log_warn(" * [MQTTService] Thread creation failed: %d", rc);
     free(pthread);
     pthread = NULL;
     
