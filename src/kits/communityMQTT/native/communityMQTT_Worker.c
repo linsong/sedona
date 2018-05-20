@@ -146,16 +146,12 @@ void messageArrived(MessageData * pMsgData)
   if (!pSession)
     return;
 
-  char * buf = (char * )malloc(pMsgData->topicName->lenstring.len+1);
-  memset(buf, 0, sizeof(pMsgData->topicName->lenstring.len+1));
-  strncpy(buf, pMsgData->topicName->lenstring.data, pMsgData->topicName->lenstring.len);
-  log_trace(" * [MQTTService] Got message for topic '%s'", buf);
-  
   SubscribeResponse * pResponse = NULL;
 
   char * topic = malloc(pMsgData->topicName->lenstring.len+1);
   memset(topic, 0, pMsgData->topicName->lenstring.len+1);
   strncpy(topic, pMsgData->topicName->lenstring.data, pMsgData->topicName->lenstring.len);
+  log_trace(" * [MQTTService] Got message for topic '%s'", topic);
   HASH_FIND_STR(pSession->pResponse, topic, pResponse);
   if (!pResponse)
   {
