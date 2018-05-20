@@ -87,7 +87,18 @@ class SpyRESTWeblet
 
   private void nav(WebReq req, WebRes res)
   {
-    res.jsonKV("path",req.uri).w(",")
+    int count = req.params.size
+    Str p = ""
+    for (int i=0; i<count; ++i)
+    {
+      Str param = req.params.names[i]
+      if(param.startsWith("Host"))
+        p = req.params.values[i]
+    }
+    if (p.length() > 0) {
+      res.jsonStrN("pathRef").w(": \"")
+      res.w("http://").w(p.trim()).w(req.uri).w("\",")
+    }
   }
 
 ////////////////////////////////////////////////////////////////
