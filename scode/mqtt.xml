@@ -34,6 +34,7 @@
   <depend on="types 1.2"   />
 
   <depend on="communityMQTT 1.2" />
+  <depend on="communityRedis 1.2" />
 
 </sedonaCode>
 

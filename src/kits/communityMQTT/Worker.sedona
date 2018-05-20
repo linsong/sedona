@@ -186,6 +186,8 @@ abstract internal class Worker extends Component
         sessionStartTime = 0L
         handle = null
         resetAllChildren()
+
+        //TODO: restart session 
       }
       return false
     }
