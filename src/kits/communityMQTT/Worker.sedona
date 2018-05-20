@@ -74,7 +74,7 @@ abstract internal class Worker extends Component
       error := Err_InvalidClientId
     else
       error := Ok
-        
+
     if (autoStart && error == Ok)
       connect()
   }
@@ -187,10 +187,22 @@ abstract internal class Worker extends Component
         handle = null
         resetAllChildren()
 
-        //TODO: restart session 
+        retryStartTime = Sys.ticks()
+      }
+      
+      if (handle == null) {
+        //exponential backoff 
+        if (Sys.ticks()-retryStartTime > 1sec*power(retryTimes)) {
+          retryStartTime = Sys.ticks()
+          if (retryTimes < 8) retryTimes += 1
+          MQTTService.log.message("reconnect ...")
+          connect()
+        }
       }
       return false
     }
+    else
+      retryTimes = 0
         
     for(Component child = Sys.app.lookup(children); child != null; child = Sys.app.lookup(child.nextSibling))
     {
@@ -204,9 +216,19 @@ abstract internal class Worker extends Component
     return true
   }
 
+  private long power(int val) {
+    long result = 1L;
+    for(int i=0; i<val; ++i)
+      result *= 2L;
+    return result;
+  }
+
   ////////////////////////////////////////////////////////////////
   // Fields
   ////////////////////////////////////////////////////////////////
+  private int retryTimes = 0
+  private long retryStartTime = 0L
+  
   ** 
   ** MQTT Session Handle Object
   ** 

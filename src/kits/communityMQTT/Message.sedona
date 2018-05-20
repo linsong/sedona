@@ -104,8 +104,6 @@ abstract internal class Message extends Component
   protected virtual bool updateData(Obj handle)
   {
     bool result = fetchData(handle, topic.toStr(), strBuf, 63)
-    if (result)
-      log.message("SUBSCRIBE: update: " + strBuf);
     return result
   }
   

@@ -46,6 +46,7 @@ void releaseSession(SessionHandle * pSession)
     free(pHandle->buf);
     free(pHandle->readbuf);
     free(pHandle);
+    pSession->pHandle = NULL;
   }
   
   SubscribeResponse * pResponse = pSession->pResponse;
@@ -104,7 +105,35 @@ bool startSession(SessionHandle * pSession, StartSessionData * pData)
   
   rc = 0;
   rc = MQTTConnect(pHandle->pClient, &data);
-  log_info(" * [MQTTService] Connectted to %s:%d (rc: %d)", pData->host, pData->port, rc);
+  
+  if (rc == SUCCESS)
+    log_info(" * [MQTTService] Connectted to %s:%d (rc: %d)", pData->host, pData->port, rc);
+  else {
+    char * error = NULL;
+    // refer to MQTT spec section 3.2.2.3 "ConnectReturn code" for details
+    switch(rc) { 
+      case 1:
+        error = "unacceptable protocol version";
+        break;
+      case 2:
+        error = "identifier rejected";
+        break;
+      case 3:
+        error = "Server unavailable";
+        break;
+      case 4:
+        error = "bad username or password";
+        break;
+      case 5: 
+        error = "not authorized";
+        break;
+      default:
+        error = "unknown error";
+        break;
+    }
+    log_info(" * [MQTTService] Failed to connect to %s:%d (rc: %d, error: %s)", pData->host, pData->port, rc, error);
+  }
+
   return rc == SUCCESS;
 }
 
@@ -242,6 +271,7 @@ bool stopSession(SessionHandle * pSession)
   if (!pHandle || !pHandle->pClient || !pHandle->pNetwork) 
   {
     log_warn(" * [MQTTService] Invalid MQTTHandle");
+    releaseSession(pSession);
     return false;
   }
 
@@ -270,8 +300,9 @@ void * workerThreadFunc(void * pThreadData)
       /* log_debug("### %x null payload ...", (unsigned int)pSession); */
       if (pSession->pHandle)
       {
-        if (!yield(pSession->pHandle, 2000))
-          log_warn(" failed");
+        yield(pSession->pHandle, 2000);
+        /* if (!yield(pSession->pHandle, 2000)) */
+          /* log_warn(" failed"); */
       }
       continue;
     }
@@ -336,15 +367,29 @@ Cell communityMQTT_Worker_startSession(SedonaVM* vm, Cell* params)
   pSession->pResponse = NULL;
 
   StartSessionData * pData = malloc(sizeof(StartSessionData));
+  memset(pData, 0, sizeof(StartSessionData));
+
   pData->host = malloc(strlen(host)+1);
   strcpy(pData->host, host);
   pData->port = port;
-  pData->clientid = malloc(strlen(clientid)+1);
-  strcpy(pData->clientid, clientid);
-  pData->username = malloc(strlen(username)+1);
-  strcpy(pData->username, username);
-  pData->password = malloc(strlen(password)+1);
-  strcpy(pData->password, password);
+
+  if (clientid && strlen(clientid) > 0) {
+    pData->clientid = malloc(strlen(clientid)+1);
+    strcpy(pData->clientid, clientid);
+  } else
+    pData->clientid = NULL;
+
+  if (username && strlen(username) > 0) {
+    pData->username = malloc(strlen(username)+1);
+    strcpy(pData->username, username);
+  } else
+    pData->username = NULL;
+
+  if (password && strlen(password) > 0) {
+    pData->password = malloc(strlen(password)+1);
+    strcpy(pData->password, password);
+  } else 
+    pData->password = NULL;
 
   Payload * pPayload = malloc(sizeof(Payload));
   pPayload->type = StartSessionTask;
