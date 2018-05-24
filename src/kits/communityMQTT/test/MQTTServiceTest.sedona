@@ -262,5 +262,6 @@ class MQTTServiceTest
     assert(sub_sm.payload.toStr().equals("hello world"))
 
     shutdown(s, pub, sub)
+    a.remove(s)
   } 
 }
