@@ -262,6 +262,9 @@ class MQTTServiceTest
     assert(sub_sm.payload.toStr().equals("hello world"))
 
     shutdown(s, pub, sub)
-    a.remove(s)
+
+    //clean up components for testing, otherwise it will break other tests
+    a.cleanupApp()
+    // assert(a.remove(s))
   } 
 }
