@@ -36,5 +36,7 @@
   <depend on="timing 1.2"  />
   <depend on="types 1.2"   />
 
+  <depend on="communityMQTT 1.2" />
+
 
 </sedonaCode>
