@@ -19,9 +19,12 @@ abstract internal class Message extends Component
   @range=ErrorMessages
   @readonly property byte error = 0
   
-  // 0: publish when changed; 1: publish per 1 sec; 2: per 2 secs; 3: ...
-  @unit=Units.second
-  @config property int publishInterval = 5
+  // 0: publish when changed; 1000: publish per 1 sec; 2000: per 2 secs; 3000: ...
+  @unit=Units.millisecond
+  @config property int publishInterval = 5000
+
+  @unit=Units.millisecond
+  @config property int updateInterval = 3000
   
   ////////////////////////////////////////////////////////////////
   // Methods
@@ -64,7 +67,7 @@ abstract internal class Message extends Component
       return
 
     if (publishInterval > 0)
-      readyToPublish = (Sys.ticks()-lastPublishTime) >= (long)publishInterval*1sec
+      readyToPublish = (Sys.ticks()-lastPublishTime) >= (long)publishInterval*1ms
   }
   
   override int parentEvent(int eType, Component parent)
@@ -123,7 +126,11 @@ abstract internal class Message extends Component
 
     if (subscribedToTopic)
     {
-      updateData(handle)
+      long now = Sys.ticks()
+      if (now - lastUpdateTime > (long)updateInterval*1ms) {
+        updateData(handle)
+        lastUpdateTime = now
+      }
     }
     else
     {
@@ -174,6 +181,7 @@ abstract internal class Message extends Component
     readyToPublish = false
     subscribedToTopic = false
     lastPublishTime = 0L
+    lastUpdateTime = 0L
   }
 
   ////////////////////////////////////////////////////////////////
@@ -182,6 +190,7 @@ abstract internal class Message extends Component
   private bool readyToPublish = false
   private bool subscribedToTopic = false
   private long lastPublishTime = 0L
+  private long lastUpdateTime = 0L
   
   protected inline Str(64) strBuf = ""; 
 
