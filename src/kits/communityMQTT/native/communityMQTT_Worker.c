@@ -29,6 +29,14 @@ static void makeThreadKey()
   (void)pthread_key_create(&thread_key, NULL);
 }
 
+void mssleep(long ms)
+{
+  struct timespec ts;
+  ts.tv_sec = ms/1000L;
+  ts.tv_nsec = ms%1000L * 1000000L;
+  nanosleep(&ts, NULL);
+}
+
 void releaseSession(SessionHandle * pSession)
 {
   if (!pSession)
@@ -253,10 +261,13 @@ bool yield(MQTTHandle * pHandle, int ms)
   if (!pHandle || !pHandle->pClient)
   {
     log_warn(" * [MQTTService] Invalid MQTTHandle");
+    mssleep(500);
     return false;
   }
-  if (!pHandle->pClient->isconnected)
+  if (!pHandle->pClient->isconnected) {
+    mssleep(500);
     return false;
+  }
 
   int rc = MQTTYield(pHandle->pClient, ms); 
   return rc == SUCCESS;
@@ -300,6 +311,7 @@ void * workerThreadFunc(void * pThreadData)
       /* log_debug("### %x null payload ...", (unsigned int)pSession); */
       if (pSession->pHandle)
       {
+        //run mqtt event loop
         yield(pSession->pHandle, 2000);
         /* if (!yield(pSession->pHandle, 2000)) */
           /* log_warn(" failed"); */
