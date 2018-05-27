@@ -4,7 +4,8 @@
 # Licensed under the Academic Free License version 3.0
 #
 # History:
-#    2015 Oct 15   Divisuals   Initial script 
+#    2015 Oct 15   Divisuals   Initial script
+#    2018 Apr 22   Divisuals   user changes, minor cleanup
 #
 
 set -e -x -u
@@ -25,7 +26,7 @@ else # boot2docker uid and gid
   GROUP_ID=50
 fi
 
-docker build -t "${IMAGE_NAME}-${USER_NAME}" - <<UserSpecificDocker
+docker build --rm=true -t "${IMAGE_NAME}-${USER_NAME}" - <<UserSpecificDocker
 FROM ${IMAGE_NAME}
 RUN groupadd --non-unique -g ${GROUP_ID} ${USER_NAME} \
  && useradd -g ${GROUP_ID} -u ${USER_ID} -k /root -m ${USER_NAME}
@@ -49,7 +50,6 @@ docker run -it \
   -u "${USER_NAME}" \
   -v "$PWD:/home/${USER_NAME}/sedonadev" \
   -v "${SCRIPT_DIR}/.bashrc:/home/${USER_NAME}/.bashrc" \
-  --name sedonaDev \
   ${IMAGE_NAME}-${USER_NAME} \
   bash
 
