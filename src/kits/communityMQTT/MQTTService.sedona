@@ -1,22 +1,21 @@
 **
 ** MQTT service (community version)
-** MQTT service provides the follwoing abilities:
+** MQTT service provides the following abilities:
 **  1. publish data to a topic of a MQTT broker
 **  2. subscribe topic data of a MQTT broker and update local sedona object
 **  3. able to publish/subscribe multiple MQTT broker at the same time
 ** 
 ** Well, there are some limitations: 
 **  1. it is a native kit, so svm need to be recompiled to use it 
-**  2. TLS/SSL is not supported yet, so use it in trusted network environment
-**     or handle data not sensitive. 
+**  2. TLS/SSL is not supported yet, so use it under trusted network environment
 **  3. only Linux is supported, Windows is not supported right now
 **
-** If you don't want to set up a local MQTT broker, you can try some online free brokers:
+** If you don't want to set up a local MQTT broker, you can try some online brokers for testing:
 **  1. test.mosquitto.org:1883 (http://test.mosquitto.org/)
 **  2. broker.hivemq.com:1883 (https://www.hivemq.com/try-out/)
 **
 ** If possible, we recommend you to set up a local MQTT broker by mosquitto(https://mosquitto.org/), 
-** that is a popular and open source implementation of MQTT, it is fairly easy to set up under Linux. 
+** that is a popular and open source implementation of MQTT broker, it is fairly easy to set up under Linux. 
 ** 
 class MQTTService extends Service
 {
@@ -29,7 +28,6 @@ class MQTTService extends Service
   **
   virtual override void start()
   {
-    this.app = Sys.app
     log.message("MQTT service started")
   }
 
@@ -50,6 +48,7 @@ class MQTTService extends Service
   **
   private Worker getFirstWorker()
   {
+    App app = Sys.app
     for (Component c = app.lookup(children); c != null; c = app.lookup(c.nextSibling))
       if (c.type.is(Worker.type))
         return (Worker)c
@@ -62,6 +61,7 @@ class MQTTService extends Service
   **
   private Worker getNextWorker(Worker worker)
   {
+    App app = Sys.app
     for (Component c = app.lookup(worker.id); c != null; c = app.lookup(c.nextSibling))
       if (c.id != worker.id && c.type.is(Worker.type))
         return (Worker)c
@@ -78,6 +78,5 @@ class MQTTService extends Service
   ////////////////////////////////////////////////////////////////
   // Fields
   ////////////////////////////////////////////////////////////////
-  App app
   define Log log
 }

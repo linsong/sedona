@@ -42,7 +42,7 @@ abstract internal class Message extends Component
   static native void doUnsubscribe(Obj handle, Str topic)
   static native bool fetchData(Obj handle, Str topic, Str buf, int length);
 
-  virtual Str getPayload() { return "" }
+  protected virtual Str getPayload() { return "" }
 
   private void validateInputs() 
   {
@@ -80,7 +80,7 @@ abstract internal class Message extends Component
   ** 
   ** publish linked value to MQTT broker
   ** 
-  virtual void publish(Obj handle)
+  internal virtual void publish(Obj handle)
   {
     if (error != Ok)
       return
@@ -113,7 +113,7 @@ abstract internal class Message extends Component
   ** 
   ** subscribe topic on MQTT broker refered by given handle
   ** 
-  virtual void subscribe(Obj handle)
+  internal virtual void subscribe(Obj handle)
   {
     if (error != Ok)
       return
@@ -143,7 +143,7 @@ abstract internal class Message extends Component
   ** 
   ** unsubscribe topic on MQTT broker refered by given handle
   ** 
-  virtual void unsubscribe(Obj handle)
+  internal virtual void unsubscribe(Obj handle)
   {
     if (error != Ok)
       return
@@ -176,7 +176,7 @@ abstract internal class Message extends Component
   ** 
   ** reset current message's local state 
   ** 
-  virtual void reset()
+  internal virtual void reset()
   {
     readyToPublish = false
     subscribedToTopic = false
