@@ -32,7 +32,7 @@ class MQTTServiceTest
     App a = Sys.app
     FloatMessage fm = (FloatMessage)a.add(pub, "pub_fm", FloatMessage.type)
     fm.topic.copyFromStr(topic)
-    fm.publishInterval := 1
+    fm.publishInterval := 1000
     fm.payload := 42.123
     if (fm.error != Message.Ok)
       fm.start()
@@ -45,6 +45,7 @@ class MQTTServiceTest
     App a = Sys.app
     FloatMessage fm = (FloatMessage)a.add(sub, "sub_fm", FloatMessage.type)
     fm.topic.copyFromStr(topic)
+    fm.updateInterval := 100
     fm.payload := 0.0
     if (fm.error != Message.Ok)
       fm.start()
@@ -57,7 +58,7 @@ class MQTTServiceTest
     App a = Sys.app
     IntMessage im = (IntMessage)a.add(pub, "pub_im", IntMessage.type)
     im.topic.copyFromStr(topic)
-    im.publishInterval := 1
+    im.publishInterval := 1000
     im.payload := 42
     if (im.error != Message.Ok)
       im.start()
@@ -70,6 +71,7 @@ class MQTTServiceTest
     App a = Sys.app
     IntMessage im = (IntMessage)a.add(sub, "sub_im", IntMessage.type)
     im.topic.copyFromStr(topic)
+    im.updateInterval := 100
     im.payload := 0
     if (im.error != Message.Ok)
       im.start()
@@ -82,7 +84,7 @@ class MQTTServiceTest
     App a = Sys.app
     BoolMessage bm = (BoolMessage)a.add(pub, "pub_bm", BoolMessage.type)
     bm.topic.copyFromStr(topic)
-    bm.publishInterval := 1
+    bm.publishInterval := 1000
     bm.payload := true
     if (bm.error != Message.Ok)
       bm.start()
@@ -95,6 +97,7 @@ class MQTTServiceTest
     App a = Sys.app
     BoolMessage bm = (BoolMessage)a.add(sub, "sub_bm", BoolMessage.type)
     bm.topic.copyFromStr(topic)
+    bm.updateInterval := 100
     bm.payload := false
     if (bm.error != Message.Ok)
       bm.start()
@@ -107,7 +110,7 @@ class MQTTServiceTest
     App a = Sys.app
     StrMessage sm = (StrMessage)a.add(pub, "pub_sm", StrMessage.type)
     sm.topic.copyFromStr(topic)
-    sm.publishInterval := 1
+    sm.publishInterval := 1000
     sm.payload.copyFromStr(msg)
     if (sm.error != Message.Ok)
       sm.start()
@@ -120,6 +123,7 @@ class MQTTServiceTest
     App a = Sys.app
     StrMessage sm = (StrMessage)a.add(sub, "sub_sm", StrMessage.type)
     sm.topic.copyFromStr(topic)
+    sm.updateInterval := 100
     sm.payload.copyFromStr("")
     if (sm.error != Message.Ok)
       sm.start()
