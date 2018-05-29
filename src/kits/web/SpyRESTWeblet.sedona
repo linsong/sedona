@@ -109,7 +109,7 @@ class SpyRESTWeblet
   {
     App app = Sys.app
     PlatformService plat = app.platform
-    res.jsonStrN("Summary").w(": {");
+    res.jsonStrN("summary").w(": {");
 
     res.jsonStrN("platformType").w(":\"").w(plat.type.kit.name).w("::").w(plat.type.name).w("\",");
     res.jsonKV("platformId", plat.platformId.toStr()).w(",");
@@ -119,7 +119,7 @@ class SpyRESTWeblet
     res.w("\"").jsonEnd(0)
     res.w(",").nl()
 
-    res.jsonStrN("SpyGetIndex").w(": [")
+    res.jsonStrN("indexGET").w(": [")
     res.jsonStrN("/spyREST/app").w(",")
     res.jsonStrN("/spyREST/kits").w(",")
     res.jsonStrN("/spyREST/logs").w(",")
@@ -127,12 +127,12 @@ class SpyRESTWeblet
     res.jsonStrN("/spyREST/echo").nl()
     res.w("],").nl()
 
-    res.jsonStrN("SpyPostIndex").w(": [")
+    res.jsonStrN("indexPOST").w(": [")
     res.jsonStrN("/spyREST/backup").w(",")
     res.jsonStrN("/spyREST/logs").nl()
     res.w("],").nl()
 
-    res.jsonStrN("Weblets").w(": {")
+    res.jsonStrN("weblets").w(": {")
     int count = 0
     for (Weblet w = WebService.weblets; w != null; w = w.nextWeblet)
     {
@@ -168,27 +168,27 @@ class SpyRESTWeblet
     App app = Sys.app
     Type t = c.type
 
-    // component fields
-    res.jsonStrN("Component").w(": {")
-
     // path
-    res.jsonStrN("Path").w(": \"")
-    res.w("App")
+    res.jsonStrN("tree").w(": \"")
     Component[] path = c.path()
+    if (c == app) res.w("/") // add tree root for appComponent
     if (path != null)
     {
       for (int i=0; path[i] != null; ++i)
       {
         Component x = path[i]
-        res.w(" / ").w(x.name).w(" [").wi(x.id).w("]")
+        res.w("/").w(x.name)
       }
     }
     res.w("\", ")
 
-    // meta-data
-    res.jsonStrN("Id").w(":\"").wi(c.id).w("\", ")
-    res.jsonKV("Name", c.name).w(", ")
-    res.jsonStrN("Type").w(":\"").w(t.kit.name).w("::").w(t.name).w("\", ")
+    // component fields
+    res.jsonStrN("component").w(": {")
+
+    // metadata
+    res.jsonStrN("id").w(":\"").wi(c.id).w("\", ")
+    res.jsonKV("name", c.name).w(", ")
+    res.jsonStrN("type").w(":\"").w(t.kit.name).w("::").w(t.name).w("\", ")
 /* TODO
     res.w("<tr>").th("watches").td()
      res.w("subs = 0x").printHex(c.sessionSubscriptions)
@@ -198,35 +198,35 @@ class SpyRESTWeblet
 */
 
     // slots
-    res.jsonStrN("Slots").w(": [").nl()
+    res.jsonStrN("slots").w(": [").nl()
     int count = 0
     for (int i=0; i < t.slotsLen; i++)
     {
       if (count > 0) res.w(",").nl() // don't put comma for first element
       Slot slot = t.slots[i]
       res.jsonStart(0)
-      res.jsonStrN("Id").w(":\"").wi(slot.id).w("\",")
-      res.jsonKV("Name", slot.name).w(",")
-      res.jsonKV("Type", slot.type.name).w(",")
-      res.jsonStrN("Value").w(":\"")
+      res.jsonStrN("id").w(":\"").wi(slot.id).w("\",")
+      res.jsonKV("name", slot.name).w(",")
+      res.jsonKV("type", slot.type.name).w(",")
+      res.jsonStrN("value").w(":\"")
       if (slot.isProp()) res.printProp(c, slot)
       res.w("\"")
       res.jsonEnd(0)
       count++
     }
     res.nl()
-    res.w("]").jsonEnd(0).w(",")
+    res.w("]").w(",")
 
     // children
-    res.jsonStrN("Children").w(": [").nl()
+    res.jsonStrN("children").w(": [").nl()
     count = 0
     for (Component kido = app.lookup(c.children); kido != null; kido = app.lookup(kido.nextSibling))
     {
       if (count > 0) res.w(",").nl() // don't put comma for first element
       res.jsonStart(0)
-      res.jsonKV("Id", Sys.intStr(kido.id)).w(",")
-      res.jsonKV("Name", kido.name).w(",")
-      res.jsonStrN("Type").w(":\"").w(kido.type.kit.name).w("::").w(kido.type.name).w("\"")
+      res.jsonKV("id", Sys.intStr(kido.id)).w(",")
+      res.jsonKV("name", kido.name).w(",")
+      res.jsonStrN("type").w(":\"").w(kido.type.kit.name).w("::").w(kido.type.name).w("\"")
       res.jsonEnd(0)
       count++
     }
@@ -236,7 +236,7 @@ class SpyRESTWeblet
     // links
     if (c.linksFrom != null || c.linksTo != null)
     {
-      res.w(", ").jsonStrN("Links").w(": [").nl()
+      res.w(", ").jsonStrN("links").w(": [").nl()
 
       // links from
       count = 0
@@ -245,13 +245,14 @@ class SpyRESTWeblet
         if (count > 0) res.w(",").nl() // don't put comma for first element
         Component to = app.lookup(link.toComp)
         res.jsonStart(0)
-           .jsonKV("From", t.slot(link.fromSlot).name).w(",")
-           .jsonStrN("To").w(":\"").w(to.name).w(".").w(to.type.slot(link.toSlot).name)
+           .jsonKV("from", t.slot(link.fromSlot).name).w(",")
+           .jsonStrN("to").w(":\"").w(to.name).w(".").w(to.type.slot(link.toSlot).name)
            .w("\"")
         res.jsonEnd(0)
         count++
       }
-      if (c.linksFrom != null) res.w(",").nl() // add a comma if 'from' link was present
+      // add a comma if 'from' link was present and 'to' link is expected
+      if (c.linksFrom != null && c.linksTo != null) res.w(",").nl()
       // links to
       count = 0
       for (Link link = c.linksTo; link != null; link = link.nextTo)
@@ -259,15 +260,15 @@ class SpyRESTWeblet
         if (count > 0) res.w(",").nl() // don't put comma for first element
         Component from = app.lookup(link.fromComp)
         res.jsonStart(0)
-           .jsonStrN("From").w(":\"").w(from.name).w(".").w(from.type.slot(link.fromSlot).name).w("\",")
-           .jsonKV("To", t.slot(link.toSlot).name)
+           .jsonStrN("from").w(":\"").w(from.name).w(".").w(from.type.slot(link.fromSlot).name).w("\",")
+           .jsonKV("to", t.slot(link.toSlot).name)
         res.jsonEnd(0)
         count++
       }
       res.nl()
       res.w("]")
     }
-    res.w("")
+    res.w("").jsonEnd(0)
   }
 
 ////////////////////////////////////////////////////////////////
@@ -302,17 +303,17 @@ class SpyRESTWeblet
 
   public void kitsIndex(WebReq req, WebRes res)
   {
-    res.jsonStrN("Kits").w(": [").nl()
+    res.jsonStrN("schema").w(": [").nl()
     int count = 0
     for (int i=0; i< Sys.kitsLen; i++)
     {
       Kit k = Sys.kits[i]
       if (count > 0) res.w(",").nl() // don't put comma for first element
       res.jsonStart(0)
-      res.jsonStrN("Id").w(":\"").wi(k.id).w("\", ")
-      res.jsonKV("Name", k.name).w(", ")
-      res.jsonKV("Version", k.version).w(", ")
-      res.jsonStrN("Checksum").w(":\"").w("0x").printHex(k.checksum).print("\"")
+      res.jsonStrN("id").w(":\"").wi(k.id).w("\", ")
+      res.jsonKV("name", k.name).w(", ")
+      res.jsonKV("version", k.version).w(", ")
+      res.jsonStrN("checksum").w(":\"").w("0x").printHex(k.checksum).print("\"")
       res.jsonEnd(0)
       count++
     }
@@ -323,21 +324,21 @@ class SpyRESTWeblet
   public void kitsKit(WebReq req, WebRes res, Kit k)
   {
     // meta-data
-    res.jsonStrN("Id").w(":\"").wi(k.id).w("\", ")
-    res.jsonKV("Name", k.name).w(", ")
-    res.jsonKV("Version", k.version).w(", ")
-    res.jsonStrN("Checksum").w(":\"").w("0x").printHex(k.checksum).print("\",")
+    res.jsonStrN("id").w(":\"").wi(k.id).w("\", ")
+    res.jsonKV("name", k.name).w(", ")
+    res.jsonKV("version", k.version).w(", ")
+    res.jsonStrN("checksum").w(":\"").w("0x").printHex(k.checksum).print("\",")
 
     // types
-    res.jsonStrN("Types").w(": [").nl()
+    res.jsonStrN("types").w(": [").nl()
     int count = 0
     for (int i = 0; i < k.typesLen; i++)
     {
       Type t = k.types[i]
       if (count > 0) res.w(",").nl() // don't put comma for first element
       res.jsonStart(0)
-      res.jsonStrN("Id").w(":\"").wi(t.id).w("\", ")
-      res.jsonKV("Name", t.name)
+      res.jsonStrN("id").w(":\"").wi(t.id).w("\", ")
+      res.jsonKV("name", t.name)
       res.jsonEnd(0)
       count++
     }
@@ -350,7 +351,7 @@ class SpyRESTWeblet
     Type base = t.base
 
     // meta-data
-    res.jsonStrN("Id").w(":\"").wi(t.kit.id).w("::").wi(t.id).w("\", ")
+    res.jsonStrN("id").w(":\"").wi(t.kit.id).w("::").wi(t.id).w("\", ")
     res.jsonStrN("qName").w(":\"").w(t.kit.name).w("::").w(t.name).w("\", ")
     res.jsonStrN("base").w(":\"")
     if (base != null) res.w(base.kit.name).w("::").w(base.name)
@@ -358,16 +359,16 @@ class SpyRESTWeblet
     res.jsonStrN("sizeOf").w(":\"").wi(t.sizeof).w("\", ")
 
     // slots
-    res.jsonStrN("Slots").w(": [").nl()
+    res.jsonStrN("slots").w(": [").nl()
     int count = 0
     for (int i=0; i < t.slotsLen; i++)
     {
       Slot slot = t.slots[i]
       if (count > 0) res.w(",").nl() // don't put comma for first element
       res.jsonStart(0)
-      res.jsonStrN("Id").w(":\"").wi(slot.id).w("\", ")
-      res.jsonKV("Name", slot.name).w(", ")
-      res.jsonKV("Type", slot.type.name)
+      res.jsonStrN("id").w(":\"").wi(slot.id).w("\", ")
+      res.jsonKV("name", slot.name).w(", ")
+      res.jsonKV("type", slot.type.name)
       res.jsonEnd(0)
       count++
     }
@@ -404,7 +405,7 @@ class SpyRESTWeblet
 
   void soxIndex(WebReq req, WebRes res, SoxService sox)
   {
-    res.jsonStrN("SoxSessions").w(": [").nl()
+    res.jsonStrN("soxSessions").w(": [").nl()
     int i = 0
 /* TODO
     foreach (SoxWatch w : sox.watches, Watch.max)
@@ -492,26 +493,26 @@ class SpyRESTWeblet
       Log log = Sys.log(id)
       if (log != null)
       {
-        res.jsonKV("Service", log.qname).w(", ")
-        res.jsonKV("Old log level", Log.levelStr(Sys.logLevels[id])).w(", ")
+        res.jsonKV("service", log.qname).w(", ")
+        res.jsonKV("old log level", Log.levelStr(Sys.logLevels[id])).w(", ")
         Sys.logLevels[id] = level
-        res.jsonKV("New log level", Log.levelStr(Sys.logLevels[id]))
+        res.jsonKV("new log level", Log.levelStr(Sys.logLevels[id]))
       }
     }
     res.jsonEnd(0)
   }
   public void logs(WebReq req, WebRes res)
   {
-    res.jsonStrN("Logs").w(": [").nl()
+    res.jsonStrN("logs").w(": [").nl()
     int count = 0
     for (int i=0; i < Sys.logsLen; i++)
     {
       Log log = Sys.logs[i]
       if (count > 0) res.w(",").nl() // don't put comma for first element
       res.jsonStart(0)
-      res.jsonStrN("Id").w(":\"").wi(log.id).w("\", ")
-      res.jsonKV("Name", log.qname).w(", ")
-      res.jsonKV("Level", Log.levelStr(log.level()))
+      res.jsonStrN("id").w(":\"").wi(log.id).w("\", ")
+      res.jsonKV("name", log.qname).w(", ")
+      res.jsonKV("level", Log.levelStr(log.level()))
       res.jsonEnd(0)
       count++
     }
@@ -671,7 +672,7 @@ class SpyRESTWeblet
 
   public void echo(WebReq req, WebRes res)
   {
-    res.jsonStrN("WebReq").w(": {")
+    res.jsonStrN("webReq").w(": {")
     res.jsonStrN("method").w(":\"").w(req.method).w("\", ")
     res.jsonStrN("uri").w(":\"").w(req.uri).w("\", ")
     res.jsonStrN("version").w(":\"").w(req.version).w("\", ")
