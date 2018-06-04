@@ -135,7 +135,7 @@ class WebRes
   }
 
   **
-  ** Print the specified key/ value pair
+  ** Print the specified JSON key/ value pair
   ** on a new line without indent
   **
   public WebRes jsonKV(Str key, Str val)
@@ -145,7 +145,7 @@ class WebRes
   }
 
   **
-  ** Print the specified key/ value pair
+  ** Print the specified JSON key/ value pair
   ** on a new line with a specified indent
   **
   public WebRes jsonKVI(int indent, Str key, Str val)
@@ -154,6 +154,25 @@ class WebRes
     return this
   }
 
+  **
+  ** Print the specified JSON string escaping ", \, and /
+  ** Others (\f, \b) are ignored
+  **
+  public WebRes jsonEsc(Str s)
+  {
+    for (int i=0; true; ++i)
+    {
+      int c = s.get(i)
+      if (c == 0) break
+      if (c == '"')
+        print("\"")
+      else if (c == '\\')
+        print("\\")
+      else
+        writeChar(c)
+    }
+    return this
+  }
 ////////////////////////////////////////////////////////////////
 // HTML Output
 ////////////////////////////////////////////////////////////////
