@@ -69,7 +69,9 @@ public class InitKitCompile
     
     // if vendor is Tridium we don't enforce kit/vendor name 
     // rule since Tridium is the vendor of the core kits
-    if (!vendor.equals("Tridium"))
+    // since Tridium seems stop development of sedona, the community starts to
+    // take it over now
+    if (!vendor.equals("Tridium") && !vendor.equals("Community"))
     {
       try
       {
