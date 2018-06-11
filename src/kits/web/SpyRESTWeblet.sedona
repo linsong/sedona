@@ -1,0 +1,695 @@
+//
+// Copyright (c) 2015
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   30 Nov 15  Divisuals  Derived from SpyWeblet
+//
+
+**
+** SpyRESTWeblet is a built-in weblet which provides diagnostics
+** visibility to the Sedona runtime in a REST/json format.
+**
+class SpyRESTWeblet
+  extends Weblet
+{
+
+////////////////////////////////////////////////////////////////
+// Weblet Registration
+////////////////////////////////////////////////////////////////
+
+  static void _sInit()
+  {
+    rest.register()
+  }
+  static internal inline SpyRESTWeblet rest
+
+////////////////////////////////////////////////////////////////
+// Weblet
+////////////////////////////////////////////////////////////////
+
+  override Str prefix() { return "spyREST" }
+
+  override Str description() { return "Sedona runtime diagnostics (REST)" }
+
+  override void head(WebReq req, WebRes res)
+  {
+    res.writeStatus(HttpCode.methodNotAllowed)
+    res.writeHeader("Allow", "GET, POST")
+  }
+
+  override void put(WebReq req, WebRes res)
+  {
+    res.writeStatus(HttpCode.methodNotAllowed)
+    res.writeHeader("Allow", "GET, POST")
+  }
+
+  override void doDelete(WebReq req, WebRes res)
+  {
+    res.writeStatus(HttpCode.methodNotAllowed)
+    res.writeHeader("Allow", "GET, POST")
+  }
+
+  override void post(WebReq req, WebRes res)
+  {
+    // route to non-html pages
+    Str p = ""
+    if (req.path.size > 1) p = req.path.names[1]
+    if (p.equals("backup"))  backupApp(req, res)
+    else if (p.equals("logs")) updateLogLevel(req, res)
+    else
+    {
+      // Error: Method not supported
+    }
+  }
+
+  override void get(WebReq req, WebRes res)
+  {
+    // start header
+    res.json()
+    nav(req, res)
+
+    // route to html pages
+    Str p = ""
+    // ignore
+    if (req.path.size > 1) p = req.path.names[1]
+
+    if (p.equals("app"))        app(req, res)
+    else if (p.equals("kits"))  kits(req, res)
+    else if (p.equals("sox"))   sox(req, res)
+    else if (p.equals("echo"))  echo(req, res)
+    else if (p.equals("logs"))  logs(req, res)
+    else index(req, res)
+
+    // standard footer
+    res.jsonObjEnd(0)
+  }
+
+  private void nav(WebReq req, WebRes res)
+  {
+    int count = req.params.size
+    Str p = ""
+    for (int i=0; i<count; ++i)
+    {
+      Str param = req.params.names[i]
+      if(param.startsWith("Host"))
+        p = req.params.values[i]
+    }
+    if (p.length() > 0) {
+      res.jsonStrN("pathRef").w(": \"")
+      res.w("http://").w(p.trim()).w(req.uri).w("\",")
+    }
+  }
+
+////////////////////////////////////////////////////////////////
+// Index
+////////////////////////////////////////////////////////////////
+
+  public void index(WebReq req, WebRes res)
+  {
+    App app = Sys.app
+    PlatformService plat = app.platform
+    res.jsonStrN("summary").w(": {");
+
+    res.jsonStrN("platformType").w(":\"").w(plat.type.kit.name).w("::").w(plat.type.name).w("\",");
+    res.jsonKV("platformId", plat.platformId.toStr()).w(",");
+    res.jsonKV("name", app.name).w(",");
+    res.jsonStrN("uptime").w(":\"").printElapsed(Sys.bootTime).w("\",");
+    res.jsonStrN("cycleCount").w(":\"").printLong(app.cycleCount)
+    res.w("\"").jsonObjEnd(0)
+    res.w(",").nl()
+
+    res.jsonStrN("indexGET").w(": [")
+    res.jsonStrN("/spyREST/app").w(",")
+    res.jsonStrN("/spyREST/kits").w(",")
+    res.jsonStrN("/spyREST/logs").w(",")
+    res.jsonStrN("/spyREST/sox").w(",")
+    res.jsonStrN("/spyREST/echo").nl()
+    res.w("],").nl()
+
+    res.jsonStrN("indexPOST").w(": [")
+    res.jsonStrN("/spyREST/backup").w(",")
+    res.jsonStrN("/spyREST/logs").nl()
+    res.w("],").nl()
+
+    res.jsonStrN("weblets").w(": {")
+    int count = 0
+    for (Weblet w = WebService.weblets; w != null; w = w.nextWeblet)
+    {
+      if (count > 0) res.w(",") // don't put comma for first element
+      res.jsonKV(w.prefix(), w.description())
+      count++
+    }
+    res.jsonObjEnd(0)
+  }
+
+////////////////////////////////////////////////////////////////
+// App
+////////////////////////////////////////////////////////////////
+
+  void app(WebReq req, WebRes res)
+  {
+    Path path = req.path
+    if (req.path.size > 2)
+    {
+      int id = req.path.names[2].parseInt()
+      Component c = Sys.app.lookup(id)
+      if (c != null)
+      {
+        appComponent(req, res, c)
+        return
+      }
+    }
+    appComponent(req, res, Sys.app)
+  }
+
+  void appComponent(WebReq req, WebRes res, Component c)
+  {
+    App app = Sys.app
+    Type t = c.type
+
+    // path
+    res.jsonStrN("tree").w(": \"")
+    Component[] path = c.path()
+    if (c == app) res.w("/") // add tree root for appComponent
+    if (path != null)
+    {
+      for (int i=0; path[i] != null; ++i)
+      {
+        Component x = path[i]
+        res.w("/").w(x.name)
+      }
+    }
+    res.w("\", ")
+
+    // component fields
+    res.jsonStrN("component").w(": {")
+
+    // metadata
+    res.jsonStrN("id").w(":\"").wi(c.id).w("\", ")
+    res.jsonKV("name", c.name).w(", ")
+    res.jsonStrN("type").w(":\"").w(t.kit.name).w("::").w(t.name).w("\", ")
+/* TODO
+    res.w("<tr>").th("watches").td()
+     res.w("subs = 0x").printHex(c.sessionSubscriptions)
+     res.w(" | config = 0x").printHex(c.sessionConfigChanges)
+     res.w(" | rt = 0x").printHex(c.sessionRuntimeChanges)
+     res.w("</td></tr>\n")
+*/
+
+    // slots
+    res.jsonStrN("slots").w(": [").nl()
+    int count = 0
+    for (int i=0; i < t.slotsLen; i++)
+    {
+      if (count > 0) res.w(",").nl() // don't put comma for first element
+      Slot slot = t.slots[i]
+      res.jsonObjStart(0)
+      res.jsonStrN("id").w(":\"").wi(slot.id).w("\",")
+      res.jsonKV("name", slot.name).w(",")
+      res.jsonKV("type", slot.type.name).w(",")
+      res.jsonStrN("value").w(":\"")
+      if (slot.isProp()) res.printProp(c, slot)
+      res.w("\"")
+      res.jsonObjEnd(0)
+      count++
+    }
+    res.nl()
+    res.w("]").w(",")
+
+    // children
+    res.jsonStrN("children").w(": [").nl()
+    count = 0
+    for (Component kido = app.lookup(c.children); kido != null; kido = app.lookup(kido.nextSibling))
+    {
+      if (count > 0) res.w(",").nl() // don't put comma for first element
+      res.jsonObjStart(0)
+      res.jsonKV("id", Sys.intStr(kido.id)).w(",")
+      res.jsonKV("name", kido.name).w(",")
+      res.jsonStrN("type").w(":\"").w(kido.type.kit.name).w("::").w(kido.type.name).w("\"")
+      res.jsonObjEnd(0)
+      count++
+    }
+    res.nl()
+    res.w("]")
+
+    // links
+    if (c.linksFrom != null || c.linksTo != null)
+    {
+      res.w(", ").jsonStrN("links").w(": [").nl()
+
+      // links from
+      count = 0
+      for (Link link = c.linksFrom; link != null; link = link.nextFrom)
+      {
+        if (count > 0) res.w(",").nl() // don't put comma for first element
+        Component to = app.lookup(link.toComp)
+        res.jsonObjStart(0)
+           .jsonKV("from", t.slot(link.fromSlot).name).w(",")
+           .jsonStrN("to").w(":\"").w(to.name).w(".").w(to.type.slot(link.toSlot).name)
+           .w("\"")
+        res.jsonObjEnd(0)
+        count++
+      }
+      // add a comma if 'from' link was present and 'to' link is expected
+      if (c.linksFrom != null && c.linksTo != null) res.w(",").nl()
+      // links to
+      count = 0
+      for (Link link = c.linksTo; link != null; link = link.nextTo)
+      {
+        if (count > 0) res.w(",").nl() // don't put comma for first element
+        Component from = app.lookup(link.fromComp)
+        res.jsonObjStart(0)
+           .jsonStrN("from").w(":\"").w(from.name).w(".").w(from.type.slot(link.fromSlot).name).w("\",")
+           .jsonKV("to", t.slot(link.toSlot).name)
+        res.jsonObjEnd(0)
+        count++
+      }
+      res.nl()
+      res.w("]")
+    }
+    res.w("").jsonObjEnd(0)
+  }
+
+////////////////////////////////////////////////////////////////
+// Kits
+////////////////////////////////////////////////////////////////
+
+  public void kits(WebReq req, WebRes res)
+  {
+    Path path = req.path
+    if (path.size > 2)
+    {
+      Kit kit = Sys.findKit(path.names[2])
+      if (kit != null)
+      {
+        if (path.size > 3)
+        {
+          Type t = kit.findType(path.names[3])
+          if (t != null)
+          {
+            kitsType(req, res, t)
+            return
+          }
+        }
+
+        kitsKit(req, res, kit)
+        return
+      }
+    }
+
+    kitsIndex(req, res)
+  }
+
+  public void kitsIndex(WebReq req, WebRes res)
+  {
+    res.jsonStrN("schema").w(": [").nl()
+    int count = 0
+    for (int i=0; i< Sys.kitsLen; i++)
+    {
+      Kit k = Sys.kits[i]
+      if (count > 0) res.w(",").nl() // don't put comma for first element
+      res.jsonObjStart(0)
+      res.jsonStrN("id").w(":\"").wi(k.id).w("\", ")
+      res.jsonKV("name", k.name).w(", ")
+      res.jsonKV("version", k.version).w(", ")
+      res.jsonStrN("checksum").w(":\"").w("0x").printHex(k.checksum).print("\"")
+      res.jsonObjEnd(0)
+      count++
+    }
+    res.nl()
+    res.w("]")
+  }
+
+  public void kitsKit(WebReq req, WebRes res, Kit k)
+  {
+    // meta-data
+    res.jsonStrN("id").w(":\"").wi(k.id).w("\", ")
+    res.jsonKV("name", k.name).w(", ")
+    res.jsonKV("version", k.version).w(", ")
+    res.jsonStrN("checksum").w(":\"").w("0x").printHex(k.checksum).print("\",")
+
+    // types
+    res.jsonStrN("types").w(": [").nl()
+    int count = 0
+    for (int i = 0; i < k.typesLen; i++)
+    {
+      Type t = k.types[i]
+      if (count > 0) res.w(",").nl() // don't put comma for first element
+      res.jsonObjStart(0)
+      res.jsonStrN("id").w(":\"").wi(t.id).w("\", ")
+      res.jsonKV("name", t.name)
+      res.jsonObjEnd(0)
+      count++
+    }
+    res.nl()
+    res.w("]")
+  }
+
+  public void kitsType(WebReq req, WebRes res, Type t)
+  {
+    Type base = t.base
+
+    // meta-data
+    res.jsonStrN("id").w(":\"").wi(t.kit.id).w("::").wi(t.id).w("\", ")
+    res.jsonStrN("qName").w(":\"").w(t.kit.name).w("::").w(t.name).w("\", ")
+    res.jsonStrN("base").w(":\"")
+    if (base != null) res.w(base.kit.name).w("::").w(base.name)
+    res.w("\", ")
+    res.jsonStrN("sizeOf").w(":\"").wi(t.sizeof).w("\", ")
+
+    // slots
+    res.jsonStrN("slots").w(": [").nl()
+    int count = 0
+    for (int i=0; i < t.slotsLen; i++)
+    {
+      Slot slot = t.slots[i]
+      if (count > 0) res.w(",").nl() // don't put comma for first element
+      res.jsonObjStart(0)
+      res.jsonStrN("id").w(":\"").wi(slot.id).w("\", ")
+      res.jsonKV("name", slot.name).w(", ")
+      res.jsonKV("type", slot.type.name)
+      res.jsonObjEnd(0)
+      count++
+    }
+    res.nl()
+    res.w("]")
+  }
+
+////////////////////////////////////////////////////////////////
+// Sox
+////////////////////////////////////////////////////////////////
+
+  void sox(WebReq req, WebRes res)
+  {
+    SoxService sox = (SoxService)Sys.app.lookupService(SoxService.type)
+    if (sox == null)
+    {
+      res.jsonKV("Error", "SoxService not installed")
+      return
+    }
+
+    Path path = req.path
+    if (path.size > 2)
+    {
+      int id =  path.names[2].parseInt()
+      if (0 <= id && id < Watch.max)
+      {
+//        soxWatch(req, res, sox.watches[id])
+        return
+      }
+    }
+
+    soxIndex(req, res, sox)
+  }
+
+  void soxIndex(WebReq req, WebRes res, SoxService sox)
+  {
+    res.jsonStrN("soxSessions").w(": [").nl()
+    int i = 0
+/* TODO
+    foreach (SoxWatch w : sox.watches, Watch.max)
+    {
+      res.jsonObjStart(0)
+      res.jsonStrN("Id").w(":\"").wi(i).w("\", ")
+      res.jsonStrN("Closed").w(":\"").printBool(w.closed).print("\", ")
+      res.jsonKV("Address", w.addr.host.toStr()).w("</td>")
+      res.jsonStrN("Port").w(":\"").wi(w.addr.port).w("\", ")
+      res.jsonStrN("Last Receive").w(":\"").printElapsed(w.lastReceiveTicks).print("\"")
+      res.jsonObjEnd(0).w(",")
+      i++
+    }
+*/
+    res.w("]")
+  }
+
+/* TODO
+  public void soxWatch(WebReq req, WebRes res, SoxWatch watch)
+  {
+    int index = watch.index
+
+    res.w("<b>Sox Session ").wi(watch.id()).w("</b>\n")
+
+    res.w("<table border='1'>\n")
+    res.trTitle("Subscriptions", 5).nl()
+    res.w("<tr>").th("Id").th("Name").th("Type").th("Subs").th("Events").w("</tr>\n")
+    foreach (Component c : Sys.app.comps, Sys.app.compsLen)
+      if  (c != null && (c.watchFlags[index] & Watch.subAll) != 0)
+        soxWatchRow(req, res, watch, c)
+    res.w("</table>")
+
+    res.w("<br/><br/>")
+    res.w("<table border='1'>\n")
+    res.trTitle("Event Queue", 2).nl()
+    res.w("<tr>").th("Component Id").th("Config/Runtime").w("</tr>")
+    for (int i=0; i<32; ++i)
+    {
+      int id = session.unackedEventCompIds[i]
+      if (id < 0) continue
+      bool cfg = (session.unackedEventTypes & i) != 0
+      res.w("<tr>")
+      res.td().wi(id).w("</td>")
+      res.td()
+        if (cfg) res.w("config")
+        else res.w("runtime")
+        res.w("</td>")
+      res.w("</tr>\n")
+    }
+    res.w("</table>")
+  }
+
+  public void soxWatchRow(WebReq req, WebRes res, SoxWatch w, Component c)
+  {
+    int flags = c.watchFlags[w.index]
+    res.w("<tr>")
+    componentRow(req, res, c, false)
+    tdWatchFlags(res, flags >> 4)
+    tdWatchFlags(res, flags & 0x4)
+    res.w("</tr>\n")
+  }
+*/
+/*
+  private void tdWatchFlags(WebRes res, int flags)
+  {
+    res.td()
+    if ((flags & Watch.eventTree)    != 0) res.writeChar('t')
+    if ((flags & Watch.eventConfig)  != 0) res.writeChar('c')
+    if ((flags & Watch.eventRuntime) != 0) res.writeChar('r')
+    if ((flags & Watch.eventLinks)   != 0) res.writeChar('l')
+    res.w("</td>")
+  }
+*/
+
+////////////////////////////////////////////////////////////////
+// Logs
+////////////////////////////////////////////////////////////////
+  public void updateLogLevel(WebReq req, WebRes res)
+  {
+    res.json()
+    if (req.path.size >= 4)
+    {
+      int id    = req.path.names[2].parseInt()
+      int level = req.path.names[3].parseInt()
+      Log log = Sys.log(id)
+      if (log != null)
+      {
+        res.jsonKV("service", log.qname).w(", ")
+        res.jsonKV("old log level", Log.levelStr(Sys.logLevels[id])).w(", ")
+        Sys.logLevels[id] = level
+        res.jsonKV("new log level", Log.levelStr(Sys.logLevels[id]))
+      }
+    }
+    res.jsonObjEnd(0)
+  }
+  public void logs(WebReq req, WebRes res)
+  {
+    res.jsonStrN("logs").w(": [").nl()
+    int count = 0
+    for (int i=0; i < Sys.logsLen; i++)
+    {
+      Log log = Sys.logs[i]
+      if (count > 0) res.w(",").nl() // don't put comma for first element
+      res.jsonObjStart(0)
+      res.jsonStrN("id").w(":\"").wi(log.id).w("\", ")
+      res.jsonKV("name", log.qname).w(", ")
+      res.jsonKV("level", Log.levelStr(log.level()))
+      res.jsonObjEnd(0)
+      count++
+    }
+    res.nl()
+    res.w("]")
+  }
+
+////////////////////////////////////////////////////////////////
+// Backup
+////////////////////////////////////////////////////////////////
+
+  public void backupApp(WebReq req, WebRes res)
+  {
+    int indent = 2
+    // Write app contents as JSON payload for the response
+    res.json() // {file
+
+    res.jsonKVI(indent,"fileVersion","1.0").w(",")
+    res.jsonStrNI(indent, "sedonaApp").w(": {") // {sedonaApp
+    indent += 2
+    res.jsonStrNI(indent, "schema").w(": [").nl() // [schema
+    int count = 0
+    indent += 2 // schema content
+    // List kits in schema
+    for (int i=0; i< Sys.kitsLen; i++)
+    {
+      Kit k = Sys.kits[i]
+      if (count > 0) res.w(",").nl() // don't add comma in first element
+      res.jsonObjStart(indent)
+      res.jsonKVI(indent+2,"name",k.name).w(",")
+      res.jsonStrNI(indent+2,"checksum").w(":\"").w("0x").printHex(k.checksum).print("\"")
+      res.jsonObjEnd(indent)
+      count++
+    }
+    indent -= 2
+    res.nl()
+    res.spaces(indent).w("],") // schema]
+    // Recursive backup starting with app
+    backupComp(res, Sys.app, indent)
+    res.w(",")
+
+    // Backup links (walk linksTo on each component)
+    res.jsonStrNI(indent,"links").w(": [") // [links
+    count = 0
+    foreach (Component c : Sys.app.comps, Sys.app.compsLen)
+    {
+      if (c == null) continue
+      for (Link link = c.linksTo; link != null; link = link.nextTo)
+      {
+        backupLink(Sys.app, res, link, count, indent+2)
+        count++
+      }
+    }
+    res.nl()
+    res.spaces(indent).w("]") // links]
+    indent -= 2
+    res.jsonObjEnd(indent) // sedonaApp}
+    res.jsonObjEnd(0) // file}
+  }
+
+  private void backupComp(WebRes res, Component c, int indent)
+  {
+    if (c.name.equals("app")) // top-level component
+    {
+      res.jsonStrNI(indent,"app").w(": {") // app
+    }
+    else
+    {
+      res.nl()
+      res.jsonObjStart(indent)
+      res.jsonKVI(indent+2,"name",c.name).w(",")
+      res.jsonKVI(indent+2,"id",Sys.intStr(c.id)).w(",")
+      res.jsonStrNI(indent+2, "type").w(":\"").w(c.type.kit.name).w("::").w(c.type.name).w("\",")
+    }
+
+    // config properties
+    indent += 2
+    int count = 0
+    res.jsonStrNI(indent,"prop").w(": {")
+    foreach (Slot slot : c.type.slots, c.type.slotsLen)
+    {
+      if (slot.isProp() && slot.isConfig())
+      {
+        if (count > 0) res.w(",") // don't add comma in first element
+        res.jsonStrNI(indent+2, slot.name).w(":\"")
+        res.printProp(c, slot).w("\"")
+        count++
+      }
+    }
+    res.jsonObjEnd(indent).w(",")
+
+    // children
+    res.jsonStrNI(indent,"children").w(": [")
+    count = 0
+    int nextKid = c.children
+    while (nextKid != nullId)
+    {
+      if (count > 0) res.w(",")
+      Component kid = Sys.app.lookup(nextKid);
+      if (kid == null) continue;
+      backupComp(res, kid, indent+2);
+      nextKid = kid.nextSibling
+      count++
+    }
+    if (count > 0) // has children
+    {
+      res.nl()
+      res.spaces(indent).w("]")
+    } else {
+      res.w("]")
+    }
+    indent -= 2
+    // close component
+    res.jsonObjEnd(indent)
+  }
+
+
+
+  private void backupLink(App app, WebRes res, Link link, int count, int indent)
+  {
+    // TODO: path based links not really supported correctly
+    Component from = app.lookup(link.fromComp);
+    Component to   = app.lookup(link.toComp);
+    if (from == null || to == null) return;
+
+    Slot fromSlot = from.type.slot(link.fromSlot);
+    Slot toSlot   = to.type.slot(link.toSlot);
+    if (fromSlot == null || toSlot == null) return;
+
+    if (count > 0) res.w(",") // don't add comma in the first element
+    res.nl()
+    res.jsonObjStart(indent)
+    res.jsonStrNI(indent+2,"from").w(":\"")
+    recurPrint(res, from, "/")
+    res.w(".").w(fromSlot.name).w("\",")
+    res.jsonStrNI(indent+2,"to").w(":\"")
+    recurPrint(res, to, "/")
+    res.w(".").w(toSlot.name).w("\"")
+    res.jsonObjEnd(indent)
+  }
+
+
+
+  // Print component names with given delimiter d
+  private void recurPrint(WebRes res, Component c, Str d)
+  {
+    if (c==null) return
+    if ((c.parent!=nullId) && (c.parent!=0))
+      recurPrint(res, Sys.app.lookup(c.parent), d)
+    res.w(d).w(c.name)
+  }
+
+
+////////////////////////////////////////////////////////////////
+// Echo
+////////////////////////////////////////////////////////////////
+
+  public void echo(WebReq req, WebRes res)
+  {
+    res.jsonStrN("webReq").w(": {")
+    res.jsonStrN("method").w(":\"").w(req.method).w("\", ")
+    res.jsonStrN("uri").w(":\"").w(req.uri).w("\", ")
+    res.jsonStrN("version").w(":\"").w(req.version).w("\", ")
+    res.jsonStrN("path").w(":\"")
+    // Echo parsed path elements
+    int count = req.path.size
+    for (int i=0; i<count; ++i)
+      res.w("/").w(req.path.names[i])
+    res.w("\", ")
+    res.jsonStrN("query").w(":\"").w(req.query).w("\", ")
+    res.jsonStrN("params").w(": {")
+    // Echo HTTP request parameters
+    count = req.params.size
+    for (int i=0; i<count-1; ++i)
+      res.jsonKV(req.params.names[i], req.params.values[i]).w(", ")
+    res.jsonKV(req.params.names[count-1], req.params.values[count-1])
+    res.w(" } }")
+  }
+
+}

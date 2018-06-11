@@ -87,6 +87,14 @@ class StrTest
     s.copyFromStr("  def  ", 8);  assert(s.trim().equals("def"))
   }
 
+  static void testSuffix()
+  {
+    s.copyFromStr("abcdefg", 8);  assert(s.suffix(0).equals("abcdefg"))
+    s.copyFromStr("abcdefg", 8);  assert(s.suffix(1).equals("bcdefg"))
+    s.copyFromStr("abcdefg", 8);  assert(s.suffix(2).equals("cdefg"))
+    s.copyFromStr("abcdefg", 8);  assert(s.suffix(6).equals("g"))
+  }
+
   static void testParseInt()
   {
     assert("".parseInt() == -1)

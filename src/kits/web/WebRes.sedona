@@ -70,6 +70,127 @@ class WebRes
   }
 
 ////////////////////////////////////////////////////////////////
+// JSON Output
+////////////////////////////////////////////////////////////////
+
+  **
+  ** Write out 200 OK status, application/json content type,
+  ** and opening JSON markup.
+  **
+  WebRes json()
+  {
+    writeStatus(HttpCode.ok)
+    writeContentType("application/json")
+    finishHeaders()
+    return w("\n{")
+  }
+
+  **
+  ** Write opening JSON markup.
+  **
+  WebRes jsonObjStart(int indent)
+  {
+    return spaces(indent).w("{")
+  }
+
+  **
+  ** Write closing JSON markup.
+  ** on a new line
+  **
+  WebRes jsonObjEnd(int indent)
+  {
+    nl()
+    return spaces(indent).w("}")
+  }
+
+  **
+  ** Print the specified string in JSON format
+  ** enclosed in double quotes
+  ** with a specified indent
+  **
+  private WebRes jsonStr(int indent, Str str)
+  {
+//    spaces(indent).w("\"").w(str).w("\"")
+    spaces(indent).w("\"").jsonEsc(str).w("\"")
+    return this
+  }
+
+  **
+  ** Print the specified string in JSON format
+  ** on a new line with a specified indent
+  **
+  public WebRes jsonStrNI(int indent, Str str)
+  {
+    nl()
+    return jsonStr(indent, str)
+  }
+
+  **
+  ** Print the specified string in JSON format
+  ** on a new line without indent
+  **
+  public WebRes jsonStrN(Str str)
+  {
+    nl()
+    return jsonStr(0, str)
+  }
+
+  **
+  ** Print the specified JSON key/ value pair
+  ** on a new line without indent
+  **
+  public WebRes jsonKV(Str key, Str val)
+  {
+    jsonStrN(key).w(":").jsonStr(0, val)
+    return this
+  }
+
+  **
+  ** Print the specified JSON key/ value pair
+  ** on a new line with a specified indent
+  **
+  public WebRes jsonKVI(int indent, Str key, Str val)
+  {
+    jsonStrNI(indent, key).w(":").jsonStr(0, val)
+    return this
+  }
+
+  **
+  ** Print the specified JSON string escaping
+  ** ", \, \n, \r, \t
+  ** Others (\f, \b) are ignored
+  **
+  public WebRes jsonEsc(Str s)
+  {
+    for (int i=0; true; ++i)
+    {
+      int c = s.get(i)
+      if (c == 0) break
+      if (c == '"')
+        print("\\\"")
+      else if (c == '\\')
+        print("\\\\")
+      else if (c == '\n')
+        print("\\n")
+      else if (c == '\r')
+        print("\\r")
+      else if (c == '\t')
+        print("\\t")
+      else
+        writeChar(c)
+      // switch (c)
+      // {
+      //   case '"': print("\\\""); break;
+      //   case '\\': print("\\\\"); break;
+      //   case '\n': print("\\n"); break;
+      //   case '\r': print("\\r"); break;
+      //   case '\t': print("\\t"); break;
+      //   default: writeChar(c); break;
+      // }
+    }
+    return this
+  }
+////////////////////////////////////////////////////////////////
 // HTML Output
 ////////////////////////////////////////////////////////////////
 
@@ -120,6 +241,31 @@ class WebRes
   }
 
   **
+  ** Print the specified string escaping <, >, and &
+  ** into the &lt;, &gt;, and &amp;
+  **
+  public WebRes esc(Str s)
+  {
+    for (int i=0; true; ++i)
+    {
+      int c = s.get(i)
+      if (c == 0) break
+      switch (c)
+      {
+        case '<': print("&lt;"); break;
+        case '>': print("&gt;"); break;
+        case '&': print("&amp;"); break;
+        default: writeChar(c); break;
+      }
+    }
+    return this
+  }
+
+////////////////////////////////////////////////////////////////
+// Generic Output
+////////////////////////////////////////////////////////////////
+
+  **
   ** Print the component's current value of the specified property.
   **
   WebRes printProp(Component c, Slot prop)
@@ -133,11 +279,11 @@ class WebRes
       case Type.longId:    printLong(c.getLong(prop));     break
       case Type.floatId:   printFloat(c.getFloat(prop));   break
       case Type.doubleId:  printDouble(c.getDouble(prop)); break
-      case Type.bufId:     
+      case Type.bufId:
         Buf buf = c.getBuf(prop);
         if (prop.isAsStr()) w(buf.toStr())
         else  // if not a string
-        {                 
+        {
           /* Print contents of buf using base64 encoding */
           encode64(buf)
           /* Print contents of buf as hex bytes
@@ -151,7 +297,7 @@ class WebRes
           */
         }
         break
-      default: 
+      default:
         w("????")
     }
     return this
@@ -181,27 +327,6 @@ class WebRes
   WebRes wi(int i)
   {
     printInt(i)
-    return this
-  }
-
-  **
-  ** Print the specified string escaping <, >, and &
-  ** into the &lt;, &gt;, and &amp;
-  **
-  public WebRes esc(Str s)
-  {                  
-    for (int i=0; true; ++i)
-    {                      
-      int c = s.get(i)
-      if (c == 0) break
-      switch (c)
-      {
-        case '<': print("&lt;"); break;
-        case '>': print("&gt;"); break;
-        case '&': print("&amp;"); break;
-        default: writeChar(c); break;
-      }
-    }
     return this
   }
 
