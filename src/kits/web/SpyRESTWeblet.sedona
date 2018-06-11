@@ -82,7 +82,7 @@ class SpyRESTWeblet
     else index(req, res)
 
     // standard footer
-    res.jsonEnd(0)
+    res.jsonObjEnd(0)
   }
 
   private void nav(WebReq req, WebRes res)
@@ -116,7 +116,7 @@ class SpyRESTWeblet
     res.jsonKV("name", app.name).w(",");
     res.jsonStrN("uptime").w(":\"").printElapsed(Sys.bootTime).w("\",");
     res.jsonStrN("cycleCount").w(":\"").printLong(app.cycleCount)
-    res.w("\"").jsonEnd(0)
+    res.w("\"").jsonObjEnd(0)
     res.w(",").nl()
 
     res.jsonStrN("indexGET").w(": [")
@@ -140,7 +140,7 @@ class SpyRESTWeblet
       res.jsonKV(w.prefix(), w.description())
       count++
     }
-    res.jsonEnd(0)
+    res.jsonObjEnd(0)
   }
 
 ////////////////////////////////////////////////////////////////
@@ -204,14 +204,14 @@ class SpyRESTWeblet
     {
       if (count > 0) res.w(",").nl() // don't put comma for first element
       Slot slot = t.slots[i]
-      res.jsonStart(0)
+      res.jsonObjStart(0)
       res.jsonStrN("id").w(":\"").wi(slot.id).w("\",")
       res.jsonKV("name", slot.name).w(",")
       res.jsonKV("type", slot.type.name).w(",")
       res.jsonStrN("value").w(":\"")
       if (slot.isProp()) res.printProp(c, slot)
       res.w("\"")
-      res.jsonEnd(0)
+      res.jsonObjEnd(0)
       count++
     }
     res.nl()
@@ -223,11 +223,11 @@ class SpyRESTWeblet
     for (Component kido = app.lookup(c.children); kido != null; kido = app.lookup(kido.nextSibling))
     {
       if (count > 0) res.w(",").nl() // don't put comma for first element
-      res.jsonStart(0)
+      res.jsonObjStart(0)
       res.jsonKV("id", Sys.intStr(kido.id)).w(",")
       res.jsonKV("name", kido.name).w(",")
       res.jsonStrN("type").w(":\"").w(kido.type.kit.name).w("::").w(kido.type.name).w("\"")
-      res.jsonEnd(0)
+      res.jsonObjEnd(0)
       count++
     }
     res.nl()
@@ -244,11 +244,11 @@ class SpyRESTWeblet
       {
         if (count > 0) res.w(",").nl() // don't put comma for first element
         Component to = app.lookup(link.toComp)
-        res.jsonStart(0)
+        res.jsonObjStart(0)
            .jsonKV("from", t.slot(link.fromSlot).name).w(",")
            .jsonStrN("to").w(":\"").w(to.name).w(".").w(to.type.slot(link.toSlot).name)
            .w("\"")
-        res.jsonEnd(0)
+        res.jsonObjEnd(0)
         count++
       }
       // add a comma if 'from' link was present and 'to' link is expected
@@ -259,16 +259,16 @@ class SpyRESTWeblet
       {
         if (count > 0) res.w(",").nl() // don't put comma for first element
         Component from = app.lookup(link.fromComp)
-        res.jsonStart(0)
+        res.jsonObjStart(0)
            .jsonStrN("from").w(":\"").w(from.name).w(".").w(from.type.slot(link.fromSlot).name).w("\",")
            .jsonKV("to", t.slot(link.toSlot).name)
-        res.jsonEnd(0)
+        res.jsonObjEnd(0)
         count++
       }
       res.nl()
       res.w("]")
     }
-    res.w("").jsonEnd(0)
+    res.w("").jsonObjEnd(0)
   }
 
 ////////////////////////////////////////////////////////////////
@@ -309,12 +309,12 @@ class SpyRESTWeblet
     {
       Kit k = Sys.kits[i]
       if (count > 0) res.w(",").nl() // don't put comma for first element
-      res.jsonStart(0)
+      res.jsonObjStart(0)
       res.jsonStrN("id").w(":\"").wi(k.id).w("\", ")
       res.jsonKV("name", k.name).w(", ")
       res.jsonKV("version", k.version).w(", ")
       res.jsonStrN("checksum").w(":\"").w("0x").printHex(k.checksum).print("\"")
-      res.jsonEnd(0)
+      res.jsonObjEnd(0)
       count++
     }
     res.nl()
@@ -336,10 +336,10 @@ class SpyRESTWeblet
     {
       Type t = k.types[i]
       if (count > 0) res.w(",").nl() // don't put comma for first element
-      res.jsonStart(0)
+      res.jsonObjStart(0)
       res.jsonStrN("id").w(":\"").wi(t.id).w("\", ")
       res.jsonKV("name", t.name)
-      res.jsonEnd(0)
+      res.jsonObjEnd(0)
       count++
     }
     res.nl()
@@ -365,11 +365,11 @@ class SpyRESTWeblet
     {
       Slot slot = t.slots[i]
       if (count > 0) res.w(",").nl() // don't put comma for first element
-      res.jsonStart(0)
+      res.jsonObjStart(0)
       res.jsonStrN("id").w(":\"").wi(slot.id).w("\", ")
       res.jsonKV("name", slot.name).w(", ")
       res.jsonKV("type", slot.type.name)
-      res.jsonEnd(0)
+      res.jsonObjEnd(0)
       count++
     }
     res.nl()
@@ -410,13 +410,13 @@ class SpyRESTWeblet
 /* TODO
     foreach (SoxWatch w : sox.watches, Watch.max)
     {
-      res.jsonStart(0)
+      res.jsonObjStart(0)
       res.jsonStrN("Id").w(":\"").wi(i).w("\", ")
       res.jsonStrN("Closed").w(":\"").printBool(w.closed).print("\", ")
       res.jsonKV("Address", w.addr.host.toStr()).w("</td>")
       res.jsonStrN("Port").w(":\"").wi(w.addr.port).w("\", ")
       res.jsonStrN("Last Receive").w(":\"").printElapsed(w.lastReceiveTicks).print("\"")
-      res.jsonEnd(0).w(",")
+      res.jsonObjEnd(0).w(",")
       i++
     }
 */
@@ -499,7 +499,7 @@ class SpyRESTWeblet
         res.jsonKV("new log level", Log.levelStr(Sys.logLevels[id]))
       }
     }
-    res.jsonEnd(0)
+    res.jsonObjEnd(0)
   }
   public void logs(WebReq req, WebRes res)
   {
@@ -509,11 +509,11 @@ class SpyRESTWeblet
     {
       Log log = Sys.logs[i]
       if (count > 0) res.w(",").nl() // don't put comma for first element
-      res.jsonStart(0)
+      res.jsonObjStart(0)
       res.jsonStrN("id").w(":\"").wi(log.id).w("\", ")
       res.jsonKV("name", log.qname).w(", ")
       res.jsonKV("level", Log.levelStr(log.level()))
-      res.jsonEnd(0)
+      res.jsonObjEnd(0)
       count++
     }
     res.nl()
@@ -541,10 +541,10 @@ class SpyRESTWeblet
     {
       Kit k = Sys.kits[i]
       if (count > 0) res.w(",").nl() // don't add comma in first element
-      res.jsonStart(indent)
+      res.jsonObjStart(indent)
       res.jsonKVI(indent+2,"name",k.name).w(",")
       res.jsonStrNI(indent+2,"checksum").w(":\"").w("0x").printHex(k.checksum).print("\"")
-      res.jsonEnd(indent)
+      res.jsonObjEnd(indent)
       count++
     }
     indent -= 2
@@ -569,8 +569,8 @@ class SpyRESTWeblet
     res.nl()
     res.spaces(indent).w("]") // links]
     indent -= 2
-    res.jsonEnd(indent) // sedonaApp}
-    res.jsonEnd(0) // file}
+    res.jsonObjEnd(indent) // sedonaApp}
+    res.jsonObjEnd(0) // file}
   }
 
   private void backupComp(WebRes res, Component c, int indent)
@@ -582,7 +582,7 @@ class SpyRESTWeblet
     else
     {
       res.nl()
-      res.jsonStart(indent)
+      res.jsonObjStart(indent)
       res.jsonKVI(indent+2,"name",c.name).w(",")
       res.jsonKVI(indent+2,"id",Sys.intStr(c.id)).w(",")
       res.jsonStrNI(indent+2, "type").w(":\"").w(c.type.kit.name).w("::").w(c.type.name).w("\",")
@@ -602,7 +602,7 @@ class SpyRESTWeblet
         count++
       }
     }
-    res.jsonEnd(indent).w(",")
+    res.jsonObjEnd(indent).w(",")
 
     // children
     res.jsonStrNI(indent,"children").w(": [")
@@ -626,7 +626,7 @@ class SpyRESTWeblet
     }
     indent -= 2
     // close component
-    res.jsonEnd(indent)
+    res.jsonObjEnd(indent)
   }
 
 
@@ -644,14 +644,14 @@ class SpyRESTWeblet
 
     if (count > 0) res.w(",") // don't add comma in the first element
     res.nl()
-    res.jsonStart(indent)
+    res.jsonObjStart(indent)
     res.jsonStrNI(indent+2,"from").w(":\"")
     recurPrint(res, from, "/")
     res.w(".").w(fromSlot.name).w("\",")
     res.jsonStrNI(indent+2,"to").w(":\"")
     recurPrint(res, to, "/")
     res.w(".").w(toSlot.name).w("\"")
-    res.jsonEnd(indent)
+    res.jsonObjEnd(indent)
   }
 
 

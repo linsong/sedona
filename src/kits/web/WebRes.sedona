@@ -88,7 +88,7 @@ class WebRes
   **
   ** Write opening JSON markup.
   **
-  WebRes jsonStart(int indent)
+  WebRes jsonObjStart(int indent)
   {
     return spaces(indent).w("{")
   }
@@ -97,7 +97,7 @@ class WebRes
   ** Write closing JSON markup.
   ** on a new line
   **
-  WebRes jsonEnd(int indent)
+  WebRes jsonObjEnd(int indent)
   {
     nl()
     return spaces(indent).w("}")
@@ -110,7 +110,8 @@ class WebRes
   **
   private WebRes jsonStr(int indent, Str str)
   {
-    spaces(indent).w("\"").w(str).w("\"")
+//    spaces(indent).w("\"").w(str).w("\"")
+    spaces(indent).w("\"").jsonEsc(str).w("\"")
     return this
   }
 
@@ -155,7 +156,8 @@ class WebRes
   }
 
   **
-  ** Print the specified JSON string escaping ", \, and /
+  ** Print the specified JSON string escaping
+  ** ", \, \n, \r, \t
   ** Others (\f, \b) are ignored
   **
   public WebRes jsonEsc(Str s)
@@ -165,11 +167,26 @@ class WebRes
       int c = s.get(i)
       if (c == 0) break
       if (c == '"')
-        print("\"")
+        print("\\\"")
       else if (c == '\\')
-        print("\\")
+        print("\\\\")
+      else if (c == '\n')
+        print("\\n")
+      else if (c == '\r')
+        print("\\r")
+      else if (c == '\t')
+        print("\\t")
       else
         writeChar(c)
+      // switch (c)
+      // {
+      //   case '"': print("\\\""); break;
+      //   case '\\': print("\\\\"); break;
+      //   case '\n': print("\\n"); break;
+      //   case '\r': print("\\r"); break;
+      //   case '\t': print("\\t"); break;
+      //   default: writeChar(c); break;
+      // }
     }
     return this
   }
