@@ -1,0 +1,109 @@
+<?xml version='1.0'?>
+<sedonaApp>
+<schema>
+  <kit name="sys" checksum="d3984c51" />
+  <kit name="basicSchedule" checksum="7fdca638" />
+  <kit name="communityMQTT" checksum="6d409264" />
+  <kit name="datetime" checksum="3a280dce" />
+  <kit name="datetimeStd" checksum="fc5628d7" />
+  <kit name="func" checksum="821b7396" />
+  <kit name="hvac" checksum="7264c67c" />
+  <kit name="inet" checksum="25648ba7" />
+  <kit name="logic" checksum="9fe95ce1" />
+  <kit name="math" checksum="c22b255c" />
+  <kit name="platUnix" checksum="751711ab" />
+  <kit name="pstore" checksum="7ea2cb06" />
+  <kit name="sox" checksum="397a84dd" />
+  <kit name="timing" checksum="aeaac82a" />
+  <kit name="types" checksum="10936551" />
+  <kit name="web" checksum="0462d43e" />
+</schema>
+<app>
+  <prop name="appName" val="demo"/>
+  <!-- /service -->
+  <comp name="service" id="1" type="sys::Folder">
+    <prop name="meta" val="33685505"/>
+    <!-- /service/plat -->
+    <comp name="plat" id="9" type="platUnix::UnixPlatformService"/>
+    <!-- /service/users -->
+    <comp name="users" id="3" type="sys::UserService">
+      <prop name="meta" val="17367041"/>
+      <!-- /service/users/admin -->
+      <comp name="admin" id="4" type="sys::User">
+        <prop name="cred" val="hE49ksThgAeLkWB3NUU1NWeDO54="/>
+        <prop name="perm" val="2147483647"/>
+        <prop name="prov" val="255"/>
+      </comp>
+    </comp>
+    <!-- /service/sox -->
+    <comp name="sox" id="5" type="sox::SoxService">
+      <prop name="meta" val="17104897"/>
+    </comp>
+    <!-- /service/web -->
+    <comp name="web" id="6" type="web::WebService">
+      <prop name="meta" val="16842753"/>
+      <prop name="port" val="8080"/>
+    </comp>
+    <!-- /service/pstore -->
+    <comp name="pstore" id="11" type="pstore::PstoreService"/>
+    <!-- /service/time -->
+    <comp name="time" id="12" type="datetimeStd::DateTimeServiceStd">
+      <prop name="utcOffset" val="32400"/>
+      <prop name="osUtcOffset" val="true"/>
+    </comp>
+  </comp>
+  <!-- /play -->
+  <comp name="play" id="10" type="sys::Folder">
+    <prop name="meta" val="34013185"/>
+    <!-- /play/rampA -->
+    <comp name="rampA" id="7" type="func::Ramp">
+      <prop name="meta" val="67371009"/>
+      <prop name="min" val="20.0"/>
+      <prop name="max" val="80.0"/>
+    </comp>
+    <!-- /play/rampB -->
+    <comp name="rampB" id="8" type="func::Ramp">
+      <prop name="meta" val="68288513"/>
+    </comp>
+    <!-- /play/adder -->
+    <comp name="adder" id="2" type="math::Add2">
+      <prop name="meta" val="386662401"/>
+    </comp>
+  </comp>
+  <!-- /MQTTSer -->
+  <comp name="MQTTSer" id="13" type="communityMQTT::MQTTService">
+    <prop name="meta" val="118620161"/>
+    <!-- /MQTTSer/Subscri -->
+    <comp name="Subscri" id="14" type="communityMQTT::Subscriber">
+      <prop name="meta" val="268828673"/>
+      <prop name="host" val="127.0.0.1"/>
+      <prop name="clientid" val="vincentsub"/>
+      <!-- /MQTTSer/Subscri/FloatMe -->
+      <comp name="FloatMe" id="18" type="communityMQTT::FloatMessage">
+        <prop name="meta" val="50528257"/>
+        <prop name="topic" val="vincent/float"/>
+      </comp>
+    </comp>
+    <!-- /MQTTSer/Publish -->
+    <comp name="Publish" id="17" type="communityMQTT::Publisher">
+      <prop name="meta" val="67502081"/>
+      <prop name="host" val="127.0.0.1"/>
+      <prop name="clientid" val="vincentpub"/>
+      <!-- /MQTTSer/Publish/Ramp -->
+      <comp name="Ramp" id="20" type="func::Ramp">
+        <prop name="meta" val="67502081"/>
+      </comp>
+      <!-- /MQTTSer/Publish/FloatMe -->
+      <comp name="FloatMe" id="21" type="communityMQTT::FloatMessage">
+        <prop name="meta" val="352649217"/>
+        <prop name="topic" val="vincent/float"/>
+      </comp>
+    </comp>
+  </comp>
+</app>
+<links>
+  <link from="/play/rampB.out" to="/play/adder.in2"/>
+  <link from="/play/rampA.out" to="/play/adder.in1"/>
+  <link from="/MQTTSer/Publish/Ramp.out" to="/MQTTSer/Publish/FloatMe.payload"/>
+</links>
+</sedonaApp>

@@ -1,0 +1,33 @@
+<!--
+  -  Sedona Kit
+  -  Copyright (c) 2015 Sedona Community
+  -  Licensed under the Academic Free License version 3.0
+  -->
+
+<sedonaKit
+ name = "communityMQTT"
+ vendor = "community"
+ description = "MQTT client library"
+ includeSource = "true"
+ doc = "true"
+>
+
+  <!-- Dependencies -->
+  <depend on="sys 1.2+" />
+
+  <!-- Source Directories -->
+  <source dir="." />
+  <source dir="test" />
+
+  <!-- Natives -->
+  <native qname="communityMQTT::Worker.startSession"    id="50::0"  />
+  <native qname="communityMQTT::Worker.stopSession"     id="50::1"  />
+  <native qname="communityMQTT::Worker.isSessionLive"   id="50::2"  />
+
+  <native qname="communityMQTT::Message.doPublish"      id="50::3"  />
+  <native qname="communityMQTT::Message.doSubscribe"    id="50::4"  />
+  <native qname="communityMQTT::Message.doUnsubscribe"  id="50::5"  />
+  <native qname="communityMQTT::Message.fetchData"      id="50::6"  />
+
+</sedonaKit>
+

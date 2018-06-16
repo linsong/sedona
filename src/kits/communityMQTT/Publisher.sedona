@@ -1,0 +1,14 @@
+** 
+** Publisher worker will loop over its message children and publish their data to MQTT broker.
+** NOTE: Publisher worker must be child of a MQTTService object; One MQTTService object 
+** can have multiple Publisher child, so that publishing data to multiple MQTT broker 
+** is possible. 
+** 
+class Publisher extends Worker
+{
+  protected override void doWork(Message m) 
+  {
+    if (m != null)
+      m.publish(handle) 
+  }
+}

@@ -1,0 +1,274 @@
+@palette=false
+internal class MQTTServiceTest extends Test
+{
+  static Publisher createPublisher(MQTTService s) 
+  {
+    App a = Sys.app
+    Publisher pub = (Publisher)a.add(s, "pub", Publisher.type)
+    pub.host.copyFromStr("127.0.0.1")
+    pub.clientid.copyFromStr("vincent-pub")
+
+    // start() has already been called in App.add method, but that call will
+    // fail since host and clientid haven't be set at that time, need call
+    // start() again here
+    if (pub.error != Worker.Ok)
+      pub.start() 
+    return pub
+  }
+
+  static Subscriber createSubscriber(MQTTService s) 
+  {
+    App a = Sys.app
+    Subscriber sub = (Subscriber)a.add(s, "sub", Subscriber.type)
+    sub.host.copyFromStr("127.0.0.1")
+    sub.clientid.copyFromStr("vincent-sub")
+    if (sub.error != Worker.Ok)
+      sub.start()
+    return sub
+  }
+
+  static FloatMessage createPubFloatMsg(Publisher pub, Str topic)
+  {
+    App a = Sys.app
+    FloatMessage fm = (FloatMessage)a.add(pub, "pub_fm", FloatMessage.type)
+    fm.topic.copyFromStr(topic)
+    fm.publishInterval := 1000
+    fm.payload := 42.123
+    if (fm.error != Message.Ok)
+      fm.start()
+
+    return fm
+  }
+
+  static FloatMessage createSubFloatMsg(Subscriber sub, Str topic)
+  {
+    App a = Sys.app
+    FloatMessage fm = (FloatMessage)a.add(sub, "sub_fm", FloatMessage.type)
+    fm.topic.copyFromStr(topic)
+    fm.updateInterval := 100
+    fm.payload := 0.0
+    if (fm.error != Message.Ok)
+      fm.start()
+
+    return fm
+  }
+
+  static IntMessage createPubIntMsg(Publisher pub, Str topic)
+  {
+    App a = Sys.app
+    IntMessage im = (IntMessage)a.add(pub, "pub_im", IntMessage.type)
+    im.topic.copyFromStr(topic)
+    im.publishInterval := 1000
+    im.payload := 42
+    if (im.error != Message.Ok)
+      im.start()
+
+    return im
+  }
+
+  static IntMessage createSubIntMsg(Subscriber sub, Str topic)
+  {
+    App a = Sys.app
+    IntMessage im = (IntMessage)a.add(sub, "sub_im", IntMessage.type)
+    im.topic.copyFromStr(topic)
+    im.updateInterval := 100
+    im.payload := 0
+    if (im.error != Message.Ok)
+      im.start()
+
+    return im
+  }
+
+  static BoolMessage createPubBoolMsg(Publisher pub, Str topic)
+  {
+    App a = Sys.app
+    BoolMessage bm = (BoolMessage)a.add(pub, "pub_bm", BoolMessage.type)
+    bm.topic.copyFromStr(topic)
+    bm.publishInterval := 1000
+    bm.payload := true
+    if (bm.error != Message.Ok)
+      bm.start()
+
+    return bm
+  }
+
+  static BoolMessage createSubBoolMsg(Subscriber sub, Str topic)
+  {
+    App a = Sys.app
+    BoolMessage bm = (BoolMessage)a.add(sub, "sub_bm", BoolMessage.type)
+    bm.topic.copyFromStr(topic)
+    bm.updateInterval := 100
+    bm.payload := false
+    if (bm.error != Message.Ok)
+      bm.start()
+
+    return bm
+  }
+
+  static StrMessage createPubStrMsg(Publisher pub, Str topic, Str msg)
+  {
+    App a = Sys.app
+    StrMessage sm = (StrMessage)a.add(pub, "pub_sm", StrMessage.type)
+    sm.topic.copyFromStr(topic)
+    sm.publishInterval := 1000
+    sm.payload.copyFromStr(msg)
+    if (sm.error != Message.Ok)
+      sm.start()
+
+    return sm
+  }
+
+  static StrMessage createSubStrMsg(Subscriber sub, Str topic)
+  {
+    App a = Sys.app
+    StrMessage sm = (StrMessage)a.add(sub, "sub_sm", StrMessage.type)
+    sm.topic.copyFromStr(topic)
+    sm.updateInterval := 100
+    sm.payload.copyFromStr("")
+    if (sm.error != Message.Ok)
+      sm.start()
+
+    return sm
+  }
+
+  static void shutdown(MQTTService s, Publisher pub, Subscriber sub) 
+  {
+    pub.stop()
+    sub.stop()
+    for(int i=0; i<100; ++i) {
+      if (pub.status == Worker.Disconnected && sub.status == Worker.Disconnected)
+        break
+
+      s.work()
+      Sys.sleep(10ms)
+    }
+    
+    assert(pub.status == Worker.Disconnected)
+    assert(sub.status == Worker.Disconnected)
+
+    assert(pub.error == Worker.Ok)
+    assert(sub.error == Worker.Ok)
+
+    s.stop()
+  }
+
+  static bool floatEqual(float a, float expected)
+  {
+    float delta = a - expected
+    return (delta < 0.001 && delta > -0.001)
+  }
+
+  static void testPubSub() 
+  {
+    App.log.message("@@@ NOTE: the MQTT kit test needs a local MQTT broker(mosquitto recommended) installed and listen at localhost:1883 @@@")
+    //set up service first
+    App a = Sys.app
+    MQTTService s = (MQTTService)a.add(a, "mqtt", MQTTService.type)
+
+    //set up publisher
+    Publisher pub = createPublisher(s)
+    assert(pub.error == Worker.Ok)
+
+    FloatMessage pub_fm = createPubFloatMsg(pub, "vincent/float")
+    assert(pub_fm.error == Message.Ok)
+
+    IntMessage pub_im = createPubIntMsg(pub, "vincent/int")
+    assert(pub_im.error == Message.Ok)
+
+    BoolMessage pub_bm = createPubBoolMsg(pub, "vincent/bool")
+    assert(pub_bm.error == Message.Ok)
+
+    StrMessage pub_sm = createPubStrMsg(pub, "vincent/str", "hello world")
+    assert(pub_sm.error == Message.Ok)
+
+    //set up subscriber
+    Subscriber sub = createSubscriber(s)
+    assert(sub.error == Worker.Ok)
+
+    FloatMessage sub_fm = createSubFloatMsg(sub, "vincent/float")
+    assert(sub_fm.error == Message.Ok)
+
+    IntMessage sub_im = createSubIntMsg(sub, "vincent/int")
+    assert(sub_im.error == Message.Ok)
+
+    BoolMessage sub_bm = createSubBoolMsg(sub, "vincent/bool")
+    assert(sub_bm.error == Message.Ok)
+
+    StrMessage sub_sm = createSubStrMsg(sub, "vincent/str")
+    assert(sub_sm.error == Message.Ok)
+
+    //keep service running until we connected
+    for(int i=0; i<100; ++i) {
+      if (pub.status == Worker.Connected && sub.status == Worker.Connected)
+        break
+
+      s.work()
+      Sys.sleep(10ms)
+    }
+
+    //assert we are connected and all good 
+    assert(pub.status == Worker.Connected)
+    assert(sub.status == Worker.Connected)
+
+    assert(pub.error == Worker.Ok)
+    assert(sub.error == Worker.Ok)
+
+    // test float data type
+    for(int i=0; i<300; ++i) {
+      if (floatEqual(sub_fm.payload, 42.123))
+        break;
+
+      s.work()
+      pub_fm.execute()
+      sub_fm.execute()
+
+      Sys.sleep(10ms)
+    }
+    assert(floatEqual(sub_fm.payload, 42.123))
+
+    // test int data type
+    for(int i=0; i<300; ++i) {
+      if (sub_im.payload == 42)
+        break
+
+      s.work()
+      pub_im.execute()
+      sub_im.execute()
+
+      Sys.sleep(10ms)
+    }
+    assert(sub_im.payload == 42)
+
+    // test bool data type
+    for(int i=0; i<300; ++i) {
+      if (sub_bm.payload == true)
+        break
+
+      s.work()
+      pub_bm.execute()
+      sub_bm.execute()
+
+      Sys.sleep(10ms)
+    }
+    assert(sub_bm.payload == true)
+
+    // test Str data type
+    for(int i=0; i<300; ++i) {
+      if (sub_sm.payload.toStr().equals("hello world"))
+        break
+
+      s.work()
+      pub_sm.execute()
+      sub_sm.execute()
+
+      Sys.sleep(10ms)
+    }
+    assert(sub_sm.payload.toStr().equals("hello world"))
+
+    shutdown(s, pub, sub)
+
+    //clean up components for testing, otherwise it will break other tests
+    a.cleanupApp()
+    // assert(a.remove(s))
+  } 
+}

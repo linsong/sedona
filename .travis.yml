@@ -11,7 +11,7 @@ services:
   - docker
 
 before_install:
-  - sudo apt-get update && sudo apt-get -y install --fix-missing libc6-dev-i386 
+  - sudo apt-get update && sudo apt-get -y install --fix-missing libc6-dev-i386 mosquitto
 
 install:
   - source ./adm/unix/init.sh

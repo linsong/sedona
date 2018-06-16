@@ -13,6 +13,7 @@
     <nativeKit depend="inet 1.0+"   />
     <nativeKit depend="datetimeStd 1.0+" />
     <nativeKit depend="platUnix 1.0+" />
+    <nativeKit depend="communityMQTT 1.0+" />
  
     <!-- Sources -->
     <nativeSource path="/src/native/vm" />
@@ -23,6 +24,7 @@
     <nativeSource path="/src/kits/inet/native/std" />
     <nativeSource path="/src/kits/inet/native/sha1" />
     <nativeSource path="/src/kits/datetimeStd/native/std" />
+    <nativeSource path="/src/kits/communityMQTT/native" />
   </compile>    
   
   <manifestInclude>

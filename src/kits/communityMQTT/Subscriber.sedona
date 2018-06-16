@@ -1,0 +1,25 @@
+** 
+** Subscriber worker will loop over its message children and subscribe the MQTT topics 
+** defined in these message objects, then it will check if there is update data arrived, 
+** if yes, notify the relatived message object to update its payload.
+** NOTE: Subscriber worker must be child of a MQTTService object; One MQTTService object 
+** can have multiple Subscriber child, so that subscribing data from multiple MQTT broker 
+** is possible. 
+** 
+class Subscriber extends Worker
+{
+  override int childEvent(int eType, Component child)
+  {
+    if (eType == Component.REMOVED && child.type.is(Message.type)) {
+      ((Message)child).unsubscribe(handle);   
+    }
+    return 0
+  }
+  
+  protected override void doWork(Message m) 
+  {
+    if (m != null)
+      m.subscribe(handle) 
+  }
+
+}

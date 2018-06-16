@@ -1,0 +1,79 @@
+** 
+** Float message defines a float type MQTT topic data point. There are 2 use cases:
+**  1. when put it within a Publisher object, it will publish it's payload to 
+**     the MQTT broker configured by the Publisher object (publishing mode)
+**  2. when put it within a Subscriber object, it will fetch data from MQTT broker
+**     configured by the Subscriber object (subscription mode)
+**
+** Just like other type of Message object, FloatMessage's parent must be Publisher or Subscriber, otherwise it will not work
+** 
+** By FloatMessage, you can configure the following MQTT related things: 
+**  1. MQTT topic 
+**  2. MQTT QoS
+**  3. publishInterval (how often to publish data, publishing mode)
+**  4. updateInterval (how often to check data update, subscription mode)
+** 
+** The 'error' slot will show error message if something is wrong.
+** 
+class FloatMessage extends Message
+{
+  property float payload = 0.0
+
+  ** 
+  ** return the payload string, 
+  ** shouldn't be called by outside
+  ** 
+  protected override Str getPayload() { return Sys.floatStr(payload) }
+
+  ** 
+  ** callback method to update local data, 
+  ** shouldn't be called by outside
+  **
+  protected override bool updateData(Obj handle) 
+  {
+    bool result = super.updateData(handle)
+    if (!result)
+      return result
+
+    payload := parseFloat()
+    return result
+  }
+  
+  private float parseFloat()
+  {
+    int i = 0
+    bool neg = false
+
+    if (strBuf.get(i) == '-')
+    {
+        neg = true
+        i++
+    }
+    if (strBuf.get(i) == 0) return null
+
+    int len = strBuf.length()
+    float fractionFactor = null
+    float val = 0f
+    for(; i<len; ++i)
+    {
+        int c
+        c = strBuf.get(i);
+        if (c == '.') fractionFactor = 0.1
+        else if (c < '0' || c > '9') return null
+        else {
+            if (fractionFactor == null)
+            {
+                val = (val*10f) + (float)(c-'0')
+            }
+            else
+            {
+                val = val + ((float)(c-'0'))*fractionFactor
+                fractionFactor = fractionFactor * 0.1
+            }
+        }
+    }
+    
+    if (neg) val = -val
+    return val
+  }
+}

@@ -1,0 +1,239 @@
+**
+** MQTT Worker Base Class
+**
+@palette=false
+abstract internal class Worker extends Component
+{
+  ////////////////////////////////////////////////////////////////
+  // Properties
+  ////////////////////////////////////////////////////////////////
+  @config @asStr property Buf(64) host
+  @config property int port = 1883
+
+  @config @asStr property Buf(16) clientid
+  @config @asStr property Buf(16) username
+  @config @asStr property Buf(16) password
+  
+  @config property bool autoStart = true
+
+  define int Ok = 0
+  define int Err_InvalidParent = 1
+  define int Err_InvalidHost = 2
+  define int Err_InvalidPort = 3
+  define int Err_InvalidClientId = 4
+
+  define Str WorkerError = "Ok, Invaid Parent, Invalid Host, Invalid Port, Invalid ClientId"
+  @range=WorkerError
+  @readonly property byte error = 0
+  
+  define int Disconnected = 0
+  define int Connected = 1
+  define Str NetworkStatus = "Disconnected, Connected"
+  @range=NetworkStatus
+  @readonly property byte status = Disconnected
+  
+  ////////////////////////////////////////////////////////////////
+  // Methods
+  ////////////////////////////////////////////////////////////////
+  abstract void doWork(Message m) 
+  
+  // natives 
+  **
+  ** start a MQTT session to given host:port using clientid, username and password.
+  ** a session handle object will be returned, that will be used by later
+  ** native calls on this session.
+  ** 
+  static native Obj startSession(Str host, int port, Str clientid, Str username, Str password)
+
+  ** 
+  ** stop the MQTT session for given session handle object
+  ** 
+  static native void stopSession(Obj handle)
+
+  ** 
+  ** check if session for given session handle object live or not 
+  ** 
+  static native bool isSessionLive(Obj handle)
+
+  ** 
+  ** update user's inputs for following constraints:
+  **   - parent component should be MQTTService
+  **   - host slot should not be empty 
+  **   - port slot should not be empty 
+  **   - clientid should not be empty 
+  private void validateInputs() 
+  {
+    Component parentComponent = Sys.app.lookup(parent)
+    if (!parentComponent.type.is(MQTTService.type))
+      error := Err_InvalidParent
+    else if (port == 0)
+      error := Err_InvalidPort
+    else if (host.toStr().length() == 0)
+      error := Err_InvalidHost
+    else if (clientid.toStr().length() == 0)
+      error := Err_InvalidClientId
+    else
+      error := Ok
+
+    if (autoStart && error == Ok)
+      connect()
+  }
+
+  override virtual void start() 
+  {
+    validateInputs()
+  }
+  
+  override virtual void stop() 
+  {
+    disconnect()
+  }
+  
+  ** 
+  ** reset all children components state
+  **
+  private void resetAllChildren()
+  {
+    for(Component child = Sys.app.lookup(children); child != null; child = Sys.app.lookup(child.nextSibling))
+    {
+      if (child.type.is(Message.type)) {
+        Message m = (Message)child
+        m.reset()
+      }
+    }
+  }
+
+  override int parentEvent(int eType, Component parent)
+  {
+    if (eType == Component.ADDED && parent.type.is(MQTTService.type))
+      error := Err_InvalidParent; 
+    return 0
+  }
+  
+  virtual override void changed(Slot slot) 
+  {
+    super.changed(slot)
+    int sid = slot.id
+    if (sid == Worker.host.id || sid == Worker.port.id || sid == Worker.clientid.id || sid == Worker.autoStart.id)
+      validateInputs()
+        
+    if (sid == Worker.status.id)
+    {
+      MQTTService service = (MQTTService)Sys.app.lookupService(MQTTService.type)
+      if (service == null)
+        App.log.error("MQTTService is missing")
+      else
+      {
+        if (status == Connected)
+          MQTTService.log.message("MQTT connection(${host.toStr()}:${port}) established")
+        else
+          MQTTService.log.message("MQTT connection(${host.toStr()}:${port}) lost")
+      }
+    }
+  }
+  
+  ** 
+  ** connect to MQTT broker and start a new session
+  ** 
+  action void connect()
+  {
+    if (error != Ok || status == Connected || handle != null)
+      return
+
+    handle = startSession(host.toStr(), port, clientid.toStr(), username.toStr(), password.toStr())
+    sessionStartTime = Sys.ticks()
+  }
+
+  ** 
+  ** close the current MQTT session and disconnect to MQTT broker
+  ** 
+  action void disconnect()
+  {
+    if (handle == null || status == Disconnected)
+      return
+
+    stopSession(handle)
+    sessionStartTime = 0L
+    handle = null
+    resetAllChildren()
+  }
+  
+  ** 
+  ** update session status 
+  **
+  private void updateStatus() 
+  {
+    if (handle == null)
+      status := Disconnected
+    else
+      status := isSessionLive(handle) ? Connected : Disconnected 
+  }
+  
+  virtual bool work()
+  {
+    updateStatus()
+    if (status == Disconnected)
+    {
+      // if session failed to start within sessionTimeout seconds
+      if (handle != null && Sys.ticks()-sessionStartTime>sessionTimeout)
+      {
+        MQTTService service = (MQTTService)Sys.app.lookupService(MQTTService.type)
+        if (service == null)
+          App.log.error("MQTTService is missing")
+        else
+          MQTTService.log.message("session times out, stop session now ...")
+        stopSession(handle)
+        sessionStartTime = 0L
+        handle = null
+        resetAllChildren()
+
+        retryStartTime = Sys.ticks()
+      }
+      
+      if (handle == null) {
+        //exponential backoff 
+        if (Sys.ticks()-retryStartTime > 1sec*power(retryTimes)) {
+          retryStartTime = Sys.ticks()
+          if (retryTimes < 8) retryTimes += 1
+          MQTTService.log.message("reconnect ...")
+          connect()
+        }
+      }
+      return false
+    }
+    else
+      retryTimes = 0
+        
+    for(Component child = Sys.app.lookup(children); child != null; child = Sys.app.lookup(child.nextSibling))
+    {
+      if (child.type.is(Message.type)) {
+        Message m = (Message)child
+        if (m.error == Message.Ok)
+          doWork(m)
+      }
+    }
+    
+    return true
+  }
+
+  private long power(int val) {
+    long result = 1L;
+    for(int i=0; i<val; ++i)
+      result *= 2L;
+    return result;
+  }
+
+  ////////////////////////////////////////////////////////////////
+  // Fields
+  ////////////////////////////////////////////////////////////////
+  private int retryTimes = 0
+  private long retryStartTime = 0L
+  
+  ** 
+  ** MQTT Session Handle Object
+  ** 
+  protected Obj handle = null
+  
+  private long sessionStartTime = 0L
+  private long sessionTimeout = 30sec
+}

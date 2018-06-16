@@ -1,0 +1,43 @@
+** 
+** Str message defines a string type MQTT topic data point. There are 2 use cases:
+**  1. when put it within a Publisher object, it will publish it's payload to 
+**     the MQTT broker configured by the Publisher object (publishing mode)
+**  2. when put it within a Subscriber object, it will fetch data from MQTT broker
+**     configured by the Subscriber object (subscription mode)
+**
+** Just like other type of Message object, StrMessage's parent must be Publisher or Subscriber, otherwise it will not work
+** 
+** By StrMessage, you can configure the following MQTT related things: 
+**  1. MQTT topic 
+**  2. MQTT QoS
+**  3. publishInterval (how often to publish data, publishing mode)
+**  4. updateInterval (how often to check data update, subscription mode)
+** 
+** The 'error' slot will show error message if something is wrong.
+** 
+class StrMessage extends Message
+{
+  @asStr property Buf(64) payload;
+  
+  ** 
+  ** return the payload string, 
+  ** shouldn't be called by outside
+  ** 
+  protected override Str getPayload() { return payload.toStr() }
+  
+  ** 
+  ** callback method to update local data,
+  ** shouldn't be called by outside
+  **
+  protected override bool updateData(Obj handle) 
+  {
+    bool result = super.updateData(handle)
+    if (!result)
+      return result
+
+    payload.copyFromStr(strBuf)
+    changed(StrMessage.payload)
+    return result
+  }
+}
+

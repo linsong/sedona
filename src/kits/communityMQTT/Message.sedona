@@ -1,0 +1,198 @@
+@palette=false
+abstract internal class Message extends Component
+{
+  ////////////////////////////////////////////////////////////////
+  // Properties
+  ////////////////////////////////////////////////////////////////
+  define Str QoSLevels = "FireAndForget, GuaranteeReceived, GuaranteeReceivedOnce"
+
+  @range=QoSLevels
+  @config property byte QoS = 0
+
+  @config @asStr property Buf(16) topic = ""
+
+  define int Ok = 0
+  define int Err_InvalidParent = 1
+  define int Err_InvalidTopic = 2
+  define Str ErrorMessages = "Ok, Invalid Parent, Invalid Topic"
+
+  @range=ErrorMessages
+  @readonly property byte error = 0
+  
+  // 0: publish when changed; 1000: publish per 1 sec; 2000: per 2 secs; 3000: ...
+  @unit=Units.millisecond
+  @config property int publishInterval = 5000
+
+  @unit=Units.millisecond
+  @config property int updateInterval = 3000
+  
+  ////////////////////////////////////////////////////////////////
+  // Methods
+  ////////////////////////////////////////////////////////////////
+  // natives
+  ** 
+  ** publish message to MQTT broker 
+  **  - handle: MQTT session handle 
+  **  - topic: message topic 
+  **  - payload: message payload 
+  **  - payload_len: length of payload 
+  **  - qos: MQTT Quality of Service, valid values: 0, 1, 2
+  static native void doPublish(Obj handle, Str topic, Str payload, int payload_len, int qos)
+  static native void doSubscribe(Obj handle, Str topic, int qos)
+  static native void doUnsubscribe(Obj handle, Str topic)
+  static native bool fetchData(Obj handle, Str topic, Str buf, int length);
+
+  protected virtual Str getPayload() { return "" }
+
+  private void validateInputs() 
+  {
+    Component parentComponent = Sys.app.lookup(parent)
+    Str parentName = parentComponent?.type?.name
+    if (!parentComponent.type.is(Publisher.type) && !parentComponent.type.is(Subscriber.type))
+      error := Err_InvalidParent; 
+    else if (topic.toStr().length() > 0)
+      error := Ok
+    else
+      error := Err_InvalidTopic
+  }
+  
+  override virtual void start() 
+  {
+    validateInputs()
+  }
+  
+  override virtual void execute()
+  {
+    if (error != Ok)
+      return
+
+    if (publishInterval > 0)
+      readyToPublish = (Sys.ticks()-lastPublishTime) >= (long)publishInterval*1ms
+  }
+  
+  override int parentEvent(int eType, Component parent)
+  {
+    if (eType == Component.ADDED && (!parent.type.is(Publisher.type) && !parent.type.is(Subscriber.type)))
+      error := Err_InvalidParent; 
+    return 0
+  }
+  
+  ** 
+  ** publish linked value to MQTT broker
+  ** 
+  internal virtual void publish(Obj handle)
+  {
+    if (error != Ok)
+      return
+
+    if (handle == null)
+    {
+      log.message("PUBLISH: null handle")
+      return
+    }
+
+    if (!readyToPublish)
+      return
+
+    Str msg = getPayload()
+    doPublish(handle, topic.toStr(), msg, msg.length()+1, QoS)
+
+    lastPublishTime = Sys.ticks()
+    readyToPublish = false
+  }
+  
+  ** 
+  ** update local slot data from subscribed data 
+  ** 
+  protected virtual bool updateData(Obj handle)
+  {
+    bool result = fetchData(handle, topic.toStr(), strBuf, 63)
+    return result
+  }
+  
+  ** 
+  ** subscribe topic on MQTT broker refered by given handle
+  ** 
+  internal virtual void subscribe(Obj handle)
+  {
+    if (error != Ok)
+      return
+
+    if (handle == null)
+    {
+      log.message("SUBSCRIBE: null handle")
+      return
+    }
+
+    if (subscribedToTopic)
+    {
+      long now = Sys.ticks()
+      if (now - lastUpdateTime > (long)updateInterval*1ms) {
+        updateData(handle)
+        lastUpdateTime = now
+      }
+    }
+    else
+    {
+      log.message("SUBSCRIBE: topic=${topic.toStr()}")
+      doSubscribe(handle, topic.toStr(), QoS);
+      subscribedToTopic = true
+    }
+  }
+  
+  ** 
+  ** unsubscribe topic on MQTT broker refered by given handle
+  ** 
+  internal virtual void unsubscribe(Obj handle)
+  {
+    if (error != Ok)
+      return
+
+    if (handle == null)
+    {
+      log.message("UNSUBSCRIBE: null handle")
+      return
+    }
+
+    if (!subscribedToTopic)
+      return
+    
+    log.message("UNSUBSCRIBE: topic=${topic.toStr()}")
+    doUnsubscribe(handle, topic.toStr());
+    subscribedToTopic = false
+  }
+  
+  virtual override void changed(Slot slot) 
+  {
+    super.changed(slot)
+    if (slot.name == "topic")
+      validateInputs()
+    else {
+      if (error == Ok && slot.name == "payload" && publishInterval != 0)
+        readyToPublish = true
+    }
+  }
+  
+  ** 
+  ** reset current message's local state 
+  ** 
+  internal virtual void reset()
+  {
+    readyToPublish = false
+    subscribedToTopic = false
+    lastPublishTime = 0L
+    lastUpdateTime = 0L
+  }
+
+  ////////////////////////////////////////////////////////////////
+  // Fields
+  ////////////////////////////////////////////////////////////////
+  private bool readyToPublish = false
+  private bool subscribedToTopic = false
+  private long lastPublishTime = 0L
+  private long lastUpdateTime = 0L
+  
+  protected inline Str(64) strBuf = ""; 
+
+  internal define Log log
+}

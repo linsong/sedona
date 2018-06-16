@@ -20,6 +20,7 @@
   <target name="basicSchedule" />
   <target name="pstore" />
   <target name="logManager" />
+  <target name="communityMQTT" />
   <target name="../../platforms/src/generic/win32" />
   <target name="../../platforms/src/generic/unix" />
 

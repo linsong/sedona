@@ -98,9 +98,10 @@ def stage():
 ################################################################
 
 def zip():
-  zipname = "sedona_community-" + env.buildVersion() + ".zip"
+  zipprefix = "sedona_community-" + env.buildVersion()
+  zipname = zipprefix + ".zip"
   zippath  = os.path.join(env.home, zipname)
-  fileutil.zip(zippath, stageDir)
+  fileutil.zip(zippath, stageDir, zipprefix+'/')
 
 ################################################################
 # Main
