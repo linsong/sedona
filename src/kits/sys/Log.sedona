@@ -18,6 +18,24 @@ const class Log
 ////////////////////////////////////////////////////////////////
 
   **
+  ** Return the currently configured severity level
+  ** enabled for this Log.  The level is NONE, ERROR,
+  ** WARNING, MESSAGE, and TRACE.
+  **
+  static Str levelStr(int logLevel) 
+  {
+    switch (logLevel)
+    {
+      case NONE: return "None";
+      case ERROR: return "Error";
+      case WARNING: return "Warning";
+      case MESSAGE: return "Message";
+      case TRACE: return "Trace";
+    }
+    return "????"
+  }
+
+  **
   ** Get the currently configured severity level
   ** enabled for this Log.  The level is NONE, ERROR,
   ** WARNING, MESSAGE, and TRACE.
