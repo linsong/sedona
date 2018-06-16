@@ -91,6 +91,7 @@ abstract class Weblet
   virtual void head(WebReq req, WebRes res)
   {
     res.writeStatus(HttpCode.methodNotAllowed)
+    res.writeHeader("Allow", "GET")
   }
 
   **
@@ -99,6 +100,7 @@ abstract class Weblet
   virtual void post(WebReq req, WebRes res)
   {
     res.writeStatus(HttpCode.methodNotAllowed)
+    res.writeHeader("Allow", "GET")
   }
 
   **
@@ -107,6 +109,7 @@ abstract class Weblet
   virtual void put(WebReq req, WebRes res)
   {
     res.writeStatus(HttpCode.methodNotAllowed)
+    res.writeHeader("Allow", "GET")
   }
 
   **
@@ -115,6 +118,7 @@ abstract class Weblet
   virtual void doDelete(WebReq req, WebRes res)
   {
     res.writeStatus(HttpCode.methodNotAllowed)
+    res.writeHeader("Allow", "GET")
   }
 
 //////////////////////////////////////////////////////////////////////////
