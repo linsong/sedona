@@ -65,3 +65,16 @@ function scodegen
   $java_home/bin/java -cp $sedona_home/adm SCodeGen "h" $sedona_home/adm/scode.txt $sedona_home/adm/scode.h $sedona_home/src/vm/scode.h
   rm -rf $sedona_home/adm/*.class
 }
+
+
+function runapp
+{
+  appname=${1:-platUnix}
+  svm scode/$appname.scode apps/$appname.sab
+}
+
+function makeapp
+{
+  appname=${1:-platUnix}
+  sedonac apps/$appname.sax && sedonac scode/$appname.xml && echo "Done"
+}
