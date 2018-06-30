@@ -1,0 +1,66 @@
+//
+// Copyright (c) 2018
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   30 Jun 18  Vincent Wang  Static File Weblet
+//
+
+** 
+** StaticFileWeblet provides the ability to serve static files(html, css, js,
+** images etc), so that user can use sedona as a minimal web server and host 
+** a static web app just in sedona, without any outside dependency
+** 
+class StaticFileWeblet extends Weblet
+{
+////////////////////////////////////////////////////////////////
+// Weblet Registration
+////////////////////////////////////////////////////////////////
+
+  static void _sInit()
+  {
+    instance.register()
+  }
+  static internal inline StaticFileWeblet instance
+
+////////////////////////////////////////////////////////////////
+// Weblet
+////////////////////////////////////////////////////////////////
+
+  override Str prefix() { return "statics" }
+
+  override Str description() { return "Sedona Static File Weblet" }
+
+  override void service(WebReq req, WebRes res)
+  {
+    Str method = req.method;
+    if (method.equals("GET")) 
+      get(req, res)
+    else {
+      res.writeStatus(HttpCode.methodNotAllowed)
+      res.writeHeader("Allow", "GET")
+    }
+  }
+
+  override void get(WebReq req, WebRes res)
+  {
+    // route to static file
+    Str p = ""
+    if (req.path.size > 1) p = req.path.names[1]
+
+    index(req, res)
+  }
+
+////////////////////////////////////////////////////////////////
+// functions
+////////////////////////////////////////////////////////////////
+
+  public void index(WebReq req, WebRes res)
+  {
+    res.html();
+    res.w("<h1>Hello World!</h1>\n");
+    res.htmlEnd();
+  }
+
+}
+
