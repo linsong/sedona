@@ -44,15 +44,105 @@ class StaticFileWeblet extends Weblet
 
   override void get(WebReq req, WebRes res)
   {
-    // route to static file
-    Str p = ""
-    if (req.path.size > 1) p = req.path.names[1]
+    reset()
 
-    index(req, res)
+    prepareFile(req)
+    serveFile(res)
+  }
+
+  internal void reset() 
+  {
+    filePath.set(0, 0)
+  }
+
+  internal void serveFile(WebRes res) 
+  {
+    if (file.name==null || !file.exists()) {
+      res.writeStatus(HttpCode.notFound).finishHeaders()
+      return
+    }
+
+    if (!file.open("r")) {
+      res.writeStatus(HttpCode.internalError).finishHeaders()
+      return
+    }
+
+    App.log.message("Serving File: " + file.name);
+
+    res.writeStatusOk()
+
+    //write headers
+    //TODO: support Content-Encoding: gzip
+    res.writeContentType(getContentType(file.name))
+      .writeHeader("Cache-Control", "max-age=604800")
+      .writeHeader("Server", "Sedona Web Server")
+      .writeHeader("Content-Length", Sys.intStr(file.size()))
+      .finishHeaders()
+
+    file.seek(0)
+    while(true) {
+      int readed = file.in.readBytes(readBuf, 0, bufLen)
+      if (readed <= 0)
+        break
+
+      res.writeBytes(readBuf, 0, readed)
+    }
+
+    file.close()
+  }
+
+  static public bool endsWith(Str str, Str suffix) {
+    return suffix.equalsRegion(str, str.length()-suffix.length(), str.length()+1)
+  } 
+
+  internal Str getContentType(Str fileName) 
+  {
+    if (endsWith(fileName, ".html"))  
+      return "text/html"
+    else if (endsWith(fileName, ".css"))
+      return "text/css"
+    else if (endsWith(fileName, ".txt"))
+      return "text/plain"
+    else if (endsWith(fileName, ".js"))
+      return "application/javascript"
+    else if (endsWith(fileName, ".json"))
+      return "application/json"
+    else if (endsWith(fileName, ".xml"))
+      return "application/xml"
+    else if (endsWith(fileName, ".pdf"))
+      return "application/pdf"
+    else if (endsWith(fileName, ".jpg"))
+      return "image/jpeg"
+    else if (endsWith(fileName, ".png"))
+      return "image/png"
+    else
+      return "text/plain"
+  }
+
+  internal void prepareFile(WebReq req) 
+  {
+    if (req.path.size <= 1)
+      return
+    else if (req.path.size == 1)
+      filePath.copyFromStr("./index.html", pathStrLen)
+    else {
+      filePath.copyFromStr(".", pathStrLen);
+      int index = filePath.length()
+      byte[] fileBuf = filePath.toBytes()
+      for(int i=0; i<req.path.size; ++i) {
+        byte[] nameBuf = req.path.names[i].toBytes() 
+        fileBuf[index++] = '/'
+        for(int j=0; j<req.path.names[i].length(); ++j) {
+          fileBuf[index++] = nameBuf[j]
+        }
+      }
+      fileBuf[index] = 0
+    }
+    file.name = filePath
   }
 
 ////////////////////////////////////////////////////////////////
-// functions
+// Functions
 ////////////////////////////////////////////////////////////////
 
   public void index(WebReq req, WebRes res)
@@ -62,5 +152,14 @@ class StaticFileWeblet extends Weblet
     res.htmlEnd();
   }
 
+////////////////////////////////////////////////////////////////
+// Fields
+////////////////////////////////////////////////////////////////
+  define int bufLen = 1024
+  define int pathStrLen = 256
+
+  private inline byte[bufLen] readBuf
+  internal inline Str(pathStrLen) filePath  // buffer for file's path
+  internal inline File file
 }
 
