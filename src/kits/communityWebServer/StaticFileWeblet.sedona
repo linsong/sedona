@@ -57,9 +57,22 @@ class StaticFileWeblet extends Weblet
 
   internal void serveFile(WebRes res) 
   {
-    if (file.name==null || !file.exists()) {
+    if (file.name==null) {
       res.writeStatus(HttpCode.notFound).finishHeaders()
       return
+    }
+
+    if (!file.exists()) {
+      //try gzipped content
+      int index = file.name.length()
+      file.name.set(index++, '.')
+      file.name.set(index++, 'g')
+      file.name.set(index++, 'z')
+      file.name.set(index, 0)
+      if (!file.exists()) {
+        res.writeStatus(HttpCode.notFound).finishHeaders()
+        return
+      }
     }
 
     if (!file.open("r")) {
@@ -68,11 +81,12 @@ class StaticFileWeblet extends Weblet
     }
 
     App.log.message("Serving File: " + file.name);
-
     res.writeStatusOk()
 
     //write headers
-    //TODO: support Content-Encoding: gzip
+    if (endsWith(file.name, ".gz", 0))
+      res.writeHeader("Content-Encoding", "gzip");
+
     res.writeContentType(getContentType(file.name))
       .writeHeader("Cache-Control", "max-age=604800")
       .writeHeader("Server", "Sedona Web Server")
@@ -91,29 +105,33 @@ class StaticFileWeblet extends Weblet
     file.close()
   }
 
-  static public bool endsWith(Str str, Str suffix) {
-    return suffix.equalsRegion(str, str.length()-suffix.length(), str.length()+1)
+  static public bool endsWith(Str str, Str suffix, int endOffset) {
+    return suffix.equalsRegion(str, str.length()-suffix.length()-endOffset, str.length()-endOffset)
   } 
 
   internal Str getContentType(Str fileName) 
   {
-    if (endsWith(fileName, ".html"))  
+    int endOffset = 0
+    if (endsWith(fileName, ".gz", 0))
+      endOffset = 3
+
+    if (endsWith(fileName, ".html", endOffset) || endsWith(fileName, ".htm", endOffset))  
       return "text/html"
-    else if (endsWith(fileName, ".css"))
+    else if (endsWith(fileName, ".css", endOffset))
       return "text/css"
-    else if (endsWith(fileName, ".txt"))
+    else if (endsWith(fileName, ".txt", endOffset))
       return "text/plain"
-    else if (endsWith(fileName, ".js"))
+    else if (endsWith(fileName, ".js", endOffset))
       return "application/javascript"
-    else if (endsWith(fileName, ".json"))
+    else if (endsWith(fileName, ".json", endOffset))
       return "application/json"
-    else if (endsWith(fileName, ".xml"))
+    else if (endsWith(fileName, ".xml", endOffset))
       return "application/xml"
-    else if (endsWith(fileName, ".pdf"))
+    else if (endsWith(fileName, ".pdf", endOffset))
       return "application/pdf"
-    else if (endsWith(fileName, ".jpg"))
+    else if (endsWith(fileName, ".jpg", endOffset))
       return "image/jpeg"
-    else if (endsWith(fileName, ".png"))
+    else if (endsWith(fileName, ".png", endOffset))
       return "image/png"
     else
       return "text/plain"
