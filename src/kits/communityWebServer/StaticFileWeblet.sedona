@@ -47,6 +47,20 @@ class StaticFileWeblet extends Weblet
     reset()
 
     prepareFile(req)
+
+    if (isDir(filePath)) {
+      //TODO: do http redirects
+      // if (!endsWith(filePath, "/", 0)) {
+      //   res.writeStatus(HttpCode.movedPermanently)
+      //     .w("Location").w(":").w(filePath).w("/")
+      //     .finishHeaders()
+      //     .finishHeaders()
+      //   return
+      // }
+
+      tryAppendIndex(filePath)
+    }
+
     serveFile(res)
   }
 
@@ -65,10 +79,13 @@ class StaticFileWeblet extends Weblet
     if (!file.exists()) {
       //try gzipped content
       int index = file.name.length()
-      file.name.set(index++, '.')
-      file.name.set(index++, 'g')
-      file.name.set(index++, 'z')
-      file.name.set(index, 0)
+      if (index+4 < pathStrLen) {
+        file.name.set(index++, '.')
+        file.name.set(index++, 'g')
+        file.name.set(index++, 'z')
+        file.name.set(index, 0)
+      }
+
       if (!file.exists()) {
         res.writeStatus(HttpCode.notFound).finishHeaders()
         return
@@ -105,6 +122,49 @@ class StaticFileWeblet extends Weblet
     file.close()
   }
 
+  bool isDir(Str fileName) {
+    if (endsWith(fileName, "/", 0))
+      return true
+
+    int len = fileName.length()
+    //check if there is a file extention 
+    for(int i=len-3; i>0 && i>len-6; --i) {
+      if (fileName.get(i) != '.')
+        continue
+
+      return false
+    }
+
+    return true
+  }
+
+  bool tryAppendIndex(Str fileName) {
+    int len = fileName.length()
+    if (len <= 0)
+      return false
+
+    //try to append index.html to path end 
+    byte[] buf = fileName.toBytes()
+    if (len+11 < pathStrLen) {
+      if (!endsWith(fileName, "/", 0))
+        buf[len++] = '/'
+      buf[len++] = 'i'
+      buf[len++] = 'n'
+      buf[len++] = 'd'
+      buf[len++] = 'e'
+      buf[len++] = 'x'
+      buf[len++] = '.'
+      buf[len++] = 'h'
+      buf[len++] = 't'
+      buf[len++] = 'm'
+      buf[len++] = 'l'
+      buf[len++] = 0 
+      return true
+    }
+
+    return false
+  }
+
   static public bool endsWith(Str str, Str suffix, int endOffset) {
     return suffix.equalsRegion(str, str.length()-suffix.length()-endOffset, str.length()-endOffset)
   } 
@@ -139,23 +199,23 @@ class StaticFileWeblet extends Weblet
 
   internal void prepareFile(WebReq req) 
   {
-    if (req.path.size <= 1)
+    if (req.path.size < 1)
       return
-    else if (req.path.size == 1)
-      filePath.copyFromStr("./index.html", pathStrLen)
     else {
+      //TODO: process path to avoid security issues
       filePath.copyFromStr(".", pathStrLen);
       int index = filePath.length()
       byte[] fileBuf = filePath.toBytes()
-      for(int i=0; i<req.path.size; ++i) {
+      for(int i=0; i<req.path.size && index<pathStrLen-2; ++i) {
         byte[] nameBuf = req.path.names[i].toBytes() 
         fileBuf[index++] = '/'
-        for(int j=0; j<req.path.names[i].length(); ++j) {
+        for(int j=0; j<req.path.names[i].length() && index<pathStrLen-2; ++j) {
           fileBuf[index++] = nameBuf[j]
         }
       }
       fileBuf[index] = 0
     }
+
     file.name = filePath
   }
 
