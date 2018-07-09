@@ -141,7 +141,7 @@ local sox_cmds = {
 };
 
 function add_string(tree, field, buf, offset)
-  local str = buf(offset):stringz("utf-8")
+  local str = buf(offset):stringz()
   tree:add(field, buf(offset, string.len(str) + 1), str)
   offset = offset + string.len(str) + 1
   return offset
@@ -185,10 +185,10 @@ function add_file_headers(tree, buf, offset)
   local byte = buf(offset, 1)
   while byte ~= '\0' do 
     local start = offset
-    local name = buf(offset):stringz("utf-8")
+    local name = buf(offset):stringz()
     offset = offset + string.len(name) + 1
 
-    local value = buf(offset):stringz("utf-8")
+    local value = buf(offset):stringz()
     offset = offset + string.len(value) + 1
     tree:add(buf(start, offset-start), name, value)
 
@@ -499,7 +499,7 @@ local sox_handlers = {
     local parts = {}
     local start = offset
     for i=1, kitCount do 
-      local str = buf(offset):stringz("utf-8")
+      local str = buf(offset):stringz()
       offset = offset + string.len(str) + 1
       table.insert(parts, str .. "@" .. string.format("0x%x", buf(offset, 4):uint()))
       offset = offset + 4
@@ -629,7 +629,7 @@ function add_header(tree, buf, offset)
     tree:add(buf(offset, 3), headerName, buf(offset+1, 2):uint())
     offset = offset + 3
   elseif headerTypeVal == 2 then
-    local str = buf(offset+1):stringz("utf-8")
+    local str = buf(offset+1):stringz()
     tree:add(buf(offset, string.len(str) + 1 + 1), headerName, str)
     offset = offset + string.len(str) + 1 + 1
   elseif headerTypeVal == 3 then 

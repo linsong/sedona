@@ -32,21 +32,23 @@ def gcc(exeFile, srcFiles, includes, libs, defs):
       cmd += " -m32" # always compile in 32bit mode
 
   for include in includes:
-    cmd += " -I\"" + include + "\""
+    cmd += " -I" + include
 
   # defines (tuples)
   for d in defs:
-    cmd += " -D" + d[0] + "=" + d[1]
+    cmd += " -D" + d[0]
+    if d[1] is not None:
+      cmd += "=" + d[1]
 
   cmd += " -DPLAT_BUILD_VERSION=" + '\\"' + env.buildVersion() + '\\"'
-
-  # libs
-  for lib in libs:
-    cmd += " -L\"" + lib + "\""
 
   # src
   for src in srcFiles:
     cmd += " " + src
+
+  # libs
+  for lib in libs:
+    cmd += " -l" + lib
 
   # remaining options
   cmd += " -O2"
