@@ -12,8 +12,10 @@
 #include <stdio.h>
 
 #ifdef _WIN32
+#if !defined(__MINGW32__)
 extern long _timezone;
 extern int _daylight;
+#endif
 #else
 extern long timezone;
 extern int daylight;
