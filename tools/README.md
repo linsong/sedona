@@ -16,6 +16,11 @@ Then you can use filter like this:
   (sox.cmd == "c" || sox.cmd == "C") && sox.compId == 1
 ```
 
+Alternatively it's possible to load lua script by giving it in command line:
+```
+ wireshark -X lua_script:sox.lua
+```
+
 Docker Build Environment
 =================================
 1. Make sure that docker is installed and started. On OSX, you can install Docker Toolbox and run Docker Quickstart Terminal
