@@ -88,6 +88,7 @@
 
 // includes
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
 #include <stdint.h>
@@ -266,7 +267,7 @@ extern "C" {
 
 #define NULLBOOL   2
 #define NULLFLOAT  0x7fc00000
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(__MINGW32__)
   #define NULLDOUBLE 0x7ff8000000000000i64
 #else
   #define NULLDOUBLE 0x7ff8000000000000ll

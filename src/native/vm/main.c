@@ -12,6 +12,7 @@
 // includes
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include "errorcodes.h"
 
 //needed to pass version info from gcc command line as a string value (only needed for QNX)
@@ -206,7 +207,7 @@ static int runInStandaloneMode(const char* filename, int vmArgc, char* vmArgv[])
   printf("\n");
   printf("VM Completed\n");
 #ifdef _WIN32
-  printf("Total Time       = %I64d ms\n", (t2-t1)/1000000i64);
+  printf("Total Time       = %I64d ms\n", (t2-t1)/1000000);
 #else
   printf("Total Time       = %lld ms\n", (t2-t1)/1000000ll);
 #endif
