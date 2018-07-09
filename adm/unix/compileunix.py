@@ -36,7 +36,9 @@ def gcc(exeFile, srcFiles, includes, libs, defs):
 
   # defines (tuples)
   for d in defs:
-    cmd += " -D" + d[0] + "=" + d[1]
+    cmd += " -D" + d[0]
+    if d[1] is not None:
+      cmd += "=" + d[1]
 
   cmd += " -DPLAT_BUILD_VERSION=" + '\\"' + env.buildVersion() + '\\"'
 
