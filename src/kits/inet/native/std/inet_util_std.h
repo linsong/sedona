@@ -11,6 +11,7 @@
 #define __INET_UTIL_STD_H
 
 #include "inet_util.h"
+#include <stdbool.h>
 
 // Must define this to select IPv4 vs. IPv6 sockets
 #ifndef SOCKET_FAMILY_INET
@@ -38,8 +39,8 @@
 // Windows
 #ifdef _WIN32
 
-#include <Winsock2.h>
-#include <Ws2tcpip.h>
+#include <winsock2.h>
+#include <ws2tcpip.h>
 
 typedef SOCKET socket_t;
 
