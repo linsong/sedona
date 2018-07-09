@@ -32,7 +32,7 @@ def gcc(exeFile, srcFiles, includes, libs, defs):
       cmd += " -m32" # always compile in 32bit mode
 
   for include in includes:
-    cmd += " -I\"" + include + "\""
+    cmd += " -I" + include
 
   # defines (tuples)
   for d in defs:
@@ -42,7 +42,7 @@ def gcc(exeFile, srcFiles, includes, libs, defs):
 
   # libs
   for lib in libs:
-    cmd += " -L\"" + lib + "\""
+    cmd += " -l" + lib
 
   # src
   for src in srcFiles:
