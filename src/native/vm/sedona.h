@@ -90,18 +90,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <sys/stat.h>
-
-// stdint.h C99 Exact-width integer types
-typedef unsigned __int8   bool;
-typedef __int8            int8_t;
-typedef __int16           int16_t;
-typedef __int32           int32_t;
-typedef __int64           int64_t;
-typedef unsigned __int8   uint8_t;
-typedef unsigned __int16  uint16_t;
-typedef unsigned __int32  uint32_t;
-typedef unsigned __int64  uint64_t;
-typedef short             int_least16_t;
+#include <stdint.h>
 
 // macros
 #define USE_STANDARD_MAIN
