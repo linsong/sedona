@@ -92,6 +92,8 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <stdint.h>
+#include <direct.h>
+#include <float.h>
 
 // macros
 #define USE_STANDARD_MAIN
