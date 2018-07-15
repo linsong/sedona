@@ -36,8 +36,10 @@ def gcc(exeFile, srcFiles, includes, libs, defs):
 
   # defines (tuples)
   for d in defs:
+    if not isinstance(d, tuple):
+      d = (d, )
     cmd += " -D" + d[0]
-    if d[1] is not None:
+    if len(d)>1 and d[1] is not None:
       cmd += "=" + d[1]
 
   cmd += " -DPLAT_BUILD_VERSION=" + '\\"' + env.buildVersion() + '\\"'
