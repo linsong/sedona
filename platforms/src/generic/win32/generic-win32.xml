@@ -15,14 +15,14 @@
     <nativeKit depend="platWin32 1.0+" />
 
     <!-- Native Sources -->
-    <nativeSource path="/src/vm" />
-    <nativeSource path="/src/sys/native" />
-    <nativeSource path="/src/sys/native/std" />
-    <nativeSource path="/src/sys/native/win32" />
-    <nativeSource path="/src/inet/native" />
-    <nativeSource path="/src/inet/native/std" />
-    <nativeSource path="/src/inet/native/sha1" />
-    <nativeSource path="/src/datetimeStd/native/std" />
+    <nativeSource path="/src/native/vm" />
+    <nativeSource path="/src/kits/sys/native" />
+    <nativeSource path="/src/kits/sys/native/std" />
+    <nativeSource path="/src/kits/sys/native/win32" />
+    <nativeSource path="/src/kits/inet/native" />
+    <nativeSource path="/src/kits/inet/native/std" />
+    <nativeSource path="/src/kits/inet/native/sha1" />
+    <nativeSource path="/src/kits/datetimeStd/native/std" />
     <nativeSource path="/platforms/src/generic/win32/native" />
 
   </compile>
