@@ -20,7 +20,7 @@ import fileutil
 #   libs:     list of filenames
 #   defs:     list of name/value tuples
 #
-def compile(exeFile, srcFiles, includes, libs, defs, opts=[]):  
+def msvc(exeFile, srcFiles, includes, libs, defs, opts=[]):
   print "Compile [" + os.path.basename(exeFile) + "]"
 
   # get environment variables
@@ -90,4 +90,36 @@ def compile(exeFile, srcFiles, includes, libs, defs, opts=[]):
     raise env.BuildError("FATAL: compilewin " + exeFile)     
    
   print "  Success [" + exeFile + "]"
-    
+
+def mingw32(exeFile, srcFiles, includes, libs, defs):
+  # standard includes
+  cmd = "i686-w64-mingw32-gcc"
+  for include in includes:
+    cmd += " -I\"" + include + "\""
+
+  # defines (dict)
+  for d, v in defs.items():
+    cmd += " -D" + d
+    if v:
+      cmd += "=" + v
+
+  # src
+  for src in srcFiles:
+    cmd += " " + src
+
+  # libs
+  for lib in libs:
+    if lib.endswith('.lib'):
+      lib =  lib[:-4]
+    cmd += " -l" + lib
+
+  # remaining options
+  cmd += " -O2"
+  cmd += " -o " + exeFile
+
+  # compile away
+  status = os.system(cmd)
+  if status:
+    raise env.BuildError("FATAL: compilewin " + exeFile)
+
+  print "  Success [" + exeFile + "]"
