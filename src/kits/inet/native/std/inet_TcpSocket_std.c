@@ -9,6 +9,10 @@
 
 #include "inet_util_std.h"
 
+#ifndef MSG_NOSIGNAL
+#define MSG_NOSIGNAL 0
+#endif
+
 //
 // Connect this socket to the specified IP address and port.
 // The address must be in dotted notation, hostname resolution
@@ -172,8 +176,7 @@ Cell inet_TcpSocket_write(SedonaVM* vm, Cell* params)
   Cell result;
 
   buf = buf + off;
-
-  result.ival = send(sock, buf, len, 0);
+  result.ival = send(sock, buf, len, MSG_NOSIGNAL);
   if (result.ival >= 0) return result;  // 0+ is ok
   if (inet_errorIsWouldBlock()) return zeroCell;
   inet_TcpSocket_close(vm, params);

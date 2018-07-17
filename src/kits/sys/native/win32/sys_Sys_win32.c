@@ -59,14 +59,14 @@ int64_t sys_Sys_ticks(SedonaVM* vm, Cell* params)
   LeaveCriticalSection(&lock);
 
   // milliseconds -> nanoseconds
-  return total * 1000000i64;
+  return total * 1000000;
 }
 
 // static void Sys.sleep(Time t)
 Cell sys_Sys_sleep(SedonaVM* vm, Cell* params)
 {
   int64_t ns = *(int64_t*)params;
-  int64_t ms = ns/1000000i64;
+  int64_t ms = ns/1000000;
   
   if (ms <= 0) return nullCell;
 

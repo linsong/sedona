@@ -17,5 +17,5 @@ RUN apt-get update &&\
  apt-get clean autoclean &&\
  apt-get autoremove -y
 
-ENV JAVA_HOME /usr/lib/jvm/java-7-openjdk-amd64
+ENV JAVA_HOME /usr/lib/jvm/default-java
 ENV PATH $PATH:$JAVA_HOME/bin

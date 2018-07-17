@@ -9,15 +9,10 @@
 #
 
 import os
+import platform
 import sys
 import env
 import fileutil
-
-def is64bit():
-  return sys.maxsize > 2**32
-
-def pathExists(path):
-  return os.path.exists(os.path.expanduser(os.path.expandvars(path)))
 
 #
 # Compile C source to a unix executable
@@ -31,15 +26,19 @@ def pathExists(path):
 def gcc(exeFile, srcFiles, includes, libs, defs):
   # standard includes
   cmd = "gcc"
-  if is64bit():
-      cmd += " -m32" # always compile in 32bit mode
+  if (platform.machine() == 'x86_64'):
+    cmd += " -m32" # always compile in 32bit mode
 
   for include in includes:
-    cmd += " -I\"" + include + "\""
+    cmd += " -I" + include
 
   # defines (tuples)
   for d in defs:
-    cmd += " -D" + d[0] + "=" + d[1]
+    if not isinstance(d, tuple):
+      d = (d, )
+    cmd += " -D" + d[0]
+    if len(d)>1 and d[1] is not None:
+      cmd += "=" + d[1]
 
   cmd += " -DPLAT_BUILD_VERSION=" + '\\"' + env.buildVersion() + '\\"'
 
@@ -47,12 +46,9 @@ def gcc(exeFile, srcFiles, includes, libs, defs):
   for src in srcFiles:
     cmd += " " + src
 
-  # lib paths
+  # libs
   for lib in libs:
-    if pathExists(lib):
-        cmd += " -L\"" + lib + "\""
-    else:
-        cmd += " -l\"" + lib + "\""
+    cmd += " -l" + lib
 
   # remaining options
   cmd += " -O2"
