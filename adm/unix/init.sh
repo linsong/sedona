@@ -22,7 +22,7 @@ export PYTHONPATH=$PYTHONPATH:$sedona_home/adm:$sedona_home/adm/unix
 
 # java environment - use JAVA_HOME from environment if set, otherwise hard code it
 java_home=$JAVA_HOME
-[ -z "$java_home" ] && java_home=/usr/lib/jvm/java-6-sun
+[ -z "$java_home" ] && java_home=/usr/lib/jvm/$(ls /usr/lib/jvm | head -n1)
 export java_home
 
 # check to make sure that programs we need are in the path

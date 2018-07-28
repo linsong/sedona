@@ -88,20 +88,12 @@
 
 // includes
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
-
-// stdint.h C99 Exact-width integer types
-typedef unsigned __int8   bool;
-typedef __int8            int8_t;
-typedef __int16           int16_t;
-typedef __int32           int32_t;
-typedef __int64           int64_t;
-typedef unsigned __int8   uint8_t;
-typedef unsigned __int16  uint16_t;
-typedef unsigned __int32  uint32_t;
-typedef unsigned __int64  uint64_t;
-typedef short             int_least16_t;
+#include <stdint.h>
+#include <direct.h>
+#include <float.h>
 
 // macros
 #define USE_STANDARD_MAIN
@@ -277,7 +269,7 @@ extern "C" {
 
 #define NULLBOOL   2
 #define NULLFLOAT  0x7fc00000
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(__MINGW32__)
   #define NULLDOUBLE 0x7ff8000000000000i64
 #else
   #define NULLDOUBLE 0x7ff8000000000000ll
