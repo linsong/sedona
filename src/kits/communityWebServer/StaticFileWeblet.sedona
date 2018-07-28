@@ -33,6 +33,7 @@ class StaticFileWeblet extends Weblet
   ** 
   ** all static files to be served must be put under 'statics' folder
   ** and the url will start with 'statics', too 
+  **
   override Str prefix() { return "statics" }
 
   override Str description() { return "Sedona Static File Weblet" }
@@ -81,13 +82,7 @@ class StaticFileWeblet extends Weblet
 
     if (!file.exists()) {
       //try gzipped content
-      int index = file.name.length()
-      if (index+4 < pathStrLen) {
-        file.name.set(index++, '.')
-        file.name.set(index++, 'g')
-        file.name.set(index++, 'z')
-        file.name.set(index, 0)
-      }
+      appendStr(file.name, ".gz", pathStrLen)
 
       if (!file.exists()) {
         res.writeStatus(HttpCode.notFound).finishHeaders()
@@ -146,34 +141,49 @@ class StaticFileWeblet extends Weblet
   **
   bool tryAppendIndex(Str fileName) {
     int len = fileName.length()
-    if (len <= 0)
+    if (len <= 0 || len+1>=pathStrLen)
       return false
 
     //try to append index.html to path end 
-    byte[] buf = fileName.toBytes()
-    if (len+11 < pathStrLen) {
-      if (!endsWith(fileName, "/", 0))
-        buf[len++] = '/'
-      buf[len++] = 'i'
-      buf[len++] = 'n'
-      buf[len++] = 'd'
-      buf[len++] = 'e'
-      buf[len++] = 'x'
-      buf[len++] = '.'
-      buf[len++] = 'h'
-      buf[len++] = 't'
-      buf[len++] = 'm'
-      buf[len++] = 'l'
-      buf[len++] = 0 
-      return true
-    }
+    if (!endsWith(fileName, "/", 0))
+      appendStr(fileName, "/", pathStrLen)
 
-    return false
+    return appendStr(fileName, "index.html", pathStrLen)
   }
 
+  ** 
+  ** check if str ends with suffix.
+  ** if endOffset is not 0, then check the suffix after 
+  ** that offset. for example, to check if 'index.html.gz' 
+  ** ends with '.html': 
+  **   // buf equals "index.html.gz", offset is 3(len of ".gz")
+  **   endsWith(buf, ".html", 3)
+  **
   static public bool endsWith(Str str, Str suffix, int endOffset) {
     return suffix.equalsRegion(str, str.length()-suffix.length()-endOffset, str.length()-endOffset)
   } 
+
+  **
+  ** append suffix to the end of dst. 
+  ** return:
+  **   true if managed to append suffix to dst 
+  **   false if dst's buffer is not big enough
+  **
+  static public bool appendStr(Str dst, Str suffix, int bufMaxLen)
+  {
+    int dstLen = dst.length()
+    int suffixLen = suffix.length()
+    //return early if buffer is not big enough 
+    if (dstLen + suffixLen + 1 > bufMaxLen)
+      return false
+
+    byte[] dstBuf = dst.toBytes()
+    byte[] suffixBuf = suffix.toBytes()
+    for(int i=0; i<suffixLen; ++i) 
+      dstBuf[dstLen+i] = suffixBuf[i]
+    dstBuf[dstLen+suffixLen] = 0
+    return true
+  }
 
   internal Str getContentType(Str fileName) 
   {

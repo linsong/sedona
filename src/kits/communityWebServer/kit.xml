@@ -20,6 +20,7 @@
 
   <!-- Source Directories -->
   <source dir="." />
+  <source dir="test" />
 
 </sedonaKit>
 
