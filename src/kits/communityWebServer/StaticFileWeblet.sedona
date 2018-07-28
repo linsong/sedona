@@ -8,8 +8,11 @@
 
 ** 
 ** StaticFileWeblet provides the ability to serve static files(html, css, js,
-** images etc), so that user can use sedona as a minimal web server and host 
-** a static web app just in sedona, without any outside dependency
+** images etc) through http, so that user can use sedona as a minimal web
+** server and host a static web app just in sedona, without any outside
+** dependency. 
+** to save space on sedona, gzipped file is supported and I recommend to use it
+** since that will be more efficient(less bytes to be loaded and transferred)
 ** 
 class StaticFileWeblet extends Weblet
 {
@@ -27,10 +30,16 @@ class StaticFileWeblet extends Weblet
 // Weblet
 ////////////////////////////////////////////////////////////////
 
+  ** 
+  ** all static files to be served must be put under 'statics' folder
+  ** and the url will start with 'statics', too 
   override Str prefix() { return "statics" }
 
   override Str description() { return "Sedona Static File Weblet" }
 
+  **
+  ** since we only serve static file here, so only 'GET' method is supported
+  ** 
   override void service(WebReq req, WebRes res)
   {
     Str method = req.method;
@@ -42,6 +51,9 @@ class StaticFileWeblet extends Weblet
     }
   }
 
+  ** 
+  ** handle 'GET' request, try to find the static file and return it 
+  **
   override void get(WebReq req, WebRes res)
   {
     reset()
@@ -129,6 +141,9 @@ class StaticFileWeblet extends Weblet
     return true
   }
 
+  **
+  ** if the URL ends with '/', then append 'index.html' and try serve it 
+  **
   bool tryAppendIndex(Str fileName) {
     int len = fileName.length()
     if (len <= 0)
