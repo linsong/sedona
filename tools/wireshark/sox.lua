@@ -1,4 +1,13 @@
-require ("bit")
+-- to survive in different version of lua, try 'bit' module first, if fails,
+-- try load 'bit32'. refers: http://lua-users.org/wiki/BitwiseOperators
+local status, bit = pcall(require, "bit")
+if not (status) then 
+  status, bit = pcall(require, "bit32")
+  if not (status) then 
+    print("sox dissector: bitop module not found")
+    return
+  end
+end
 
 dasp_proto = Proto("dasp", "Dasp Protocol")
 sox_proto = Proto("sox", "Sox Protocol")
@@ -6,19 +15,17 @@ sox_proto = Proto("sox", "Sox Protocol")
 dasp_proto.prefs["udp_port"] = Pref.uint("UDP Port", 1876, "UDP Port for Dasp")
 
 -- dasp fields
-local f_sessionId = ProtoField.uint16("dasp.sessionId", "SessionId", base.HEX)
+local f_sessionId = ProtoField.uint16("dasp.sessionId", "sessionId", base.HEX)
 local f_seqNum = ProtoField.uint16("dasp.seqNum", "seqNum", base.DEC)
 local f_msgType = ProtoField.uint16("dasp.msgType", "msgType", base.HEX)
 local f_headerFieldNum = ProtoField.uint16("dasp.numFields", "numFields", base.DEC)
--- local f_headerId = ProtoField.uint8("dasp.headerId", "headerId", base.HEX)
--- local f_headerDataType = ProtoField.uint8("dasp.headerDataType", "headerDataType", base.HEX)
-local f_headerU2Val = ProtoField.uint16("dasp.headerU2Val", "headerU2Val", base.Hex)
-local f_headerStrVal = ProtoField.stringz("dasp.headerStrVal", "headerStrVal")
-local f_headerByteVal = ProtoField.bytes("dasp.headerByteVal", "headerByteVal")
+
+local f_headerAck = ProtoField.uint16("dasp.ack", "ack", base.DEC)
+local f_headerAckMore = ProtoField.bytes("dasp.ackMore", "ackMore")
+local f_headerErrorCode = ProtoField.uint16("dasp.errorCode", "errorCode", base.Hex)
 
 dasp_proto.fields = {f_sessionId, f_seqNum, f_msgType, f_headerFieldNum, 
-                     -- f_headerId, f_headerDataType, 
-                     f_headerU2Val, f_headerStrVal, f_headerByteVal}
+                     f_headerAck, f_headerAckMore, f_headerErrorCode}
 
 -- sox fields
 local f_soxCmd = ProtoField.string("sox.cmd", "cmd")
@@ -345,7 +352,7 @@ local sox_handlers = {
     
     offset = add_string(tree, f_fileUri, buf, offset)
     
-    tree:add(f_fileSize, buf(offset, 4))
+    tree:add(f_fileSize, buf(offset, 4):uint())
     offset = offset + 4
     
     tree:add(buf(offset, 2), "suggestedChunkSize", buf(offset, 2):uint())
@@ -356,7 +363,7 @@ local sox_handlers = {
     return offset
   end,
   ["F"] = function (tree, buf, offset)
-    tree:add(f_fileSize, buf(offset, 4))
+    tree:add(f_fileSize, buf(offset, 4):uint())
     offset = offset + 4
     
     tree:add(buf(offset, 2), "actualChunkSize", buf(offset, 2):uint())
@@ -614,19 +621,32 @@ function add_header(tree, buf, offset)
   local headerTypeVal = headerVal:bitfield(6, 2)
   
   local headerName = ''
-  if header_mappings[headerVal:uint()] ~= nil then
-    headerName = header_mappings[headerVal:uint()]
+  if header_ids[headerIdVal] ~= nil then
+    headerName = header_ids[headerIdVal]
   end
+  -- if header_mappings[headerVal:uint()] ~= nil then
+  --   headerName = header_mappings[headerVal:uint()]
+  -- end
 
   if headerTypeVal == 0 then 
-    local elem = tree:add(buf(offset, 1), headerName)
-    offset = offset + 1
-
     if headerIdVal == 0x0d then
+      local elem = tree:add(f_headerErrorCode, buf(offset, 1))
       elem:append_text(" (" .. error_codes[headerVal:uint()] .. ")")
+    else
+      tree:add(buf(offset, 1), headerName)
     end
+    offset = offset + 1
   elseif headerTypeVal == 1 then 
-    tree:add(buf(offset, 3), headerName, buf(offset+1, 2):uint())
+    if headerName == "ack" then
+      tree:add(f_headerAck, buf(offset, 3), buf(offset+1, 2):uint())
+    elseif headerName == "ackMore" then
+      -- GOTCHA: there is a bug in old version of sox, ackMore is set as u2,
+      --         but encoded in bytes(only 1 byte). here is a workaround to
+      --         make this case work
+      local elem = tree:add(f_headerAckMore, buf(offset+2, 1));
+    else
+      tree:add(buf(offset, 3), headerName, buf(offset+1, 2):uint())
+    end
     offset = offset + 3
   elseif headerTypeVal == 2 then
     local str = buf(offset+1):stringz()
@@ -640,7 +660,11 @@ function add_header(tree, buf, offset)
       baStr = baStr .. string.format("%02x", ba:get_index(i))
     end
 
-    tree:add(buf(offset, len+2), headerName, baStr)
+    if headerName == "ackMore" then
+      tree:add(f_headerAckMore, buf(offset+2, len))
+    else
+      tree:add(buf(offset, len+2), headerName, baStr)
+    end
     offset = offset + len + 2
   end
 
