@@ -6,6 +6,7 @@
 # History:
 #    2015 Oct 15   Divisuals   Initial script
 #    2018 Apr 22   Divisuals   user changes, minor cleanup
+#    2018 Aug 25   Divisuals   bashrc updates, added to base image
 #
 
 set -e -x -u
@@ -29,7 +30,8 @@ fi
 docker build --rm=true -t "${IMAGE_NAME}-${USER_NAME}" - <<UserSpecificDocker
 FROM ${IMAGE_NAME}
 RUN groupadd --non-unique -g ${GROUP_ID} ${USER_NAME} \
- && useradd -g ${GROUP_ID} -u ${USER_ID} -k /root -m ${USER_NAME}
+ && useradd -g ${GROUP_ID} -u ${USER_ID} -k /root -m ${USER_NAME} \
+ && cp /root/.bashrc /home/${USER_NAME}/.bashrc
 ENV HOME /home/${USER_NAME}
 # SOXPORT 1876
 # WEBSERVER 8080
@@ -47,7 +49,6 @@ docker run -it \
   -w "/home/${USER_NAME}/sedonadev" \
   -u "${USER_NAME}" \
   -v "$PWD:/home/${USER_NAME}/sedonadev" \
-  -v "${SCRIPT_DIR}/.bashrc:/home/${USER_NAME}/.bashrc" \
   ${IMAGE_NAME}-${USER_NAME} \
   bash
 

@@ -6,6 +6,7 @@
 #    2015 Oct 15   Divisuals   Initial Docker Image
 #    2016 Feb 23   Divisuals   Updated to latest JDK 8_73
 #    2018 Apr 22   Divisuals   Updated to latest JDK 8_171, centos (i386)
+#    2018 Aug 25   Divisuals   Updated to latest JDK 8_181, centos (i386)
 #
 
 FROM i386/centos:latest
@@ -15,20 +16,23 @@ LABEL Vendor="Sedona"
 LABEL version=develop
 
 # 32-bit
-# http://download.oracle.com/otn-pub/java/jdk/8u171-b11/512cd62ec5174c3487ac17c61aaa89e8/jdk-8u171-linux-i586.tar.gz
-# sha 37896425b90ea323d841cb57784cec21822c38754e94e415b7f102b205c80536
+# http://download.oracle.com/otn-pub/java/jdk/8u181-b13/96a7b8442fe848ef90c96a2fad6ed6d1/jdk-8u181-linux-i586.tar.gz
+# sha d78a023abffb7ce4aade43e6db64bbad5984e7c82c54c332da445c9a79c1a904
 
-# download JDK 8 u171 (i586)
+# download JDK 8 u181 (i586)
 ENV JAVA_VERSION_MAJOR 8
-ENV JAVA_VERSION_MINOR 171
-ENV JAVA_VERSION_BUILD 11
+ENV JAVA_VERSION_MINOR 181
+ENV JAVA_VERSION_BUILD 13
 ENV JAVA_PACKAGE=jdk
-ENV JAVA_SHA256_SUM=37896425b90ea323d841cb57784cec21822c38754e94e415b7f102b205c80536
-ENV JAVA_URL_ELEMENT=512cd62ec5174c3487ac17c61aaa89e8
+ENV JAVA_SHA256_SUM=d78a023abffb7ce4aade43e6db64bbad5984e7c82c54c332da445c9a79c1a904
+ENV JAVA_URL_ELEMENT=96a7b8442fe848ef90c96a2fad6ed6d1
 ENV	JAVA_HOME=/opt/jdk
 
+# Copy .bashrc file
+COPY .bashrc /root
+
 # download packages, JDK, untar and cleanup
-# Fix centos repo URL error 
+# Fix centos repo URL error
 # NOT FOUND: http://mirror.centos.org/altarch/7/os/x86_64/repodata/repomd.xml
 RUN	echo "[docker] installing OS packages..." &&\
   sed -i -e "s|\$basearch|i386|g" /etc/yum.repos.d/CentOS-Base.repo &&\
