@@ -91,6 +91,8 @@ typedef int socket_t;
 #ifdef __UNIX__
 
 #include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 #include <sys/ioctl.h>
 #include <netdb.h>
 #include <errno.h>
