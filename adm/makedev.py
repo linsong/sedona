@@ -62,6 +62,10 @@ def initParser():
                              default=None,
                              metavar="CC")
 
+  parser.add_argument('--sys', action='store',
+                             help='Force to use build scripts for specific platform (posix,nt)',
+                             default=os.name)
+
 # Main
 if __name__ == '__main__':
   global parser
@@ -76,6 +80,7 @@ if __name__ == '__main__':
   print 'options.run     = ', options.run
   print 'options.scode   = ', options.scode
   print 'options.app     = ', options.app
+  print 'options.sys     = ', options.sys
 
   scodefile = os.path.splitext(options.scode)[0] + '.scode'
   sabfile   = os.path.splitext(options.app)[0]   + '.sab'
@@ -121,7 +126,7 @@ if __name__ == '__main__':
     compilekit.compile(options.app)
 
   # Make Sedona VM (svm)
-  if os.name == "posix": # unix, OSX
+  if options.sys == "posix": # unix, OSX
     make = makeunixvm
   else: # win32
     make = makewinvm
