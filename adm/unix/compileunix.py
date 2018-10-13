@@ -33,7 +33,10 @@ def gcc(exeFile, srcFiles, includes, libs, defs):
   if (platform.machine() == 'x86_64') and (compile_prefix is None):
     cmd += " -m32"  # always compile in 32bit mode
 
+  sysroot = os.environ.get("SVM_SYSROOT")
   for include in includes:
+    if sysroot is not None and include.startswith("/"):
+      include = sysroot + os.sep + include
     cmd += " -I" + include
 
   # defines (tuples)
