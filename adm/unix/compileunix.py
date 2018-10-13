@@ -25,9 +25,13 @@ import fileutil
 #def compile(exeFile, srcFiles, includes, libs, defs):
 def gcc(exeFile, srcFiles, includes, libs, defs):
   # standard includes
+  compile_prefix=os.environ.get("SVM_CROSS_COMPILE")
   cmd = "gcc"
-  if (platform.machine() == 'x86_64'):
-    cmd += " -m32" # always compile in 32bit mode
+  if compile_prefix is not None:
+    cmd = compile_prefix + cmd
+
+  if (platform.machine() == 'x86_64') and (compile_prefix is None):
+    cmd += " -m32"  # always compile in 32bit mode
 
   for include in includes:
     cmd += " -I" + include
