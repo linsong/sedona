@@ -46,6 +46,11 @@ def gcc(exeFile, srcFiles, includes, libs, defs):
 
   cmd += " -DPLAT_BUILD_VERSION=" + '\\"' + env.buildVersion() + '\\"'
 
+  # add user CFLAGS
+  cflags = os.environ.get("SVM_CFLAGS")
+  if cflags is not None:
+    cmd += " " + cflags
+
   # src
   for src in srcFiles:
     cmd += " " + src
@@ -53,6 +58,11 @@ def gcc(exeFile, srcFiles, includes, libs, defs):
   # libs
   for lib in libs:
     cmd += " -l" + lib
+
+  # add user LDFLAGS
+  ldflags = os.environ.get("SVM_LDFLAGS")
+  if ldflags is not None:
+    cmd += " " + ldflags
 
   # remaining options
   cmd += " -O2"
