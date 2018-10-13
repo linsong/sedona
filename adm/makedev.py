@@ -48,6 +48,19 @@ def initParser():
                              default=os.path.join(env.scode, defaultscode), 
                              metavar="XML")
 
+  help_msg = 'The path to the sedonaPlatform XML file. ' + \
+             'If this option is omitted, then environment variable $SVM_PLATFORM will be checked. ' + \
+             'If that variable is not set, then $sedona_home/platforms/src/generic/unix/generic-unix.xml ' + \
+             'will be used.'
+  parser.add_argument('-p', '--platform', action='store',
+                             help=help_msg,
+                             default=None,
+                             metavar="PLATFORM")
+
+  parser.add_argument('-c', '--compiler', action='store',
+                             help='Compiler to use. Defaults to gcc',
+                             default=None,
+                             metavar="CC")
 
 # Main
 if __name__ == '__main__':
@@ -114,6 +127,11 @@ if __name__ == '__main__':
     make = makewinvm
 
   args = []
+  if options.compiler is not None:
+    args += ['-c', options.compiler ]
+
+  if options.platform is not None:
+    args += ['-p', options.platform ]
 
   status = make.main(args)
   if status:
