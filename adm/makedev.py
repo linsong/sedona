@@ -109,9 +109,13 @@ if __name__ == '__main__':
 
   # Make Sedona VM (svm)
   if os.name == "posix": # unix, OSX
-    status = makeunixvm.main([])
+    make = makeunixvm
   else: # win32
-    status = makewinvm.compile()
+    make = makewinvm
+
+  args = []
+
+  status = make.main(args)
   if status:
     raise env.BuildError("FATAL: make svm failed")
 

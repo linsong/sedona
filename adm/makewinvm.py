@@ -115,15 +115,13 @@ def verifyOpts():
     if not platFile:
       platFile = os.path.join(env.platforms, "src", "generic", "win32", "generic-win32.xml")
 
-
-# Main
-if __name__ == '__main__':
+def main(args):
   global parser
   config = defs
 
   # Parse command line arguments
   initParser()
-  options = parser.parse_args()
+  options = parser.parse_args(args)
 
   if (options.list_compilers):
     listCompilers()
@@ -158,4 +156,7 @@ if __name__ == '__main__':
   # Create platform archive and install in platform DB
   platArchive.main(["--db", "--stage", os.path.join(stageDir, ".par")])
 
-
+# __main__
+if __name__ == '__main__':
+  main(sys.argv[1:])
+  sys.exit()
