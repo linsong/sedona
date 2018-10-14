@@ -38,6 +38,10 @@ def initParser():
                              help='Run specified test (default is all)',
                              default=None, choices=['sedonac', 'svm', 'all', 'none'], 
                              metavar="TEST")
+  parser.add_argument('-k', '--kits', action='store',
+                             help='Specify XML to build additional external kits. Default is None',
+                             default=None,
+                             metavar="KITS")
   parser.add_argument('-r', '--run', action='store_true', default=False,
                              help='Run an app after building')
   parser.add_argument('-a', '--app', action='store', 
@@ -77,6 +81,7 @@ if __name__ == '__main__':
   # Print options
   print 'options.version = ', options.version
   print 'options.test    = ', options.test
+  print 'options.kits    = ', options.kits
   print 'options.run     = ', options.run
   print 'options.scode   = ', options.scode
   print 'options.app     = ', options.app
@@ -117,6 +122,11 @@ if __name__ == '__main__':
   
   # Make all kits
   compilekit.compile(env.kits, ["-outDir", env.build])
+
+  # Make additional external kits
+  if options.kits is not None:
+    print "Build additional external kits"
+    compilekit.compile(options.kits)
 
   # Make windows test scode (or scode specified on cmd line)
   compilekit.compile(options.scode)
