@@ -25,11 +25,18 @@ import fileutil
 #def compile(exeFile, srcFiles, includes, libs, defs):
 def gcc(exeFile, srcFiles, includes, libs, defs):
   # standard includes
+  compile_prefix=os.environ.get("SVM_CROSS_COMPILE")
   cmd = "gcc"
-  if (platform.machine() == 'x86_64'):
-    cmd += " -m32" # always compile in 32bit mode
+  if compile_prefix is not None:
+    cmd = compile_prefix + cmd
 
+  if (platform.machine() == 'x86_64') and (compile_prefix is None):
+    cmd += " -m32"  # always compile in 32bit mode
+
+  sysroot = os.environ.get("SVM_SYSROOT")
   for include in includes:
+    if sysroot is not None and include.startswith("/"):
+      include = sysroot + os.sep + include
     cmd += " -I" + include
 
   # defines (tuples)
@@ -42,6 +49,11 @@ def gcc(exeFile, srcFiles, includes, libs, defs):
 
   cmd += " -DPLAT_BUILD_VERSION=" + '\\"' + env.buildVersion() + '\\"'
 
+  # add user CFLAGS
+  cflags = os.environ.get("SVM_CFLAGS")
+  if cflags is not None:
+    cmd += " " + cflags
+
   # src
   for src in srcFiles:
     cmd += " " + src
@@ -49,6 +61,11 @@ def gcc(exeFile, srcFiles, includes, libs, defs):
   # libs
   for lib in libs:
     cmd += " -l" + lib
+
+  # add user LDFLAGS
+  ldflags = os.environ.get("SVM_LDFLAGS")
+  if ldflags is not None:
+    cmd += " " + ldflags
 
   # remaining options
   cmd += " -O2"

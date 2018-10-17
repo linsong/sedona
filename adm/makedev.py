@@ -38,6 +38,10 @@ def initParser():
                              help='Run specified test (default is all)',
                              default=None, choices=['sedonac', 'svm', 'all', 'none'], 
                              metavar="TEST")
+  parser.add_argument('-k', '--kits', action='store',
+                             help='Specify XML to build additional external kits. Default is None',
+                             default=None,
+                             metavar="KITS")
   parser.add_argument('-r', '--run', action='store_true', default=False,
                              help='Run an app after building')
   parser.add_argument('-a', '--app', action='store', 
@@ -48,6 +52,23 @@ def initParser():
                              default=os.path.join(env.scode, defaultscode), 
                              metavar="XML")
 
+  help_msg = 'The path to the sedonaPlatform XML file. ' + \
+             'If this option is omitted, then environment variable $SVM_PLATFORM will be checked. ' + \
+             'If that variable is not set, then $sedona_home/platforms/src/generic/unix/generic-unix.xml ' + \
+             'will be used.'
+  parser.add_argument('-p', '--platform', action='store',
+                             help=help_msg,
+                             default=None,
+                             metavar="PLATFORM")
+
+  parser.add_argument('-c', '--compiler', action='store',
+                             help='Compiler to use. Defaults to gcc',
+                             default=None,
+                             metavar="CC")
+
+  parser.add_argument('--sys', action='store',
+                             help='Force to use build scripts for specific platform (posix,nt)',
+                             default=os.name)
 
 # Main
 if __name__ == '__main__':
@@ -60,9 +81,11 @@ if __name__ == '__main__':
   # Print options
   print 'options.version = ', options.version
   print 'options.test    = ', options.test
+  print 'options.kits    = ', options.kits
   print 'options.run     = ', options.run
   print 'options.scode   = ', options.scode
   print 'options.app     = ', options.app
+  print 'options.sys     = ', options.sys
 
   scodefile = os.path.splitext(options.scode)[0] + '.scode'
   sabfile   = os.path.splitext(options.app)[0]   + '.sab'
@@ -100,6 +123,11 @@ if __name__ == '__main__':
   # Make all kits
   compilekit.compile(env.kits, ["-outDir", env.build])
 
+  # Make additional external kits
+  if options.kits is not None:
+    print "Build additional external kits"
+    compilekit.compile(options.kits)
+
   # Make windows test scode (or scode specified on cmd line)
   compilekit.compile(options.scode)
   
@@ -108,10 +136,19 @@ if __name__ == '__main__':
     compilekit.compile(options.app)
 
   # Make Sedona VM (svm)
-  if os.name == "posix": # unix, OSX
-    status = makeunixvm.main([])
+  if options.sys == "posix": # unix, OSX
+    make = makeunixvm
   else: # win32
-    status = makewinvm.compile()
+    make = makewinvm
+
+  args = []
+  if options.compiler is not None:
+    args += ['-c', options.compiler ]
+
+  if options.platform is not None:
+    args += ['-p', options.platform ]
+
+  status = make.main(args)
   if status:
     raise env.BuildError("FATAL: make svm failed")
 
