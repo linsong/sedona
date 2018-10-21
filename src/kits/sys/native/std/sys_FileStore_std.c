@@ -399,3 +399,22 @@ Cell sys_FileStore_rename(SedonaVM* vm, Cell* params)
 }
 
 
+// static bool FileStore.remove(Str filename)
+Cell sys_FileStore_remove(SedonaVM* vm, Cell* params)
+{
+ #ifdef IMPL_SCHEME_CONVENTION
+  const char* filename = FSexpandFilePath(params[0].aval);
+ #else
+  const char* filename = params[0].aval;
+ #endif
+
+  Cell ret = trueCell;
+  struct stat statBuf;
+
+  if ((stat(filename, &statBuf) == 0) && (remove(filename) != 0))
+     ret = falseCell;
+
+  return ret;
+}
+
+

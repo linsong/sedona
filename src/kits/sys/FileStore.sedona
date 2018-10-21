@@ -118,7 +118,11 @@ class FileStore
   ** Rename a file. Return true on success, false on failure.
   **
   native static bool rename(Str from, Str to)
-  
+
+  **
+  ** Unlink/Delete a file. Return true on success, false on failure.
+  **
+  native static bool remove(Str filename)
 
   native static int doSize(Str name)
   native static Obj doOpen(Str name, Str mode)
