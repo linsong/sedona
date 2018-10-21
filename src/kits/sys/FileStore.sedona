@@ -46,6 +46,14 @@ class FileStore
   }
 
   **
+  ** Implementation for 'File.out.fsync'.
+  **
+  virtual void fsync(File f)
+  {
+	doFsync(f.fp);
+  }
+
+  **
   ** Implementation for 'File.close'.
   **
   virtual bool close(File f) 
@@ -121,6 +129,7 @@ class FileStore
   native static bool doSeek(Obj fp, int pos)
   native static int  doTell(Obj fp)
   native static void doFlush(Obj fp)
+  native static void doFsync(Obj fp)
   native static bool doClose(Obj fp)
 
 
