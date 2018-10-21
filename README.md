@@ -36,7 +36,9 @@ See all changes in the [ChangeLog](ChangeLog.md).
  $ python adm/makedist.py
 ```
 
-### Linux
+### GNU/Linux
 We build a shell script that uses docker to build sedona under linux, read [here](./tools/README.md) for more details.
 
+### Customize build platform
+If it's necessary to cross-compile sedona to custom platform with own set of additional or modified kits, please follow instructions described [here](./adm/CustomBuild.md).
 
