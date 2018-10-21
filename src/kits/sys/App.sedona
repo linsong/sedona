@@ -1026,6 +1026,7 @@ class App
     if (file.open("w"))
     {
       int r = saveApp(file.out)
+      file.fsync()
       file.close()
       if (r == 0)
         log.message("saved (${file.size()} bytes)")
