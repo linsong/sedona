@@ -59,15 +59,25 @@ int64_t sys_Sys_ticks(SedonaVM* vm, Cell* params)
   LeaveCriticalSection(&lock);
 
   // milliseconds -> nanoseconds
-  return total * 1000000;
+#if defined(__MINGW32__) && (__SIZEOF_LONG_LONG__ == 8)
+  return total * 1000000ll;
+#else
+  return total * 1000000i64;
+#endif
 }
 
 // static void Sys.sleep(Time t)
 Cell sys_Sys_sleep(SedonaVM* vm, Cell* params)
 {
   int64_t ns = *(int64_t*)params;
-  int64_t ms = ns/1000000;
-  
+  int64_t ms;
+
+#if defined(__MINGW32__) && (__SIZEOF_LONG_LONG__ == 8)
+  ms = ns/1000000ll;
+#else
+  ms = ns/1000000i64;
+#endif
+
   if (ms <= 0) return nullCell;
 
   Sleep(ms);
