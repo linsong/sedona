@@ -229,7 +229,7 @@ class SerialTest
     // Write what we got back onto port
     thePort.out.print("\nGot: [").print(testStr1).print("]\n").print("\nBye!\n")
 
-    Sys.out.print("COM4 read: [").print(testStr1).print("]\n")   // DIAG
+    Sys.out.print("port read: [").print(testStr1).print("]\n")   // DIAG
 
     thePort.close()
   }
