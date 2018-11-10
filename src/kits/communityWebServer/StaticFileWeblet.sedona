@@ -9,22 +9,35 @@
 ** 
 ** StaticFileWeblet provides the ability to serve static files(html, css, js,
 ** images etc) through http, so that user can use sedona as a minimal web
-** server and host a static web app just in sedona, without any outside
-** dependency. 
-** to save space on sedona, gzipped file is supported and I recommend to use it
+** server and host a static web app(SPA for example) just in sedona, without 
+** any outside dependency. 
+**
+** To enable this weblet, you need to create an object of this component as a 
+** child of WebService. Deleting the object will disable the weblet. This is
+** different comparing to SpyWeblet. 
+**
+** You can create multiple objects of StaticFileWeblet and every object uses
+** different urlPrefix, so that sedona is possible to host multiple web apps.
+**
+** To save space on sedona, gzipped file is supported and I recommend to use it
 ** since that will be more efficient(less bytes to be loaded and transferred)
 ** 
 class StaticFileWeblet extends Weblet
 {
+  @config @asStr property Buf(12) urlPrefix = "statics"
 ////////////////////////////////////////////////////////////////
 // Weblet Registration
 ////////////////////////////////////////////////////////////////
 
-  static void _sInit()
+  override void start() 
   {
-    instance.register()
+    register()
   }
-  static internal inline StaticFileWeblet instance
+
+  override void stop()
+  {
+    unregister()
+  }
 
 ////////////////////////////////////////////////////////////////
 // Weblet
@@ -32,9 +45,10 @@ class StaticFileWeblet extends Weblet
 
   ** 
   ** all static files to be served must be put under 'statics' folder
-  ** and the url will start with 'statics', too 
+  ** and the url will start with 'statics', too. If you want to use other
+  ** name, config it by urlPrefix slot, Note: the max length is 11 chars
   **
-  override Str prefix() { return "statics" }
+  override Str prefix() { return urlPrefix.toStr() }
 
   override Str description() { return "Sedona Static File Weblet" }
 
