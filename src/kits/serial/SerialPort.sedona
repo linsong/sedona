@@ -9,7 +9,7 @@
 **
 ** SerialPort models a serial I/O port without software buffering.
 **
-final class SerialPort               // must be final since it has cstr
+abstract class SerialPortGeneric extends sys::Virtual
 {
 
 //////////////////////////////////////////////////////////////////////////
@@ -74,58 +74,42 @@ final class SerialPort               // must be final since it has cstr
 
 
 //////////////////////////////////////////////////////////////////////////
-// Native methods
+// Abstract methods
 //////////////////////////////////////////////////////////////////////////
 
   **
   ** Set the serial parameters for the port.  If any params are bad, do 
   ** nothing and return -1, otherwise return 0.
   **
-  internal native int  doInit(int port, int baud, int datab, int stopb, int par, int rts, bool rs485)
+  abstract int  doInit(int port, int baud, int datab, int stopb, int par, int rts, bool rs485)
 
   **
   ** Shut down the serial port.  Return 0 if successful.
   **
-  internal native int  doClose(int port)
+  abstract int  doClose(int port)
 
   **
   ** Read one byte from port.  Return byte value, or -1 if no byte was
   ** available.  (non-blocking)
   **
-  internal native int  doRead(int port)
+  abstract int  doRead(int port)
 
   **
   ** Write one byte to port.  Return -1 if any error, or 0 if successful.
   **
-  internal native int  doWrite(int port, int c)
+  abstract int  doWrite(int port, int c)
 
   **
   ** Read up to n bytes from port into array y.  Return number of bytes 
   ** read, or -1 if an error occurred.  (non-blocking)
   **
-  internal native int  doReadBytes(int port, byte[] y, int off, int len)
+  abstract int  doReadBytes(int port, byte[] y, int off, int len)
 
   **
   ** Write up to n bytes to port from array y.  Return number of bytes 
   ** written, or -1 if an error occurred.  
   **
-  internal native int  doWriteBytes(int port, byte[] y, int off, int len)
-
-
-//////////////////////////////////////////////////////////////////////////
-// Constructor
-//////////////////////////////////////////////////////////////////////////
-
-  **
-  ** SerialPort constructor sets up in/outstream refs.
-  ** Note that existence of cstr forces class to be final.
-  **
-  SerialPort()
-  {
-    // Connect in/out streams to this object
-    this.out.port = this
-    this.in.port  = this
-  }
+  abstract int  doWriteBytes(int port, byte[] y, int off, int len)
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -194,7 +178,7 @@ internal class SerialOutStream extends OutStream
     return port.doWriteBytes(port.portNum, b, off, len) == len 
   }
  
-  SerialPort port
+  SerialPortGeneric port;
 }
 
 ****************************************************************
@@ -222,7 +206,31 @@ internal class SerialInStream extends InStream
     return port.doReadBytes(port.portNum, b, off, len) 
   }
 
-  SerialPort port
+  SerialPortGeneric port;
+}
+
+
+**
+** SerialPort models a serial I/O port without software buffering.
+**
+final class SerialPort extends SerialPortEmu              // must be final since it has cstr
+{
+
+
+//////////////////////////////////////////////////////////////////////////
+// Constructor
+//////////////////////////////////////////////////////////////////////////
+
+  **
+  ** SerialPort constructor sets up in/outstream refs.
+  ** Note that existence of cstr forces class to be final.
+  **
+  SerialPort()
+  {
+    // Connect in/out streams to this object
+    this.out.port = this;
+    this.in.port  = this;
+  }
 }
 
 
