@@ -2,9 +2,6 @@
 // Copyright (c) 2008 Tridium, Inc.
 // Licensed under the Academic Free License version 3.0
 //
-// History:
-//   01 Jan 08 Robert Adams  Creation
-//
 
 #include "sedona.h"
 #include "serialWin32.h"
