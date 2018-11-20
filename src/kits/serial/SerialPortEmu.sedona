@@ -1,0 +1,85 @@
+//
+// Copyright (c) 2016 Andrey Skvortsov <andrej.skvortzov@gmail.com>
+//
+// Licensed under the Academic Free License version 3.0
+//
+
+class SerialPortEmu extends SerialPortNative
+{
+
+  define int bufferSize = 128;
+
+  static byte outIndx;
+  static byte inIndx;
+  static byte indxMask = (bufferSize - 1);
+  static inline int[bufferSize] buf;
+
+
+  bool isVirtualPort()
+  {
+    return (portNum == -1) || (portNum == -2);
+  }
+
+  override int doInit(int port, int baud, int dataB, int stopB, int par, int rts, bool rs485)
+  {
+    if (isVirtualPort())
+      return 0;
+    return super.doInit(port, baud, dataB, stopB, par, rts, rs485);
+  }
+
+  override int doClose(int port)
+  {
+    if (isVirtualPort())
+      return 0;
+    return super.doClose(port);
+  }
+
+  override int doRead(int port)
+  {
+    if (!isVirtualPort())
+      return super.doRead(port);
+
+    int ret = -1;
+    int qty =  indxMask & (inIndx - outIndx);
+    if (qty>0) {
+      ret = buf[outIndx];
+      outIndx = (outIndx+1) & indxMask;
+    }
+    return ret;
+  }
+
+  override int doWrite(int port, int b)
+  {
+    if (!isVirtualPort())
+      return super.doWrite(port, b);
+
+    buf[inIndx] = b;
+    inIndx = (inIndx+1) & indxMask;
+    return 0;
+  }
+
+  override int  doReadBytes(int port, byte[] y, int off, int len)
+  {
+    if (!isVirtualPort())
+      return super.doReadBytes(port, y, off, len);
+
+    int i;
+    for(i=0; i<len; i++) {
+      int tmp = doRead(port);
+      if (tmp < 0)
+        break;
+      y[off+i] = tmp;
+    }
+    return i;
+  }
+
+  override int  doWriteBytes(int port, byte[] y, int off, int len)
+  {
+    if (!isVirtualPort())
+      return super.doWriteBytes(port, y, off, len);
+
+    for(int i=0; i<len; i++)
+      doWrite(port, y[off+i]);
+    return 0;
+  }
+}

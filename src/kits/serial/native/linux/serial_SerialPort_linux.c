@@ -347,7 +347,7 @@ static bool doApplySettings(struct SerialPortLinux *h,
 
 
 // int SerialPort.doInit(int port, int baud, int stopb, int wlen, int parity)
-Cell serial_SerialPort_doInit(SedonaVM* vm, Cell* params)
+Cell serial_SerialPortNative_doInitNative(SedonaVM* vm, Cell* params)
 {
 	int portNum  = params[1].ival;
 	int baudRate = params[2].ival;
@@ -395,7 +395,7 @@ Cell serial_SerialPort_doInit(SedonaVM* vm, Cell* params)
 
 /* Shut down the serial port.  Return 0 if successful. */
 /* int SerialPort.doClose(int port) */
-Cell serial_SerialPort_doClose(SedonaVM* vm, Cell* params)
+Cell serial_SerialPortNative_doCloseNative(SedonaVM* vm, Cell* params)
 {
 	int32_t portNum  = params[1].ival;
 
@@ -411,7 +411,7 @@ Cell serial_SerialPort_doClose(SedonaVM* vm, Cell* params)
  /* Read one byte from port.  Return byte value, or -1 if no byte was */
  /* available.  (non-blocking) */
 /* int  SerialPort.doRead(int port) */
-Cell serial_SerialPort_doRead(SedonaVM* vm, Cell* params)
+Cell serial_SerialPortNative_doReadNative(SedonaVM* vm, Cell* params)
 {
 	int32_t portNum = params[1].ival;
 	int32_t bytesRead;
@@ -432,7 +432,7 @@ Cell serial_SerialPort_doRead(SedonaVM* vm, Cell* params)
 
 
 /* int  SerialPort.doWrite(int port, int c) */
-Cell serial_SerialPort_doWrite(SedonaVM* vm, Cell* params)
+Cell serial_SerialPortNative_doWriteNative(SedonaVM* vm, Cell* params)
 {
 	int32_t  portNum = params[1].ival;
 	uint8_t  ch      = (uint8_t)params[2].ival;
@@ -449,7 +449,7 @@ Cell serial_SerialPort_doWrite(SedonaVM* vm, Cell* params)
 /* Read up to n bytes from port into array y.  Return number of bytes */
 /* read, or -1 if an error occurred.  (non-blocking) */
 /* int  SerialPort.doReadBytes(int port, byte[] y, int off, int len) */
-Cell serial_SerialPort_doReadBytes(SedonaVM* vm, Cell* params)
+Cell serial_SerialPortNative_doReadBytesNative(SedonaVM* vm, Cell* params)
 {
 	Cell     ret;
 	int32_t  portNum = params[1].ival;
@@ -473,7 +473,7 @@ Cell serial_SerialPort_doReadBytes(SedonaVM* vm, Cell* params)
 /* Write up to n bytes to port from array y.  Return number of bytes */
 /* written, or -1 if an error occurred. */
 /* int  SerialPort.doWriteBytes(int port, byte[] y, int off, int len) */
-Cell serial_SerialPort_doWriteBytes(SedonaVM* vm, Cell* params)
+Cell serial_SerialPortNative_doWriteBytesNative(SedonaVM* vm, Cell* params)
 {
 	Cell     ret;
 	int32_t  portNum = params[1].ival;
