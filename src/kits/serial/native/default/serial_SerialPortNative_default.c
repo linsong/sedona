@@ -2,9 +2,6 @@
 // Copyright (c) 2007 Tridium, Inc.
 // Licensed under the Academic Free License version 3.0
 //
-// History:
-//   02 Jul 07 Elizabeth McKenney  Creation
-//
 
 #include "sedona.h"
 
