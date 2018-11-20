@@ -273,6 +273,41 @@ static bool doApplyStopBits(struct SerialPortLinux *h, int stopBits)
 	return tcsetattr(fd, TCSANOW, &options) == 0;
 }
 
+static bool doApplyRs485Setting(struct SerialPortLinux *h, int rts)
+{
+	struct serial_rs485 rs485conf;
+	int fd = h->fd;
+
+	memset(&rs485conf, 0, sizeof(rs485conf));
+
+	/* Enable RS485 mode: */
+	rs485conf.flags |= SER_RS485_ENABLED;
+
+	if (rts) {
+		/* Set logical level for RTS pin equal to 1 when sending: */
+		rs485conf.flags |= SER_RS485_RTS_ON_SEND;
+
+		/* or, set logical level for RTS pin equal to 0 after sending: */
+		rs485conf.flags &= ~(SER_RS485_RTS_AFTER_SEND);
+	} else {
+		/* or, set logical level for RTS pin equal to 0 when sending: */
+		rs485conf.flags &= ~(SER_RS485_RTS_ON_SEND);
+
+		/* Set logical level for RTS pin equal to 1 after sending: */
+		rs485conf.flags |= SER_RS485_RTS_AFTER_SEND;
+	}
+
+	/* Set rts delay before send, if needed: */
+	rs485conf.delay_rts_before_send = 0;
+
+	/* Set rts delay after send, if needed: */
+	rs485conf.delay_rts_after_send = 0;
+
+	/* Set this flag if you want to receive data even whilst sending data */
+	/* rs485conf.flags |= SER_RS485_RX_DURING_TX; */
+
+	return ioctl(fd, TIOCSRS485, &rs485conf) == 0;
+}
 
 static bool doResetSettings(struct SerialPortLinux *h)
 {
@@ -290,13 +325,18 @@ static bool doApplySettings(struct SerialPortLinux *h,
 			int     dataBits,
 			int     parity,
 			int     stopBits,
-			int     rts)
+			int     rts,
+			bool    rs485)
 {
 	if (! doResetSettings(  h           )) return false;
 	if (! doApplyBaudrate(  h, baudRate )) return false;
 	if (! doApplyParity(    h, parity   )) return false;
 	if (! doApplyByteSize(  h, dataBits )) return false;
-	if (! doApplyRtsControl(h, rts      )) return false;
+
+	if (rs485)
+		if (! doApplyRs485Setting(h, rts)) return false;
+	else
+		if (! doApplyRtsControl(h, rts      )) return false;
 
 	doFlush(h);
 
@@ -315,6 +355,7 @@ Cell serial_SerialPort_doInit(SedonaVM* vm, Cell* params)
 	int stopBits = params[4].ival;
 	int parity   = params[5].ival;
 	int rtsLevel = params[6].ival;
+	bool rs485    = params[7].ival;
 
 	if (!checkPortNum(portNum)) {
 		printf("Invalid port %d\n", portNum);
@@ -340,7 +381,7 @@ Cell serial_SerialPort_doInit(SedonaVM* vm, Cell* params)
 		return negOneCell;
 	}
 
-	if (!doApplySettings(h,	baudRate, dataBits, parity, stopBits, rtsLevel)) {
+	if (!doApplySettings(h,	baudRate, dataBits, parity, stopBits, rtsLevel, rs485)) {
 		doClose(h);
 		printf("Can't apply settings ComPort\n");
 		return negOneCell;
