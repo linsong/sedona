@@ -59,6 +59,11 @@ final class SerialPort               // must be final since it has cstr
   ** This value is also assumed to be the RTS inactive level. (e.g. RTS_LOW implies RTS active high)
   public int  rtsLevel  = RTS_LOW 
 
+  ** Is this rs485 interface?
+  ** RTS signal is used to control DE signal for RS485 driver
+  public bool  rs485  = false
+
+
 
   // In/out streams (inner classes of SerialPort)
   
@@ -76,7 +81,7 @@ final class SerialPort               // must be final since it has cstr
   ** Set the serial parameters for the port.  If any params are bad, do 
   ** nothing and return -1, otherwise return 0.
   **
-  internal native int  doInit(int port, int baud, int datab, int stopb, int par, int rts)
+  internal native int  doInit(int port, int baud, int datab, int stopb, int par, int rts, bool rs485)
 
   **
   ** Shut down the serial port.  Return 0 if successful.
@@ -131,7 +136,7 @@ final class SerialPort               // must be final since it has cstr
   **
   ** Sets all params at once - no error checking at this time
   ** 
-  int setParams(int port, int baud, int dataB, int stopB, int par, int rts)
+  int setParams(int port, int baud, int dataB, int stopB, int par, int rts, bool rs485)
   {
     this.portNum   = port
     this.baudRate  = baud
@@ -139,6 +144,7 @@ final class SerialPort               // must be final since it has cstr
     this.stopBits  = stopB
     this.parity    = par
     this.rtsLevel  = rts
+    this.rs485     = rs485
 
     return 0
   }
@@ -149,7 +155,7 @@ final class SerialPort               // must be final since it has cstr
   ** 
   int open()
   {
-    return doInit(portNum, baudRate, dataBits, stopBits, parity, rtsLevel)
+    return doInit(portNum, baudRate, dataBits, stopBits, parity, rtsLevel, rs485)
   }
 
 
