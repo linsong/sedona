@@ -42,8 +42,8 @@ void SetCommParams(HANDLE   hFile ,
                    int32_t  flowControl,
                    int32_t  baudRate    );
 
-int write(SerialData *pData, uint8_t* pu8Buf, int32_t  nbytes);
-int read(SerialData *pData, uint8_t* pu8Buf, int32_t  nbytes);
+int doWriteBytes(SerialData *pData, uint8_t* pu8Buf, int32_t  nbytes);
+int doReadBytes(SerialData *pData, uint8_t* pu8Buf, int32_t  nbytes);
 
 DWORD WINAPI readThreadEntry(LPVOID param);
 

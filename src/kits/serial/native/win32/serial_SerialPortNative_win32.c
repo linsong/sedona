@@ -2,9 +2,6 @@
 // Copyright (c) 2008 Tridium, Inc.
 // Licensed under the Academic Free License version 3.0
 //
-// History:
-//   01 Jan 08 Robert Adams  Creation
-//
 
 #include "sedona.h"
 #include "serialWin32.h"
@@ -17,8 +14,8 @@ Cell errCell = { -2 };
 
 // Set the serial parameters for the port.  If any params are bad, do
 //  nothing and return -1, otherwise return 0.
-//  int SerialPort doInit(int port, int baud, int datab, int stopb, int par, int rts)
-Cell serial_SerialPort_doInit(SedonaVM* vm, Cell* params)
+//  int SerialPortNative doInit(int port, int baud, int datab, int stopb, int par, int rts)
+Cell serial_SerialPortNative_doInitNative(SedonaVM* vm, Cell* params)
 {
   char port[256];
   SerialData *pData;
@@ -32,7 +29,7 @@ Cell serial_SerialPort_doInit(SedonaVM* vm, Cell* params)
   //
   // Initialize physical port here
   //
-  if(portNum<0 || portNum>=HANDLE_ARRAY_LEN)
+  if(portNum<=0 || portNum>=HANDLE_ARRAY_LEN)
   {
     printf("Invalid port %d\n",portNum);
     return negOneCell;
@@ -47,12 +44,12 @@ Cell serial_SerialPort_doInit(SedonaVM* vm, Cell* params)
                        0,
                        NULL,
                        OPEN_EXISTING,
-                       FILE_FLAG_OVERLAPPED,
+                       0,
                        NULL);
   if(pData->hFile==INVALID_HANDLE_VALUE)
   {
     DWORD dwLastErr = GetLastError();
-    printf("Error: CreateFile  err=%d\n",dwLastErr);
+    printf("Error: CreateFile '%s' err=%d\n", port, dwLastErr);
     return negOneCell;
   }
 
@@ -86,6 +83,7 @@ Cell serial_SerialPort_doInit(SedonaVM* vm, Cell* params)
     return negOneCell;
   }
 
+  printf("SerialPort.doInit COM%d.\n",portNum);
   // Return zero if nothing went wrong
   return zeroCell;
 }
@@ -93,14 +91,19 @@ Cell serial_SerialPort_doInit(SedonaVM* vm, Cell* params)
 
 // Shut down the serial port.  Return 0 if successful.
 // int SerialPort.doClose(int port)
-Cell serial_SerialPort_doClose(SedonaVM* vm, Cell* params)
+Cell serial_SerialPortNative_doCloseNative(SedonaVM* vm, Cell* params)
 {
   int32_t portNum  = params[1].ival;
   SerialData *pData = pSd[portNum];
   //
   // Shut down physical port here
   //
-  printf("SerialPort.doClose COM%d platform 'default'.\n",portNum);
+
+  if (!pData) {
+	  printf("SerialPort.doClose COM%d was not open.\n", portNum);
+	  return zeroCell;
+  }
+  printf("SerialPort.doClose COM%d.\n",portNum);
 
   pData->done = TRUE;
   CloseHandle(pData->hFile);
@@ -117,14 +120,14 @@ Cell serial_SerialPort_doClose(SedonaVM* vm, Cell* params)
 // Read one byte from port.  Return byte value, or -1 if no byte was
 // available.  (non-blocking)
 // int  SerialPort.doRead(int port)
-Cell serial_SerialPort_doRead(SedonaVM* vm, Cell* params)
+Cell serial_SerialPortNative_doReadNative(SedonaVM* vm, Cell* params)
 {
   uint8_t ch;
   int32_t bytesRead;
   Cell  ret;
   int32_t portNum = params[1].ival;
 
-  bytesRead = read(pSd[portNum], &ch, 1);
+  bytesRead = doReadBytes(pSd[portNum], &ch, 1);
 
   if (bytesRead < 0) return errCell;
   if(bytesRead != 1) return negOneCell;
@@ -135,13 +138,13 @@ Cell serial_SerialPort_doRead(SedonaVM* vm, Cell* params)
 
 // Write one byte to port.  Return -1 if any error, or 0 if successful.
 // int  SerialPort.doWrite(int port, int c)
-Cell serial_SerialPort_doWrite(SedonaVM* vm, Cell* params)
+Cell serial_SerialPortNative_doWriteNative(SedonaVM* vm, Cell* params)
 {
   int32_t  portNum = params[1].ival;
   uint8_t  ch      = (uint8_t)params[2].ival;
   int32_t bytesWritten;
 
-  bytesWritten = write(pSd[portNum], &ch, 1);
+  bytesWritten = doWriteBytes(pSd[portNum], &ch, 1);
   if(bytesWritten != 1) return negOneCell;
   return zeroCell;
 }
@@ -151,7 +154,7 @@ Cell serial_SerialPort_doWrite(SedonaVM* vm, Cell* params)
 // Read up to n bytes from port into array y.  Return number of bytes
 // read, or -1 if an error occurred.  (non-blocking)
 // int  SerialPort.doReadBytes(int port, byte[] y, int off, int len)
-Cell serial_SerialPort_doReadBytes(SedonaVM* vm, Cell* params)
+Cell serial_SerialPortNative_doReadBytesNative(SedonaVM* vm, Cell* params)
 {
   Cell     ret;
   int32_t  portNum = params[1].ival;
@@ -163,7 +166,7 @@ Cell serial_SerialPort_doReadBytes(SedonaVM* vm, Cell* params)
   
   pu8Buf = pu8Buf + off;
 
-  bytesRead = read(pSd[portNum], pu8Buf, nbytes);
+  bytesRead = doReadBytes(pSd[portNum], pu8Buf, nbytes);
   ret.ival = bytesRead;
   return ret;
 
@@ -172,7 +175,7 @@ Cell serial_SerialPort_doReadBytes(SedonaVM* vm, Cell* params)
 // Write up to n bytes to port from array y.  Return number of bytes
 // written, or -1 if an error occurred.
 // int  SerialPort.doWriteBytes(int port, byte[] y, int off, int len)
-Cell serial_SerialPort_doWriteBytes(SedonaVM* vm, Cell* params)
+Cell serial_SerialPortNative_doWriteBytesNative(SedonaVM* vm, Cell* params)
 {
   Cell     ret;
   int32_t  portNum = params[1].ival;
@@ -184,7 +187,7 @@ Cell serial_SerialPort_doWriteBytes(SedonaVM* vm, Cell* params)
 
   pu8Buf = pu8Buf + off;
 
-  bytesWritten = write(pSd[portNum], pu8Buf, nbytes);
+  bytesWritten = doWriteBytes(pSd[portNum], pu8Buf, nbytes);
   if(bytesWritten==-1) return negOneCell;
   ret.ival = bytesWritten;
   return ret;
@@ -192,7 +195,7 @@ Cell serial_SerialPort_doWriteBytes(SedonaVM* vm, Cell* params)
 
 
 // return number of bytes read
-int read(SerialData *pData, uint8_t* pu8Buf, int32_t  nbytes)
+int doReadBytes(SerialData *pData, uint8_t* pu8Buf, int32_t  nbytes)
 {
   DWORD bytesAvail;
   DWORD bytesRead = 0;
@@ -230,9 +233,9 @@ int read(SerialData *pData, uint8_t* pu8Buf, int32_t  nbytes)
 }
 
 // return number of bytes written -
-int write(SerialData *pData, uint8_t* pu8Buf, int32_t  nbytes)
+int doWriteBytes(SerialData *pData, uint8_t* pu8Buf, int32_t  nbytes)
 {
-  int32_t bytesWritten;
+  DWORD bytesWritten;
   OVERLAPPED   os;
   unsigned i;
 

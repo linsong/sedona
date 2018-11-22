@@ -1,0 +1,50 @@
+//
+// Copyright (c) 2016 Andrey Skvortsov <andrej.skvortzov@gmail.com>
+//
+// Licensed under the Academic Free License version 3.0
+//
+
+class SerialPortNative extends SerialPortGeneric
+{
+  virtual override int  doInit(int port, int baud, int datab, int stopb, int par, int rts, bool rs485)
+  {
+    return doInitNative(port, baud, datab, stopb, par, rts, rs485);
+  }
+
+  virtual override int  doClose(int port)
+  {
+    return doCloseNative(port);
+  }
+
+  virtual override int  doRead(int port)
+  {
+    return doReadNative(port);
+  }
+
+  virtual override int  doWrite(int port, int c)
+  {
+    return doWriteNative(port, c);
+  }
+
+  virtual override int  doReadBytes(int port, byte[] y, int off, int len)
+  {
+    return doReadBytesNative(port, y, off, len);
+  }
+
+  virtual override int  doWriteBytes(int port, byte[] y, int off, int len)
+  {
+    return doWriteBytesNative(port, y, off, len);
+  }
+
+  //////////////////////////////////////////////////////////////////////////
+  // Native methods
+  //////////////////////////////////////////////////////////////////////////
+
+  internal native int  doInitNative(int port, int baud, int datab, int stopb, int par, int rts, bool rs485);
+  internal native int  doCloseNative(int port);
+  internal native int  doReadNative(int port);
+  internal native int  doWriteNative(int port, int c);
+  internal native int  doReadBytesNative(int port, byte[] y, int off, int len);
+  internal native int  doWriteBytesNative(int port, byte[] y, int off, int len);
+
+}

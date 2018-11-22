@@ -20,12 +20,11 @@
   <source dir="test" testonly="true"/>
 
   <!-- Natives -->
-  <native qname="serial::SerialPort.doInit"        id="3::0" />
-  <native qname="serial::SerialPort.doClose"       id="3::1" />
-  <native qname="serial::SerialPort.doRead"        id="3::2" />
-  <native qname="serial::SerialPort.doWrite"       id="3::3" />
-  <native qname="serial::SerialPort.doReadBytes"   id="3::4" />
-  <native qname="serial::SerialPort.doWriteBytes"  id="3::5" />
-  
- </sedonaKit>
+  <native qname="serial::SerialPortNative.doInitNative"        id="3::0" />
+  <native qname="serial::SerialPortNative.doCloseNative"       id="3::1" />
+  <native qname="serial::SerialPortNative.doReadNative"        id="3::2" />
+  <native qname="serial::SerialPortNative.doWriteNative"       id="3::3" />
+  <native qname="serial::SerialPortNative.doReadBytesNative"   id="3::4" />
+  <native qname="serial::SerialPortNative.doWriteBytesNative"  id="3::5" />
 
+ </sedonaKit>

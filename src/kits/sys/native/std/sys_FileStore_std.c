@@ -9,6 +9,7 @@
 #include "sedona.h"
 
 #include <errno.h>       // for errno, strerror
+#include <unistd.h>
 
 #ifndef _WIN32
  #include <sys/stat.h>   // for file mode defns
@@ -338,6 +339,26 @@ Cell sys_FileStore_doFlush(SedonaVM* vm, Cell* params)
   return nullCell;
 }
 
+// void FileStore.doFsync(Obj)
+Cell sys_FileStore_doFsync(SedonaVM* vm, Cell* params)
+{
+  FILE* fp = (FILE*)params[0].aval;
+
+  // sanity check arguments
+  if (fp == NULL) return negOneCell;
+
+  fflush(fp);
+
+#ifndef _WIN32
+  int ifd = fileno(fp);
+  fsync(ifd);
+  sync();
+#endif
+
+  return nullCell;
+}
+
+
 // bool FileStore.doClose(Obj)
 Cell sys_FileStore_doClose(SedonaVM* vm, Cell* params)
 {
@@ -375,6 +396,25 @@ Cell sys_FileStore_rename(SedonaVM* vm, Cell* params)
 
   r = rename(from, to);
   return r == 0 ? trueCell : falseCell;
+}
+
+
+// static bool FileStore.remove(Str filename)
+Cell sys_FileStore_remove(SedonaVM* vm, Cell* params)
+{
+ #ifdef IMPL_SCHEME_CONVENTION
+  const char* filename = FSexpandFilePath(params[0].aval);
+ #else
+  const char* filename = params[0].aval;
+ #endif
+
+  Cell ret = trueCell;
+  struct stat statBuf;
+
+  if ((stat(filename, &statBuf) == 0) && (remove(filename) != 0))
+     ret = falseCell;
+
+  return ret;
 }
 
 

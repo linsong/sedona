@@ -81,6 +81,8 @@
   <native qname="sys::FileStore.doFlush"         id="0::52"  />
   <native qname="sys::FileStore.doClose"         id="0::53"  />
   <native qname="sys::FileStore.rename"          id="0::54"  />
+  <native qname="sys::FileStore.doFsync"         id="0::60"  />
+  <native qname="sys::FileStore.remove"          id="0::61"  />
 
   <native qname="sys::Test.doMain"               id="0::55"  />        
 

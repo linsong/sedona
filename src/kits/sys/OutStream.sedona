@@ -38,6 +38,13 @@ abstract class OutStream
   }
 
   **
+  ** Synchronize file's state with storage device.  Default implementation does nothing.
+  **
+  virtual void fsync()
+  {
+  }
+
+  **
   ** Close the stream.  Default implementation does nothing.
   **
   virtual void close()

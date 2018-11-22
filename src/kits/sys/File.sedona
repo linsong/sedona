@@ -78,6 +78,14 @@ final class File
     out.close()
     return store.close(this)
   }
+
+  **
+  **  Flush libc buffers and sync all pending writes to persistent storage.
+  **
+  void fsync()
+  {
+    out.fsync()
+  }
   
   **
   ** Return the current byte offset position of the file.  
@@ -113,7 +121,8 @@ final class File
   **
   static internal FileStore toStore(Str name)
   {
-    return FileStore.lookup(name)
+    FileStore fs = FileStore.lookup(name)
+    return fs?:FileStore.sys
   }
 
 
@@ -168,7 +177,15 @@ internal class FileOutStream extends OutStream
     file.store.flush(file) 
   }
 
-  override void close() { if (fbuf.size > 0) writeBufToFile() }
+  override void fsync()
+  {
+	flush();
+	file.store.fsync(file);
+  }
+
+  override void close() {
+	flush();
+  }
 
   internal bool writeBufToFile()
   { 

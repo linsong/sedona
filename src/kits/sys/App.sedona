@@ -1006,32 +1006,72 @@ class App
 // Actions
 ////////////////////////////////////////////////////////////////
 
-  **
-  ** Load the application from persistent storage
-  **
-  int load()
+  int loadFile(Str name)
   {
     // Read app from file and create objects
-    if (!file.open("r")) return Err.cannotOpenFile
+    file.name = name
+    if (!file.open("r"))  return Err.cannotOpenFile
     int r = loadApp(file.in)
     file.close()
     return r
   }
 
   **
+  ** Load the application from persistent storage
+  **
+  int load()
+  {
+    int ret
+    Str name = file.name
+    ret = loadFile(name)
+    if (!!ret) {
+      log.error("Failed to load $name: $ret")
+      cleanupApp()
+      ret = loadFile(backupAppName)
+      file.name = name
+      if (!ret) {
+        log.message("Backup app loaded: $backupAppName")
+        saveRunningApp()
+      } else {
+        log.error("Failed to load backup $backupAppName: $ret")
+      }
+    }
+    return ret
+  }
+
+  **
+  ** Backup application
+  **
+  void backup()
+  {
+	  FileStore.rename(file.name, backupAppName);
+  }
+
+  **
   ** Save the application back to persistent storage
   **
-  action void save()
+  void saveRunningApp()
   {
     if (file.open("w"))
     {
       int r = saveApp(file.out)
+      file.fsync()
       file.close()
       if (r == 0)
         log.message("saved (${file.size()} bytes)")
       else
         log.error("save failed")
     }
+  }
+
+  **
+  ** Backup old application and save running application
+  ** back to persistent storage
+  **
+  action void save()
+  {
+    backup()
+    saveRunningApp()
   }
 
   **
@@ -1180,4 +1220,6 @@ class App
   // to scode kit IDs.  (created in loadSchema, used in loadApp)
   int[] kitIdMap = null
 
+
+  define Str backupAppName = "app.sab.bak"
 }

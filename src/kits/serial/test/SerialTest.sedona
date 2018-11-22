@@ -2,9 +2,7 @@
 // Copyright (c) 2007 Tridium, Inc
 // Licensed under the Academic Free License version 3.0
 //
-// History:
-//   02 Jul 07  Elizabeth McKenney   creation
-//
+
 
 **
 ** SerialPort models a serial I/O port
@@ -229,7 +227,7 @@ class SerialTest
     // Write what we got back onto port
     thePort.out.print("\nGot: [").print(testStr1).print("]\n").print("\nBye!\n")
 
-    Sys.out.print("COM4 read: [").print(testStr1).print("]\n")   // DIAG
+    Sys.out.print("port read: [").print(testStr1).print("]\n")   // DIAG
 
     thePort.close()
   }
