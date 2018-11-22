@@ -25,6 +25,10 @@ java_home=$JAVA_HOME
 [ -z "$java_home" ] && java_home=/usr/lib/jvm/$(ls /usr/lib/jvm | head -n1)
 export java_home
 
+# set up SVM_PLATFORM for Darwin platform 
+platform=$(python -c 'import sys; print sys.platform')
+[ "$platform" == 'darwin' ] && export SVM_PLATFORM=$sedona_home/platforms/src/generic/unix/generic-darwin.xml && echo "set SVM_PLATFORM to $SVM_PLATFORM"
+
 # check to make sure that programs we need are in the path
 for p in gcc python
 do

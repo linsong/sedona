@@ -1,0 +1,38 @@
+<!--
+  -  Sedona Platform Manifest
+  -  Copyright 2009 Tridium Inc
+  -  Licensed under the Academic Free License version 3.0
+  -->
+
+<sedonaPlatform vendor="Tridium" id="tridium-generic-unix-${sedona.env.version}">
+
+  <compile endian="little" blockSize="4" refSize="4" debug="true" test="true">
+
+    <!-- Native Kits -->
+    <nativeKit depend="sys 1.0+"    />
+    <nativeKit depend="inet 1.0+"   />
+    <nativeKit depend="datetimeStd 1.0+" />
+    <nativeKit depend="platUnix 1.0+" />
+    <nativeKit depend="serial 1.0+" />
+ 
+    <!-- Sources -->
+    <nativeSource path="/src/native/vm" />
+    <nativeSource path="/src/kits/sys/native" />
+    <nativeSource path="/src/kits/sys/native/std" />
+    <nativeSource path="/src/kits/sys/native/unix" />
+    <nativeSource path="/src/kits/inet/native" />
+    <nativeSource path="/src/kits/inet/native/std" />
+    <nativeSource path="/src/kits/inet/native/sha1" />
+    <nativeSource path="/src/kits/datetimeStd/native/std" />
+    <nativeSource path="/src/kits/serial/native/default" />
+    <nativeSource path="/src/kits/serial/native" />
+  </compile>    
+  
+  <manifestInclude>
+    <schemes>
+      <!-- unix supports manifest transfer -->
+      <scheme id="m"/>
+    </schemes>
+  </manifestInclude>
+  
+</sedonaPlatform>
