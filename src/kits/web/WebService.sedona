@@ -94,8 +94,7 @@ class WebService
           return w
     }
 
-    // use spy as fallback
-    return SpyWeblet.spy
+    return null
   }
 
 ////////////////////////////////////////////////////////////////
