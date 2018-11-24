@@ -19,11 +19,15 @@ class SpyWeblet
 // Weblet Registration
 ////////////////////////////////////////////////////////////////
 
-  static void _sInit()
+  override void start() 
   {
-    spy.register()
+    register()
   }
-  static internal inline SpyWeblet spy
+
+  override void stop()
+  {
+    unregister()
+  }
 
 ////////////////////////////////////////////////////////////////
 // Weblet

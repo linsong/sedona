@@ -18,11 +18,15 @@ class SpyRESTWeblet
 // Weblet Registration
 ////////////////////////////////////////////////////////////////
 
-  static void _sInit()
+  override void start() 
   {
-    rest.register()
+    register()
   }
-  static internal inline SpyRESTWeblet rest
+
+  override void stop()
+  {
+    unregister()
+  }
 
 ////////////////////////////////////////////////////////////////
 // Weblet

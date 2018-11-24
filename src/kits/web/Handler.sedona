@@ -165,6 +165,12 @@ internal class Handler
 
     // find weblet to use for this reqest and route
     Weblet weblet = service.findWeblet(req.path)
+    if (weblet == null)
+    {
+      res.writeStatus(HttpCode.notFound).finishHeaders().close()
+      return true;
+    }
+
     weblet.service(req, res)
 
     // close request
