@@ -109,7 +109,7 @@ class StaticFileWeblet extends Weblet
       return
     }
 
-    App.log.message("Serving File: " + file.name);
+    WebService.log.trace("Serving File: " + file.name);
     res.writeStatusOk()
 
     //write headers
