@@ -176,6 +176,9 @@ Cell inet_TcpSocket_write(SedonaVM* vm, Cell* params)
   Cell result;
 
   buf = buf + off;
+  //NOTE: MSG_NOSIGNAL is not defined under macOS(BSD like
+  //      system?), should use `setsockopt` to set 
+  //      SO_NOSIGPIPE after socket is created
   result.ival = send(sock, buf, len, MSG_NOSIGNAL);
   if (result.ival >= 0) return result;  // 0+ is ok
   if (inet_errorIsWouldBlock()) return zeroCell;
