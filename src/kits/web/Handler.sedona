@@ -74,10 +74,16 @@ internal class Handler
 
     // read request bytes
     int read = socket.read(buf, pos, bufLen)
-    if (read <= 0) 
+
+    if (read == 0) // no data available yet (nonblocking)
+      return true
+    else if (read < 0) // some error happened
     { 
-      res.writeStatus(HttpCode.badRequest).finishHeaders().close()
-      return true 
+      if (socket.isClosed())
+        WebService.log.trace("socket has been closed, skip request handling")
+      else
+        res.writeStatus(HttpCode.badRequest).finishHeaders().close()
+      return false 
     }
 
     // update read offset
