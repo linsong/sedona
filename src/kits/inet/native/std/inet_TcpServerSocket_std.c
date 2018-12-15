@@ -107,6 +107,16 @@ Cell inet_TcpServerSocket_accept(SedonaVM* vm, Cell* params)
     return falseCell;
   }
 
+#ifdef SO_NOSIGPIPE
+  int val = 1;
+  if (setsockopt(acceptedSock, SOL_SOCKET, SO_NOSIGPIPE, 
+              (void*)&val, sizeof(val)) != 0)
+  {
+    closesocket(acceptedSock);
+    return falseCell;
+  }
+#endif
+
   // mark as open
   setSocket(accepted, acceptedSock);
   setClosed(accepted, 0);
