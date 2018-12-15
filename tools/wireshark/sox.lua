@@ -1,4 +1,15 @@
-require ("bit")
+-- TODO: stream support 
+
+-- to survive in different version of lua, try 'bit' module first, if fails,
+-- try load 'bit32'. refers: http://lua-users.org/wiki/BitwiseOperators
+local status, bit = pcall(require, "bit")
+if not (status) then 
+  status, bit = pcall(require, "bit32")
+  if not (status) then 
+    print("sox dissector: bitop module not found")
+    return
+  end
+end
 
 dasp_proto = Proto("dasp", "Dasp Protocol")
 sox_proto = Proto("sox", "Sox Protocol")
@@ -6,19 +17,25 @@ sox_proto = Proto("sox", "Sox Protocol")
 dasp_proto.prefs["udp_port"] = Pref.uint("UDP Port", 1876, "UDP Port for Dasp")
 
 -- dasp fields
-local f_sessionId = ProtoField.uint16("dasp.sessionId", "SessionId", base.HEX)
+local f_sessionId = ProtoField.uint16("dasp.sessionId", "sessionId", base.HEX)
 local f_seqNum = ProtoField.uint16("dasp.seqNum", "seqNum", base.DEC)
 local f_msgType = ProtoField.uint16("dasp.msgType", "msgType", base.HEX)
 local f_headerFieldNum = ProtoField.uint16("dasp.numFields", "numFields", base.DEC)
--- local f_headerId = ProtoField.uint8("dasp.headerId", "headerId", base.HEX)
--- local f_headerDataType = ProtoField.uint8("dasp.headerDataType", "headerDataType", base.HEX)
-local f_headerU2Val = ProtoField.uint16("dasp.headerU2Val", "headerU2Val", base.Hex)
-local f_headerStrVal = ProtoField.stringz("dasp.headerStrVal", "headerStrVal")
-local f_headerByteVal = ProtoField.bytes("dasp.headerByteVal", "headerByteVal")
 
-dasp_proto.fields = {f_sessionId, f_seqNum, f_msgType, f_headerFieldNum, 
-                     -- f_headerId, f_headerDataType, 
-                     f_headerU2Val, f_headerStrVal, f_headerByteVal}
+local f_headerAck = ProtoField.uint16("dasp.ack", "ack", base.DEC)
+local f_headerAckMore = ProtoField.bytes("dasp.ackMore", "ackMore")
+local f_headerErrorCode = ProtoField.uint16("dasp.errorCode", "errorCode", base.Hex)
+
+-- dasp stream support 
+local f_daspFrameRequest = ProtoField.framenum("dasp.request", "request", base.NONE, frametype.REQUEST, 0) 
+local f_daspFrameRequestDup = ProtoField.framenum("dasp.requestDup", "dasp requestDup", base.NONE, frametype.REQUEST, 0) 
+local f_daspFrameRequestAck = ProtoField.framenum("dasp.requestAck", "requestAck", base.NONE, frametype.ACK, 0) 
+
+dasp_proto.fields = {
+  f_sessionId, f_seqNum, f_msgType, f_headerFieldNum, 
+  f_headerAck, f_headerAckMore, f_headerErrorCode,
+  f_daspFrameRequest, f_daspFrameRequestDup, f_daspFrameRequestAck
+}
 
 -- sox fields
 local f_soxCmd = ProtoField.string("sox.cmd", "cmd")
@@ -39,23 +56,26 @@ local f_linkFromSlotId = ProtoField.uint8("sox.linkFromSlotId", "linkFromSlotId"
 local f_linkToCompId = ProtoField.uint16("sox.linkToCompId", "linkToCompId", base.DEC)
 local f_linkToSlotId = ProtoField.uint8("sox.linkToSlotId", "linkToSlotId", base.DEC)
 
-local f_fileOpenMethod = ProtoField.string("sox.fileOpenMethod", "fileOpenMethod")
+local f_fileOpenMethod = ProtoField.stringz("sox.fileOpenMethod", "fileOpenMethod")
 local f_fileUri = ProtoField.stringz("sox.fileUri", "fileUri")
 local f_fileSize = ProtoField.uint32("sox.fileSize", "fileSize", base.DEC)
 
 local f_chunkNum = ProtoField.uint16("sox.chunkNum", "chunkNum", base.DEC)
 local f_chunkSize = ProtoField.uint16("sox.chunkSize", "chunkSize", base.DEC)
 
-local f_soxBytes = ProtoField.bytes("sox.byteVal", "bytesVal")
-local f_soxStr = ProtoField.stringz("sox.strVal", "strVal")
+local f_soxRenameFrom = ProtoField.stringz("sox.renameFrom", "renameFrom")
+local f_soxRenameTo = ProtoField.stringz("sox.renameTo", "renameTo")
 local f_soxPlatformId = ProtoField.stringz("sox.platformId", "platformId")
 local f_soxError = ProtoField.stringz("sox.errorStr", "errorStr")
+
+local f_soxBytes = ProtoField.bytes("sox.byteVal", "byteVal")
 
 sox_proto.fields = {f_soxCmd, f_soxReplyNum, f_soxCompId, f_soxSlotId, 
                     f_parentCompId, f_kitId, f_typeId, f_compName, 
                     f_compWhat, f_linkAction, f_linkFromCompId,
+                    f_fileOpenMethod, f_fileUri, f_fileSize,
                     f_linkFromSlotId, f_linkToCompId, f_linkToSlotId, f_chunkNum,
-                    f_chunkSize, f_soxBytes, f_soxStr, f_soxPlatformId, f_soxError}
+                    f_chunkSize, f_soxBytes, f_soxRenameFrom, f_soxRenameTo, f_soxPlatformId, f_soxError}
 
 local msg_types = {
   [0] = {"discover", "Discover"},
@@ -182,8 +202,8 @@ function add_whatMask(tree, buf, offset)
 end
 
 function add_file_headers(tree, buf, offset)
-  local byte = buf(offset, 1)
-  while byte ~= '\0' do 
+  local byte = buf(offset, 1):uint()
+  while byte ~= 0 do 
     local start = offset
     local name = buf(offset):stringz()
     offset = offset + string.len(name) + 1
@@ -192,7 +212,7 @@ function add_file_headers(tree, buf, offset)
     offset = offset + string.len(value) + 1
     tree:add(buf(start, offset-start), name, value)
 
-    byte = buf(offset, 1)
+    byte = buf(offset, 1):uint()
   end
   offset = offset + 1
 
@@ -200,7 +220,7 @@ function add_file_headers(tree, buf, offset)
 end
 
 function parse_comp_tree(tree, buf, offset)
-  local subtree = tree:add(f_compWhat, buf(offset, 1), buf(offset, 1):string(), "Tree")
+  local subtree = tree:add(f_compWhat, buf(offset, 1), buf(offset, 1):string(), "compTree")
   offset = offset + 1
 
   subtree:add(f_kitId, buf(offset, 1))
@@ -227,7 +247,7 @@ function parse_comp_tree(tree, buf, offset)
 end
 
 function parse_comp_links(tree, buf, offset)
-  local subtree = tree:add(f_compWhat, buf(offset, 1), buf(offset, 1):string(), "Links")
+  local subtree = tree:add(f_compWhat, buf(offset, 1), buf(offset, 1):string(), "compLink")
   offset = offset + 1
   
   local index = 1
@@ -250,12 +270,12 @@ function parse_comp_links(tree, buf, offset)
 end
 
 function parse_comp_props(tree, buf, offset)
-  local typeChar = buf(offset, 1):uint()
+  local typeChar = buf(offset, 1):string()
   local subtree = nil
-  if typeChar == 'c' or typeChar == 'C' then
-    subtree = tree:add(f_compWhat, buf(offset, 1), buf(offset, 1):string(), "Config Props")
-  elseif typeChar == 'r' or typeChar == 'R' then 
-    subtree = tree:add(f_compWhat, buf(offset, 1), buf(offset, 1):string(), "Runtime Props")
+  if typeChar == "c" or typeChar == "C" then
+    subtree = tree:add(f_compWhat, buf(offset, 1), buf(offset, 1):string(), "configProps")
+  elseif typeChar == "r" or typeChar == "R" then 
+    subtree = tree:add(f_compWhat, buf(offset, 1), buf(offset, 1):string(), "runtimeProps")
   end
   offset = offset + 1
 
@@ -286,8 +306,8 @@ local sox_handlers = {
   
   -- fileRename 
   ["b"] = function (tree, buf, offset)
-    offset = add_string(tree, f_soxStr, buf, offset)
-    offset = add_string(tree, f_soxStr, buf, offset)
+    offset = add_string(tree, f_soxRenameFrom, buf, offset)
+    offset = add_string(tree, f_soxRenameTo, buf, offset)
     return offset
   end,
   
@@ -295,9 +315,9 @@ local sox_handlers = {
   ["c"] = function (tree, buf, offset)
     offset = add_compId(tree, buf, offset)
 
+    local mapping = {t = "tree", c = "config", r = "runtime", l = "links"}
     local whatElem = tree:add(f_compWhat, buf(offset, 1))
     local whatChar = buf(offset, 1):string()
-    local mapping = {t = "tree", c = "config", r = "runtime", l = "links"}
     whatElem:append_text("(" .. mapping[whatChar] .. ")")
     offset = offset + 1
 
@@ -307,11 +327,11 @@ local sox_handlers = {
     offset = add_compId(tree, buf, offset)
     
     local compDataChar = buf(offset, 1):string()
-    if compDataChar == 't' then 
+    if compDataChar == "t" then 
       offset = parse_comp_tree(tree, buf, offset)
-    elseif compDataChar == 'l' then 
+    elseif compDataChar == "l" then 
       offset = parse_comp_links(tree, buf, offset)
-    elseif compDataChar == 'c' or compDataChar == 'r' or compDataChar == 'C' or compDataChar == 'R' then 
+    elseif compDataChar == "c" or compDataChar == "r" or compDataChar == "C" or compDataChar == "R" then 
       offset = parse_comp_props(tree, buf, offset)
     end
     return offset
@@ -328,11 +348,11 @@ local sox_handlers = {
     offset = add_compId(tree, buf, offset)
 
     local compDataChar = buf(offset, 1):string()
-    if compDataChar == 't' then 
+    if compDataChar == "t" then 
       offset = parse_comp_tree(tree, buf, offset)
-    elseif compDataChar == 'l' then 
+    elseif compDataChar == "l" then 
       offset = parse_comp_links(tree, buf, offset)
-    elseif compDataChar == 'c' or compDataChar == 'r' or compDataChar == 'C' or compDataChar == 'R' then 
+    elseif compDataChar == "c" or compDataChar == "r" or compDataChar == "C" or compDataChar == "R" then 
       offset = parse_comp_props(tree, buf, offset)
     end
     return offset
@@ -340,9 +360,7 @@ local sox_handlers = {
   
   -- fileOpen 
   ["f"] = function (tree, buf, offset)
-    tree:add(f_fileOpenMethod, buf(offset, 1)) 
-    offset = offset + 1
-    
+    offset = add_string(tree, f_fileOpenMethod, buf, offset)
     offset = add_string(tree, f_fileUri, buf, offset)
     
     tree:add(f_fileSize, buf(offset, 4))
@@ -414,7 +432,7 @@ local sox_handlers = {
     offset = offset + 1
 
     local label = "" .. fromCompId .. "." .. fromSlotId .. " -> " .. toCompId .. "." .. toSlotId
-    if string.char(linkType:uint()) == 'a' then
+    if string.char(linkType:uint()) == "a" then
       linkTypeElem:append_text("(add link: " .. label .. ")")
     else 
       linkTypeElem:append_text("(delete link: " .. label .. ")")
@@ -598,7 +616,7 @@ function parse_sox(tree, buf, offset)
     if handler ~= nil then
       offset = handler(tree, buf, offset)
     end
-    
+
     -- output all pending bytes
     if offset < buf:len() then 
       tree:add(f_soxBytes, buf(offset))
@@ -614,19 +632,29 @@ function add_header(tree, buf, offset)
   local headerTypeVal = headerVal:bitfield(6, 2)
   
   local headerName = ''
-  if header_mappings[headerVal:uint()] ~= nil then
-    headerName = header_mappings[headerVal:uint()]
+  if header_ids[headerIdVal] ~= nil then
+    headerName = header_ids[headerIdVal]
   end
 
   if headerTypeVal == 0 then 
-    local elem = tree:add(buf(offset, 1), headerName)
-    offset = offset + 1
-
     if headerIdVal == 0x0d then
+      local elem = tree:add(f_headerErrorCode, buf(offset, 1))
       elem:append_text(" (" .. error_codes[headerVal:uint()] .. ")")
+    else
+      tree:add(buf(offset, 1), headerName)
     end
+    offset = offset + 1
   elseif headerTypeVal == 1 then 
-    tree:add(buf(offset, 3), headerName, buf(offset+1, 2):uint())
+    if headerName == "ack" then
+      tree:add(f_headerAck, buf(offset, 3), buf(offset+1, 2):uint())
+    elseif headerName == "ackMore" then
+      -- GOTCHA: there is a bug in old version of sox, ackMore is set as u2,
+      --         but encoded in bytes(only 1 byte). here is a workaround to
+      --         make this case work
+      tree:add(f_headerAckMore, buf(offset+2, 1));
+    else
+      tree:add(buf(offset, 3), headerName, buf(offset+1, 2):uint())
+    end
     offset = offset + 3
   elseif headerTypeVal == 2 then
     local str = buf(offset+1):stringz()
@@ -640,7 +668,11 @@ function add_header(tree, buf, offset)
       baStr = baStr .. string.format("%02x", ba:get_index(i))
     end
 
-    tree:add(buf(offset, len+2), headerName, baStr)
+    if headerName == "ackMore" then
+      tree:add(f_headerAckMore, buf(offset+2, len))
+    else
+      tree:add(buf(offset, len+2), headerName, baStr)
+    end
     offset = offset + len + 2
   end
 
@@ -669,6 +701,9 @@ function dasp_proto.dissector(buf, pinfo, tree)
   local msgType = subtree:add(f_msgType, buf(4, 1), typeVal)
   if msg_types[typeVal] ~= nil then
     msgType:append_text(" (" .. msg_types[typeVal][1] .. ")")
+    pinfo.cols.info = string.format("seqNum: %5d msgType: %-12s %s", buf(2, 2):uint(), msg_types[typeVal][1], pinfo.cols.info)
+  else
+    pinfo.cols.info = string.format("seqNum: %5d %-12s", buf(2, 2):uint(), pinfo.cols.info)
   end
 
   local headerNum = buf(4, 1):bitfield(4, 4)

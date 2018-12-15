@@ -16,3 +16,4 @@ sedona-*.zip
 *.log
 *.swo
 .DS_Store
+statics/*

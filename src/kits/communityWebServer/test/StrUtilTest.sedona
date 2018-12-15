@@ -1,0 +1,35 @@
+@palette=false
+public class StrUtilTest extends Test
+{
+  static void testEndsWith()
+  {
+    assert(!StaticFileWeblet.endsWith("/foo/bar", "/", 0))
+    assert(StaticFileWeblet.endsWith("/foo/bar/", "/", 0))
+    assert(StaticFileWeblet.endsWith("/foo/bar/index.html", ".html", 0))
+
+    assert(StaticFileWeblet.endsWith("/foo/bar/vue.min.js.gz", ".js", 3))
+  } 
+
+  static void testAppendStr()
+  {
+    assert(StaticFileWeblet.appendStr(buf, "/foo/bar", bufLen))
+    assert(buf.equals("/foo/bar"))
+
+    assert(StaticFileWeblet.appendStr(buf, "/", bufLen))
+    assert(buf.equals("/foo/bar/"))
+
+    assert(StaticFileWeblet.appendStr(buf, "index.html", bufLen))
+    assert(buf.equals("/foo/bar/index.html"))
+
+    assert(StaticFileWeblet.appendStr(buf, ".gz", bufLen))
+    assert(buf.equals("/foo/bar/index.html.gz"))
+
+    //test buffer overflow
+    assert(!StaticFileWeblet.appendStr(buf, "1234567890", bufLen))
+    //under this case, buf should not be modified 
+    assert(buf.equals("/foo/bar/index.html.gz"))
+  }
+
+  define int bufLen = 32 
+  inline static Str(bufLen) buf
+}
