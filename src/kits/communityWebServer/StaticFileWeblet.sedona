@@ -1,0 +1,273 @@
+//
+// Copyright (c) 2018
+// Licensed under the Academic Free License version 3.0
+//
+// History:
+//   30 Jun 18  Vincent Wang  Static File Weblet
+//
+
+** 
+** StaticFileWeblet provides the ability to serve static files(html, css, js,
+** images etc) through http, so that user can use sedona as a minimal web
+** server and host a static web app(SPA for example) just in sedona, without 
+** any outside dependency. 
+**
+** To enable this weblet, you need to create an object of this component as a 
+** child of WebService. Deleting the object will disable the weblet. This is
+** different comparing to SpyWeblet. 
+**
+** You can create multiple objects of StaticFileWeblet and every object uses
+** different urlPrefix, so that sedona is possible to host multiple web apps.
+**
+** To save space on sedona, gzipped file is supported and I recommend to use it
+** since that will be more efficient(less bytes to be loaded and transferred)
+** 
+class StaticFileWeblet extends Weblet
+{
+  @config @asStr property Buf(12) urlPrefix = "statics"
+////////////////////////////////////////////////////////////////
+// Weblet Registration
+////////////////////////////////////////////////////////////////
+
+  override void start() 
+  {
+    register()
+  }
+
+  override void stop()
+  {
+    unregister()
+  }
+
+////////////////////////////////////////////////////////////////
+// Weblet
+////////////////////////////////////////////////////////////////
+
+  ** 
+  ** all static files to be served must be put under 'statics' folder
+  ** and the url will start with 'statics', too. If you want to use other
+  ** name, config it by urlPrefix slot, Note: the max length is 11 chars
+  **
+  override Str prefix() { return urlPrefix.toStr() }
+
+  override Str description() { return "Sedona Static File Weblet" }
+
+  **
+  ** since we only serve static file here, so only 'GET' method is supported
+  ** 
+  override void service(WebReq req, WebRes res)
+  {
+    Str method = req.method;
+    if (method.equals("GET")) 
+      get(req, res)
+    else {
+      res.writeStatus(HttpCode.methodNotAllowed)
+      res.writeHeader("Allow", "GET")
+    }
+  }
+
+  ** 
+  ** handle 'GET' request, try to find the static file and return it 
+  **
+  override void get(WebReq req, WebRes res)
+  {
+    reset()
+
+    prepareFile(req)
+
+    if (isDir(filePath)) {
+      tryAppendIndex(filePath)
+    }
+
+    serveFile(res)
+  }
+
+  internal void reset() 
+  {
+    filePath.set(0, 0)
+  }
+
+  internal void serveFile(WebRes res) 
+  {
+    if (file.name==null) {
+      res.writeStatus(HttpCode.notFound).finishHeaders()
+      return
+    }
+
+    if (!file.exists()) {
+      //try gzipped content
+      appendStr(file.name, ".gz", pathStrLen)
+
+      if (!file.exists()) {
+        res.writeStatus(HttpCode.notFound).finishHeaders()
+        return
+      }
+    }
+
+    if (!file.open("r")) {
+      res.writeStatus(HttpCode.internalError).finishHeaders()
+      return
+    }
+
+    WebService.log.trace("Serving File: " + file.name);
+    res.writeStatusOk()
+
+    //write headers
+    if (endsWith(file.name, ".gz", 0))
+      res.writeHeader("Content-Encoding", "gzip");
+
+    res.writeContentType(getContentType(file.name))
+      .writeHeader("Cache-Control", "max-age=604800")
+      .writeHeader("Server", "Sedona Web Server")
+      .writeHeader("Content-Length", Sys.intStr(file.size()))
+      .finishHeaders()
+
+    file.seek(0)
+    while(true) {
+      int readed = file.in.readBytes(readBuf, 0, bufLen)
+      if (readed <= 0)
+        break
+
+      res.writeBytes(readBuf, 0, readed)
+    }
+
+    file.close()
+  }
+
+  bool isDir(Str fileName) {
+    if (endsWith(fileName, "/", 0))
+      return true
+
+    int len = fileName.length()
+    //check if there is a file extention 
+    for(int i=len-3; i>0 && i>len-6; --i) {
+      if (fileName.get(i) != '.')
+        continue
+
+      return false
+    }
+
+    return true
+  }
+
+  **
+  ** if the URL ends with '/', then append 'index.html' and try serve it 
+  **
+  bool tryAppendIndex(Str fileName) {
+    int len = fileName.length()
+    if (len <= 0 || len+1>=pathStrLen)
+      return false
+
+    //try to append index.html to path end 
+    if (!endsWith(fileName, "/", 0))
+      appendStr(fileName, "/", pathStrLen)
+
+    return appendStr(fileName, "index.html", pathStrLen)
+  }
+
+  ** 
+  ** check if str ends with suffix.
+  ** if endOffset is not 0, then check the suffix after 
+  ** that offset. for example, to check if 'index.html.gz' 
+  ** ends with '.html': 
+  **   // buf equals "index.html.gz", offset is 3(len of ".gz")
+  **   endsWith(buf, ".html", 3)
+  **
+  static public bool endsWith(Str str, Str suffix, int endOffset) {
+    return suffix.equalsRegion(str, str.length()-suffix.length()-endOffset, str.length()-endOffset)
+  } 
+
+  **
+  ** append suffix to the end of dst. 
+  ** return:
+  **   true if managed to append suffix to dst 
+  **   false if dst's buffer is not big enough
+  **
+  static public bool appendStr(Str dst, Str suffix, int bufMaxLen)
+  {
+    int dstLen = dst.length()
+    int suffixLen = suffix.length()
+    //return early if buffer is not big enough 
+    if (dstLen + suffixLen + 1 > bufMaxLen)
+      return false
+
+    byte[] dstBuf = dst.toBytes()
+    byte[] suffixBuf = suffix.toBytes()
+    for(int i=0; i<suffixLen; ++i) 
+      dstBuf[dstLen+i] = suffixBuf[i]
+    dstBuf[dstLen+suffixLen] = 0
+    return true
+  }
+
+  internal Str getContentType(Str fileName) 
+  {
+    int endOffset = 0
+    if (endsWith(fileName, ".gz", 0))
+      endOffset = 3
+
+    if (endsWith(fileName, ".html", endOffset) || endsWith(fileName, ".htm", endOffset))  
+      return "text/html"
+    else if (endsWith(fileName, ".css", endOffset))
+      return "text/css"
+    else if (endsWith(fileName, ".txt", endOffset))
+      return "text/plain"
+    else if (endsWith(fileName, ".js", endOffset))
+      return "application/javascript"
+    else if (endsWith(fileName, ".json", endOffset))
+      return "application/json"
+    else if (endsWith(fileName, ".xml", endOffset))
+      return "application/xml"
+    else if (endsWith(fileName, ".pdf", endOffset))
+      return "application/pdf"
+    else if (endsWith(fileName, ".jpg", endOffset))
+      return "image/jpeg"
+    else if (endsWith(fileName, ".png", endOffset))
+      return "image/png"
+    else
+      return "text/plain"
+  }
+
+  internal void prepareFile(WebReq req) 
+  {
+    if (req.path.size < 1)
+      return
+    else {
+      //TODO: process path to avoid security issues
+      filePath.copyFromStr(".", pathStrLen);
+      int index = filePath.length()
+      byte[] fileBuf = filePath.toBytes()
+      for(int i=0; i<req.path.size && index<pathStrLen-2; ++i) {
+        byte[] nameBuf = req.path.names[i].toBytes() 
+        fileBuf[index++] = '/'
+        for(int j=0; j<req.path.names[i].length() && index<pathStrLen-2; ++j) {
+          fileBuf[index++] = nameBuf[j]
+        }
+      }
+      fileBuf[index] = 0
+    }
+
+    file.name = filePath
+  }
+
+////////////////////////////////////////////////////////////////
+// Functions
+////////////////////////////////////////////////////////////////
+
+  public void index(WebReq req, WebRes res)
+  {
+    res.html();
+    res.w("<h1>Hello World!</h1>\n");
+    res.htmlEnd();
+  }
+
+////////////////////////////////////////////////////////////////
+// Fields
+////////////////////////////////////////////////////////////////
+  define int bufLen = 1024
+  define int pathStrLen = 256
+
+  private inline byte[bufLen] readBuf
+  internal inline Str(pathStrLen) filePath  // buffer for file's path
+  internal inline File file
+}
+
