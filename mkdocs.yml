@@ -3,7 +3,7 @@ site_name: 'Sedona'
 site_description: 'Online documentation for Sedona Framework(R)'
 site_author: 'Sedona Community'
 #site_url: 'https://my-github-handle.github.io/my-project'
-docs_dir: doc
+docs_dir: 'doc'
 
 # Repository
 # repo_name: 'my-github-handle/my-project'
@@ -14,17 +14,18 @@ copyright: 'Copyright &copy; 2018 Sedona Community'
 
 # Documentation and theme
 #theme: readthedocs
-theme: 'material'
-
-# Options
-extra:
-  logo: 'logo.png'
+theme:
+  name: 'material'
   palette:
-    primary: 'indigo'
-    accent: 'indigo'
+    primary: 'brown'
+    accent: 'red'
+  logo: './logo.png'
   font:
     text: 'Roboto'
     code: 'Roboto Mono'
+
+# Options
+extra:
   # social:
   #   - type: 'twitter'
   #     link: 'https://www.twitter.com/<link>'
@@ -32,8 +33,8 @@ extra:
   #     link: 'https://www.linkedin.com/company/<link>'
   #   - type: 'facebook'
   #     link: 'https://www.facebook.com/<link>'
-  # feature:
-  #   tabs: true
+  feature:
+    tabs: true
 
 # Google Analytics
 # google_analytics:
@@ -45,12 +46,55 @@ markdown_extensions:
   - admonition
   - codehilite(guess_lang=false)
   - footnotes
-  - toc(permalink=true)
+  # - toc(permalink=true)
 
 nav:
 - Index: index.md
 - Getting Started:
-  - 'Introduction': 'quickstart/intro.md'
-  # - 'Setup': 'quickstart/setup.md'
-  # - 'Architecture': 'quickstart/architecture.md'
-  # - 'Tutorial': 'quickstart/tutorial.md'
+  - Introduction: quickstart/intro.md
+  - Setup: quickstart/setup.md
+  - Architecture: quickstart/architecture.md
+  - Tutorial: quickstart/tutorial.md
+- Language:
+  - Language: language/lang.md
+  - Primitives: language/primitives.md
+  - Expressions: language/expr.md
+  - Statements: language/stmt.md
+  - Classes: language/classes.md
+  - Fields: language/fields.md
+  - Methods: language/methods.md
+  - Components: language/components.md
+  - Reflection: language/reflection.md
+  - Arrays: language/arrays.md
+  - Memory: language/memory.md
+  - Native Methods: language/nativeMethods.md
+  - Logging: language/logging.md
+- Apps:
+  - Application Model: apps/apps.md
+  - Security: apps/security.md
+- Deployment:
+  - Kits: deployment/kits.md
+  - Schema: deployment/schema.md
+- Platforms:
+  - Platform Definition: platforms/platDef.md
+  - Platform Archive: platforms/par.md
+  - Platform Tutorial: platforms/platTutorial.md
+  - Device Simulator: platforms/deviceSim.md
+  - Certified Platforms: platforms/platCertified.md
+- Development:
+  - Sedonac: development/sedonac.md
+  - Testing: development/testing.md
+  - Porting: development/porting.md
+  - Niagara: development/niagara.md
+- Networking:
+  - Networking: networking/networking.md
+  - DASP: networking/dasp.md
+  - Sox: networking/sox.md
+  - Device Discovery: networking/discover.md
+- Appendix:
+  - License: appendix/license.md
+  - Coding Conventions: appendix/conventions.md
+  - SCode Format: appendix/scodeFormat.md
+  - Grammar: appendix/grammar.md
+- Releases:
+  - v1.2: releases/newFor12.md

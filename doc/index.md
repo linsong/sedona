@@ -1,66 +1,58 @@
 # Sedona Documentaion
 
 ### Getting Started
-- [Introduction]("./quickstart/intro.md"): introduction to the **Sedona Framework**
-- [Setup]("./quickstart/setup.md"): getting your development environment setup
-- [Architecture]("./quickstart/architecture.md"): the big picture
-- [Tutorial]("./quickstart/tutorial.md"): step by step walk thru example
+- [Introduction](./quickstart/intro.md): introduction to the **Sedona Framework**
+- [Setup](./quickstart/setup.md): getting your development environment setup
+- [Architecture](./quickstart/architecture.md): the big picture
+- [Tutorial](./quickstart/tutorial.md): step by step walk thru example
 
 ### Sedona Language
-  [Language]("./language/lang.md"): overview of the Sedona language
-  [Primitives]("./language/primitives.md") blurb="basic built-in types"/>
-  <chapter name="Expressions" href="expr.html" blurb="review of expression constructs"/>
-  <chapter name="Statements" href="stmt.html" blurb="review of statement constructs"/>
-  <chapter name="Classes" href="classes.html" blurb="class types"/>
-  <chapter name="Fields" href="fields.html" blurb="field slots"/>
-  <chapter name="Methods" href="methods.html" blurb="method slots"/>
-  <chapter name="Components" href="components.html" blurb="the Sedona Framework component model"/>
-  <chapter name="Reflection" href="reflection.html" blurb="the Sedona Framework reflection APIs"/>
-  <chapter name="Arrays" href="arrays.html" blurb="how arrays work"/>
-  <chapter name="Memory" href="memory.html" blurb="how memory is laid out and utilized"/>
-  <chapter name="Native Methods" href="nativeMethods.html" blurb="binding APIs to native implementations written in C"/>
-  <chapter name="Logging" href="logging.html" blurb="how to embed logging into Sedona code"/>
-</section>
+- [Language](./language/lang.md): overview of the Sedona language
+- [Primitives](./language/primitives.md): basic built-in types
+- [Expressions](./language/expr.md): review of expression constructs
+- [Statements](./language/stmt.md): review of statement constructs
+- [Classes](./language/classes.md): class types
+- [Fields](./language/fields.md): field slots
+- [Methods](./language/methods.md): method slots
+- [Components](./language/components.md): the **Sedona Framework** component model
+- [Reflection](./language/reflection.md): the **Sedona Framework** reflection APIs
+- [Arrays](./language/arrays.md): how arrays work
+- [Memory](./language/memory.md): how memory is laid out and utilized
+- [Native Methods](./language/nativeMethods.md): binding APIs to native implementations written in C
+- [Logging](./language/logging.md): how to embed logging into Sedona code
 
 ### Apps
-  <chapter name="Apps" href="apps.html" blurb="the Sedona Framework application model"/>
-  <chapter name="Security" href="security.html" blurb="the Sedona Framework's security model"/>
-</section>
+- [Apps](./apps/apps.md): the **Sedona Framework** application model
+- [Security](./apps/security.md): the Sedona Framework's security model
 
 ### Deployment
-  <chapter name="Kits" href="kits.html" blurb="unit of modularity, versioning, and dependencies"/>
-  <chapter name="Schema" href="schema.html" blurb="manifests: type meta-data and schemas"/>
-</section>
+- [Kits](./deployment/kits.md): unit of modularity, versioning, and dependencies
+- [Schema](./deployment/schema.md): manifests: type meta-data and schemas
 
 ### Sedona Framework Platforms
-  <chapter name="Platform Definition" href="platDef.html" blurb="the platform definition XML file" />
-  <chapter name="Platform Archive" href="par.html" blurb="metadata about a unique Sedona Framework platform" />
-  <chapter name="Platform Tutorial" href="platTutorial.html" blurb="how to create a Sedona platform" />
-  <chapter name="Sedona Device Simulator" href="deviceSim.html" blurb="creating special Sedona VMs that run apps for other platforms" />
-  <chapter name="Sedona Framework Certified Platforms" href="platCertified.html" blurb="creating platforms that pass Sedona Framework certification" />
-</section>
+- [Platform Definition](./platforms/platDef.md): the platform definition XML file
+- [Platform Archive](./platforms/par.md): metadata about a unique **Sedona Framework** platform
+- [Platform Tutorial](./platforms/platTutorial.md): how to create a Sedona platform
+- [Sedona Device Simulator](./platforms/deviceSim.md): creating special Sedona VMs that run apps for other platforms
+- [Sedona Framework Certified Platforms](./platforms/platCertified.md): creating platforms that pass **Sedona Framework** certification
 
 ### Development
-  <chapter name="Sedonac" href="sedonac.html" blurb="command line sedonac tool"/>
-  <chapter name="Testing" href="testing.html" blurb="how to use the built-in test harness"/>
-  <chapter name="Porting" href="porting.html" blurb="how to port the SVM to new platforms"/>
-  <chapter name="Niagara AX" href="niagara.html" blurb="how to integrate Sedona components with the Niagara AX Framework"/>
-</section>
+- [Sedonac](./development/sedonac.md): command line sedonac tool
+- [Testing](./development/testing.md): how to use the built-in test harness
+- [Porting](./development/porting.md): how to port the SVM to new platforms
+- [Niagara AX](./development/niagara.md): how to integrate Sedona components with the Niagara AX Framework
 
 ### Networking
-  <chapter name="Networking" href="networking.html" blurb="Overview of network communications"/>
-  <chapter name="DASP" href="dasp.html" blurb="Datagram Authenticated Session Protocol"/>
-  <chapter name="Sox" href="sox.html" blurb="Sox protocol: provisioning and configuration"/>
-  <chapter name="Device Discovery" href="discover.html" blurb="Sedona device discovery using DASP"/>
-</section>  
+- [Networking](./networking/networking.md): Overview of network communications
+- [DASP](./networking/dasp.md): Datagram Authenticated Session Protocol
+- [Sox](./networking/sox.md): Sox protocol: provisioning and configuration
+- [Device Discovery](./networking/discover.md): Sedona device discovery using DASP
 
 ### Appendix
-  <chapter name="License" href="license.html" blurb="Academic Free License 3.0"/>
-  <chapter name="Conventions" href="conventions.html" blurb="Coding conventions"/>
-  <chapter name="SCode Format" href="scodeFormat.html" blurb="reference for scode image binary format"/>
-  <chapter name="Sedona Grammar" href="grammar.html" blurb="Sedona language grammar" />
-</section>
+- [License](./appendix/license.md): Academic Free License 3.0
+- [Conventions](./appendix/conventions.md): Coding conventions
+- [SCode Format](./appendix/scodeFormat.md): reference for scode image binary format
+- [Sedona Grammar](./appendix/grammar.md): Sedona language grammar
 
 ### Release Notes
-[New for 1.2]("./release/newFor12.html"): New features in Sedona Framework 1.2
-</section>
+[New for 1.2](./releases/newFor12.md): New features in **Sedona Framework** 1.2
