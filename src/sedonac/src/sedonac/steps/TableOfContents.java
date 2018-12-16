@@ -42,16 +42,16 @@ public class TableOfContents
   public void run()
   {
     try
-    {                 
+    {
       this.www = compiler.www;
       this.xml = compiler.xml;
       this.tocFile = compiler.input;
-      this.dir = tocFile.getParentFile(); 
-      
+      this.dir = tocFile.getParentFile();
+
       outDir = compiler.outDir;
-      if (outDir == null) outDir = dir;    
+      if (outDir == null) outDir = dir;
       if (!outDir.exists()) outDir.mkdirs();
-      
+
       new File(outDir, "api.html").delete();
 
       log.info("  TableOfContents [" + dir + " -> " + outDir + "]");
@@ -60,7 +60,7 @@ public class TableOfContents
       flattenChapters();
       processHtml();
       writeDocIndex();
-      writeApiIndex();   
+      writeApiIndex();
       if (www) copyResources();
 
       quitIfErrors();
@@ -159,7 +159,7 @@ public class TableOfContents
         processHtml(f);
       }
       catch (Exception e)
-      {                                                    
+      {
         e.printStackTrace();
         throw err("Cannot process file", new Location(f), e);
       }
@@ -174,7 +174,7 @@ public class TableOfContents
     // map file to chapter
     Chapter chapter = (Chapter)chaptersByHref.get(f.getName());
     if (chapter == null)
-    {                      
+    {
       if (!f.getName().equals("api.html"))
         err("Chapter not mapped in toc.xml", new Location(f));
       return;
@@ -269,16 +269,16 @@ public class TableOfContents
     out.w("  <meta http-equiv='Content-type' content='text/html;charset=UTF-8' />\n");
     out.w("  <link rel='stylesheet' type='text/css' href='style.css'/>\n");
     out.w("</head>\n");
-    out.w("<body>\n"); 
-    
-    header(out);     
+    out.w("<body>\n");
+
+    header(out, true);
     //nav(out, null, null);
 
     out.w("  <h1>API</h1>\n");
     out.w("  <ul>\n");
-    out.w("    <li><b><a href='api.html'>API Index</a></b>: API for each kit</li>\n");
+    out.w("    <li><b><a href='./api/api.html'>API Index</a></b>: API for each kit</li>\n");
     out.w("  </ul>\n");
-    
+
     for (int i=0; i<sections.length; ++i)
     {
       Section section = sections[i];
@@ -334,18 +334,18 @@ public class TableOfContents
     out.w("<head>\n");
     out.w("  <title>API Index</title>\n");
     out.w("  <meta http-equiv='Content-type' content='text/html;charset=UTF-8' />\n");
-    out.w("  <link rel='stylesheet' type='text/css' href='style.css'/>\n");
+    out.w("  <link rel='stylesheet' type='text/css' href='../style.css'/>\n");
     out.w("</head>\n");
     out.w("<body>\n");
-    
-    header(out);
+
+    header(out, false);
     nav(out, null, null);
-    
+
     out.w("<h1>Kits</h1>\n");
     out.w("<ul>\n");
     String[] kits = KitDb.kits();
     for (int i=0; i<kits.length; ++i)
-    {                             
+    {
       try
       {
         KitManifest km = ManifestDb.loadForLocalKit(kits[i]);
@@ -376,10 +376,10 @@ public class TableOfContents
   }
 
   private void copyResources(String ext)
-  {                                    
+  {
     File[] files = dir.listFiles();
     for (int i=0; i<files.length; ++i)
-      if (files[i].getName().endsWith(ext))    
+      if (files[i].getName().endsWith(ext))
       {
         try
         {
@@ -406,10 +406,10 @@ public class TableOfContents
     out.w("  <link rel='stylesheet' type='text/css' href='style.css'/>\n");
     out.w("</head>\n");
     out.w("<body>\n");
-    
-    header(out);
+
+    header(out, false);
     nav(out, chapter);
-    
+
     out.w("<h1 class='title'>" + chapter.name + "</h1>\n");
     out.w("<div class='content'>\n");
     out.w("<!-- TOC-HEADER-END -->\n");
@@ -425,7 +425,7 @@ public class TableOfContents
     out.w("</body>\n");
     out.w("<!-- TOC-FOOTER-END -->\n");
   }
-  
+
   private void writeCopyright(XWriter out)
   {
     WriteDoc.writeCopyright(out);
@@ -435,15 +435,18 @@ public class TableOfContents
 // Header
 ////////////////////////////////////////////////////////////////
 
-  private void header(XWriter out)
+  private void header(XWriter out, boolean isIndex)
   {
     String home = www ? "../index.html" : "index.html";
-    
+
     out.w("<p>\n");
     out.w("  <a href='").w(home).w("'>\n");
-    out.w("    <img src='logo.png' alt='Sedona'/>\n");
+    if (isIndex)
+      out.w("    <img src='logo.png' alt='Sedona'/>\n");
+    else
+      out.w("    <img src='../logo.png' alt='Sedona'/>\n");
     out.w("  </a>\n");
-    out.w("</p>\n");             
+    out.w("</p>\n");
 
     if (www)
     {
@@ -451,19 +454,19 @@ public class TableOfContents
       out.w("  <li><a href='").w(home).w("'>Home</a></li>\n");
       out.w("  <li><a class='active' href='index.html'>Documentation</a></li>\n");
       out.w("  <li><a href='../community.html'>Community</a></li>\n");
-      out.w("  <li><a href='/download/'>Downloads</a></li>\n");      
+      out.w("  <li><a href='/download/'>Downloads</a></li>\n");
       out.w("  <li><a href='../forum.html'>Forum</a></li>\n");
-      out.w("</ul>\n");    
+      out.w("</ul>\n");
     }
   }
-  
+
 ////////////////////////////////////////////////////////////////
 // Navigation
 ////////////////////////////////////////////////////////////////
 
   private void nav(XWriter out, Chapter chapter)
   {
-    nav(out, 
+    nav(out,
         chapter.prev == null ? null : chapter.prev.href,
         chapter.next == null ? null : chapter.next.href);
   }
@@ -475,11 +478,11 @@ public class TableOfContents
     else
       normNav(out, prev, next);
   }
-  
+
   private void normNav(XWriter out, String prev, String next)
   {
     out.w("<div class='nav'>\n");
-    out.w("  <a href='index.html'>Index</a>\n");
+    out.w("  <a href='../index.html'>Index</a>\n");
     if (prev != null) out.w(" | <a href='" + prev + "'>Prev</a>\n");
     if (next != null) out.w(" | <a href='" + next + "'>Next</a>\n");
     out.w("</div>\n");
@@ -517,7 +520,7 @@ public class TableOfContents
 //////////////////////////////////////////////////////////////////////////
 // Fields
 //////////////////////////////////////////////////////////////////////////
-  
+
   boolean www;
   File tocFile;
   File dir;

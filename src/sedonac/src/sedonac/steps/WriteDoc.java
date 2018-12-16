@@ -43,17 +43,17 @@ public class WriteDoc
 
   public void run()
   {
-    if (!compiler.doc) return;                                       
-    
+    if (!compiler.doc) return;
+
     File outDir = compiler.outDir;
-    if (outDir == null) outDir = new File(Env.home, "doc");
-    else outDir = new File(compiler.outDir, "doc");
+    if (outDir == null) outDir = new File(Env.home, "api");
+    else outDir = new File(compiler.outDir, "api");
 
     this.www = compiler.www;
     this.kit = compiler.ast;
     this.dir = new File(outDir, kit.name);
-    
-    if (!kit.doc) return;    
+
+    if (!kit.doc) return;
 
     log.info("  WriteDoc [" + dir + "]");
 
@@ -104,21 +104,22 @@ public class WriteDoc
 
   private void header(XWriter out, String title)
   {
-    String home = www ? "../../index.html" : "../index.html";
-    
+//    String home = www ? "../../index.html" : "../index.html";
+    String home = "../../index.html";
+
     out.w("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"\n");
     out.w(" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n");
     out.w("<html xmlns=\"http://www.w3.org/1999/xhtml\">\n");
     out.w("<head>\n");
     out.w("  <title>").w(title).w("</title>\n");
     out.w("  <meta http-equiv='Content-type' content='text/html;charset=UTF-8' />\n");
-    out.w("  <link rel='stylesheet' type='text/css' href='../style.css'/>\n");
+    out.w("  <link rel='stylesheet' type='text/css' href='../../style.css'/>\n");
     out.w("</head>\n");
-    out.w("<body>\n"); 
+    out.w("<body>\n");
 
     out.w("<p>\n");
     out.w("  <a href='").w(home).w("'>\n");
-    out.w("    <img src='../logo.png' alt='Sedona'/>\n");
+    out.w("    <img src='../../logo.png' alt='Sedona'/>\n");
     out.w("  </a>\n");
     out.w("</p>\n");
 
@@ -130,9 +131,9 @@ public class WriteDoc
       out.w("  <li><a href='../../community.html'>Community</a></li>\n");
       out.w("  <li><a href='/download/'>Downloads</a></li>\n");
       out.w("  <li><a href='../../forum.html'>Forum</a></li>\n");
-      out.w("</ul>\n");    
+      out.w("</ul>\n");
     }
-    
+
     nav(out);
   }
 
@@ -156,11 +157,11 @@ public class WriteDoc
     else
       normNav(out);
   }
-  
+
   private void normNav(XWriter out)
   {
     out.w("<div class='nav'>\n");
-    out.w("  <a href='../index.html'>Index</a> |\n");
+    out.w("  <a href='../../index.html'>Index</a> |\n");
     out.w("  <a href='../api.html'>Kits</a> |\n");
     out.w("  <a href='index.html'>").w(kit.name).w("</a>\n");
     out.w("</div>\n");
@@ -248,8 +249,8 @@ public class WriteDoc
     header(out, t.qname);
 
     // type details
-    out.w("<h1 class='title'>").w(t.qname).w("</h1>\n");    
-    
+    out.w("<h1 class='title'>").w(t.qname).w("</h1>\n");
+
     // inheritance
     out.w("<hr/>\n");
     out.w("<pre class='inheritance'>");
@@ -262,12 +263,12 @@ public class WriteDoc
     }
     int spaces = 0;
     for (int i=0; i<list.size(); i++)
-    {                                
+    {
       if (spaces > 0) out.w(TextUtil.getSpaces(spaces));
       typeLink((Type)list.get(i), out, false); out.w("\n");
       spaces += 2;
-      
-    }    
+
+    }
     if (spaces > 0) out.w(TextUtil.getSpaces(spaces));
     out.w(t.qname).w("\n");
     out.w("</pre>\n");
@@ -281,7 +282,7 @@ public class WriteDoc
     out.w("</code>");
 
     // Print facets
-    if ((t.facets()!=null) && (!t.facets().isEmpty())) 
+    if ((t.facets()!=null) && (!t.facets().isEmpty()))
     {
       out.w("<code style='color:darkblue;font-weight:bold'>\n");
       out.safe(t.facets().toString());
@@ -290,7 +291,7 @@ public class WriteDoc
     out.w("<br>\n");
 
     out.w("<hr/>\n");
-    
+
     // type doc
     if (t.doc != null)
       writeDoc(t.doc, out);
@@ -372,7 +373,7 @@ public class WriteDoc
     }
 
     // If any facets, print them last
-    if ((slot.facets()!=null) && (!slot.facets().isEmpty())) 
+    if ((slot.facets()!=null) && (!slot.facets().isEmpty()))
       out.safe(" " + slot.facets().toString());
 
     out.w("\n\n");
@@ -482,7 +483,7 @@ public class WriteDoc
     else
     {
       String name = shorten ? t.name() : t.qname();
-      String href = "../" + t.kit().name() + "/" + t.name() + ".html";      
+      String href = "../" + t.kit().name() + "/" + t.name() + ".html";
       out.w("<a href='").w(href).w("'>").w(name).w("</a>");
     }
   }

@@ -1,0 +1,56 @@
+# Project information
+site_name: 'Sedona'
+site_description: 'Online documentation for Sedona Framework(R)'
+site_author: 'Sedona Community'
+#site_url: 'https://my-github-handle.github.io/my-project'
+docs_dir: doc
+
+# Repository
+# repo_name: 'my-github-handle/my-project'
+# repo_url: 'https://github.com/my-github-handle/my-project'
+
+# Copyright
+copyright: 'Copyright &copy; 2018 Sedona Community'
+
+# Documentation and theme
+#theme: readthedocs
+theme: 'material'
+
+# Options
+extra:
+  logo: 'logo.png'
+  palette:
+    primary: 'indigo'
+    accent: 'indigo'
+  font:
+    text: 'Roboto'
+    code: 'Roboto Mono'
+  # social:
+  #   - type: 'twitter'
+  #     link: 'https://www.twitter.com/<link>'
+  #   - type: 'linkedin'
+  #     link: 'https://www.linkedin.com/company/<link>'
+  #   - type: 'facebook'
+  #     link: 'https://www.facebook.com/<link>'
+  # feature:
+  #   tabs: true
+
+# Google Analytics
+# google_analytics:
+#   - 'UA-XXXXXXXX-X'
+#   - 'auto'
+
+# Extensions
+markdown_extensions:
+  - admonition
+  - codehilite(guess_lang=false)
+  - footnotes
+  - toc(permalink=true)
+
+nav:
+- Index: index.md
+- Getting Started:
+  - 'Introduction': 'quickstart/intro.md'
+  # - 'Setup': 'quickstart/setup.md'
+  # - 'Architecture': 'quickstart/architecture.md'
+  # - 'Tutorial': 'quickstart/tutorial.md'
