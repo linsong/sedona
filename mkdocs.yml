@@ -1,5 +1,5 @@
 # Project information
-site_name: 'Sedona'
+site_name: 'Sedona Documentation'
 site_description: 'Online documentation for Sedona Framework(R)'
 site_author: 'Sedona Community'
 #site_url: 'https://my-github-handle.github.io/my-project'
@@ -10,7 +10,7 @@ docs_dir: 'doc'
 # repo_url: 'https://github.com/my-github-handle/my-project'
 
 # Copyright
-copyright: 'Copyright &copy; 2018 Sedona Community'
+copyright: 'Copyright &copy; 2007-2016 Tridium, 2017-2019 Sedona Community'
 
 # Documentation and theme
 #theme: readthedocs
