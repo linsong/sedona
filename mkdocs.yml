@@ -3,14 +3,14 @@ site_name: 'Sedona Documentation'
 site_description: 'Online documentation for Sedona Framework(R)'
 site_author: 'Sedona Community'
 #site_url: 'https://my-github-handle.github.io/my-project'
-docs_dir: 'doc'
+docs_dir: 'build/doc'
 
 # Repository
 # repo_name: 'my-github-handle/my-project'
 # repo_url: 'https://github.com/my-github-handle/my-project'
 
 # Copyright
-copyright: 'Copyright &copy; 2007-2016 Tridium, 2017-2019 Sedona Community'
+copyright: 'Copyright &copy; 2007-2017 Tridium, 2018-2019 Sedona Community'
 
 # Documentation and theme
 #theme: readthedocs
@@ -44,9 +44,33 @@ extra:
 # Extensions
 markdown_extensions:
   - admonition
-  - codehilite(guess_lang=false)
+  - codehilite:
+      guess_lang: false
+      linenums: true
   - footnotes
-  # - toc(permalink=true)
+  - toc:
+      permalink: true
+  - pymdownx.arithmatex
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.critic
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_generator: !!python/name:pymdownx.emoji.to_svg
+  - pymdownx.inlinehilite
+  - pymdownx.magiclink
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.superfences
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+
+# plugins:
+#   - htmlproofer
+#   - awesome-pages
+#   - search
 
 nav:
 - Index: index.md
@@ -98,3 +122,4 @@ nav:
   - Grammar: appendix/grammar.md
 - Releases:
   - v1.2: releases/newFor12.md
+- API: api/api.md

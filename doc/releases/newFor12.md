@@ -16,13 +16,13 @@ With the release of Sedona Framework 1.2 a number of features have been added.
   You didn't miss anything, the Sedona open source version skipped from 1.0 straight to 1.2
 
 - <b>Kit and Platform Manifest Server</b>:
-  Kit and platform manifest files can now be stored directly on the Sedona device, if desired, and served automatically to Sox clients as needed.  See the section [Manifest Server](/deployment/schema#mfServer) to learn how to implement it on your platform
+  Kit and platform manifest files can now be stored directly on the Sedona device, if desired, and served automatically to Sox clients as needed.  See the section [Manifest Server](/deployment/schema#kit-manifest-server) to learn how to implement it on your platform
 
 - <b>Device Discovery</b>:
   Sedona devices can now be discovered automatically using IP multicast.  Details can be found in the section on [Device Discovery](/networking/discover)
 
 - <b>Multi-rate App Components</b>:
-  Components now have some control over when the App cycle executes their child components. This can be used, for example, to have certain child components execute at a lower rate than the App cycle rate. See the [Apps](/apps/apps#multirate) chapter for more details
+  Components now have some control over when the App cycle executes their child components. This can be used, for example, to have certain child components execute at a lower rate than the App cycle rate. See the [Apps](/apps/apps#execution) chapter for more details
 
 - <b>Device Simulation</b>:
   New capability has been added to <code>sedonac</code> to make it easy to create a simulator version of any Sedona VM. Apps that depend on kits with platform-specific native methods can now be run on a different host platform using a simulator SVM. Detailed instructions on how to create a simulator SVM will be presented in the [Sedona Device Simulator](/platforms/deviceSim) chapter

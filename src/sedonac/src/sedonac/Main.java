@@ -34,6 +34,7 @@ public class Main
     println("  *.sab        convert sab to sax");
     println("options:");
     println("  -doc         generate HTML Sedona docs for kit");
+    println("  -md          generate Markdown Sedona docs for kit");
     println("  -outDir      output directory");
     println("  -v           verbose logging");
     println("  -ver         print version info and exit");
@@ -111,6 +112,10 @@ public class Main
       else if (arg.equals("-doc"))
       {
         compiler.doc = true;
+      }
+      else if (arg.equals("-md"))
+      {
+        compiler.md = true;
       }
       else if (arg.equals("-outDir"))
       {

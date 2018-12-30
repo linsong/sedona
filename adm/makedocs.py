@@ -54,7 +54,7 @@ def main():
 
   (options, args) = parser.parse_args()
 
-  buildsrcdocs = env.sedonacExe + " -doc -outDir " + env.build + " " + env.kits
+  buildsrcdocs = env.sedonacExe + " -md -outDir " + env.build + " " + env.kits
   docOut = os.path.join(env.build, "doc")
   docAPI = os.path.join(env.build, "api")
   docAPIOut = os.path.join(docOut, "api")
@@ -66,15 +66,16 @@ def main():
 
   # Generate source (API) documentation
   if subprocess.call(buildsrcdocs, shell=True):
-    raise Exception, "\n *** Failed:\n" + buildsrcdocs
+    raise Exception("\n *** Failed:\n" + buildsrcdocs)
   # move api content in build/doc/api
   fileutil.cpdir(docAPI, docAPIOut)
   shutil.rmtree(docAPI)
   # Generate static documentation (old-stype HTML pages)
   if subprocess.call(buildpubdocs, shell=True):
-    raise Exception, "\n *** Failed:\n" + buildpubdocs
+    raise Exception("\n *** Failed:\n" + buildpubdocs)
   # move api index in build/doc/api
   shutil.move(os.path.join(docOut, "api.html"), os.path.join(docAPIOut, "api.html"))
+  shutil.move(os.path.join(docOut, "api.md"), os.path.join(docAPIOut, "api.md"))
 
 
 #

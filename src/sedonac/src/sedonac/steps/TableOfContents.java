@@ -53,6 +53,7 @@ public class TableOfContents
       if (!outDir.exists()) outDir.mkdirs();
 
       new File(outDir, "api.html").delete();
+      new File(outDir, "api.md").delete();
 
       log.info("  TableOfContents [" + dir + " -> " + outDir + "]");
 
@@ -308,11 +309,15 @@ public class TableOfContents
   private void writeApiIndex()
   {
     File f = new File(outDir, "api.html");
+    File mdf = new File(outDir, "api.md");
     XWriter out = null;
+    XWriter mdOut = null;
     try
     {
       out = new XWriter(f);
       writeApiIndex(out);
+      mdOut = new XWriter(mdf);
+      writeApiIndexMd(mdOut);
     }
     catch (Exception e)
     {
@@ -320,7 +325,10 @@ public class TableOfContents
     }
     finally
     {
-      try { out.close(); } catch (Exception e) {}
+      try
+      { out.close();
+        mdOut.close();
+      } catch (Exception e) {}
     }
   }
 
@@ -364,6 +372,56 @@ public class TableOfContents
     out.w("</body>\n");
     out.w("</html>\n");
   }
+
+  private void writeApiIndexMd(XWriter out)
+  {
+
+    out.w("[![Sedona](../logo.png)](/)\n");
+    out.w("# API\n");
+    out.w("[Doc Home](/) > ");
+    out.w("[API Index](/api/api)\n\n");
+    out.w("---\n");
+    out.w("| Kits | Description |\n");
+    out.w("|------|-------------|\n");
+
+    String[] kits = KitDb.kits();
+    KitManifest[] kms = new KitManifest[kits.length];
+    // Get the kits
+    for (int i=0; i<kits.length; ++i)
+    {
+      try
+      {
+        KitManifest km = ManifestDb.loadForLocalKit(kits[i]);
+        kms[i] = km;
+      }
+      catch (Exception e)
+      {
+        System.out.println("ERROR: " + e);
+      }
+    }
+    // Sort by alphabetical order
+    Arrays.sort(kms, WriteMd.KIT_COMPARE);
+    // Write the index
+    for (int i=0; i<kms.length; ++i)
+    {
+      try
+      {
+        if (kms[i].doc) {
+          out.w("| [" + kms[i].name + "](/api/" + kms[i].name + ") | ");
+          out.w(kms[i].description).w(" |\n");
+        }
+      }
+      catch (Exception e)
+      {
+        System.out.println("ERROR: " + e);
+      }
+    }
+
+    out.w("\n---\n");
+    out.w("[Doc Home](/) > ");
+    out.w("[API Index](/api/api)\n");
+  }
+
 
 //////////////////////////////////////////////////////////////////////////
 // Copy Resources
