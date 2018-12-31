@@ -107,14 +107,14 @@ public class WriteMd
   {
     out.w("[![Sedona](../../logo.png)](/)\n");
     out.w("# ").w(title).w('\n');
-    nav(out);
-    out.w("---\n");
+    nav(out, title);
+    out.w("\n---\n");
   }
 
-  private void footer(XWriter out)
+  private void footer(XWriter out, String title)
   {
-    out.w("---\n");
-    nav(out);
+    out.w("\n---\n");
+    nav(out, title);
   }
 
   public static void writeCopyright(XWriter out)
@@ -122,19 +122,22 @@ public class WriteMd
     // out.w("<div class='copyright'><script type='text/javascript'>document.write(\"Copyright &#169; \" + new Date().getFullYear() + \" Tridium, Inc.\")</script></div>\n");
   }
 
-  private void nav(XWriter out)
+  private void nav(XWriter out, String title)
   {
     if (www)
       wwwNav(out);
     else
-      normNav(out);
+      normNav(out, title);
   }
 
-  private void normNav(XWriter out)
+  private void normNav(XWriter out, String title)
   {
     out.w("[Doc Home](/) > ");
     out.w("[API Index](/api/api) > ");
-    out.w("[").w(kit.name).w("](/api/").w(kit.name).w(")\n\n");
+    out.w("[").w(kit.name).w("](/api/").w(kit.name).w(")");
+    if (!title.equalsIgnoreCase(kit.name))
+      out.w(" > ").w(title);
+    out.w("\n");
   }
 
   private void wwwNav(XWriter out)
@@ -172,7 +175,6 @@ public class WriteMd
     //out.w("<ul>\n");
     if (kit.description!=null)
     {
-      //out.w("<p>\n");
       out.w(kit.description);
       out.w("\n\n");
     }
@@ -183,7 +185,7 @@ public class WriteMd
       out.w("#### [").w(t.name).w("](").w(t.name).w(")\n");
     }
     out.w("\n");
-    footer(out);
+    footer(out, kit.name);
   }
 
 //////////////////////////////////////////////////////////////////////////
@@ -216,16 +218,16 @@ public class WriteMd
    */
   void generate(TypeDef t, XWriter out)
   {
-    header(out, t.qname);
+    header(out, t.name);
 
     // type details
     // out.w("<h1 class='title'>").w(t.qname).w("</h1>\n");
     // out.w("### ").w(t.qname).w("\n");
 
     // inheritance
-    out.w("\n");
     out.w("## Inheritance\n");
-    out.w("<pre class='inheritance'>");
+    // can't eliminate this HTML tag; MD doesn't allow hyperlinks within code
+    out.w("<pre class='inheritance'>\n");
     ArrayList list = new ArrayList();
     Type base = t.base;
     while (base != null)
@@ -245,32 +247,28 @@ public class WriteMd
     out.w(t.qname).w("\n");
     out.w("</pre>\n");
 
-    // out.w("<br>\n");
-    //
     // Print modifiers
+    // can't eliminate this HTML tag; MD doesn't allow styling within code
     out.w("<code style='color:darkgreen;font-weight:bold;font-size:120%'>");
-    typeModifiers(t, out, "em");
+    typeModifiers(t, out);
     out.w(" class <b style='font-weight:bolder'>" + t.name() + "</b>  ");
     out.w("</code>");
 
     // Print facets
+    // can't eliminate this HTML tag; MD doesn't allow styling within code
     if ((t.facets()!=null) && (!t.facets().isEmpty()))
     {
       out.w("<code style='color:darkblue;font-weight:bold'>\n");
       out.safe(t.facets().toString());
       out.w("</code>\n");
     }
-    // out.w("<br>\n");
-    //
-    // out.w("<hr/>\n");
-
     // type doc
     if (t.doc != null)
+    {
+      out.w("\n");
       writeMd(t.doc, out);
-
+    }
     // slot details
-    out.w("<hr/>\n");
-    out.w("## Fields\n");
     SlotDef[] slots = t.slotDefs();
     Arrays.sort(slots, slotCompare);
     boolean dl = false;
@@ -281,6 +279,8 @@ public class WriteMd
       if (!isDoc(slot)) continue;
       if (!dl)
       {
+        out.w("\n---\n");
+        out.w("## Fields\n");
         out.w("<dl>\n");
         dl = true;
       }
@@ -291,7 +291,7 @@ public class WriteMd
       {
         if (!methodStart) // add method title first time
         {
-          out.w("<hr/>\n");
+          out.w("\n---\n");
           out.w("## Methods\n");
           methodStart = true;
         }
@@ -303,9 +303,10 @@ public class WriteMd
 
       // out.w("<dd>");
 
-      out.w("<p class='sig'><code>");
+      // can't eliminate HTML tag; MD doesn't allow styling/ links within code
+      out.w("<code>");
       slotDef(slot, out);
-      out.w("</code></p>\n");
+      out.w("</code>\n");
 
       if (slot.doc != null)
         writeMd(slot.doc, out);
@@ -314,7 +315,7 @@ public class WriteMd
     }
     if (dl) out.w("</dl>\n");
 
-    footer(out);
+    footer(out, t.name);
   }
 
   /**
@@ -325,17 +326,17 @@ public class WriteMd
     if (slot.isField())
     {
       FieldDef f = (FieldDef)slot;
-      slotModifiers(slot, out, "em");
-      out.w("<b>");
+      slotModifiers(slot, out);
+      out.w("**");
       typeLink(f.type(), out);
       out.w(" ").w(f.name());
-      out.w("</b>");
+      out.w("**");
     }
     else
     {
       MethodDef m = (MethodDef)slot;
-      slotModifiers(slot, out, "em");
-      out.w("<b>");
+      slotModifiers(slot, out);
+      out.w("**");
       typeLink(m.returnType(), out);
 
       // Print name of method - if cstr, print type name instead of _iInit
@@ -350,52 +351,47 @@ public class WriteMd
         out.w(" ").w(m.params[i].name);
       }
       out.w(")");
-      out.w("</b>");
+      out.w("**");
     }
 
     // If any facets, print them last
     if ((slot.facets()!=null) && (!slot.facets().isEmpty()))
       out.safe(" " + slot.facets().toString());
 
-    out.w("\n");
   }
 
 
   /**
    * Print all modifiers associated with this type
    */
-  void typeModifiers(TypeDef t, XWriter out, String htag)
+  void typeModifiers(TypeDef t, XWriter out)
   {
-    if ((htag!=null) && (htag.length()>0)) out.w("<" + htag + ">");
     if (t.isPublic())    out.w("public ");
     if (t.isInternal())  out.w("internal ");
     if (t.isAbstract())  out.w("abstract ");
     if (t.isConst())     out.w("const ");
     if (t.isFinal())     out.w("final ");
-    if ((htag!=null && (htag.length()>0))) out.w("</" + htag + ">");
   }
 
   /**
    * Print all modifiers associated with this slot
    */
-  void slotModifiers(SlotDef slot, XWriter out, String htag)
+  void slotModifiers(SlotDef slot, XWriter out)
   {
-    if ((htag!=null) && (htag.length()>0)) out.w("<" + htag + ">");
-    if (slot.isPublic())    out.w("<em>public</em> ");
-    if (slot.isProtected()) out.w("<em>protected</em> ");
-    if (slot.isPrivate())   out.w("<em>private</em> ");
-    if (slot.isInternal())  out.w("<em>internal</em> ");
-    if (slot.isStatic())    out.w("<em>static</em> ");
-    if (slot.isAbstract())  out.w("<em>abstract</em> ");       // abstract implies virtual
-    else if (slot.isAction())    out.w("<em>action</em> ");    // action implies virtual
-    else if (slot.isVirtual())   out.w("<em>virtual</em> ");
-    if (slot.isNative())    out.w("<em>native</em> ");
-    if (slot.isOverride())  out.w("<em>override</em> ");
-    if (slot.isConst())     out.w("<em>const</em> ");
-    if (slot.isDefine())    out.w("<em>define</em> ");
-    if (slot.isInline())    out.w("<em>inline</em> ");
-    if (slot.isProperty())  out.w("<em>property</em> ");
-    if ((htag!=null) && (htag.length()>0)) out.w("</" + htag + ">");
+    if (slot.isPublic())    out.w("_public_ ");
+    if (slot.isProtected()) out.w("_protected_ ");
+    if (slot.isPrivate())   out.w("_private_ ");
+    if (slot.isInternal())  out.w("_internal_ ");
+    if (slot.isStatic())    out.w("_static_ ");
+    if (slot.isAbstract())  out.w("_abstract_ ");       // abstract implies virtual
+    else if (slot.isAction())    out.w("_action_ ");    // action implies virtual
+    else if (slot.isVirtual())   out.w("_virtual_ ");
+    if (slot.isNative())    out.w("_native_ ");
+    if (slot.isOverride())  out.w("_override_ ");
+    if (slot.isConst())     out.w("_const_ ");
+    if (slot.isDefine())    out.w("_define_ ");
+    if (slot.isInline())    out.w("_inline_ ");
+    if (slot.isProperty())  out.w("_property_ ");
   }
 
 //////////////////////////////////////////////////////////////////////////
@@ -431,10 +427,10 @@ public class WriteMd
       switch (id)
       {
         case DocParser.DocNode.PARA:
-          out.w("<p>").safe(text).w("</p>\n");
+          out.w("\n").w(text).w("\n");
           break;
         case DocParser.DocNode.PRE:
-          out.w("<pre class='doc'>").safe(text).w("</pre>\n");
+          out.w("\n```\n").w(text).w("\n```\n");
           break;
         default:
           throw new IllegalStateException("Unknown DocNode id: " + id);

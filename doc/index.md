@@ -64,3 +64,6 @@ Please check [Sedona Alliance](https://www.sedona-alliance.org/history.htm) for 
 
 ## Release Notes
 [New for 1.2](./releases/newFor12.md): New features in **Sedona Framework** 1.2
+
+## APIs
+[API Index](./api/api.md): API Index for all available Sedona kits

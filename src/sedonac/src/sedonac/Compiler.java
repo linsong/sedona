@@ -260,7 +260,7 @@ public class Compiler
   public void compileDocs()
   {
     new TableOfContents(this).run();
-    new CheckHtmlLinks(this).run();
+    if (this.doc) new CheckHtmlLinks(this).run();
   }
 
 ////////////////////////////////////////////////////////////////

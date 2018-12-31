@@ -58,23 +58,33 @@ def main():
   docOut = os.path.join(env.build, "doc")
   docAPI = os.path.join(env.build, "api")
   docAPIOut = os.path.join(docOut, "api")
-  # copy static content in build/doc
-  fileutil.cpdir(env.doc, docOut)
-  buildpubdocs = env.sedonacExe + " -doc " + os.path.join(docOut, "toc.xml")
+
+  # Copy static content in build/doc (ignore old HTML & CSS files)
+  # fileutil.cpdir(env.doc, docOut)
+  if os.path.isdir(docOut):
+    shutil.rmtree(docOut) # clean old build/doc directory, if exists
+  shutil.copytree(env.doc, docOut, ignore=shutil.ignore_patterns('*.html', '*.css') )
+  buildpubdocs = env.sedonacExe + " -md " + os.path.join(docOut, "toc.xml")
 
   #print "\n\n   Executing cmd = { " + cmd + " }\n\n"
 
-  # Generate source (API) documentation
+  # Generate source (API) documentation content
   if subprocess.call(buildsrcdocs, shell=True):
     raise Exception("\n *** Failed:\n" + buildsrcdocs)
-  # move api content in build/doc/api
-  fileutil.cpdir(docAPI, docAPIOut)
+
+  # Move api content in build/doc/api
+  # fileutil.cpdir(docAPI, docAPIOut)
+  if os.path.isdir(docAPIOut):
+    shutil.rmtree(docAPIOut) # clean old build/doc/api directory, if exists
+  shutil.copytree(docAPI, docAPIOut)
   shutil.rmtree(docAPI)
-  # Generate static documentation (old-stype HTML pages)
+
+  # Generate static documentation (ignore HTML pages - only pass -md flag)
   if subprocess.call(buildpubdocs, shell=True):
     raise Exception("\n *** Failed:\n" + buildpubdocs)
-  # move api index in build/doc/api
-  shutil.move(os.path.join(docOut, "api.html"), os.path.join(docAPIOut, "api.html"))
+
+  # Move api index in build/doc/api (ignore old API HTML index)
+  # shutil.move(os.path.join(docOut, "api.html"), os.path.join(docAPIOut, "api.html"))
   shutil.move(os.path.join(docOut, "api.md"), os.path.join(docAPIOut, "api.md"))
 
 

@@ -46,21 +46,26 @@ public class TableOfContents
       this.www = compiler.www;
       this.xml = compiler.xml;
       this.tocFile = compiler.input;
+      this.doc = compiler != null ? compiler.doc : false;
+      this.md = compiler != null ? compiler.md : false;
       this.dir = tocFile.getParentFile();
 
       outDir = compiler.outDir;
       if (outDir == null) outDir = dir;
       if (!outDir.exists()) outDir.mkdirs();
 
-      new File(outDir, "api.html").delete();
-      new File(outDir, "api.md").delete();
+      if (doc) new File(outDir, "api.html").delete();
+      if (md) new File(outDir, "api.md").delete();
 
       log.info("  TableOfContents [" + dir + " -> " + outDir + "]");
 
-      parseXml();
-      flattenChapters();
-      processHtml();
-      writeDocIndex();
+      if (doc)
+      {
+        parseXml();
+        flattenChapters();
+        processHtml();
+        writeDocIndex();
+      }
       writeApiIndex();
       if (www) copyResources();
 
@@ -315,9 +320,9 @@ public class TableOfContents
     try
     {
       out = new XWriter(f);
-      writeApiIndex(out);
+      if (doc) writeApiIndex(out);
       mdOut = new XWriter(mdf);
-      writeApiIndexMd(mdOut);
+      if (md) writeApiIndexMd(mdOut);
     }
     catch (Exception e)
     {
@@ -580,6 +585,8 @@ public class TableOfContents
 //////////////////////////////////////////////////////////////////////////
 
   boolean www;
+  boolean doc;
+  boolean md;
   File tocFile;
   File dir;
   File outDir;
