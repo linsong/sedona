@@ -10,6 +10,8 @@
 *.exe
 sedona*.jar
 build
+kits
+manifests
 version.txt
 svm
 sedona-*.zip
