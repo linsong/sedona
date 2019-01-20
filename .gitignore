@@ -9,6 +9,7 @@
 *.swp
 *.exe
 sedona*.jar
+bin/jre
 build
 kits
 manifests
