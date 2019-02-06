@@ -121,7 +121,7 @@ if __name__ == '__main__':
     raise env.BuildError("FATAL: makesedonacert failed")   
   
   # Make all kits
-  compilekit.compile(env.kits, ["-outDir", env.build])
+  compilekit.compile(env.kits)
 
   # Make additional external kits
   if options.kits is not None:
