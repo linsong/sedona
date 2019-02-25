@@ -1,0 +1,334 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>sys::Sys</title>
+  <meta http-equiv='Content-type' content='text/html;charset=UTF-8' />
+  <link rel='stylesheet' type='text/css' href='../style.css'/>
+</head>
+<body>
+<p>
+  <a href='../index.html'>
+    <img src='../logo.png' alt='Sedona'/>
+  </a>
+</p>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>sys</a>
+</div>
+<h1 class='title'>sys::Sys</h1>
+<hr/>
+<pre class='inheritance'><a href='../sys/Obj.html'>sys::Obj</a>
+  sys::Sys
+</pre>
+<br>
+<code style='color:darkgreen;font-weight:bold;font-size:120%'><em>public </em> class <b style='font-weight:bolder'>Sys</b>  </code><br>
+<hr/>
+<p>Sys provides access to the system environment.</p>
+<hr/>
+<dl>
+<dt>app</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>inline</em> </em><b><a href='../sys/App.html'>App</a> app</b>
+
+</code></p>
+<p>The application instance for the VM</p>
+</dd>
+<dt>bootTime</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> </em><b>long bootTime</b>
+
+</code></p>
+<p>The time in nanosecond ticks the Sedona runtime was booted</p>
+</dd>
+<dt>kits</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> </em><b><a href='../sys/Kit.html'>Kit</a>[] kits</b>
+
+</code></p>
+<p>The list of kits installed in this environment.</p>
+</dd>
+<dt>kitsLen</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int kitsLen</b>
+
+</code></p>
+<p>The number of items in the kits array.</p>
+</dd>
+<dt>logLevels</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>inline</em> </em><b>byte[] logLevels</b>
+
+</code></p>
+<p>The current severity level of each log</p>
+</dd>
+<dt>logs</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> </em><b><a href='../sys/Log.html'>Log</a>[] logs</b>
+
+</code></p>
+<p>The list of logs installed in this environment.</p>
+</dd>
+<dt>logsLen</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int logsLen</b>
+
+</code></p>
+<p>The number of items in the logs array.</p>
+</dd>
+<dt>maxInt</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int maxInt</b>
+
+</code></p>
+<p>Max value of a 32-bit signed integer: 2,147,483,647</p>
+</dd>
+<dt>maxLong</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>long maxLong</b>
+
+</code></p>
+<p>Max value of a 64-bit signed integer: 9,223,372,036,854,775,807</p>
+</dd>
+<dt>minInt</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int minInt</b>
+
+</code></p>
+<p>Min value of a 32-bit signed integer: -2,147,483,648</p>
+</dd>
+<dt>minLong</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>long minLong</b>
+
+</code></p>
+<p>Min value of a 64-bit signed integer: -9,223,372,036,854,775,808</p>
+</dd>
+<dt>nullIn</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>inline</em> </em><b><a href='../sys/InStream.html'>InStream</a> nullIn</b>
+
+</code></p>
+<p>The null input stream is always at end of file.</p>
+</dd>
+<dt>nullOut</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>inline</em> </em><b><a href='../sys/OutStream.html'>OutStream</a> nullOut</b>
+
+</code></p>
+<p>The null output stream sinks its output to nowhere.</p>
+</dd>
+<dt>out</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>inline</em> </em><b><a href='../sys/OutStream.html'>OutStream</a> out</b>
+
+</code></p>
+<p>Standard output stream.</p>
+</dd>
+<dt>sizeofRef</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int sizeofRef</b>
+
+</code></p>
+<p>Size in bytes of a reference/pointer on this system.</p>
+</dd>
+<dt>andBytes</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>native</em> </em><b>void andBytes(int mask, byte[] bytes, int off, int len)</b>
+
+</code></p>
+<p>Perform a bitwise &#x22;and&#x22; using the specified mask on each&#xa;byte in the bytes array.</p>
+</dd>
+<dt>bitsToDouble</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>native</em> </em><b>double bitsToDouble(long bits)</b>
+
+</code></p>
+<p>Return a 64-bit floating point value according to the&#xa;IEEE 754 floating-point &#x22;double format&#x22; bit layout.</p>
+</dd>
+<dt>bitsToFloat</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>native</em> </em><b>float bitsToFloat(int bits)</b>
+
+</code></p>
+<p>Return a 32-bit floating point value according to the&#xa;IEEE 754 floating-point &#x22;single format&#x22; bit layout.</p>
+</dd>
+<dt>compareBytes</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>native</em> </em><b>int compareBytes(byte[] a, int aOff, byte[] b, int bOff, int len)</b>
+
+</code></p>
+<p>Compare two byte arrays for equality. If equal return 0, if&#xa;a is less than b return -1, if a greater than b return 1.</p>
+</dd>
+<dt>copy</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>native</em> </em><b>void copy(byte[] src, int srcOff, byte[] dest, int destOff, int num)</b>
+
+</code></p>
+<p>Copy num bytes from the source byte array to the destination byte&#xa;array.  The arrays may be overlapping (like memmove, not memcpy).</p>
+</dd>
+<dt>doubleStr</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>native</em> </em><b><a href='../sys/Str.html'>Str</a> doubleStr(double v)</b>
+
+</code></p>
+<p>Format a double into a string.&#xa;The string is stored in a static shared buffer.</p>
+</dd>
+<dt>doubleToBits</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>native</em> </em><b>long doubleToBits(double v)</b>
+
+</code></p>
+<p>Return a long representation of a 64-bit floating point&#xa;value according to the IEEE 754 floating-point &#x22;double format&#x22;&#xa;bit layout.</p>
+</dd>
+<dt>findKit</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> </em><b><a href='../sys/Kit.html'>Kit</a> findKit(<a href='../sys/Str.html'>Str</a> name)</b>
+
+</code></p>
+<p>Find a kit by its unique name or return null if not found.</p>
+</dd>
+<dt>findLog</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> </em><b><a href='../sys/Log.html'>Log</a> findLog(<a href='../sys/Str.html'>Str</a> qname)</b>
+
+</code></p>
+<p>Find a log by its qualified name or return null if not found.</p>
+</dd>
+<dt>findType</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> </em><b><a href='../sys/Type.html'>Type</a> findType(<a href='../sys/Str.html'>Str</a> qname)</b>
+
+</code></p>
+<p>Find a type by its qualified name such as &#xa;&#x22;sys::Component&#x22; or return null if not found.</p>
+</dd>
+<dt>floatStr</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>native</em> </em><b><a href='../sys/Str.html'>Str</a> floatStr(float v)</b>
+
+</code></p>
+<p>Format a float into a string.&#xa;The string is stored in a static shared buffer.</p>
+</dd>
+<dt>floatToBits</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>native</em> </em><b>int floatToBits(float v)</b>
+
+</code></p>
+<p>Return an integer representation of a 32-bit floating point&#xa;value according to the IEEE 754 floating-point &#x22;single format&#x22;&#xa;bit layout.</p>
+</dd>
+<dt>fromDigit</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> </em><b>int fromDigit(int digit)</b>
+
+</code></p>
+<p>Return the numeric value of a decimal character:</p>
+<pre class='doc'>  &#x27;0&#x27; -&gt; 0&#xa;  &#x27;9&#x27; -&gt; 9</pre>
+<p>Return -1 if not a valid decimal digit.</p>
+</dd>
+<dt>fromHexDigit</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> </em><b>int fromHexDigit(int digit)</b>
+
+</code></p>
+<p>Return the numeric value of an decimal character:</p>
+<pre class='doc'>  &#x27;0&#x27; -&gt; 0&#xa;  &#x27;9&#x27; -&gt; 9&#xa;  &#x27;a&#x27; or &#x27;A&#x27; -&gt; 10&#xa;  &#x27;f&#x27; or &#x27;F&#x27; -&gt; 15</pre>
+<p>Return -1 if not a valid hex digit.</p>
+</dd>
+<dt>hexStr</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>native</em> </em><b><a href='../sys/Str.html'>Str</a> hexStr(int v)</b>
+
+</code></p>
+<p>Format an integer as a hexadecimal string.&#xa;The string is stored in a static shared buffer.</p>
+</dd>
+<dt>intStr</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>native</em> </em><b><a href='../sys/Str.html'>Str</a> intStr(int v)</b>
+
+</code></p>
+<p>Format an integer as a decimal string.&#xa;The string is stored in a static shared buffer.</p>
+</dd>
+<dt>kit</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> </em><b><a href='../sys/Kit.html'>Kit</a> kit(int id)</b>
+
+</code></p>
+<p>Get the kit for the specified id or return null if out of range.</p>
+</dd>
+<dt>log</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> </em><b><a href='../sys/Log.html'>Log</a> log(int id)</b>
+
+</code></p>
+<p>Get the log for the specified id or return null if out of range.</p>
+</dd>
+<dt>longHexStr</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>native</em> </em><b><a href='../sys/Str.html'>Str</a> longHexStr(long v)</b>
+
+</code></p>
+<p>Format the 64-bit integer into a hexidecimal string.&#xa;The string is stored in a static shared buffer.</p>
+</dd>
+<dt>longStr</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>native</em> </em><b><a href='../sys/Str.html'>Str</a> longStr(long v)</b>
+
+</code></p>
+<p>Format the 64-bit integer into a string.&#xa;The string is stored in a static shared buffer.</p>
+</dd>
+<dt>main</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> </em><b>int main(<a href='../sys/Str.html'>Str</a>[] args, int argsLen)</b>
+
+</code></p>
+<p>Standard main entry point.</p>
+</dd>
+<dt>max</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> </em><b>int max(int a, int b)</b>
+
+</code></p>
+<p>Return the max of two ints.</p>
+</dd>
+<dt>min</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> </em><b>int min(int a, int b)</b>
+
+</code></p>
+<p>Return the min of two ints.</p>
+</dd>
+<dt>orBytes</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>native</em> </em><b>void orBytes(int mask, byte[] bytes, int off, int len)</b>
+
+</code></p>
+<p>Perform a bitwise &#x22;or&#x22; using the specified mask on each&#xa;byte in the bytes array.</p>
+</dd>
+<dt>printVer</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> </em><b>void printVer(<a href='../sys/OutStream.html'>OutStream</a> out)</b>
+
+</code></p>
+<p>Print version information to the output stream.</p>
+</dd>
+<dt>rand</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>native</em> </em><b>int rand()</b>
+
+</code></p>
+<p>Generate a random 32-bit integer.</p>
+</dd>
+<dt>resume</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> </em><b>int resume(<a href='../sys/Str.html'>Str</a>[] args, int argsLen)</b>
+
+</code></p>
+<p>This is the entry point where native code resumes the &#xa;Sedona VM from a yield or hibernate state.  VM heap&#xa;remains intact.</p>
+</dd>
+<dt>scodeAddr</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>native</em> </em><b>byte[] scodeAddr()</b>
+
+</code></p>
+<p>Get the base address of the scode image as a byte pointer.&#xa;INTERNAL USE ONLY.</p>
+</dd>
+<dt>setBytes</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>native</em> </em><b>void setBytes(int val, byte[] bytes, int off, int len)</b>
+
+</code></p>
+<p>Set all the bytes in the specified array to val.</p>
+</dd>
+<dt>shutdown</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> </em><b>int shutdown(int result)</b>
+
+</code></p>
+<p>This method unwinds the Sedona call stack and the VM exits&#xa;with the given error code.</p>
+<p>If it returns &#x27;Err.hibernate&#x27; or &#x27;Err.yield&#x27;, the Sedona heap &#xa;remains intact and can be restarted via &#x27;resume&#x27; entry point</p>
+<p>If the specified result is not the hibernate or yield error&#xa;codes, then stop the application and cleanup memory.</p>
+</dd>
+<dt>sleep</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>native</em> </em><b>void sleep(long t)</b>
+
+</code></p>
+<p>Sleep for the specified time in nanosecond ticks.&#xa;If t &lt;= 0, then sleep should return immediately.</p>
+<p>This method is for use by App and test code only.  Do not call from&#xa;within Component execute() or Service work() methods.</p>
+</dd>
+<dt>ticks</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>native</em> </em><b>long ticks()</b>
+
+</code></p>
+<p>Get the current time as a 64-bit integer of nanosecond ticks.  &#xa;Ticks are not necessarily based on wall-time, but rather based &#xa;on an arbitrary epoch (typically the boot time of the host)</p>
+</dd>
+<dt>type</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> </em><b><a href='../sys/Type.html'>Type</a> type(int kitId, int typeId)</b>
+
+</code></p>
+<p>Get the type for the specified kit and type id or&#xa;return null if out of range.</p>
+</dd>
+</dl>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>sys</a>
+</div>
+<div class='copyright'><script type='text/javascript'>document.write("Copyright &#169; " + new Date().getFullYear() + " Tridium, Inc.")</script></div>
+</body>
+</html>

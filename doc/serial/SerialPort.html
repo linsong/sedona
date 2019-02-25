@@ -1,0 +1,159 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>serial::SerialPort</title>
+  <meta http-equiv='Content-type' content='text/html;charset=UTF-8' />
+  <link rel='stylesheet' type='text/css' href='../style.css'/>
+</head>
+<body>
+<p>
+  <a href='../index.html'>
+    <img src='../logo.png' alt='Sedona'/>
+  </a>
+</p>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>serial</a>
+</div>
+<h1 class='title'>serial::SerialPort</h1>
+<hr/>
+<pre class='inheritance'><a href='../sys/Obj.html'>sys::Obj</a>
+  serial::SerialPort
+</pre>
+<br>
+<code style='color:darkgreen;font-weight:bold;font-size:120%'><em>public final </em> class <b style='font-weight:bolder'>SerialPort</b>  </code><br>
+<hr/>
+<p>SerialPort models a serial I/O port without software buffering.</p>
+<hr/>
+<dl>
+<dt>PARITY_DISABLED</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int PARITY_DISABLED</b>
+
+</code></p>
+<p>Value of parity field when parity is disabled</p>
+</dd>
+<dt>PARITY_EVEN</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int PARITY_EVEN</b>
+
+</code></p>
+<p>Value of parity field for even parity</p>
+</dd>
+<dt>PARITY_MARK</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int PARITY_MARK</b>
+
+</code></p>
+<p>Value of parity field for mark parity</p>
+</dd>
+<dt>PARITY_NONE</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int PARITY_NONE</b>
+
+</code></p>
+<p>Value of parity field for no parity</p>
+</dd>
+<dt>PARITY_ODD</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int PARITY_ODD</b>
+
+</code></p>
+<p>Value of parity field for odd parity</p>
+</dd>
+<dt>PARITY_SPACE</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int PARITY_SPACE</b>
+
+</code></p>
+<p>Value of parity field for space parity</p>
+</dd>
+<dt>RTS_HIGH</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int RTS_HIGH</b>
+
+</code></p>
+<p>Value of rtsLevel field if RTS should initially be high (active low)</p>
+</dd>
+<dt>RTS_LOW</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int RTS_LOW</b>
+
+</code></p>
+<p>Value of rtsLevel field if RTS should initially be low (active high)</p>
+</dd>
+<dt>baudRate</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>int baudRate</b>
+
+</code></p>
+<p>Integer value of baud rate; set of permissible values is platform-dependent.&#xa;Defaults to 38400.</p>
+</dd>
+<dt>dataBits</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>int dataBits</b>
+
+</code></p>
+<p>Integer number of data bits.  Defaults to 8.</p>
+</dd>
+<dt>in</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>inline</em> </em><b><a href='../sys/InStream.html'>InStream</a> in</b>
+
+</code></p>
+<p>Stream interface for reading from port.</p>
+</dd>
+<dt>out</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>inline</em> </em><b><a href='../sys/OutStream.html'>OutStream</a> out</b>
+
+</code></p>
+<p>Stream interface for writing to port.</p>
+</dd>
+<dt>parity</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>int parity</b>
+
+</code></p>
+<p>Parity:  DISABLED/NONE/ODD/EVEN/MARK/SPACE (use consts provided).  Defaults to NONE.</p>
+</dd>
+<dt>portNum</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>int portNum</b>
+
+</code></p>
+<p>Hardware address of port (meaning may vary w/platform).</p>
+</dd>
+<dt>rtsLevel</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>int rtsLevel</b>
+
+</code></p>
+<p>Initial RTS level:  HIGH or LOW.  Defaults to LOW.&#xa;This value is also assumed to be the RTS inactive level. (e.g. RTS_LOW implies RTS active high)</p>
+</dd>
+<dt>stopBits</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>int stopBits</b>
+
+</code></p>
+<p>Integer number of stop bits.  Defaults to 1.</p>
+</dd>
+<dt>SerialPort</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void SerialPort()</b>
+
+</code></p>
+<p>SerialPort constructor sets up in/outstream refs.&#xa;Note that existence of cstr forces class to be final.</p>
+</dd>
+<dt>close</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>int close()</b>
+
+</code></p>
+<p>Closes the port.  Subsequent attempts to read or write from the port&#xa;will return errors.</p>
+</dd>
+<dt>open</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>int open()</b>
+
+</code></p>
+<p>Opens/initializes serial port using current values of config params.</p>
+</dd>
+<dt>setParams</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>int setParams(int port, int baud, int dataB, int stopB, int par, int rts)</b>
+
+</code></p>
+<p>Sets all params at once - no error checking at this time</p>
+</dd>
+</dl>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>serial</a>
+</div>
+<div class='copyright'><script type='text/javascript'>document.write("Copyright &#169; " + new Date().getFullYear() + " Tridium, Inc.")</script></div>
+</body>
+</html>

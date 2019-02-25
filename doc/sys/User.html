@@ -1,0 +1,129 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>sys::User</title>
+  <meta http-equiv='Content-type' content='text/html;charset=UTF-8' />
+  <link rel='stylesheet' type='text/css' href='../style.css'/>
+</head>
+<body>
+<p>
+  <a href='../index.html'>
+    <img src='../logo.png' alt='Sedona'/>
+  </a>
+</p>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>sys</a>
+</div>
+<h1 class='title'>sys::User</h1>
+<hr/>
+<pre class='inheritance'><a href='../sys/Obj.html'>sys::Obj</a>
+  <a href='../sys/Virtual.html'>sys::Virtual</a>
+    <a href='../sys/Component.html'>sys::Component</a>
+      sys::User
+</pre>
+<br>
+<code style='color:darkgreen;font-weight:bold;font-size:120%'><em>public </em> class <b style='font-weight:bolder'>User</b>  </code><code style='color:darkblue;font-weight:bold'>
+[niagaraIcon=&#x22;module://icons/x16/user.png&#x22;]</code>
+<br>
+<hr/>
+<p>User models a user account used for network authentication &#xa;and authorization.  Users are stored as children of the UserService.&#xa;The user name is the component&#x27;s name (limited to 7 chars).</p>
+<hr/>
+<dl>
+<dt>ai</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int ai</b>
+
+</code></p>
+</dd>
+<dt>ar</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int ar</b>
+
+</code></p>
+</dd>
+<dt>aw</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int aw</b>
+
+</code></p>
+</dd>
+<dt>cred</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>inline</em> <em>property</em> </em><b><a href='../sys/Buf.html'>Buf</a> cred</b> [config, max=20]
+
+</code></p>
+<p>This is the credentials 160 bit SHA-1 digest of &#xa;the UTF-8 string &#x22;username:password&#x22;.</p>
+</dd>
+<dt>oi</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int oi</b>
+
+</code></p>
+</dd>
+<dt>or</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int or</b>
+
+</code></p>
+</dd>
+<dt>ow</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int ow</b>
+
+</code></p>
+</dd>
+<dt>perm</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>int perm</b> [config]
+
+</code></p>
+<p>Permissions mask which grant this user specific permissions&#xa;in the four security groups.  Each byte in the permission mask&#xa;is a bitmask of the 7 permissions for groups 0 to 3.</p>
+</dd>
+<dt>prov</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>byte prov</b> [config]
+
+</code></p>
+<p>Permissions mask for provisioning.</p>
+</dd>
+<dt>provApp</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int provApp</b>
+
+</code></p>
+</dd>
+<dt>provKits</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int provKits</b>
+
+</code></p>
+</dd>
+<dt>provSvm</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int provSvm</b>
+
+</code></p>
+</dd>
+<dt>ua</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int ua</b>
+
+</code></p>
+</dd>
+<dt>canProv</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>bool canProv(<a href='../sys/Str.html'>Str</a> uri)</b>
+
+</code></p>
+<p>Can this user provisiong (read/write) the specified file.</p>
+</dd>
+<dt>has</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>bool has(<a href='../sys/Component.html'>Component</a> c, int hasPerm)</b>
+
+</code></p>
+<p>Return if this user has the specified permission &#xa;on the given component.</p>
+</dd>
+<dt>permFor</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>int permFor(<a href='../sys/Component.html'>Component</a> c)</b>
+
+</code></p>
+<p>Return the permissions available .</p>
+</dd>
+</dl>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>sys</a>
+</div>
+<div class='copyright'><script type='text/javascript'>document.write("Copyright &#169; " + new Date().getFullYear() + " Tridium, Inc.")</script></div>
+</body>
+</html>

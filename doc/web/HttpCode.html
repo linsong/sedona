@@ -1,0 +1,269 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>web::HttpCode</title>
+  <meta http-equiv='Content-type' content='text/html;charset=UTF-8' />
+  <link rel='stylesheet' type='text/css' href='../style.css'/>
+</head>
+<body>
+<p>
+  <a href='../index.html'>
+    <img src='../logo.png' alt='Sedona'/>
+  </a>
+</p>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>web</a>
+</div>
+<h1 class='title'>web::HttpCode</h1>
+<hr/>
+<pre class='inheritance'><a href='../sys/Obj.html'>sys::Obj</a>
+  web::HttpCode
+</pre>
+<br>
+<code style='color:darkgreen;font-weight:bold;font-size:120%'><em>public final </em> class <b style='font-weight:bolder'>HttpCode</b>  </code><br>
+<hr/>
+<p>Common HTTP Status Codes.</p>
+<p>Based on RFC 2616 (HTTP/1.1 protocol)</p>
+<p>http://www.ietf.org/rfc/rfc2616.txt?number=2616</p>
+<hr/>
+<dl>
+<dt>accepted</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int accepted</b>
+
+</code></p>
+<p>202: Accepted</p>
+</dd>
+<dt>badGateway</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int badGateway</b>
+
+</code></p>
+<p>502: Bad Gateway</p>
+</dd>
+<dt>badHttpVersion</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int badHttpVersion</b>
+
+</code></p>
+<p>505: HTTP Version Not Supported</p>
+</dd>
+<dt>badRange</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int badRange</b>
+
+</code></p>
+<p>416: Requested Range Not Satisfiable</p>
+</dd>
+<dt>badRequest</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int badRequest</b>
+
+</code></p>
+<p>400: Bad Request</p>
+</dd>
+<dt>conflict</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int conflict</b>
+
+</code></p>
+<p>409: Conflict</p>
+</dd>
+<dt>cont</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int cont</b>
+
+</code></p>
+<p>100: Continue</p>
+</dd>
+<dt>created</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int created</b>
+
+</code></p>
+<p>201: Created</p>
+</dd>
+<dt>expectationFailed</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int expectationFailed</b>
+
+</code></p>
+<p>417: Expectation Failed</p>
+</dd>
+<dt>forbidden</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int forbidden</b>
+
+</code></p>
+<p>403: Forbidden</p>
+</dd>
+<dt>found</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int found</b>
+
+</code></p>
+<p>302: Found (sometimes known as Moved Temporarily&#x22;)</p>
+</dd>
+<dt>gatewayTimeout</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int gatewayTimeout</b>
+
+</code></p>
+<p>504: Gateway Timeout</p>
+</dd>
+<dt>gone</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int gone</b>
+
+</code></p>
+<p>410: Gone</p>
+</dd>
+<dt>internalError</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int internalError</b>
+
+</code></p>
+<p>500: Internal Server Error</p>
+</dd>
+<dt>lengthRequired</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int lengthRequired</b>
+
+</code></p>
+<p>411: Length Required</p>
+</dd>
+<dt>methodNotAllowed</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int methodNotAllowed</b>
+
+</code></p>
+<p>405: Method Not Allowed</p>
+</dd>
+<dt>movedPermanently</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int movedPermanently</b>
+
+</code></p>
+<p>301: Moved Permanently</p>
+</dd>
+<dt>multipleChoice</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int multipleChoice</b>
+
+</code></p>
+<p>300: Multiple Choices</p>
+</dd>
+<dt>noContent</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int noContent</b>
+
+</code></p>
+<p>204: No Content</p>
+</dd>
+<dt>notAcceptable</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int notAcceptable</b>
+
+</code></p>
+<p>406: Not Acceptable</p>
+</dd>
+<dt>notAuthoritative</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int notAuthoritative</b>
+
+</code></p>
+<p>203: Non-Authoritative Information</p>
+</dd>
+<dt>notFound</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int notFound</b>
+
+</code></p>
+<p>404: Not Found</p>
+</dd>
+<dt>notModified</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int notModified</b>
+
+</code></p>
+<p>304: Not Modified</p>
+</dd>
+<dt>ok</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int ok</b>
+
+</code></p>
+<p>200: OK</p>
+</dd>
+<dt>partial</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int partial</b>
+
+</code></p>
+<p>206: Partial Content</p>
+</dd>
+<dt>preconditionFailed</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int preconditionFailed</b>
+
+</code></p>
+<p>412: Precondition Failed</p>
+</dd>
+<dt>proxyAuthRequired</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int proxyAuthRequired</b>
+
+</code></p>
+<p>407: Proxy Authentication Required</p>
+</dd>
+<dt>reset</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int reset</b>
+
+</code></p>
+<p>205: Reset Content</p>
+</dd>
+<dt>seeOther</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int seeOther</b>
+
+</code></p>
+<p>303: See Other</p>
+</dd>
+<dt>serviceUnavailable</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int serviceUnavailable</b>
+
+</code></p>
+<p>503: Service Unavailable</p>
+</dd>
+<dt>switchingProtocols</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int switchingProtocols</b>
+
+</code></p>
+<p>101: Switching Protocols</p>
+</dd>
+<dt>temporaryRedirect</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int temporaryRedirect</b>
+
+</code></p>
+<p>307: Temporary Redirect</p>
+</dd>
+<dt>timeout</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int timeout</b>
+
+</code></p>
+<p>408: Request Timeout</p>
+</dd>
+<dt>tooLarge</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int tooLarge</b>
+
+</code></p>
+<p>413: Request Entity Too Large</p>
+</dd>
+<dt>unauthorized</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int unauthorized</b>
+
+</code></p>
+<p>401: Unauthorized</p>
+</dd>
+<dt>unsupportedMedia</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int unsupportedMedia</b>
+
+</code></p>
+<p>415: Unsupported Media Type</p>
+</dd>
+<dt>uriTooLong</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int uriTooLong</b>
+
+</code></p>
+<p>414: Request-URI Too Long</p>
+</dd>
+<dt>useProxy</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int useProxy</b>
+
+</code></p>
+<p>305: Use Proxy</p>
+</dd>
+</dl>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>web</a>
+</div>
+<div class='copyright'><script type='text/javascript'>document.write("Copyright &#169; " + new Date().getFullYear() + " Tridium, Inc.")</script></div>
+</body>
+</html>

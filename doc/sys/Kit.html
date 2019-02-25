@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>sys::Kit</title>
+  <meta http-equiv='Content-type' content='text/html;charset=UTF-8' />
+  <link rel='stylesheet' type='text/css' href='../style.css'/>
+</head>
+<body>
+<p>
+  <a href='../index.html'>
+    <img src='../logo.png' alt='Sedona'/>
+  </a>
+</p>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>sys</a>
+</div>
+<h1 class='title'>sys::Kit</h1>
+<hr/>
+<pre class='inheritance'><a href='../sys/Obj.html'>sys::Obj</a>
+  sys::Kit
+</pre>
+<br>
+<code style='color:darkgreen;font-weight:bold;font-size:120%'><em>public const </em> class <b style='font-weight:bolder'>Kit</b>  </code><br>
+<hr/>
+<p>Kit is a top unit of modularity in a Sedona&#xa;environment and serves as the container for Types.</p>
+<hr/>
+<dl>
+<dt>checksum</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>const</em> </em><b>int checksum</b>
+
+</code></p>
+<p>Checksum of this kit.</p>
+</dd>
+<dt>id</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>const</em> </em><b>byte id</b>
+
+</code></p>
+<p>Unique id for kit within a given environment; index into Sys.kits</p>
+</dd>
+<dt>name</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>const</em> </em><b><a href='../sys/Str.html'>Str</a> name</b>
+
+</code></p>
+<p>Name string of this kit.</p>
+</dd>
+<dt>types</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>const</em> <em>inline</em> </em><b><a href='../sys/Type.html'>Type</a>[] types</b>
+
+</code></p>
+<p>List of types this kit contains, bounded by typesLen.</p>
+</dd>
+<dt>typesLen</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>const</em> </em><b>byte typesLen</b>
+
+</code></p>
+<p>Length of the types array.</p>
+</dd>
+<dt>version</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>const</em> </em><b><a href='../sys/Str.html'>Str</a> version</b>
+
+</code></p>
+<p>Version of this kit.</p>
+</dd>
+<dt>findType</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../sys/Type.html'>Type</a> findType(<a href='../sys/Str.html'>Str</a> name)</b>
+
+</code></p>
+<p>Find a type by its simple name unique to this&#xa;kit or return null if not found.</p>
+</dd>
+<dt>type</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../sys/Type.html'>Type</a> type(int id)</b>
+
+</code></p>
+<p>Get the type for the specified id or return null if out of range.</p>
+</dd>
+</dl>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>sys</a>
+</div>
+<div class='copyright'><script type='text/javascript'>document.write("Copyright &#169; " + new Date().getFullYear() + " Tridium, Inc.")</script></div>
+</body>
+</html>

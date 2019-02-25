@@ -1,0 +1,137 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>web::SpyWeblet</title>
+  <meta http-equiv='Content-type' content='text/html;charset=UTF-8' />
+  <link rel='stylesheet' type='text/css' href='../style.css'/>
+</head>
+<body>
+<p>
+  <a href='../index.html'>
+    <img src='../logo.png' alt='Sedona'/>
+  </a>
+</p>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>web</a>
+</div>
+<h1 class='title'>web::SpyWeblet</h1>
+<hr/>
+<pre class='inheritance'><a href='../sys/Obj.html'>sys::Obj</a>
+  <a href='../sys/Virtual.html'>sys::Virtual</a>
+    <a href='../sys/Component.html'>sys::Component</a>
+      <a href='../web/Weblet.html'>web::Weblet</a>
+        web::SpyWeblet
+</pre>
+<br>
+<code style='color:darkgreen;font-weight:bold;font-size:120%'><em>public </em> class <b style='font-weight:bolder'>SpyWeblet</b>  </code><br>
+<hr/>
+<p>SpyWeblet is a built-in weblet which provides diagnostics&#xa;visibility to the Sedona runtime.</p>
+<hr/>
+<dl>
+<dt>_sInit</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> </em><b>void _sInit()</b>
+
+</code></p>
+</dd>
+<dt>app</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void app(<a href='../web/WebReq.html'>WebReq</a> req, <a href='../web/WebRes.html'>WebRes</a> res)</b>
+
+</code></p>
+</dd>
+<dt>appComponent</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void appComponent(<a href='../web/WebReq.html'>WebReq</a> req, <a href='../web/WebRes.html'>WebRes</a> res, <a href='../sys/Component.html'>Component</a> c)</b>
+
+</code></p>
+</dd>
+<dt>backupApp</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void backupApp(<a href='../web/WebReq.html'>WebReq</a> req, <a href='../web/WebRes.html'>WebRes</a> res)</b>
+
+</code></p>
+</dd>
+<dt>componentRow</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void componentRow(<a href='../web/WebReq.html'>WebReq</a> req, <a href='../web/WebRes.html'>WebRes</a> res, <a href='../sys/Component.html'>Component</a> c, bool tr)</b>
+
+</code></p>
+</dd>
+<dt>componentTitle</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void componentTitle(<a href='../web/WebReq.html'>WebReq</a> req, <a href='../web/WebRes.html'>WebRes</a> res)</b>
+
+</code></p>
+</dd>
+<dt>description</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>override</em> </em><b><a href='../sys/Str.html'>Str</a> description()</b>
+
+</code></p>
+</dd>
+<dt>echo</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void echo(<a href='../web/WebReq.html'>WebReq</a> req, <a href='../web/WebRes.html'>WebRes</a> res)</b>
+
+</code></p>
+</dd>
+<dt>get</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>override</em> </em><b>void get(<a href='../web/WebReq.html'>WebReq</a> req, <a href='../web/WebRes.html'>WebRes</a> res)</b>
+
+</code></p>
+</dd>
+<dt>href</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../web/WebRes.html'>WebRes</a> href(<a href='../web/WebRes.html'>WebRes</a> res, <a href='../sys/Component.html'>Component</a> c, <a href='../sys/Str.html'>Str</a> caption)</b>
+
+</code></p>
+</dd>
+<dt>index</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void index(<a href='../web/WebReq.html'>WebReq</a> req, <a href='../web/WebRes.html'>WebRes</a> res)</b>
+
+</code></p>
+</dd>
+<dt>kits</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void kits(<a href='../web/WebReq.html'>WebReq</a> req, <a href='../web/WebRes.html'>WebRes</a> res)</b>
+
+</code></p>
+</dd>
+<dt>kitsIndex</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void kitsIndex(<a href='../web/WebReq.html'>WebReq</a> req, <a href='../web/WebRes.html'>WebRes</a> res)</b>
+
+</code></p>
+</dd>
+<dt>kitsKit</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void kitsKit(<a href='../web/WebReq.html'>WebReq</a> req, <a href='../web/WebRes.html'>WebRes</a> res, <a href='../sys/Kit.html'>Kit</a> k)</b>
+
+</code></p>
+</dd>
+<dt>kitsType</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void kitsType(<a href='../web/WebReq.html'>WebReq</a> req, <a href='../web/WebRes.html'>WebRes</a> res, <a href='../sys/Type.html'>Type</a> t)</b>
+
+</code></p>
+</dd>
+<dt>logs</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void logs(<a href='../web/WebReq.html'>WebReq</a> req, <a href='../web/WebRes.html'>WebRes</a> res)</b>
+
+</code></p>
+</dd>
+<dt>prefix</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>override</em> </em><b><a href='../sys/Str.html'>Str</a> prefix()</b>
+
+</code></p>
+</dd>
+<dt>sox</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void sox(<a href='../web/WebReq.html'>WebReq</a> req, <a href='../web/WebRes.html'>WebRes</a> res)</b>
+
+</code></p>
+</dd>
+<dt>soxIndex</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void soxIndex(<a href='../web/WebReq.html'>WebReq</a> req, <a href='../web/WebRes.html'>WebRes</a> res, <a href='../sox/SoxService.html'>SoxService</a> sox)</b>
+
+</code></p>
+</dd>
+</dl>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>web</a>
+</div>
+<div class='copyright'><script type='text/javascript'>document.write("Copyright &#169; " + new Date().getFullYear() + " Tridium, Inc.")</script></div>
+</body>
+</html>

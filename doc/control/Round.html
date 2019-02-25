@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>control::Round</title>
+  <meta http-equiv='Content-type' content='text/html;charset=UTF-8' />
+  <link rel='stylesheet' type='text/css' href='../style.css'/>
+</head>
+<body>
+<p>
+  <a href='../index.html'>
+    <img src='../logo.png' alt='Sedona'/>
+  </a>
+</p>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>control</a>
+</div>
+<h1 class='title'>control::Round</h1>
+<hr/>
+<pre class='inheritance'><a href='../sys/Obj.html'>sys::Obj</a>
+  <a href='../sys/Virtual.html'>sys::Virtual</a>
+    <a href='../sys/Component.html'>sys::Component</a>
+      control::Round
+</pre>
+<br>
+<code style='color:darkgreen;font-weight:bold;font-size:120%'><em>public </em> class <b style='font-weight:bolder'>Round</b>  </code><code style='color:darkblue;font-weight:bold'>
+[niagaraIcon=&#x22;module://icons/x16/control/numericPoint.png&#x22;]</code>
+<br>
+<hr/>
+<p>Rounds a float to nearest n places.  Uses the tie-breaker rule that positive number are&#xa;rounded up if a tie-break situation exists, and negative numbers are rounded down (&#x22;more negative&#x22;)&#xa;if a tie-break situation exists.</p>
+<p>Example:  123.456 with n = 0 : rounds to 123.000</p>
+<pre class='doc'>                  with n = 1 : rounds to 123.500&#xa;                  with n = -1: rounds to 120.000</pre>
+<p>Example: -123.456 with n = 0 : rounds to -123.000</p>
+<pre class='doc'>                  with n = 1 : rounds to -123.500&#xa;                  with n = -1: rounds to -120.000</pre>
+<pre class='doc'> Positive numbers:&#xa; 1) multiply by 10^n&#xa; 2) add 0.5 and truncate (convert to integer)&#xa; 3) divide by 10^n</pre>
+<pre class='doc'> Negative numbers:&#xa; 1) multiply by 10^n&#xa; 2) subtract 0.5 and truncate (convert to integer)&#xa; 3) divide by 10^n</pre>
+<pre class='doc'>  where n = number of decimal places to round</pre>
+<pre class='doc'>  out = round(in)</pre>
+<hr/>
+<dl>
+<dt>decimalPlaces</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>int decimalPlaces</b> [min=-1, max=3, config]
+
+</code></p>
+<p>number of decimal places to round</p>
+</dd>
+<dt>in</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>float in</b> [precision=3]
+
+</code></p>
+<p>input value</p>
+</dd>
+<dt>out</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>float out</b> [readonly, precision=1]
+
+</code></p>
+<p>out = in rounded to a precision</p>
+</dd>
+<dt>changed</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> <em>override</em> </em><b>void changed(<a href='../sys/Slot.html'>Slot</a> slot)</b>
+
+</code></p>
+<p>Component override of changed</p>
+</dd>
+<dt>execute</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> <em>override</em> </em><b>void execute()</b>
+
+</code></p>
+<p>Execute</p>
+</dd>
+<dt>start</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> <em>override</em> </em><b>void start()</b>
+
+</code></p>
+<p>Component override of start sets up a multiplier factor</p>
+</dd>
+</dl>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>control</a>
+</div>
+<div class='copyright'><script type='text/javascript'>document.write("Copyright &#169; " + new Date().getFullYear() + " Tridium, Inc.")</script></div>
+</body>
+</html>

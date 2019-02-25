@@ -1,0 +1,96 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>sys::Buf</title>
+  <meta http-equiv='Content-type' content='text/html;charset=UTF-8' />
+  <link rel='stylesheet' type='text/css' href='../style.css'/>
+</head>
+<body>
+<p>
+  <a href='../index.html'>
+    <img src='../logo.png' alt='Sedona'/>
+  </a>
+</p>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>sys</a>
+</div>
+<h1 class='title'>sys::Buf</h1>
+<hr/>
+<pre class='inheritance'><a href='../sys/Obj.html'>sys::Obj</a>
+  sys::Buf
+</pre>
+<br>
+<code style='color:darkgreen;font-weight:bold;font-size:120%'><em>public final </em> class <b style='font-weight:bolder'>Buf</b>  </code><br>
+<hr/>
+<p>Buf encapsulates a fixed capacity byte[].  The fixed&#xa;capacity is available via the &#x27;bytesLen&#x27; field.  At any&#xa;time a variable number of bytes are actually used as&#xa;defined by the &#x27;size&#x27; field.  Use the BufInStream and&#xa;BufOutStream classes to perform memory based IO against&#xa;a Buf instance.</p>
+<hr/>
+<dl>
+<dt>bytes</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>inline</em> </em><b>byte[] bytes</b>
+
+</code></p>
+</dd>
+<dt>bytesLen</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>short bytesLen</b>
+
+</code></p>
+</dd>
+<dt>size</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>short size</b>
+
+</code></p>
+</dd>
+<dt>Buf</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void Buf(int maxBufLen)</b>
+
+</code></p>
+<p>Construct a buffer with the specified maximum size.</p>
+</dd>
+<dt>clear</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void clear()</b>
+
+</code></p>
+<p>Set size to zero.  The data remains untouched, but the&#xa;buffer is ready to be used to begin writing from scratch.</p>
+</dd>
+<dt>copyFromBuf</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void copyFromBuf(<a href='../sys/Buf.html'>Buf</a> that)</b>
+
+</code></p>
+<p>Copy the specified buffer bytes into this buffer&#x27;s bytes and &#xa;update size.  If the specified buffer contains more than &#xa;bytesLen bytes then the copy is truncated.</p>
+</dd>
+<dt>copyFromBytes</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void copyFromBytes(byte[] that, int off, int len)</b>
+
+</code></p>
+<p>Copy the specified byte array into this buffer&#x27;s bytes and &#xa;update size.  If the specified length is greater than &#xa;bytesLen bytes then the copy is truncated.</p>
+</dd>
+<dt>copyFromStr</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>bool copyFromStr(<a href='../sys/Str.html'>Str</a> s)</b>
+
+</code></p>
+<p>Copy the specified string including its null terminator&#xa;into this buffer bytes field and update size accordingly.&#xa;If the specified string contains more than bytesLen characters&#xa;including the null terminator then return false and truncate&#xa;the copy.  If truncated we still add a null terminator.</p>
+</dd>
+<dt>get</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>int get(int index)</b>
+
+</code></p>
+<p>Get the byte at the specified index.</p>
+</dd>
+<dt>toStr</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../sys/Str.html'>Str</a> toStr()</b> [javaNative]
+
+</code></p>
+<p>Return the bytes cast to a Str reference.  No guarantee&#xa;is made whether the string is actually null terminated.</p>
+</dd>
+</dl>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>sys</a>
+</div>
+<div class='copyright'><script type='text/javascript'>document.write("Copyright &#169; " + new Date().getFullYear() + " Tridium, Inc.")</script></div>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>sys::MemoryFile</title>
+  <meta http-equiv='Content-type' content='text/html;charset=UTF-8' />
+  <link rel='stylesheet' type='text/css' href='../style.css'/>
+</head>
+<body>
+<p>
+  <a href='../index.html'>
+    <img src='../logo.png' alt='Sedona'/>
+  </a>
+</p>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>sys</a>
+</div>
+<h1 class='title'>sys::MemoryFile</h1>
+<hr/>
+<pre class='inheritance'><a href='../sys/Obj.html'>sys::Obj</a>
+  sys::MemoryFile
+</pre>
+<br>
+<code style='color:darkgreen;font-weight:bold;font-size:120%'><em>public final </em> class <b style='font-weight:bolder'>MemoryFile</b>  </code><br>
+<hr/>
+<hr/>
+<dl>
+<dt>file</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../sys/File.html'>File</a> file</b>
+
+</code></p>
+<p>reference to containing File instance</p>
+</dd>
+<dt>mem</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>byte[] mem</b>
+
+</code></p>
+<p>the contents of the memory file. Modify at your peril.</p>
+</dd>
+<dt>mode</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>byte mode</b>
+
+</code></p>
+<p>&#x27;r&#x27;, &#x27;w&#x27;, &#x27;m&#x27; or 0 if an error</p>
+</dd>
+<dt>pos</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>int pos</b>
+
+</code></p>
+<p>current read/write position in the memory file.</p>
+</dd>
+<dt>size</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>int size</b>
+
+</code></p>
+<p>size of the memory file. Less than zero indicates an error.&#xd;&#xa;Modify at your peril.</p>
+</dd>
+<dt>eof</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>bool eof()</b>
+
+</code></p>
+<p>returns true if the position is past the end of file.</p>
+</dd>
+<dt>writable</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>bool writable()</b>
+
+</code></p>
+<p>returns true if the memory file was opened for writing.</p>
+</dd>
+</dl>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>sys</a>
+</div>
+<div class='copyright'><script type='text/javascript'>document.write("Copyright &#169; " + new Date().getFullYear() + " Tridium, Inc.")</script></div>
+</body>
+</html>

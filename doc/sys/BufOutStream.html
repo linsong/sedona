@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>sys::BufOutStream</title>
+  <meta http-equiv='Content-type' content='text/html;charset=UTF-8' />
+  <link rel='stylesheet' type='text/css' href='../style.css'/>
+</head>
+<body>
+<p>
+  <a href='../index.html'>
+    <img src='../logo.png' alt='Sedona'/>
+  </a>
+</p>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>sys</a>
+</div>
+<h1 class='title'>sys::BufOutStream</h1>
+<hr/>
+<pre class='inheritance'><a href='../sys/Obj.html'>sys::Obj</a>
+  <a href='../sys/Virtual.html'>sys::Virtual</a>
+    <a href='../sys/OutStream.html'>sys::OutStream</a>
+      sys::BufOutStream
+</pre>
+<br>
+<code style='color:darkgreen;font-weight:bold;font-size:120%'><em>public final </em> class <b style='font-weight:bolder'>BufOutStream</b>  </code><br>
+<hr/>
+<p>BufOutStream is used to write bytes to a memory Buf.</p>
+<hr/>
+<dl>
+<dt>buf</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../sys/Buf.html'>Buf</a> buf</b>
+
+</code></p>
+</dd>
+<dt>BufOutStream</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void BufOutStream(<a href='../sys/Buf.html'>Buf</a> buf)</b>
+
+</code></p>
+<p>Construct for specified Buf instance.</p>
+</dd>
+<dt>write</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>override</em> </em><b>bool write(int x)</b>
+
+</code></p>
+<p>Write a byte to the end of the buffer at buf[size].&#xa;Return true on success, false if buffer is full.</p>
+</dd>
+<dt>writeBytes</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>override</em> </em><b>bool writeBytes(byte[] b, int off, int len)</b>
+
+</code></p>
+<p>Write a block of bytes to the end of the buffer.&#xa;buffer size.  Return true on success, false if&#xa;there is not enough room in the buffer.</p>
+</dd>
+</dl>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>sys</a>
+</div>
+<div class='copyright'><script type='text/javascript'>document.write("Copyright &#169; " + new Date().getFullYear() + " Tridium, Inc.")</script></div>
+</body>
+</html>

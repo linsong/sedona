@@ -1,0 +1,319 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>sox::SoxCommands</title>
+  <meta http-equiv='Content-type' content='text/html;charset=UTF-8' />
+  <link rel='stylesheet' type='text/css' href='../style.css'/>
+</head>
+<body>
+<p>
+  <a href='../index.html'>
+    <img src='../logo.png' alt='Sedona'/>
+  </a>
+</p>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>sox</a>
+</div>
+<h1 class='title'>sox::SoxCommands</h1>
+<hr/>
+<pre class='inheritance'><a href='../sys/Obj.html'>sys::Obj</a>
+  sox::SoxCommands
+</pre>
+<br>
+<code style='color:darkgreen;font-weight:bold;font-size:120%'><em>public </em> class <b style='font-weight:bolder'>SoxCommands</b>  </code><br>
+<hr/>
+<p>SoxCommands processes all the sox command request/response.</p>
+<hr/>
+<dl>
+<dt>tempKey</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> </em><b><a href='../sys/Str.html'>Str</a> tempKey</b>
+
+</code></p>
+</dd>
+<dt>tempStr1</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> </em><b><a href='../sys/Str.html'>Str</a> tempStr1</b>
+
+</code></p>
+</dd>
+<dt>tempStr2</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> </em><b><a href='../sys/Str.html'>Str</a> tempStr2</b>
+
+</code></p>
+</dd>
+<dt>tempVal</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> </em><b><a href='../sys/Str.html'>Str</a> tempVal</b>
+
+</code></p>
+</dd>
+<dt>addReq</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> </em><b>void addReq(<a href='../sox/SoxService.html'>SoxService</a> service, <a href='../sox/SoxSession.html'>SoxSession</a> session, <a href='../sox/SendPacket.html'>SendPacket</a> res)</b>
+
+</code></p>
+<p>req&#xa;{</p>
+<pre class='doc'>  u1    &#x27;a&#x27;&#xa;  u1    replyNum&#xa;  u2    parentId&#xa;  u1    kitId&#xa;  u1    typeId&#xa;  str   name&#xa;  val[] configProps</pre>
+<p>}</p>
+</dd>
+<dt>addRes</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> </em><b>void addRes(<a href='../sox/SoxService.html'>SoxService</a> service, <a href='../sox/SoxSession.html'>SoxSession</a> session, <a href='../sox/SendPacket.html'>SendPacket</a> res)</b>
+
+</code></p>
+<p>res&#xa;{</p>
+<pre class='doc'>  u1    &#x27;A&#x27;&#xa;  u1    replyNum&#xa;  u2    compId</pre>
+<p>}</p>
+</dd>
+<dt>deleteReq</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> </em><b>void deleteReq(<a href='../sox/SoxService.html'>SoxService</a> service, <a href='../sox/SoxSession.html'>SoxSession</a> session, <a href='../sox/SendPacket.html'>SendPacket</a> res)</b>
+
+</code></p>
+<p>req&#xa;{</p>
+<pre class='doc'>  u1    &#x27;d&#x27;&#xa;  u1    replyNum&#xa;  u2    compId</pre>
+<p>}</p>
+</dd>
+<dt>eventRes</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> </em><b>void eventRes(<a href='../sox/SoxService.html'>SoxService</a> service, <a href='../sox/SoxSession.html'>SoxSession</a> session, <a href='../sox/SendPacket.html'>SendPacket</a> p)</b>
+
+</code></p>
+<p>req&#xa;{</p>
+<pre class='doc'>  u1   &#x27;e&#x27;&#xa;  u1   replyNum&#xa;  u2   componentId&#xa;  compTree | compProps | compLinks&#xa; }</pre>
+</dd>
+<dt>fileCloseReq</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> </em><b>void fileCloseReq(<a href='../sox/SoxService.html'>SoxService</a> service, <a href='../sox/SoxSession.html'>SoxSession</a> session, <a href='../sox/SendPacket.html'>SendPacket</a> res)</b>
+
+</code></p>
+<p>req&#xa;{</p>
+<pre class='doc'>  u1  &#x27;z&#x27;&#xa;  u1  replyNum</pre>
+<p>}</p>
+</dd>
+<dt>fileCloseRes</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> </em><b>void fileCloseRes(<a href='../sox/SoxService.html'>SoxService</a> service, <a href='../sox/SoxSession.html'>SoxSession</a> session, <a href='../sox/SendPacket.html'>SendPacket</a> res)</b>
+
+</code></p>
+<p>res&#xa;{</p>
+<pre class='doc'>  u1  &#x27;Z&#x27;&#xa;  u1  replyNum</pre>
+<p>}</p>
+</dd>
+<dt>fileOpenReq</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> </em><b>void fileOpenReq(<a href='../sox/SoxService.html'>SoxService</a> service, <a href='../sox/SoxSession.html'>SoxSession</a> session, <a href='../sox/SendPacket.html'>SendPacket</a> res)</b>
+
+</code></p>
+<p>req&#xa;{</p>
+<pre class='doc'>  u1   &#x27;f&#x27;&#xa;  u1   replyNum&#xa;  str  method (&#x22;g&#x22; for get, &#x22;p&#x22; for put)&#xa;  str  uri&#xa;  u4   fileSize&#xa;  u2   suggestedChunkSize  (suggested by client)&#xa;  headers[]&#xa;  {&#xa;    str  name&#xa;    str  value&#xa;  }&#xa;  u1 end of headers &#x27;\0&#x27;</pre>
+<p>}</p>
+<p>On a put, the fileSize is the number of bytes that will be written. On a&#xa;get, the fileSize is the maximum number of bytes to read. You can read the&#xa;whole file on a get by specifying fileSize as 0. The actual&#xa;number of bytes read might be less if there are not fileSize bytes&#xa;available (taking into account the size of the actual file, and the&#xa;potential offset).</p>
+<pre class='doc'> Supported Headers:&#xa;  Name      Value         Method      Default   Description&#xa;  ----      -----         ------      -------   -----------&#xa;  offset    int           get, put    0         Byte offset to use when reading/writing the uri&#xa;  mode      &#x22;w&#x22;, &#x22;m&#x22;      put         &#x22;w&#x22;       File mode to use (see sys::File)</pre>
+</dd>
+<dt>fileOpenRes</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> </em><b>void fileOpenRes(<a href='../sox/SoxService.html'>SoxService</a> service, <a href='../sox/SoxSession.html'>SoxSession</a> session, <a href='../sox/SendPacket.html'>SendPacket</a> res)</b>
+
+</code></p>
+<p>res&#xa;{</p>
+<pre class='doc'>  u1   &#x27;F&#x27;&#xa;  u1   replyNum&#xa;  u4   fileSize&#xa;  u2   actualChunkSize&#xa;  headers[]&#xa;  {&#xa;    str  name&#xa;    str  value&#xa;  }&#xa;  u1 end of headers &#x27;\0&#x27;</pre>
+<p>}</p>
+</dd>
+<dt>fileReceiveChunk</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> </em><b>void fileReceiveChunk(<a href='../sox/SoxService.html'>SoxService</a> service, <a href='../sox/SoxSession.html'>SoxSession</a> session)</b>
+
+</code></p>
+<p>Service a file chunk request (being put from client to me).&#xa;NOTE: used by put (get uses fileSendChunk).</p>
+<pre class='doc'>  client -&gt; k -&gt; me&#xa;  req&#xa;  {&#xa;    u1   &#x27;k&#x27;&#xa;    u1   replyNum (ignored)&#xa;    u2   chunkNum&#xa;    u2   chunkSize&#xa;    u1[chunkSize] chunk&#xa;  }</pre>
+</dd>
+<dt>fileRenameReq</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> </em><b>void fileRenameReq(<a href='../sox/SoxService.html'>SoxService</a> service, <a href='../sox/SoxSession.html'>SoxSession</a> session, <a href='../sox/SendPacket.html'>SendPacket</a> res)</b>
+
+</code></p>
+<p>req&#xa;{</p>
+<pre class='doc'>  u1  &#x27;b&#x27;&#xa;  u1   replyNum&#xa;  str  from&#xa;  str  to</pre>
+<p>}</p>
+</dd>
+<dt>fileSendChunk</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> </em><b>void fileSendChunk(<a href='../sox/SoxService.html'>SoxService</a> service, <a href='../sox/SoxSession.html'>SoxSession</a> session, <a href='../sox/SendPacket.html'>SendPacket</a> res)</b>
+
+</code></p>
+<p>Send the client the next chunk of the file.&#xa;NOTE: used by get (put uses fileReceiveChunk).</p>
+<pre class='doc'>  me -&gt; k -&gt; client&#xa;  req&#xa;  {&#xa;    u1   &#x27;k&#x27;&#xa;    u1   replyNum (ignored)&#xa;    u2   chunkNum&#xa;    u2   chunkSize&#xa;    u1[chunkSize] chunk&#xa;  }</pre>
+</dd>
+<dt>invokeReq</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> </em><b>void invokeReq(<a href='../sox/SoxService.html'>SoxService</a> service, <a href='../sox/SoxSession.html'>SoxSession</a> session, <a href='../sox/SendPacket.html'>SendPacket</a> res)</b>
+
+</code></p>
+<p>req&#xa;{</p>
+<pre class='doc'>  u1   &#x27;i&#x27;&#xa;  u1   replyNum&#xa;  u2   componentId&#xa;  u1   slotId&#xa;  val  argument</pre>
+<p>}</p>
+</dd>
+<dt>linkReq</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> </em><b>void linkReq(<a href='../sox/SoxService.html'>SoxService</a> service, <a href='../sox/SoxSession.html'>SoxSession</a> session, <a href='../sox/SendPacket.html'>SendPacket</a> res)</b>
+
+</code></p>
+<p>req&#xa;{</p>
+<pre class='doc'>  u1   &#x27;l&#x27;&#xa;  u1   replyNum&#xa;  u1   &#x27;a&#x27; | &#x27;d&#x27; (add/delete)&#xa;  u2   fromCompId&#xa;  u1   fromSlotId&#xa;  u2   toCompId&#xa;  u1   toSlotId</pre>
+<p>}</p>
+</dd>
+<dt>process</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> </em><b>void process(<a href='../sox/SoxService.html'>SoxService</a> service, <a href='../sox/SoxSession.html'>SoxSession</a> session)</b>
+
+</code></p>
+<p>Process the current message just received</p>
+</dd>
+<dt>queryReq</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> </em><b>void queryReq(<a href='../sox/SoxService.html'>SoxService</a> service, <a href='../sox/SoxSession.html'>SoxSession</a> session, <a href='../sox/SendPacket.html'>SendPacket</a> res)</b>
+
+</code></p>
+<p>req&#xa;{</p>
+<pre class='doc'>  u1   &#x27;q&#x27;&#xa;  u1   replyNum&#xa;  u1   queryType&#xa;  u1[] queryReq</pre>
+<p>}</p>
+<p>queryType &#x27;s&#x27;: query service&#xa;req-service&#xa;{</p>
+<pre class='doc'>  u1  kitId&#xa;  u1  typeId</pre>
+<p>}</p>
+</dd>
+<dt>queryRes</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> </em><b>void queryRes(<a href='../sox/SoxService.html'>SoxService</a> service, <a href='../sox/SoxSession.html'>SoxSession</a> session, <a href='../sox/SendPacket.html'>SendPacket</a> res)</b>
+
+</code></p>
+<p>res&#xa;{</p>
+<pre class='doc'>  u1   &#x27;Q&#x27;&#xa;  u1   replyNum&#xa;  u1[] queryRes</pre>
+<p>}</p>
+<p>queryType &#x27;s&#x27;: query service&#xa;res-service&#xa;{</p>
+<pre class='doc'>  u2[num]  compIds&#xa;  u2       0xffff end marker</pre>
+<p>}</p>
+</dd>
+<dt>readCompReq</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> </em><b>void readCompReq(<a href='../sox/SoxService.html'>SoxService</a> service, <a href='../sox/SoxSession.html'>SoxSession</a> session, <a href='../sox/SendPacket.html'>SendPacket</a> res)</b>
+
+</code></p>
+<p>req&#xa;{</p>
+<pre class='doc'>  u1   &#x27;c&#x27;&#xa;  u1   replyNum&#xa;  u2   componentId&#xa;  u1   what: &#x27;t&#x27;, &#x27;c&#x27;, &#x27;r&#x27;, &#x27;l&#x27; (tree, config, runtime, links)</pre>
+<p>}</p>
+</dd>
+<dt>readCompRes</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> </em><b>void readCompRes(<a href='../sox/SoxService.html'>SoxService</a> service, <a href='../sox/SoxSession.html'>SoxSession</a> session, <a href='../sox/SendPacket.html'>SendPacket</a> res)</b>
+
+</code></p>
+<p>res&#xa;{</p>
+<pre class='doc'>  u1    &#x27;C&#x27;&#xa;  u1    replyNum&#xa;  u2    componentId&#xa;  compTree | compProps | compLinks</pre>
+<p>}</p>
+</dd>
+<dt>readPropReq</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> </em><b>void readPropReq(<a href='../sox/SoxService.html'>SoxService</a> service, <a href='../sox/SoxSession.html'>SoxSession</a> session, <a href='../sox/SendPacket.html'>SendPacket</a> res)</b>
+
+</code></p>
+<p>req&#xa;{</p>
+<pre class='doc'>  u1  &#x27;r&#x27;&#xa;  u1  replyNum&#xa;  u2  compId&#xa;  u1  propId</pre>
+<p>}</p>
+</dd>
+<dt>readPropRes</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> </em><b>void readPropRes(<a href='../sox/SoxService.html'>SoxService</a> service, <a href='../sox/SoxSession.html'>SoxSession</a> session, <a href='../sox/SendPacket.html'>SendPacket</a> res)</b>
+
+</code></p>
+<p>res&#xa;{</p>
+<pre class='doc'>  u1   &#x27;R&#x27;&#xa;  u1   replyNum&#xa;  u1   any code&#xa;  var  propValue</pre>
+<p>}</p>
+</dd>
+<dt>renameReq</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> </em><b>void renameReq(<a href='../sox/SoxService.html'>SoxService</a> service, <a href='../sox/SoxSession.html'>SoxSession</a> session, <a href='../sox/SendPacket.html'>SendPacket</a> res)</b>
+
+</code></p>
+<p>req&#xa;{</p>
+<pre class='doc'>  u1    &#x27;n&#x27;&#xa;  u1    replyNum&#xa;  u2    compId&#xa;  str   newName</pre>
+<p>}</p>
+</dd>
+<dt>reorderReq</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> </em><b>void reorderReq(<a href='../sox/SoxService.html'>SoxService</a> service, <a href='../sox/SoxSession.html'>SoxSession</a> session, <a href='../sox/SendPacket.html'>SendPacket</a> res)</b>
+
+</code></p>
+<p>req&#xa;{</p>
+<pre class='doc'>  u1    &#x27;o&#x27;&#xa;  u1    replyNum&#xa;  u2    compId&#xa;  u1    numChildren&#xa;  u2[]  childrenIds</pre>
+<p>}</p>
+</dd>
+<dt>send</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> </em><b>void send(<a href='../sox/SoxService.html'>SoxService</a> service, <a href='../sox/SoxSession.html'>SoxSession</a> session, <a href='../sox/SendPacket.html'>SendPacket</a> res)</b>
+
+</code></p>
+</dd>
+<dt>subscribeReq</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> </em><b>void subscribeReq(<a href='../sox/SoxService.html'>SoxService</a> service, <a href='../sox/SoxSession.html'>SoxSession</a> session, <a href='../sox/SendPacket.html'>SendPacket</a> res)</b>
+
+</code></p>
+<p>req&#xa;{</p>
+<pre class='doc'>  u1   &#x27;s&#x27;&#xa;  u1   replyNum&#xa;  u1   whatMask: tree=0x01 config=0x02 rt=0x04 links=0x8 0xff all tree&#xa;  u1   size&#xa;  u2[] compIds</pre>
+<p>}</p>
+</dd>
+<dt>subscribeRes</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> </em><b>void subscribeRes(<a href='../sox/SoxService.html'>SoxService</a> service, <a href='../sox/SoxSession.html'>SoxSession</a> session, <a href='../sox/SendPacket.html'>SendPacket</a> res)</b>
+
+</code></p>
+<p>res&#xa;{</p>
+<pre class='doc'>  u1     &#x27;S&#x27;&#xa;  u1     replyNum&#xa;  u1     numSubscribed</pre>
+<p>}</p>
+</dd>
+<dt>unsubscribeReq</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> </em><b>void unsubscribeReq(<a href='../sox/SoxService.html'>SoxService</a> service, <a href='../sox/SoxSession.html'>SoxSession</a> session, <a href='../sox/SendPacket.html'>SendPacket</a> res)</b>
+
+</code></p>
+<p>req&#xa;{</p>
+<pre class='doc'>  u1   &#x27;u&#x27;&#xa;  u1   replyNum&#xa;  u2   componentId&#xa;  u1   whatMask: tree=0x1 config=0x2 rt=0x4 links=0x8 0xff all tree</pre>
+<p>}</p>
+</dd>
+<dt>versionMoreRes</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> </em><b>void versionMoreRes(<a href='../sox/SoxService.html'>SoxService</a> service, <a href='../sox/SoxSession.html'>SoxSession</a> session, <a href='../sox/SendPacket.html'>SendPacket</a> res)</b>
+
+</code></p>
+<p>res&#xa;{</p>
+<pre class='doc'>  u1   &#x27;Y&#x27;&#xa;  u1   replyNum&#xa;  str  platformId&#xa;  u1   scodeFlags&#xa;  kitVersions[kitCount]&#xa;  {&#xa;    str version&#xa;  }&#xa;  u1   pairs&#xa;  pairs&#xa;  {&#xa;    str  key&#xa;    str  val&#xa;  }</pre>
+<p>}</p>
+</dd>
+<dt>versionRes</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> </em><b>void versionRes(<a href='../sox/SoxService.html'>SoxService</a> service, <a href='../sox/SoxSession.html'>SoxSession</a> session, <a href='../sox/SendPacket.html'>SendPacket</a> res)</b>
+
+</code></p>
+<p>versionRes&#xa;{</p>
+<pre class='doc'>  u1   &#x27;V&#x27;&#xa;  u1   replyNum&#xa;  u1   kitCount&#xa;  kits[kitCount]&#xa;  {&#xa;    str name&#xa;    i4  checksum&#xa;  }</pre>
+<p>}</p>
+</dd>
+<dt>writeComp</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> </em><b>bool writeComp(<a href='../sox/SoxService.html'>SoxService</a> service, <a href='../sox/SoxSession.html'>SoxSession</a> session, <a href='../sys/Component.html'>Component</a> c, int what)</b>
+
+</code></p>
+<p>Write a component</p>
+<pre class='doc'> - &#x27;t&#x27;: writeCompTree&#xa; - &#x27;c&#x27;: writeCompProps&#xa; - &#x27;r&#x27;: writeCompProps&#xa; - &#x27;l&#x27;: writeCompLinks</pre>
+</dd>
+<dt>writeCompLinks</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> </em><b>bool writeCompLinks(<a href='../sox/SoxService.html'>SoxService</a> service, <a href='../sox/SoxSession.html'>SoxSession</a> session, <a href='../sys/Component.html'>Component</a> c)</b>
+
+</code></p>
+<p>Write component links</p>
+<pre class='doc'>  compLinks&#xa;  {&#xa;    u1    &#x27;l&#x27;&#xa;    Link[] links&#xa;    u2     0xffff end marker&#xa;  }</pre>
+</dd>
+<dt>writeCompProps</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> </em><b>bool writeCompProps(<a href='../sox/SoxService.html'>SoxService</a> service, <a href='../sox/SoxSession.html'>SoxSession</a> session, <a href='../sys/Component.html'>Component</a> c, int what)</b>
+
+</code></p>
+<p>Write component props (config or runtime)</p>
+<pre class='doc'>  compProps&#xa;  {&#xa;    u1     &#x27;c&#x27; or &#x27;r&#x27; for config or runtime, &#x27;C&#x27;/&#x27;R&#x27; if operator only&#xa;    val[]  propValues&#xa;  }</pre>
+</dd>
+<dt>writeCompTree</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> </em><b>bool writeCompTree(<a href='../sox/SoxService.html'>SoxService</a> service, <a href='../sox/SoxSession.html'>SoxSession</a> session, <a href='../sys/Component.html'>Component</a> c)</b>
+
+</code></p>
+<p>Write component tree information</p>
+<pre class='doc'>  compTree&#xa;  {&#xa;    u1    &#x27;t&#x27;&#xa;    u1    kitId&#xa;    u1    typeId&#xa;    str   name&#xa;    u2    parent&#xa;    u1    permissions&#xa;    u1    numKids&#xa;    u2[numKids] kidIds&#xa;  }</pre>
+</dd>
+<dt>writeReq</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> </em><b>void writeReq(<a href='../sox/SoxService.html'>SoxService</a> service, <a href='../sox/SoxSession.html'>SoxSession</a> session, <a href='../sox/SendPacket.html'>SendPacket</a> res)</b>
+
+</code></p>
+<p>req&#xa;{</p>
+<pre class='doc'>  u1   &#x27;w&#x27;&#xa;  u1   replyNum&#xa;  u2   componentId&#xa;  u1   slotId&#xa;  val  value</pre>
+<p>}</p>
+</dd>
+</dl>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>sox</a>
+</div>
+<div class='copyright'><script type='text/javascript'>document.write("Copyright &#169; " + new Date().getFullYear() + " Tridium, Inc.")</script></div>
+</body>
+</html>

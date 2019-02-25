@@ -1,0 +1,108 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>web::Weblet</title>
+  <meta http-equiv='Content-type' content='text/html;charset=UTF-8' />
+  <link rel='stylesheet' type='text/css' href='../style.css'/>
+</head>
+<body>
+<p>
+  <a href='../index.html'>
+    <img src='../logo.png' alt='Sedona'/>
+  </a>
+</p>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>web</a>
+</div>
+<h1 class='title'>web::Weblet</h1>
+<hr/>
+<pre class='inheritance'><a href='../sys/Obj.html'>sys::Obj</a>
+  <a href='../sys/Virtual.html'>sys::Virtual</a>
+    <a href='../sys/Component.html'>sys::Component</a>
+      web::Weblet
+</pre>
+<br>
+<code style='color:darkgreen;font-weight:bold;font-size:120%'><em>public abstract </em> class <b style='font-weight:bolder'>Weblet</b>  </code><br>
+<hr/>
+<p>Weblet is the base class for Objects which handle&#xa;HTTP requests for a specified URI prefix.</p>
+<p>Weblets will not be registered with the WebService until the&#xa;register() method is invoked.  This could be done in&#xa;_sInit(), or at some other time. Weblets can be removed from&#xa;the WebService using unregister().</p>
+<hr/>
+<dl>
+<dt>nextWeblet</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../web/Weblet.html'>Weblet</a> nextWeblet</b>
+
+</code></p>
+<p>Used for WebService&#x27;s linked list of weblets</p>
+</dd>
+<dt>description</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> </em><b><a href='../sys/Str.html'>Str</a> description()</b>
+
+</code></p>
+<p>Get a brief description of the weblet.</p>
+</dd>
+<dt>doDelete</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> </em><b>void doDelete(<a href='../web/WebReq.html'>WebReq</a> req, <a href='../web/WebRes.html'>WebRes</a> res)</b>
+
+</code></p>
+<p>Service a DELETE request.</p>
+</dd>
+<dt>get</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> </em><b>void get(<a href='../web/WebReq.html'>WebReq</a> req, <a href='../web/WebRes.html'>WebRes</a> res)</b>
+
+</code></p>
+<p>Service a GET request.</p>
+</dd>
+<dt>head</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> </em><b>void head(<a href='../web/WebReq.html'>WebReq</a> req, <a href='../web/WebRes.html'>WebRes</a> res)</b>
+
+</code></p>
+<p>Service a HEAD request.</p>
+</dd>
+<dt>post</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> </em><b>void post(<a href='../web/WebReq.html'>WebReq</a> req, <a href='../web/WebRes.html'>WebRes</a> res)</b>
+
+</code></p>
+<p>Service a POST request.</p>
+</dd>
+<dt>prefix</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>abstract</em> </em><b><a href='../sys/Str.html'>Str</a> prefix()</b>
+
+</code></p>
+<p>Get the weblet&#x27;s prefix which should be a simple&#xa;name (no slash) used for routing URIs to this Weblet.</p>
+</dd>
+<dt>put</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> </em><b>void put(<a href='../web/WebReq.html'>WebReq</a> req, <a href='../web/WebRes.html'>WebRes</a> res)</b>
+
+</code></p>
+<p>Service a PUT request.</p>
+</dd>
+<dt>register</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void register()</b>
+
+</code></p>
+<p>Register the weblet with the WebService.</p>
+</dd>
+<dt>service</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> </em><b>void service(<a href='../web/WebReq.html'>WebReq</a> req, <a href='../web/WebRes.html'>WebRes</a> res)</b>
+
+</code></p>
+<p>Service the specified request.  Default implementation&#xa;routes to get(), head(), post(), put(), or delete().</p>
+</dd>
+<dt>unregister</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void unregister()</b>
+
+</code></p>
+<p>Remove this weblet from the WebService.</p>
+</dd>
+</dl>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>web</a>
+</div>
+<div class='copyright'><script type='text/javascript'>document.write("Copyright &#169; " + new Date().getFullYear() + " Tridium, Inc.")</script></div>
+</body>
+</html>

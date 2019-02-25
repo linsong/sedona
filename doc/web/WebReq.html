@@ -1,0 +1,86 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>web::WebReq</title>
+  <meta http-equiv='Content-type' content='text/html;charset=UTF-8' />
+  <link rel='stylesheet' type='text/css' href='../style.css'/>
+</head>
+<body>
+<p>
+  <a href='../index.html'>
+    <img src='../logo.png' alt='Sedona'/>
+  </a>
+</p>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>web</a>
+</div>
+<h1 class='title'>web::WebReq</h1>
+<hr/>
+<pre class='inheritance'><a href='../sys/Obj.html'>sys::Obj</a>
+  web::WebReq
+</pre>
+<br>
+<code style='color:darkgreen;font-weight:bold;font-size:120%'><em>public </em> class <b style='font-weight:bolder'>WebReq</b>  </code><br>
+<hr/>
+<p>WebReq models the request side of an HTTP transaction.</p>
+<hr/>
+<dl>
+<dt>method</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../sys/Str.html'>Str</a> method</b>
+
+</code></p>
+<p>HTTP method: &#x22;GET&#x22;</p>
+</dd>
+<dt>params</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>inline</em> </em><b><a href='../web/WebParams.html'>WebParams</a> params</b>
+
+</code></p>
+<p>Request parameters</p>
+</dd>
+<dt>path</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>inline</em> </em><b><a href='../web/Path.html'>Path</a> path</b>
+
+</code></p>
+<p>The parsed path segments: &#x22;a&#x22;, &#x22;b&#x22;, &#x22;c&#x22;</p>
+</dd>
+<dt>query</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../sys/Str.html'>Str</a> query</b>
+
+</code></p>
+<p>The query part of uri or empty string: &#x22;query&#x22;</p>
+</dd>
+<dt>service</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../web/WebService.html'>WebService</a> service</b>
+
+</code></p>
+<p>Parent web service component</p>
+</dd>
+<dt>uri</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../sys/Str.html'>Str</a> uri</b>
+
+</code></p>
+<p>The full request URI: &#x22;/a/b/c?query&#x22;</p>
+</dd>
+<dt>version</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../sys/Str.html'>Str</a> version</b>
+
+</code></p>
+<p>HTTP version: &#x22;HTTP/1.1&#x22;</p>
+</dd>
+<dt>dump</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void dump(<a href='../sys/OutStream.html'>OutStream</a> out)</b>
+
+</code></p>
+</dd>
+</dl>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>web</a>
+</div>
+<div class='copyright'><script type='text/javascript'>document.write("Copyright &#169; " + new Date().getFullYear() + " Tridium, Inc.")</script></div>
+</body>
+</html>

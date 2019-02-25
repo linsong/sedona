@@ -1,0 +1,195 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>func::Linearize</title>
+  <meta http-equiv='Content-type' content='text/html;charset=UTF-8' />
+  <link rel='stylesheet' type='text/css' href='../style.css'/>
+</head>
+<body>
+<p>
+  <a href='../index.html'>
+    <img src='../logo.png' alt='Sedona'/>
+  </a>
+</p>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>func</a>
+</div>
+<h1 class='title'>func::Linearize</h1>
+<hr/>
+<pre class='inheritance'><a href='../sys/Obj.html'>sys::Obj</a>
+  <a href='../sys/Virtual.html'>sys::Virtual</a>
+    <a href='../sys/Component.html'>sys::Component</a>
+      func::Linearize
+</pre>
+<br>
+<code style='color:darkgreen;font-weight:bold;font-size:120%'><em>public </em> class <b style='font-weight:bolder'>Linearize</b>  </code><code style='color:darkblue;font-weight:bold'>
+[niagaraIcon=&#x22;module://icons/x16/control/util/xy.png&#x22;]</code>
+<br>
+<hr/>
+<p>Converts a table of values into a curve using linear interpolation between&#xa;the values.  Individual slope/intercept constants are computed between the x&#x27;s and y&#x27;s&#xa;using the formula y = mx + b, where m = ym - yn/xm - xn</p>
+<p>If in is not in the range of x0 to x9, then output is set to &#x22;nan&#x22;</p>
+<p>Note that slope may be positive or negative, and is indicated by comparison&#xa;of x1 and x0 (positive if x1 &gt; x0, negitive if x1 &lt; x0)</p>
+<hr/>
+<dl>
+<dt>in</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>float in</b>
+
+</code></p>
+<p>input</p>
+</dd>
+<dt>out</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>float out</b> [readonly]
+
+</code></p>
+<p>linearized output</p>
+</dd>
+<dt>tmp</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>float tmp</b>
+
+</code></p>
+</dd>
+<dt>x0</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>float x0</b> [config]
+
+</code></p>
+<p>linear interpolation x0 point</p>
+</dd>
+<dt>x1</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>float x1</b> [config]
+
+</code></p>
+<p>linear interpolation x1 point</p>
+</dd>
+<dt>x2</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>float x2</b> [config]
+
+</code></p>
+<p>linear interpolation x2 point</p>
+</dd>
+<dt>x3</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>float x3</b> [config]
+
+</code></p>
+<p>linear interpolation x3 point</p>
+</dd>
+<dt>x4</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>float x4</b> [config]
+
+</code></p>
+<p>linear interpolation x4 point</p>
+</dd>
+<dt>x5</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>float x5</b> [config]
+
+</code></p>
+<p>linear interpolation x5 point</p>
+</dd>
+<dt>x6</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>float x6</b> [config]
+
+</code></p>
+<p>linear interpolation x6 point</p>
+</dd>
+<dt>x7</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>float x7</b> [config]
+
+</code></p>
+<p>linear interpolation x7 point</p>
+</dd>
+<dt>x8</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>float x8</b> [config]
+
+</code></p>
+<p>linear interpolation x8 point</p>
+</dd>
+<dt>x9</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>float x9</b> [config]
+
+</code></p>
+<p>linear interpolation x9 point</p>
+</dd>
+<dt>y0</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>float y0</b> [config]
+
+</code></p>
+<p>linear interpolation y0 point</p>
+</dd>
+<dt>y1</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>float y1</b> [config]
+
+</code></p>
+<p>linear interpolation y1 point</p>
+</dd>
+<dt>y2</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>float y2</b> [config]
+
+</code></p>
+<p>linear interpolation y2 point</p>
+</dd>
+<dt>y3</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>float y3</b> [config]
+
+</code></p>
+<p>linear interpolation y3 point</p>
+</dd>
+<dt>y4</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>float y4</b> [config]
+
+</code></p>
+<p>linear interpolation y4 point</p>
+</dd>
+<dt>y5</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>float y5</b> [config]
+
+</code></p>
+<p>linear interpolation Y5 point</p>
+</dd>
+<dt>y6</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>float y6</b> [config]
+
+</code></p>
+<p>linear interpolation Y6 point</p>
+</dd>
+<dt>y7</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>float y7</b> [config]
+
+</code></p>
+<p>linear interpolation Y7 point</p>
+</dd>
+<dt>y8</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>float y8</b> [config]
+
+</code></p>
+<p>linear interpolation Y8 point</p>
+</dd>
+<dt>y9</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>float y9</b> [config]
+
+</code></p>
+<p>linear interpolation Y9 point</p>
+</dd>
+<dt>convert</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> </em><b>void convert(float Y2, float Y1, float X2, float X1)</b>
+
+</code></p>
+<p>Convert value in to value out by using linear interpolation</p>
+<pre class='doc'> between point1 and point2 using formula y=mx + b</pre>
+</dd>
+<dt>execute</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> <em>override</em> </em><b>void execute()</b>
+
+</code></p>
+<p>Execute is called once every scan to&#xa;convert &#x27;in&#x27;  to &#x27;out&#x27; using linear &#xa;interpolation between inflection points (x,y)</p>
+</dd>
+</dl>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>func</a>
+</div>
+<div class='copyright'><script type='text/javascript'>document.write("Copyright &#169; " + new Date().getFullYear() + " Tridium, Inc.")</script></div>
+</body>
+</html>

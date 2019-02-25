@@ -1,0 +1,142 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>datetime::DateTime</title>
+  <meta http-equiv='Content-type' content='text/html;charset=UTF-8' />
+  <link rel='stylesheet' type='text/css' href='../style.css'/>
+</head>
+<body>
+<p>
+  <a href='../index.html'>
+    <img src='../logo.png' alt='Sedona'/>
+  </a>
+</p>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>datetime</a>
+</div>
+<h1 class='title'>datetime::DateTime</h1>
+<hr/>
+<pre class='inheritance'><a href='../sys/Obj.html'>sys::Obj</a>
+  <a href='../sys/Virtual.html'>sys::Virtual</a>
+    datetime::DateTime
+</pre>
+<br>
+<code style='color:darkgreen;font-weight:bold;font-size:120%'><em>public </em> class <b style='font-weight:bolder'>DateTime</b>  </code><br>
+<hr/>
+<hr/>
+<dl>
+<dt>day</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>byte day</b>
+
+</code></p>
+<p>Day of month (1-based).  Only valid after successful fromNanos() call.</p>
+</dd>
+<dt>dayOfWeek</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>byte dayOfWeek</b>
+
+</code></p>
+<p>Day of week (Sun = 0).  Only valid after successful fromNanos() call.</p>
+</dd>
+<dt>daysPerMonth</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>byte[] daysPerMonth</b>
+
+</code></p>
+</dd>
+<dt>epochDayOfWeek</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int epochDayOfWeek</b>
+
+</code></p>
+</dd>
+<dt>hour</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>byte hour</b>
+
+</code></p>
+<p>Hour of day (0-23).  Only valid after successful fromNanos() call.</p>
+</dd>
+<dt>invalid</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>long invalid</b>
+
+</code></p>
+</dd>
+<dt>minute</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>byte minute</b>
+
+</code></p>
+<p>Minute of hour (0-59).  Only valid after successful fromNanos() call.</p>
+</dd>
+<dt>month</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>byte month</b>
+
+</code></p>
+<p>Month of year (1-based).  Only valid after successful fromNanos() call.</p>
+</dd>
+<dt>nanosMax</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>long nanosMax</b>
+
+</code></p>
+</dd>
+<dt>nanosecond</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>int nanosecond</b>
+
+</code></p>
+<p>Fractional seconds in nanoseconds (0 - 999,999)</p>
+<pre class='doc'> Only valid after successful fromNanos() call.</pre>
+</dd>
+<dt>second</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>byte second</b>
+
+</code></p>
+<p>Seconds of minute (0-59).  Only valid after successful fromNanos() call.</p>
+</dd>
+<dt>utcOffset</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>int utcOffset</b> [unit=&#x22;second&#x22;]
+
+</code></p>
+<p>UTC offset in seconds.  Used in to/from Nanos calculations.</p>
+</dd>
+<dt>year</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>short year</b>
+
+</code></p>
+<p>Year (2000-2099).  Only valid after successful fromNanos() call.</p>
+</dd>
+<dt>fromNanos</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>int fromNanos(long nanos)</b>
+
+</code></p>
+<p>Initialize a DateTime given nanoseconds since epoch.</p>
+<pre class='doc'> Return -1 if parameters are out of range</pre>
+</dd>
+<dt>isLeapYear</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> </em><b>bool isLeapYear(int year)</b>
+
+</code></p>
+<p>Return true if given absolute year is a leap year</p>
+</dd>
+<dt>reset</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void reset()</b>
+
+</code></p>
+<p>Reset DateTime instance to default value of 1 Jan 2000 00:00:00 </p>
+<pre class='doc'> with UTC offset of 0L</pre>
+</dd>
+<dt>toNanos</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>long toNanos()</b>
+
+</code></p>
+<p>Convert a local time to nanos since the Sedona epoch of 1 Jan 2000</p>
+<pre class='doc'> Returns DateTime.invalid if any parameters are out of range</pre>
+<pre class='doc'> Year must be between 2000 and 2099&#xa; Month is 1 based, 1-12&#xa; day is 1-based&#xa; hour must be 0-23&#xa; min, sec are 0-59&#xa; ns represents fraction seconds, must be &lt;= 999,999,999&#xa; utcOffset represents the local time offset (in seconds) from UTC,&#xa;   including daylight savings time adjustment (if any)</pre>
+</dd>
+</dl>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>datetime</a>
+</div>
+<div class='copyright'><script type='text/javascript'>document.write("Copyright &#169; " + new Date().getFullYear() + " Tridium, Inc.")</script></div>
+</body>
+</html>

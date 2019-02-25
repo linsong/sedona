@@ -1,0 +1,91 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>inet::TcpSocket</title>
+  <meta http-equiv='Content-type' content='text/html;charset=UTF-8' />
+  <link rel='stylesheet' type='text/css' href='../style.css'/>
+</head>
+<body>
+<p>
+  <a href='../index.html'>
+    <img src='../logo.png' alt='Sedona'/>
+  </a>
+</p>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>inet</a>
+</div>
+<h1 class='title'>inet::TcpSocket</h1>
+<hr/>
+<pre class='inheritance'><a href='../sys/Obj.html'>sys::Obj</a>
+  inet::TcpSocket
+</pre>
+<br>
+<code style='color:darkgreen;font-weight:bold;font-size:120%'><em>public </em> class <b style='font-weight:bolder'>TcpSocket</b>  </code><code style='color:darkblue;font-weight:bold'>
+[javaPeer]</code>
+<br>
+<hr/>
+<p>TcpSocket models a bi-directional TCP stream.  Client side&#xa;sockets are opened using TcpSocket.connect().  Server side&#xa;sockets opened via TcpServerSocket.bind() and accept().&#xa;The Sedona socket APIs are all asynchronous to be used&#xa;in a single threaded environment.</p>
+<hr/>
+<dl>
+<dt>READ</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int READ</b>
+
+</code></p>
+<p>Bitmask for select when socket is readable</p>
+</dd>
+<dt>WRITE</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int WRITE</b>
+
+</code></p>
+<p>Bitmask for select when socket is writable</p>
+</dd>
+<dt>close</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>native</em> </em><b>void close()</b>
+
+</code></p>
+<p>Shutdown and close this socket.</p>
+</dd>
+<dt>connect</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>native</em> </em><b>bool connect(<a href='../inet/IpAddr.html'>IpAddr</a> addr, int port)</b>
+
+</code></p>
+<p>Connect this socket to the specified IP address and port.&#xa;This method is non-blocking.  Poll the socket using&#xa;finishConnect() to determine when the connection been&#xa;completed (either successfully or not).  Return false&#xa;if there is an immediate failure, or true if this call&#xa;succeeds.</p>
+</dd>
+<dt>finishConnect</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>native</em> </em><b>bool finishConnect()</b>
+
+</code></p>
+<p>Poll the socket to see if the connection has completed.&#xa;Return false if the connection is still in-progress.  If&#xa;the connection attempt has completed then return true and&#xa;check isClosed() for success.</p>
+<pre class='doc'>  - Pending: return false&#xa;  - Success: return true, closed=false&#xa;  - Failed:  return true, closed=true</pre>
+<p>In the case that the state after a finishConnect() call is Failed, you&#xa;must still call close() to properly free the socket that was opened in the&#xa;connect() call.</p>
+</dd>
+<dt>isClosed</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>bool isClosed()</b>
+
+</code></p>
+<p>Is this socket closed.</p>
+</dd>
+<dt>read</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>native</em> </em><b>int read(byte[] b, int off, int len)</b>
+
+</code></p>
+<p>Receive the specified bytes from the socket.  Return the&#xa;number of bytes actually read which may be equal to&#xa;or less than len.  If the connection is terminated or&#xa;there is any other error close the socket and return -1.</p>
+</dd>
+<dt>write</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>native</em> </em><b>int write(byte[] b, int off, int len)</b>
+
+</code></p>
+<p>Send the specified bytes over the socket.  Return the&#xa;number of bytes actually written which may be equal to&#xa;or less than len.  If the connection is terminated or&#xa;there is any other error close the socket and return -1.</p>
+</dd>
+</dl>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>inet</a>
+</div>
+<div class='copyright'><script type='text/javascript'>document.write("Copyright &#169; " + new Date().getFullYear() + " Tridium, Inc.")</script></div>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>pstore::PstoreService</title>
+  <meta http-equiv='Content-type' content='text/html;charset=UTF-8' />
+  <link rel='stylesheet' type='text/css' href='../style.css'/>
+</head>
+<body>
+<p>
+  <a href='../index.html'>
+    <img src='../logo.png' alt='Sedona'/>
+  </a>
+</p>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>pstore</a>
+</div>
+<h1 class='title'>pstore::PstoreService</h1>
+<hr/>
+<pre class='inheritance'><a href='../sys/Obj.html'>sys::Obj</a>
+  <a href='../sys/Virtual.html'>sys::Virtual</a>
+    <a href='../sys/Component.html'>sys::Component</a>
+      <a href='../sys/Service.html'>sys::Service</a>
+        pstore::PstoreService
+</pre>
+<br>
+<code style='color:darkgreen;font-weight:bold;font-size:120%'><em>public </em> class <b style='font-weight:bolder'>PstoreService</b>  </code><code style='color:darkblue;font-weight:bold'>
+[niagaraIcon=&#x22;module://icons/x16/database.png&#x22;]</code>
+<br>
+<hr/>
+<p>PstoreService is used to manage a block of random access&#xa;persistent storage.  Pstores are typically backed by&#xa;EEPROM, static-RAM, or a file system.  PstoreFiles are&#xa;added as direct children of the service to reserve a range&#xa;of bytes for application functionality.</p>
+<hr/>
+<dl>
+<dt>file</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>inline</em> </em><b><a href='../sys/File.html'>File</a> file</b>
+
+</code></p>
+<p>File instance used to manage this PstoreService.  Most&#xa;developers should access the backing store through the &#xa;methods on PstoreFile.</p>
+</dd>
+<dt>fileSize</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>int fileSize</b> [defaultOnClone, config]
+
+</code></p>
+<p>Configured size of file made available for storage.&#xa;If the backing file store has a fixed size, then this&#xa;configuration value is ignored.</p>
+</dd>
+<dt>filename</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>inline</em> <em>property</em> </em><b><a href='../sys/Buf.html'>Buf</a> filename</b> [asStr, defaultOnClone, config, max=32]
+
+</code></p>
+<p>File name used as the backing store.</p>
+</dd>
+<dt>size</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>int size</b> [readonly]
+
+</code></p>
+<p>Size in bytes of storage available.  A zero or negative value&#xa;indicates an error condition or that the no storage is available.</p>
+<p>This value must be initialized by the service in the &#xa;loaded() callback so that is available for error checking&#xa;in the PStoreFile.start callback.</p>
+</dd>
+<dt>loaded</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>override</em> </em><b>void loaded()</b>
+
+</code></p>
+</dd>
+<dt>stop</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>override</em> </em><b>void stop()</b>
+
+</code></p>
+</dd>
+<dt>validateAll</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>action</em> </em><b>void validateAll()</b>
+
+</code></p>
+<p>Validate all my child PstoreFiles</p>
+</dd>
+</dl>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>pstore</a>
+</div>
+<div class='copyright'><script type='text/javascript'>document.write("Copyright &#169; " + new Date().getFullYear() + " Tridium, Inc.")</script></div>
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>control::ReheatSeq</title>
+  <meta http-equiv='Content-type' content='text/html;charset=UTF-8' />
+  <link rel='stylesheet' type='text/css' href='../style.css'/>
+</head>
+<body>
+<p>
+  <a href='../index.html'>
+    <img src='../logo.png' alt='Sedona'/>
+  </a>
+</p>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>control</a>
+</div>
+<h1 class='title'>control::ReheatSeq</h1>
+<hr/>
+<pre class='inheritance'><a href='../sys/Obj.html'>sys::Obj</a>
+  <a href='../sys/Virtual.html'>sys::Virtual</a>
+    <a href='../sys/Component.html'>sys::Component</a>
+      control::ReheatSeq
+</pre>
+<br>
+<code style='color:darkgreen;font-weight:bold;font-size:120%'><em>public </em> class <b style='font-weight:bolder'>ReheatSeq</b>  </code><code style='color:darkblue;font-weight:bold'>
+[niagaraIcon=&#x22;module://icons/x16/control/util/step.png&#x22;]</code>
+<br>
+<hr/>
+<p>ReheatSeq will provide a linear sequence of up to 4 loads based on configurable thresholds</p>
+<p>Sets an output true if the &#x22;in&#x22; value is greater than corresponding threshold,&#xa;and returns the ouput to false if the &#x22;in&#x22; value is less than threshold minus the hysteresis value.  </p>
+<p>&#x22;dOn&#x22; is the count of outputs that are true (0 to 4)</p>
+<p>If &#x22;enable&#x22; is false, all outputs are set to false regardless of in value.</p>
+<hr/>
+<dl>
+<dt>dOn</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>byte dOn</b> [readonly]
+
+</code></p>
+<p>number of outputs currently turned on</p>
+</dd>
+<dt>enable</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>bool enable</b> [config]
+
+</code></p>
+<p>all outputs are false if enable == false</p>
+</dd>
+<dt>hysteresis</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>float hysteresis</b> [config]
+
+</code></p>
+<p>hysteresis value - in &lt; threshold - hysteresis is required to turn an output off</p>
+</dd>
+<dt>in</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>float in</b>
+
+</code></p>
+<p>cv input</p>
+</dd>
+<dt>out1</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>bool out1</b> [readonly]
+
+</code></p>
+<p>output 1</p>
+</dd>
+<dt>out2</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>bool out2</b> [readonly]
+
+</code></p>
+<p>output 2</p>
+</dd>
+<dt>out3</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>bool out3</b> [readonly]
+
+</code></p>
+<p>output 3</p>
+</dd>
+<dt>out4</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>bool out4</b> [readonly]
+
+</code></p>
+<p>output 4</p>
+</dd>
+<dt>threshold1</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>float threshold1</b> [config]
+
+</code></p>
+<p>threshold to turn out1 on</p>
+</dd>
+<dt>threshold2</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>float threshold2</b> [config]
+
+</code></p>
+<p>threshold to turn out2 on</p>
+</dd>
+<dt>threshold3</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>float threshold3</b> [config]
+
+</code></p>
+<p>threshold to turn out3 on</p>
+</dd>
+<dt>threshold4</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>float threshold4</b> [config]
+
+</code></p>
+<p>threshold to turn out4 on</p>
+</dd>
+<dt>execute</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> <em>override</em> </em><b>void execute()</b>
+
+</code></p>
+<p>Execute is called once every scan.</p>
+</dd>
+</dl>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>control</a>
+</div>
+<div class='copyright'><script type='text/javascript'>document.write("Copyright &#169; " + new Date().getFullYear() + " Tridium, Inc.")</script></div>
+</body>
+</html>

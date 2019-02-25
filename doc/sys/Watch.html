@@ -1,0 +1,151 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>sys::Watch</title>
+  <meta http-equiv='Content-type' content='text/html;charset=UTF-8' />
+  <link rel='stylesheet' type='text/css' href='../style.css'/>
+</head>
+<body>
+<p>
+  <a href='../index.html'>
+    <img src='../logo.png' alt='Sedona'/>
+  </a>
+</p>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>sys</a>
+</div>
+<h1 class='title'>sys::Watch</h1>
+<hr/>
+<pre class='inheritance'><a href='../sys/Obj.html'>sys::Obj</a>
+  <a href='../sys/Virtual.html'>sys::Virtual</a>
+    sys::Watch
+</pre>
+<br>
+<code style='color:darkgreen;font-weight:bold;font-size:120%'><em>public abstract </em> class <b style='font-weight:bolder'>Watch</b>  </code><br>
+<hr/>
+<p>Watch is used to manage an event queue of component changes.&#xa;Every component is allocated a byte per potential watch determined&#xa;by the Watch.max define.  To use the watch framework:</p>
+<pre class='doc'>  - Create your own subclass of Watch&#xa;  - In your service create an array of your Watch subclass&#xa;  - Call App.initWatches() on service startup with your subclass array&#xa;  - To allocate a watch call App.openWatch() passing in the&#xa;    array of your subclasses&#xa;  - When you close a watch, make sure you call App.closeWatch()</pre>
+<hr/>
+<dl>
+<dt>closed</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>bool closed</b>
+
+</code></p>
+<p>Is this watch open or closed</p>
+</dd>
+<dt>eventAll</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int eventAll</b>
+
+</code></p>
+<p>Watch bitmask for all change event bits</p>
+</dd>
+<dt>eventConfig</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int eventConfig</b>
+
+</code></p>
+<p>Watch bitmask indicating a pending config property change event</p>
+</dd>
+<dt>eventLinks</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int eventLinks</b>
+
+</code></p>
+<p>Watch bitmask indicating a pending link change event</p>
+</dd>
+<dt>eventRuntime</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int eventRuntime</b>
+
+</code></p>
+<p>Watch bitmask indicating a pending runtime property change event</p>
+</dd>
+<dt>eventTree</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int eventTree</b>
+
+</code></p>
+<p>Watch bitmask indicating a pending tree change event</p>
+</dd>
+<dt>index</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>byte index</b>
+
+</code></p>
+<p>Bottom byte of the id is the index into App.watches</p>
+</dd>
+<dt>max</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int max</b>
+
+</code></p>
+<p>Number of concurrent watches to support</p>
+</dd>
+<dt>rand</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>byte rand</b>
+
+</code></p>
+<p>The top byte of the id is randomized to prevent id collisions</p>
+</dd>
+<dt>subAll</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int subAll</b>
+
+</code></p>
+<p>Watch bitmask for all subscription bits</p>
+</dd>
+<dt>subConfig</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int subConfig</b>
+
+</code></p>
+<p>Watch bitmask indicating a subscription to config property changes</p>
+</dd>
+<dt>subLinks</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int subLinks</b>
+
+</code></p>
+<p>Watch bitmask indicating a subscription to link changes</p>
+</dd>
+<dt>subRuntime</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int subRuntime</b>
+
+</code></p>
+<p>Watch bitmask indicating a subscription to runtime property changes</p>
+</dd>
+<dt>subTree</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int subTree</b>
+
+</code></p>
+<p>Watch bitmask indicating a subscription to tree changes</p>
+</dd>
+<dt>fromSubBit</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> </em><b>int fromSubBit(int subBit)</b>
+
+</code></p>
+<p>Map a subscription bit to its ASCII code.</p>
+</dd>
+<dt>id</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>int id()</b>
+
+</code></p>
+<p>The watch id is a combination of the count in the&#xa;high byte and the index in the low byte.</p>
+</dd>
+<dt>toEventBit</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> </em><b>int toEventBit(int what)</b>
+
+</code></p>
+<p>Map ASCII codes to event bit:</p>
+<pre class='doc'> &#x27;t&#x27; = eventTree&#xa; &#x27;c&#x27; = eventConfig&#xa; &#x27;r&#x27; = eventRuntime&#xa; &#x27;l&#x27; = eventLink&#xa; &#x27;*&#x27; = eventAll</pre>
+</dd>
+<dt>toSubBit</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> </em><b>int toSubBit(int what)</b>
+
+</code></p>
+<p>Map ASCII codes to subscription bit:</p>
+<pre class='doc'> &#x27;t&#x27; = subTree&#xa; &#x27;c&#x27; = subConfig&#xa; &#x27;r&#x27; = subRuntime&#xa; &#x27;l&#x27; = subLink&#xa; &#x27;*&#x27; = subAll</pre>
+</dd>
+</dl>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>sys</a>
+</div>
+<div class='copyright'><script type='text/javascript'>document.write("Copyright &#169; " + new Date().getFullYear() + " Tridium, Inc.")</script></div>
+</body>
+</html>

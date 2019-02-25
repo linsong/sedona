@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>control::UpDn</title>
+  <meta http-equiv='Content-type' content='text/html;charset=UTF-8' />
+  <link rel='stylesheet' type='text/css' href='../style.css'/>
+</head>
+<body>
+<p>
+  <a href='../index.html'>
+    <img src='../logo.png' alt='Sedona'/>
+  </a>
+</p>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>control</a>
+</div>
+<h1 class='title'>control::UpDn</h1>
+<hr/>
+<pre class='inheritance'><a href='../sys/Obj.html'>sys::Obj</a>
+  <a href='../sys/Virtual.html'>sys::Virtual</a>
+    <a href='../sys/Component.html'>sys::Component</a>
+      control::UpDn
+</pre>
+<br>
+<code style='color:darkgreen;font-weight:bold;font-size:120%'><em>public </em> class <b style='font-weight:bolder'>UpDn</b>  </code><code style='color:darkblue;font-weight:bold'>
+[niagaraIcon=&#x22;module://icons/x16/control/control.png&#x22;]</code>
+<br>
+<hr/>
+<p>UpDn Up/down counter object</p>
+<hr/>
+<dl>
+<dt>cDwn</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>bool cDwn</b> [summary, config]
+
+</code></p>
+<p>Count down if true; o/w count up</p>
+</dd>
+<dt>holdAtLimit</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>bool holdAtLimit</b> [config]
+
+</code></p>
+<p>Stop counting when limit reached if true</p>
+</dd>
+<dt>in</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>bool in</b>
+
+</code></p>
+<p>Increment/decrement counter on positive edge</p>
+</dd>
+<dt>limit</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>float limit</b> [config]
+
+</code></p>
+<p>Overflow limit</p>
+</dd>
+<dt>out</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>float out</b> [readonly]
+
+</code></p>
+<p>Current count</p>
+</dd>
+<dt>ovr</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>bool ovr</b> [readonly]
+
+</code></p>
+<p>Overflow indicator</p>
+</dd>
+<dt>rst</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>bool rst</b>
+
+</code></p>
+<p>Reset count</p>
+</dd>
+<dt>execute</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> <em>override</em> </em><b>void execute()</b>
+
+</code></p>
+<p>Execute is called once every scan.</p>
+</dd>
+<dt>start</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> <em>override</em> </em><b>void start()</b>
+
+</code></p>
+<p>Callback when component is first started in an app.</p>
+</dd>
+</dl>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>control</a>
+</div>
+<div class='copyright'><script type='text/javascript'>document.write("Copyright &#169; " + new Date().getFullYear() + " Tridium, Inc.")</script></div>
+</body>
+</html>

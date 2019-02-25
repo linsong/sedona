@@ -1,0 +1,141 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>sys::Log</title>
+  <meta http-equiv='Content-type' content='text/html;charset=UTF-8' />
+  <link rel='stylesheet' type='text/css' href='../style.css'/>
+</head>
+<body>
+<p>
+  <a href='../index.html'>
+    <img src='../logo.png' alt='Sedona'/>
+  </a>
+</p>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>sys</a>
+</div>
+<h1 class='title'>sys::Log</h1>
+<hr/>
+<pre class='inheritance'><a href='../sys/Obj.html'>sys::Obj</a>
+  sys::Log
+</pre>
+<br>
+<code style='color:darkgreen;font-weight:bold;font-size:120%'><em>public const </em> class <b style='font-weight:bolder'>Log</b>  </code><br>
+<hr/>
+<p>Log is used to embed error, warning, message, and&#xa;trace logging into Sedona software.</p>
+<hr/>
+<dl>
+<dt>ERROR</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int ERROR</b>
+
+</code></p>
+<p>Logging is enabled only for errors</p>
+</dd>
+<dt>MESSAGE</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int MESSAGE</b>
+
+</code></p>
+<p>Logging is enabled for errors, warning, and messages</p>
+</dd>
+<dt>NONE</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int NONE</b>
+
+</code></p>
+<p>Logging is disabled</p>
+</dd>
+<dt>TRACE</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int TRACE</b>
+
+</code></p>
+<p>Logging is enabled for all levels</p>
+</dd>
+<dt>WARNING</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int WARNING</b>
+
+</code></p>
+<p>Logging is enabled for errors and warning</p>
+</dd>
+<dt>id</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>const</em> </em><b>short id</b>
+
+</code></p>
+<p>Index of this log in the Sys.logs array.</p>
+</dd>
+<dt>qname</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>const</em> </em><b><a href='../sys/Str.html'>Str</a> qname</b>
+
+</code></p>
+<p>Unique qualified name of this log in the VM.</p>
+</dd>
+<dt>error</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../sys/OutStream.html'>OutStream</a> error(<a href='../sys/Str.html'>Str</a> msg)</b>
+
+</code></p>
+<p>Log an error record.</p>
+</dd>
+<dt>isError</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>bool isError()</b>
+
+</code></p>
+<p>Is current level error or greater.</p>
+</dd>
+<dt>isMessage</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>bool isMessage()</b>
+
+</code></p>
+<p>Is current level message or greater.</p>
+</dd>
+<dt>isTrace</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>bool isTrace()</b>
+
+</code></p>
+<p>Is current level trace or greater.</p>
+</dd>
+<dt>isWarning</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>bool isWarning()</b>
+
+</code></p>
+<p>Is current level warning or greater.</p>
+</dd>
+<dt>level</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>int level()</b>
+
+</code></p>
+<p>Get the currently configured severity level&#xa;enabled for this Log.  The level is NONE, ERROR,&#xa;WARNING, MESSAGE, and TRACE.</p>
+</dd>
+<dt>message</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../sys/OutStream.html'>OutStream</a> message(<a href='../sys/Str.html'>Str</a> msg)</b>
+
+</code></p>
+<p>Log a message record.</p>
+</dd>
+<dt>setLevel</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void setLevel(int newLevel)</b>
+
+</code></p>
+<p>Set the severity level for this Log.  &#xa;Possible levels are NONE, ERROR, WARNING, MESSAGE, &#xa;and TRACE.  (no error checking on arg)</p>
+</dd>
+<dt>trace</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../sys/OutStream.html'>OutStream</a> trace(<a href='../sys/Str.html'>Str</a> msg)</b>
+
+</code></p>
+<p>Log a trace record.</p>
+</dd>
+<dt>warning</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../sys/OutStream.html'>OutStream</a> warning(<a href='../sys/Str.html'>Str</a> msg)</b>
+
+</code></p>
+<p>Log a warning record.</p>
+</dd>
+</dl>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>sys</a>
+</div>
+<div class='copyright'><script type='text/javascript'>document.write("Copyright &#169; " + new Date().getFullYear() + " Tridium, Inc.")</script></div>
+</body>
+</html>

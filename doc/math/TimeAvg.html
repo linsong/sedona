@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>math::TimeAvg</title>
+  <meta http-equiv='Content-type' content='text/html;charset=UTF-8' />
+  <link rel='stylesheet' type='text/css' href='../style.css'/>
+</head>
+<body>
+<p>
+  <a href='../index.html'>
+    <img src='../logo.png' alt='Sedona'/>
+  </a>
+</p>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>math</a>
+</div>
+<h1 class='title'>math::TimeAvg</h1>
+<hr/>
+<pre class='inheritance'><a href='../sys/Obj.html'>sys::Obj</a>
+  <a href='../sys/Virtual.html'>sys::Virtual</a>
+    <a href='../sys/Component.html'>sys::Component</a>
+      math::TimeAvg
+</pre>
+<br>
+<code style='color:darkgreen;font-weight:bold;font-size:120%'><em>public </em> class <b style='font-weight:bolder'>TimeAvg</b>  </code><code style='color:darkblue;font-weight:bold'>
+[niagaraIcon=&#x22;module://icons/x16/control/math/average.png&#x22;]</code>
+<br>
+<hr/>
+<p>TimeAvg object averages &#x22;in&#x22; over the configured time.</p>
+<p>Note that this is NOT a running or moving average - this object caches the average over&#xa;the previous time as the out value, and updates out every &#x22;time&#x22; ms.</p>
+<p>Until the first full cycle has elapsed, out is set to average of all samples so far.</p>
+<p>The average may be reset/restarted at any time using the &#x22;reset&#x22; action.</p>
+<hr/>
+<dl>
+<dt>in</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>float in</b>
+
+</code></p>
+<p>The value to average</p>
+</dd>
+<dt>out</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>float out</b> [readonly]
+
+</code></p>
+<p>Value averaged over last &#x22;time&#x22; period</p>
+</dd>
+<dt>time</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>int time</b> [summary, unit=&#x22;millisecond&#x22;, config]
+
+</code></p>
+<p>The time period over which to average the in value to get the out value</p>
+</dd>
+<dt>execute</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> <em>override</em> </em><b>void execute()</b>
+
+</code></p>
+<p>calculate the average.  If not enough samples collected, then average the ones we have.</p>
+</dd>
+<dt>reset</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>action</em> </em><b>void reset()</b>
+
+</code></p>
+<p>Reset the average computation</p>
+</dd>
+<dt>start</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> <em>override</em> </em><b>void start()</b>
+
+</code></p>
+<p>Override start to initialize averaging variables</p>
+</dd>
+</dl>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>math</a>
+</div>
+<div class='copyright'><script type='text/javascript'>document.write("Copyright &#169; " + new Date().getFullYear() + " Tridium, Inc.")</script></div>
+</body>
+</html>

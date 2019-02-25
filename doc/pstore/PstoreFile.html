@@ -1,0 +1,169 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>pstore::PstoreFile</title>
+  <meta http-equiv='Content-type' content='text/html;charset=UTF-8' />
+  <link rel='stylesheet' type='text/css' href='../style.css'/>
+</head>
+<body>
+<p>
+  <a href='../index.html'>
+    <img src='../logo.png' alt='Sedona'/>
+  </a>
+</p>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>pstore</a>
+</div>
+<h1 class='title'>pstore::PstoreFile</h1>
+<hr/>
+<pre class='inheritance'><a href='../sys/Obj.html'>sys::Obj</a>
+  <a href='../sys/Virtual.html'>sys::Virtual</a>
+    <a href='../sys/Component.html'>sys::Component</a>
+      pstore::PstoreFile
+</pre>
+<br>
+<code style='color:darkgreen;font-weight:bold;font-size:120%'><em>public </em> class <b style='font-weight:bolder'>PstoreFile</b>  </code><code style='color:darkblue;font-weight:bold'>
+[niagaraIcon=&#x22;module://icons/x16/file.png&#x22;]</code>
+<br>
+<hr/>
+<p>PstoreFile is added as a direct child of a PstoreService &#xa;to reserves a range of bytes for application use as determined &#xa;by the &#x22;resvOffset&#x22; and &#x22;resvSize&#x22; properties.</p>
+<hr/>
+<dl>
+<dt>resvOffset</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>int resvOffset</b> [defaultOnClone, config]
+
+</code></p>
+<p>Offset of this file&#x27;s storage reservation relative to the&#xa;storage device modeled by the parent PstoreService.</p>
+</dd>
+<dt>resvSize</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>int resvSize</b> [config]
+
+</code></p>
+<p>Size of this file&#x27;s reservation in bytes.</p>
+</dd>
+<dt>status</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>byte status</b> [range=&#x22;ok, inactive, badParent, serviceErr, badOffset, badSize, dupRange, formatErr&#x22;, readonly]
+
+</code></p>
+<p>Status code for storage file access, see the&#xa;statusXXX defines for the various codes.</p>
+</dd>
+<dt>statusBadOffset</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int statusBadOffset</b>
+
+</code></p>
+<p>Reservation offset is out of range</p>
+</dd>
+<dt>statusBadParent</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int statusBadParent</b>
+
+</code></p>
+<p>Indicates that PstoreFile is not directly mounted under PstoreService</p>
+</dd>
+<dt>statusBadSize</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int statusBadSize</b>
+
+</code></p>
+<p>Reservation size is out of range</p>
+</dd>
+<dt>statusDupRange</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int statusDupRange</b>
+
+</code></p>
+<p>Reservation overlaps with another PstoreFile</p>
+</dd>
+<dt>statusFormatErr</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int statusFormatErr</b>
+
+</code></p>
+<p>Used by subclasses when an format error is detected</p>
+</dd>
+<dt>statusInactive</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int statusInactive</b>
+
+</code></p>
+<p>File component is not actively running</p>
+</dd>
+<dt>statusOk</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int statusOk</b>
+
+</code></p>
+<p>File is mapped to storage correctly</p>
+</dd>
+<dt>statusRange</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b><a href='../sys/Str.html'>Str</a> statusRange</b>
+
+</code></p>
+<p>File is mapped to storage correctly</p>
+</dd>
+<dt>statusServiceErr</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int statusServiceErr</b>
+
+</code></p>
+<p>Indicates that the parent PstoreService is in an error state.</p>
+</dd>
+<dt>changed</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> <em>override</em> </em><b>void changed(<a href='../sys/Slot.html'>Slot</a> slot)</b>
+
+</code></p>
+<p>If the reservation props are changed, re-validate.&#xa;If this method is override, must call super!</p>
+</dd>
+<dt>claim</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>bool claim()</b>
+
+</code></p>
+<p>Claim temporary ownership ofthe backing store file to &#xa;perform IO.  Return true on success, false on failure.</p>
+</dd>
+<dt>in</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../sys/InStream.html'>InStream</a> in()</b>
+
+</code></p>
+<p>Get the input stream used to read this PstoreFile&#x27;s reserved&#xa;range from the backing store file.  If this PstoreFile is&#xa;not the current owner, then return &lt;code&gt;Sys.nullIn&lt;/code&gt;.&#xa;No validation is performed to prevent reading past the&#xa;end of this PstoreFile&#x27;s reserved range.</p>
+</dd>
+<dt>isOwner</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>bool isOwner()</b>
+
+</code></p>
+<p>Is this PstoreFile currently the owner of the backing store &#xa;file. See the &lt;code&gt;claim&lt;/code&gt; method to claim ownership.</p>
+</dd>
+<dt>out</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../sys/OutStream.html'>OutStream</a> out()</b>
+
+</code></p>
+<p>Get an output stream to write this PstoreFile&#x27;s reserved&#xa;range to the backing store file.  If this PstoreFile is&#xa;not the current owner, then return &lt;code&gt;Sys.nullOut&lt;/code&gt;.&#xa;No validation is performed to prevent writing past the&#xa;end of this PstoreFile&#x27;s reserved range.</p>
+</dd>
+<dt>seek</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>bool seek(int pos)</b>
+
+</code></p>
+<p>Seek to a specific byte offset position in the service&#x27;s&#xa;backing store file relative to this PstoreFile&#x27;s reserved&#xa;offset.  This PstoreFile must the current owner.  Return false&#xa;on error.</p>
+</dd>
+<dt>start</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> <em>override</em> </em><b>void start()</b>
+
+</code></p>
+<p>On startup we need to validate our reservation range.&#xa;If this method is override, must call super!</p>
+</dd>
+<dt>tell</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>int tell()</b>
+
+</code></p>
+<p>Get the backing store file&#x27;s pointer relative to this &#xa;PstoreFile&#x27;s reserved offset.  This PstoreFile must&#xa;the current owner.  Return -1 on error.</p>
+</dd>
+<dt>validate</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> </em><b>void validate()</b>
+
+</code></p>
+<p>Validate this file&#x27;s reservation range and update its status.</p>
+</dd>
+</dl>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>pstore</a>
+</div>
+<div class='copyright'><script type='text/javascript'>document.write("Copyright &#169; " + new Date().getFullYear() + " Tridium, Inc.")</script></div>
+</body>
+</html>

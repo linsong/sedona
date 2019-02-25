@@ -1,0 +1,178 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>sys::OutStream</title>
+  <meta http-equiv='Content-type' content='text/html;charset=UTF-8' />
+  <link rel='stylesheet' type='text/css' href='../style.css'/>
+</head>
+<body>
+<p>
+  <a href='../index.html'>
+    <img src='../logo.png' alt='Sedona'/>
+  </a>
+</p>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>sys</a>
+</div>
+<h1 class='title'>sys::OutStream</h1>
+<hr/>
+<pre class='inheritance'><a href='../sys/Obj.html'>sys::Obj</a>
+  <a href='../sys/Virtual.html'>sys::Virtual</a>
+    sys::OutStream
+</pre>
+<br>
+<code style='color:darkgreen;font-weight:bold;font-size:120%'><em>public abstract </em> class <b style='font-weight:bolder'>OutStream</b>  </code><br>
+<hr/>
+<p>OutStream is used to output printed text or binary encoded data.</p>
+<hr/>
+<dl>
+<dt>close</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> </em><b>void close()</b>
+
+</code></p>
+<p>Close the stream.  Default implementation does nothing.</p>
+</dd>
+<dt>flush</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> </em><b>void flush()</b>
+
+</code></p>
+<p>Flush the stream.  Default implementation does nothing.</p>
+</dd>
+<dt>nl</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../sys/OutStream.html'>OutStream</a> nl()</b>
+
+</code></p>
+<p>Print a newline character.  Return this.</p>
+</dd>
+<dt>print</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../sys/OutStream.html'>OutStream</a> print(<a href='../sys/Str.html'>Str</a> s)</b>
+
+</code></p>
+<p>Print the specified string.  Return this.</p>
+</dd>
+<dt>printBool</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../sys/OutStream.html'>OutStream</a> printBool(bool x)</b>
+
+</code></p>
+<p>Print a string for the specified boolean.  Return this.</p>
+</dd>
+<dt>printChar</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../sys/OutStream.html'>OutStream</a> printChar(int x)</b>
+
+</code></p>
+<p>Print the integer as a character.  Return this.</p>
+</dd>
+<dt>printDouble</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../sys/OutStream.html'>OutStream</a> printDouble(double x)</b>
+
+</code></p>
+<p>Print the double as a string.</p>
+</dd>
+<dt>printFloat</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../sys/OutStream.html'>OutStream</a> printFloat(float x)</b>
+
+</code></p>
+<p>Print the float as a string.</p>
+</dd>
+<dt>printHex</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../sys/OutStream.html'>OutStream</a> printHex(int x)</b>
+
+</code></p>
+<p>Print the integer as an unsigned hexadecimal string.</p>
+</dd>
+<dt>printInt</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../sys/OutStream.html'>OutStream</a> printInt(int x)</b>
+
+</code></p>
+<p>Print the integer as a signed decimal string.  Return this.</p>
+</dd>
+<dt>printLong</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../sys/OutStream.html'>OutStream</a> printLong(long x)</b>
+
+</code></p>
+<p>Print the long as a signed decimal string.  Return this.</p>
+</dd>
+<dt>printLongHex</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../sys/OutStream.html'>OutStream</a> printLongHex(long x)</b>
+
+</code></p>
+<p>Print the long as an unsigned hexadecimal string.</p>
+</dd>
+<dt>printPad</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../sys/OutStream.html'>OutStream</a> printPad(<a href='../sys/Str.html'>Str</a> s, int width)</b>
+
+</code></p>
+<p>Print the specified string left justified according&#xa;the specified padding width.  Return this.</p>
+</dd>
+<dt>write</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>abstract</em> </em><b>bool write(int b)</b>
+
+</code></p>
+<p>Write a single byte.&#xa;Return true on success, false on failure.</p>
+</dd>
+<dt>writeBool</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>bool writeBool(bool b)</b>
+
+</code></p>
+<p>Write a bool 1 or 0.&#xa;Return true on success or fail on failure.</p>
+</dd>
+<dt>writeBytes</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>abstract</em> </em><b>bool writeBytes(byte[] b, int off, int len)</b>
+
+</code></p>
+<p>Write a block of bytes.&#xa;Return true on success, false on failure.</p>
+</dd>
+<dt>writeChar</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>bool writeChar(int b)</b>
+
+</code></p>
+<p>Write a character.&#xa;Return true on success or fail on failure.</p>
+</dd>
+<dt>writeF4</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>bool writeF4(float v)</b>
+
+</code></p>
+<p>Write a four byte (32-bit) floating point value in network &#xa;byte order.  Return true on success, false on failure.</p>
+</dd>
+<dt>writeF8</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>bool writeF8(double v)</b>
+
+</code></p>
+<p>Write an eight byte (64-bit) floating point value in network &#xa;byte order.  Return true on success, false on failure.</p>
+</dd>
+<dt>writeI2</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>bool writeI2(int v)</b>
+
+</code></p>
+<p>Write a two byte integer in network byte order.&#xa;Return true on success, false on failure.</p>
+</dd>
+<dt>writeI4</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>bool writeI4(int v)</b>
+
+</code></p>
+<p>Write a four byte (32-bit) integer in network byte order.&#xa;Return true on success, false on failure.</p>
+</dd>
+<dt>writeI8</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>bool writeI8(long v)</b>
+
+</code></p>
+<p>Write a eight byte (64-bit) integer in network byte order.&#xa;Return true on success, false on failure.</p>
+</dd>
+<dt>writeStr</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>bool writeStr(<a href='../sys/Str.html'>Str</a> s)</b>
+
+</code></p>
+<p>Write the null terminated string.&#xa;Return true on success, false on failure.</p>
+</dd>
+</dl>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>sys</a>
+</div>
+<div class='copyright'><script type='text/javascript'>document.write("Copyright &#169; " + new Date().getFullYear() + " Tridium, Inc.")</script></div>
+</body>
+</html>

@@ -1,0 +1,139 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>func::LP</title>
+  <meta http-equiv='Content-type' content='text/html;charset=UTF-8' />
+  <link rel='stylesheet' type='text/css' href='../style.css'/>
+</head>
+<body>
+<p>
+  <a href='../index.html'>
+    <img src='../logo.png' alt='Sedona'/>
+  </a>
+</p>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>func</a>
+</div>
+<h1 class='title'>func::LP</h1>
+<hr/>
+<pre class='inheritance'><a href='../sys/Obj.html'>sys::Obj</a>
+  <a href='../sys/Virtual.html'>sys::Virtual</a>
+    <a href='../sys/Component.html'>sys::Component</a>
+      func::LP
+</pre>
+<br>
+<code style='color:darkgreen;font-weight:bold;font-size:120%'><em>public </em> class <b style='font-weight:bolder'>LP</b>  </code><code style='color:darkblue;font-weight:bold'>
+[niagaraIcon=&#x22;module://icons/x16/control/numericPoint.png&#x22;]</code>
+<br>
+<hr/>
+<p>Pid Loop object</p>
+<hr/>
+<dl>
+<dt>bias</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>float bias</b> [config, precision=6]
+
+</code></p>
+<p>bias is applied directly to output if ki equals 0</p>
+</dd>
+<dt>cv</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>float cv</b> [precision=3]
+
+</code></p>
+<p>process feedback</p>
+</dd>
+<dt>direct</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>bool direct</b> [config]
+
+</code></p>
+<p>direct acting or reverse acting process</p>
+</dd>
+<dt>enable</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>bool enable</b> [config]
+
+</code></p>
+<p>loop enable.  If false, output is held constant at previous value</p>
+</dd>
+<dt>exTime</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>int exTime</b> [unit=&#x22;millisecond&#x22;, min=0, config]
+
+</code></p>
+<p>loop is executed every exTime ms</p>
+</dd>
+<dt>kd</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>float kd</b> [unit=&#x22;second&#x22;, min=0.0, config, precision=6]
+
+</code></p>
+<p>derivative constant</p>
+</dd>
+<dt>ki</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>float ki</b> [unit=&#x22;per_minute&#x22;, min=0.0, config, precision=6]
+
+</code></p>
+<p>integral constant</p>
+</dd>
+<dt>kp</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>float kp</b> [min=0.0, config, precision=6]
+
+</code></p>
+<p>proportional constant</p>
+</dd>
+<dt>max</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>float max</b> [config, precision=6]
+
+</code></p>
+<p>max out value</p>
+</dd>
+<dt>maxDelta</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>float maxDelta</b> [min=0.0, config, precision=6]
+
+</code></p>
+<p>the max amount out is allowed to change in exTime ms&#xa;A setting of 0 disables this function</p>
+</dd>
+<dt>min</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>float min</b> [config, precision=6]
+
+</code></p>
+<p>min out value</p>
+</dd>
+<dt>out</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>float out</b> [readonly]
+
+</code></p>
+<p>out value, constrained to be between min and max</p>
+</dd>
+<dt>sp</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>float sp</b> [summary, config]
+
+</code></p>
+<p>setpoint</p>
+</dd>
+<dt>changed</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> <em>override</em> </em><b>void changed(<a href='../sys/Slot.html'>Slot</a> slot)</b>
+
+</code></p>
+<p>Behavior to execute when a property is changed externally</p>
+</dd>
+<dt>execute</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> <em>override</em> </em><b>void execute()</b>
+
+</code></p>
+<p>Execute is called once every scan.</p>
+</dd>
+<dt>start</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> <em>override</em> </em><b>void start()</b>
+
+</code></p>
+<p>Callback when component is first started in an app.</p>
+</dd>
+</dl>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>func</a>
+</div>
+<div class='copyright'><script type='text/javascript'>document.write("Copyright &#169; " + new Date().getFullYear() + " Tridium, Inc.")</script></div>
+</body>
+</html>
