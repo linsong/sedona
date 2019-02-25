@@ -1,0 +1,142 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>sys::Err</title>
+  <meta http-equiv='Content-type' content='text/html;charset=UTF-8' />
+  <link rel='stylesheet' type='text/css' href='../style.css'/>
+</head>
+<body>
+<p>
+  <a href='../index.html'>
+    <img src='../logo.png' alt='Sedona'/>
+  </a>
+</p>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>sys</a>
+</div>
+<h1 class='title'>sys::Err</h1>
+<hr/>
+<pre class='inheritance'><a href='../sys/Obj.html'>sys::Obj</a>
+  sys::Err
+</pre>
+<br>
+<code style='color:darkgreen;font-weight:bold;font-size:120%'><em>public </em> class <b style='font-weight:bolder'>Err</b>  </code><br>
+<hr/>
+<p>Errors codes are assigned as follows:</p>
+<pre class='doc'>  Non-recoverable:&#xa;    [C code: 1-39]&#xa;    [Sedona: 40-99]&#xa;    - don&#x27;t attempt to auto-restart application because &#xa;      the vm, scode, or app itself is invalid</pre>
+<pre class='doc'>  Recoverable: &#xa;    [C code: 100-139]&#xa;    [Sedona: 140-249]&#xa;    - something went wrong at runtime, but if we auto-restart &#xa;      the app things will probably start working again (at &#xa;      least for a little while)</pre>
+<pre class='doc'>  Special: &#xa;    [250-255]&#xa;    - special codes shared b/w C and Sedona code</pre>
+<hr/>
+<dl>
+<dt>badPlatformService</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int badPlatformService</b>
+
+</code></p>
+</dd>
+<dt>cannotInitApp</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int cannotInitApp</b>
+
+</code></p>
+</dd>
+<dt>cannotInsert</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int cannotInsert</b>
+
+</code></p>
+</dd>
+<dt>cannotLoadLink</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int cannotLoadLink</b>
+
+</code></p>
+</dd>
+<dt>cannotMalloc</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int cannotMalloc</b>
+
+</code></p>
+</dd>
+<dt>cannotOpenFile</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int cannotOpenFile</b>
+
+</code></p>
+</dd>
+<dt>hibernate</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int hibernate</b>
+
+</code></p>
+</dd>
+<dt>invalidAppEndMarker</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int invalidAppEndMarker</b>
+
+</code></p>
+</dd>
+<dt>invalidArgs</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int invalidArgs</b>
+
+</code></p>
+</dd>
+<dt>invalidCompEndMarker</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int invalidCompEndMarker</b>
+
+</code></p>
+</dd>
+<dt>invalidKitId</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int invalidKitId</b>
+
+</code></p>
+</dd>
+<dt>invalidMagic</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int invalidMagic</b>
+
+</code></p>
+</dd>
+<dt>invalidSchema</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int invalidSchema</b>
+
+</code></p>
+</dd>
+<dt>invalidTypeId</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int invalidTypeId</b>
+
+</code></p>
+</dd>
+<dt>invalidVersion</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int invalidVersion</b>
+
+</code></p>
+</dd>
+<dt>nameTooLong</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int nameTooLong</b>
+
+</code></p>
+</dd>
+<dt>noPlatformService</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int noPlatformService</b>
+
+</code></p>
+</dd>
+<dt>restart</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int restart</b>
+
+</code></p>
+</dd>
+<dt>unexpectedEOF</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int unexpectedEOF</b>
+
+</code></p>
+</dd>
+<dt>yield</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int yield</b>
+
+</code></p>
+</dd>
+</dl>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>sys</a>
+</div>
+<div class='copyright'><script type='text/javascript'>document.write("Copyright &#169; " + new Date().getFullYear() + " Tridium, Inc.")</script></div>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>inet::UdpDatagram</title>
+  <meta http-equiv='Content-type' content='text/html;charset=UTF-8' />
+  <link rel='stylesheet' type='text/css' href='../style.css'/>
+</head>
+<body>
+<p>
+  <a href='../index.html'>
+    <img src='../logo.png' alt='Sedona'/>
+  </a>
+</p>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>inet</a>
+</div>
+<h1 class='title'>inet::UdpDatagram</h1>
+<hr/>
+<pre class='inheritance'><a href='../sys/Obj.html'>sys::Obj</a>
+  inet::UdpDatagram
+</pre>
+<br>
+<code style='color:darkgreen;font-weight:bold;font-size:120%'><em>public </em> class <b style='font-weight:bolder'>UdpDatagram</b>  </code><br>
+<hr/>
+<p>UdpDatagram is used to encapsulate the buffer of data and&#xa;the IP address for sending and receiving UDP packets with&#xa;a UdpSocket.</p>
+<hr/>
+<dl>
+<dt>addr</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../inet/IpAddr.html'>IpAddr</a> addr</b>
+
+</code></p>
+<p>The IP address to send this packet to, or the&#xa;address we received this packet from.  Note this is&#xa;a shared instance during receive and must be copied&#xa;to a new memory location if you wish to keep it.</p>
+</dd>
+<dt>buf</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>byte[] buf</b>
+
+</code></p>
+<p>The buffer of data to send (must never be null)</p>
+</dd>
+<dt>flowinfo</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>int flowinfo</b>
+
+</code></p>
+<p>IPv6 address flow info</p>
+</dd>
+<dt>len</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>int len</b>
+
+</code></p>
+<p>Number of bytes past buf+off to send or receive, after&#xa;receive() specified the number of bytes actually read</p>
+</dd>
+<dt>off</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>int off</b>
+
+</code></p>
+<p>Offset into buffer</p>
+</dd>
+<dt>port</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>int port</b>
+
+</code></p>
+<p>The IP port for address to send or receive</p>
+</dd>
+<dt>scopeId</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>int scopeId</b>
+
+</code></p>
+<p>IPv6 address scope ID</p>
+</dd>
+<dt>getSocketAddr</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void getSocketAddr(<a href='../inet/SocketAddr.html'>SocketAddr</a> sockAddr)</b>
+
+</code></p>
+<p>Copy the datagram to the socket address (makes a &#xa;deep copy of the host addr).</p>
+</dd>
+<dt>setSocketAddr</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void setSocketAddr(<a href='../inet/SocketAddr.html'>SocketAddr</a> sockAddr)</b>
+
+</code></p>
+<p>Copy this address to the datagram (makes a &#xa;shallow copy of the host addr).</p>
+</dd>
+</dl>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>inet</a>
+</div>
+<div class='copyright'><script type='text/javascript'>document.write("Copyright &#169; " + new Date().getFullYear() + " Tridium, Inc.")</script></div>
+</body>
+</html>

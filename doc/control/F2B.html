@@ -1,0 +1,157 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>control::F2B</title>
+  <meta http-equiv='Content-type' content='text/html;charset=UTF-8' />
+  <link rel='stylesheet' type='text/css' href='../style.css'/>
+</head>
+<body>
+<p>
+  <a href='../index.html'>
+    <img src='../logo.png' alt='Sedona'/>
+  </a>
+</p>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>control</a>
+</div>
+<h1 class='title'>control::F2B</h1>
+<hr/>
+<pre class='inheritance'><a href='../sys/Obj.html'>sys::Obj</a>
+  <a href='../sys/Virtual.html'>sys::Virtual</a>
+    <a href='../sys/Component.html'>sys::Component</a>
+      control::F2B
+</pre>
+<br>
+<code style='color:darkgreen;font-weight:bold;font-size:120%'><em>public </em> class <b style='font-weight:bolder'>F2B</b>  </code><code style='color:darkblue;font-weight:bold'>
+[niagaraIcon=&#x22;module://icons/x16/control/util/switch.png&#x22;]</code>
+<br>
+<hr/>
+<p>F2b float 16 bit decoder object&#xa;The input float is cast to an int, which is then decoded to 16 bools of output&#xa;out1 to out16 = decode with out1 = LSB and out16 = MSB&#xa;ovrf is set if in &gt; 65535</p>
+<hr/>
+<dl>
+<dt>in</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>float in</b>
+
+</code></p>
+<p>input value to be decoded</p>
+</dd>
+<dt>out1</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>bool out1</b> [readonly]
+
+</code></p>
+<p>out1 is set if bit 0 (LSB) is set</p>
+</dd>
+<dt>out10</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>bool out10</b> [readonly]
+
+</code></p>
+<p>out2 is set if bit 9 is set</p>
+</dd>
+<dt>out11</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>bool out11</b> [readonly]
+
+</code></p>
+<p>out2 is set if bit 10 is set</p>
+</dd>
+<dt>out12</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>bool out12</b> [readonly]
+
+</code></p>
+<p>out2 is set if bit 11 is set</p>
+</dd>
+<dt>out13</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>bool out13</b> [readonly]
+
+</code></p>
+<p>out2 is set if bit 12 is set</p>
+</dd>
+<dt>out14</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>bool out14</b> [readonly]
+
+</code></p>
+<p>out2 is set if bit 13 is set</p>
+</dd>
+<dt>out15</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>bool out15</b> [readonly]
+
+</code></p>
+<p>out2 is set if bit 14 is set</p>
+</dd>
+<dt>out16</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>bool out16</b> [readonly]
+
+</code></p>
+<p>out2 is set if bit 15 (MSB) is set</p>
+</dd>
+<dt>out2</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>bool out2</b> [readonly]
+
+</code></p>
+<p>out2 is set if bit 1 is set</p>
+</dd>
+<dt>out3</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>bool out3</b> [readonly]
+
+</code></p>
+<p>out2 is set if bit 2 is set</p>
+</dd>
+<dt>out4</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>bool out4</b> [readonly]
+
+</code></p>
+<p>out2 is set if bit 3 is set</p>
+</dd>
+<dt>out5</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>bool out5</b> [readonly]
+
+</code></p>
+<p>out2 is set if bit 4 is set</p>
+</dd>
+<dt>out6</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>bool out6</b> [readonly]
+
+</code></p>
+<p>out2 is set if bit 5 is set</p>
+</dd>
+<dt>out7</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>bool out7</b> [readonly]
+
+</code></p>
+<p>out2 is set if bit 6 is set</p>
+</dd>
+<dt>out8</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>bool out8</b> [readonly]
+
+</code></p>
+<p>out2 is set if bit 7 is set</p>
+</dd>
+<dt>out9</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>bool out9</b> [readonly]
+
+</code></p>
+<p>out2 is set if bit 8 is set</p>
+</dd>
+<dt>ovrf</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>bool ovrf</b> [readonly]
+
+</code></p>
+<p>ovrf is set if in &gt; 65535</p>
+</dd>
+<dt>execute</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> <em>override</em> </em><b>void execute()</b>
+
+</code></p>
+<p>Execute is called once every scan.</p>
+</dd>
+</dl>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>control</a>
+</div>
+<div class='copyright'><script type='text/javascript'>document.write("Copyright &#169; " + new Date().getFullYear() + " Tridium, Inc.")</script></div>
+</body>
+</html>

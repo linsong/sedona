@@ -1,0 +1,181 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>web::WebRes</title>
+  <meta http-equiv='Content-type' content='text/html;charset=UTF-8' />
+  <link rel='stylesheet' type='text/css' href='../style.css'/>
+</head>
+<body>
+<p>
+  <a href='../index.html'>
+    <img src='../logo.png' alt='Sedona'/>
+  </a>
+</p>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>web</a>
+</div>
+<h1 class='title'>web::WebRes</h1>
+<hr/>
+<pre class='inheritance'><a href='../sys/Obj.html'>sys::Obj</a>
+  <a href='../sys/Virtual.html'>sys::Virtual</a>
+    <a href='../sys/OutStream.html'>sys::OutStream</a>
+      web::WebRes
+</pre>
+<br>
+<code style='color:darkgreen;font-weight:bold;font-size:120%'><em>public </em> class <b style='font-weight:bolder'>WebRes</b>  </code><br>
+<hr/>
+<p>WebRes models the response side of an HTTP transaction.&#xa;All responses should be ordered as:</p>
+<pre class='doc'>  1. res.writeStatus&#xa;  2. zero or more calls to res.writeHeader&#xa;  3. res.finishHeaders&#xa;  4. write body</pre>
+<hr/>
+<dl>
+<dt>bufLen</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int bufLen</b>
+
+</code></p>
+</dd>
+<dt>service</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../web/WebService.html'>WebService</a> service</b>
+
+</code></p>
+<p>Parent web service component</p>
+</dd>
+<dt>close</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>override</em> </em><b>void close()</b>
+
+</code></p>
+</dd>
+<dt>encode64</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../web/WebRes.html'>WebRes</a> encode64(<a href='../sys/Buf.html'>Buf</a> b)</b>
+
+</code></p>
+<p>Print the buf contents using base64 encoding and return this.</p>
+</dd>
+<dt>esc</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../web/WebRes.html'>WebRes</a> esc(<a href='../sys/Str.html'>Str</a> s)</b>
+
+</code></p>
+<p>Print the specified string escaping &lt;, &gt;, and &amp;&#xa;into the &amp;lt;, &amp;gt;, and &amp;amp;</p>
+</dd>
+<dt>finishHeaders</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../web/WebRes.html'>WebRes</a> finishHeaders()</b>
+
+</code></p>
+<p>This call closes the header section and readys the&#xa;output stream for the response content.</p>
+</dd>
+<dt>flush</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>override</em> </em><b>void flush()</b>
+
+</code></p>
+</dd>
+<dt>html</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../web/WebRes.html'>WebRes</a> html()</b>
+
+</code></p>
+<p>Write out 200 OK status, text/html content type,&#xa;and opening HTML markup.</p>
+</dd>
+<dt>htmlEnd</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../web/WebRes.html'>WebRes</a> htmlEnd()</b>
+
+</code></p>
+<p>Write closing HTML markup.</p>
+</dd>
+<dt>printDuration</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../web/WebRes.html'>WebRes</a> printDuration(long ticks)</b>
+
+</code></p>
+<p>Print duration in human readable form.</p>
+</dd>
+<dt>printElapsed</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../web/WebRes.html'>WebRes</a> printElapsed(long ticks)</b>
+
+</code></p>
+<p>Print elapsed duration from specified ticks to now.</p>
+</dd>
+<dt>printProp</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../web/WebRes.html'>WebRes</a> printProp(<a href='../sys/Component.html'>Component</a> c, <a href='../sys/Slot.html'>Slot</a> prop)</b>
+
+</code></p>
+<p>Print the component&#x27;s current value of the specified property.</p>
+</dd>
+<dt>spaces</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../web/WebRes.html'>WebRes</a> spaces(int num)</b>
+
+</code></p>
+<p>Print the specified number of spaces.</p>
+</dd>
+<dt>td</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../web/WebRes.html'>WebRes</a> td()</b>
+
+</code></p>
+<p>Write td start tag with no-wrap and left align.</p>
+</dd>
+<dt>th</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../web/WebRes.html'>WebRes</a> th(<a href='../sys/Str.html'>Str</a> title)</b>
+
+</code></p>
+<p>Write th element with no-wrap and left align.</p>
+</dd>
+<dt>trTitle</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../web/WebRes.html'>WebRes</a> trTitle(<a href='../sys/Str.html'>Str</a> title, int colspan)</b>
+
+</code></p>
+<p>Write a tr element with the specified colspan that&#xa;can be used as a title header to separate rows.</p>
+</dd>
+<dt>w</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../web/WebRes.html'>WebRes</a> w(<a href='../sys/Str.html'>Str</a> s)</b>
+
+</code></p>
+<p>Print the specified string and return this.</p>
+</dd>
+<dt>wi</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../web/WebRes.html'>WebRes</a> wi(int i)</b>
+
+</code></p>
+<p>Print the specified integer and return this.</p>
+</dd>
+<dt>write</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>override</em> </em><b>bool write(int b)</b>
+
+</code></p>
+</dd>
+<dt>writeBytes</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>override</em> </em><b>bool writeBytes(byte[] b, int off, int len)</b>
+
+</code></p>
+</dd>
+<dt>writeContentType</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../web/WebRes.html'>WebRes</a> writeContentType(<a href='../sys/Str.html'>Str</a> val)</b>
+
+</code></p>
+<p>Convenience for writeHeader(&#x22;Content-Type&#x22;, val)</p>
+</dd>
+<dt>writeHeader</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../web/WebRes.html'>WebRes</a> writeHeader(<a href='../sys/Str.html'>Str</a> name, <a href='../sys/Str.html'>Str</a> val)</b>
+
+</code></p>
+<p>Write a header name/value pair.  This call must be&#xa;made between writeStatus() and finishHeaders().</p>
+</dd>
+<dt>writeStatus</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../web/WebRes.html'>WebRes</a> writeStatus(int status)</b>
+
+</code></p>
+<p>Write response status line with specified HTTP status&#xa;code.  This call must be the very first thing written.</p>
+</dd>
+<dt>writeStatusOk</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../web/WebRes.html'>WebRes</a> writeStatusOk()</b>
+
+</code></p>
+<p>Convenience for writeStatus(200)</p>
+</dd>
+</dl>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>web</a>
+</div>
+<div class='copyright'><script type='text/javascript'>document.write("Copyright &#169; " + new Date().getFullYear() + " Tridium, Inc.")</script></div>
+</body>
+</html>

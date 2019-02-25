@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>sox::ReceiveWindow</title>
+  <meta http-equiv='Content-type' content='text/html;charset=UTF-8' />
+  <link rel='stylesheet' type='text/css' href='../style.css'/>
+</head>
+<body>
+<p>
+  <a href='../index.html'>
+    <img src='../logo.png' alt='Sedona'/>
+  </a>
+</p>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>sox</a>
+</div>
+<h1 class='title'>sox::ReceiveWindow</h1>
+<hr/>
+<pre class='inheritance'><a href='../sys/Obj.html'>sys::Obj</a>
+  sox::ReceiveWindow
+</pre>
+<br>
+<code style='color:darkgreen;font-weight:bold;font-size:120%'><em>public </em> class <b style='font-weight:bolder'>ReceiveWindow</b>  </code><br>
+<hr/>
+<p>ReceiveWindow manages the incoming message sequences and acknowledgements.</p>
+<hr/>
+<dl>
+<dt>max</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int max</b>
+
+</code></p>
+</dd>
+<dt>init</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void init(int num)</b>
+
+</code></p>
+<p>Initialize the receive window with the handshake seqNum.</p>
+</dd>
+<dt>receive</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>bool receive(int num)</b>
+
+</code></p>
+<p>Receive the given sequence number.  Return true if the&#xa;message should be processed.  Return false if outside of&#xa;the receiving window or we have already processed it.</p>
+</dd>
+<dt>reset</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void reset()</b>
+
+</code></p>
+<p>Reset into a clean state for new session.</p>
+</dd>
+<dt>setAckHeaders</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void setAckHeaders(<a href='../sox/SoxService.html'>SoxService</a> service)</b>
+
+</code></p>
+<p>If add the ack and ackMore headers if needed.</p>
+</dd>
+</dl>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>sox</a>
+</div>
+<div class='copyright'><script type='text/javascript'>document.write("Copyright &#169; " + new Date().getFullYear() + " Tridium, Inc.")</script></div>
+</body>
+</html>

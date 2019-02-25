@@ -1,0 +1,75 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>driver::DoPoint</title>
+  <meta http-equiv='Content-type' content='text/html;charset=UTF-8' />
+  <link rel='stylesheet' type='text/css' href='../style.css'/>
+</head>
+<body>
+<p>
+  <a href='../index.html'>
+    <img src='../logo.png' alt='Sedona'/>
+  </a>
+</p>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>driver</a>
+</div>
+<h1 class='title'>driver::DoPoint</h1>
+<hr/>
+<pre class='inheritance'><a href='../sys/Obj.html'>sys::Obj</a>
+  <a href='../sys/Virtual.html'>sys::Virtual</a>
+    <a href='../sys/Component.html'>sys::Component</a>
+      <a href='../driver/Point.html'>driver::Point</a>
+        driver::DoPoint
+</pre>
+<br>
+<code style='color:darkgreen;font-weight:bold;font-size:120%'><em>public </em> class <b style='font-weight:bolder'>DoPoint</b>  </code><br>
+<hr/>
+<p>Models a digital output point in a Device.</p>
+<hr/>
+<dl>
+<dt>in</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>bool in</b>
+
+</code></p>
+<p>Value to write to digital output</p>
+</dd>
+<dt>isFirstTime</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>bool isFirstTime</b>
+
+</code></p>
+</dd>
+<dt>isInChanged</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>bool isInChanged</b>
+
+</code></p>
+</dd>
+<dt>lastValue</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>bool lastValue</b>
+
+</code></p>
+</dd>
+<dt>execute</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> <em>override</em> </em><b>void execute()</b>
+
+</code></p>
+<p>Calls super to propagate fault state from device;&#xa;writes &#x27;in&#x27; to digital output on (a) value change &#xa;or (b) first cycle after point status becomes &#x27;up&#x27;.&#xa;While status is &#x27;down&#x27;, does nothing.</p>
+</dd>
+<dt>wrValue</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> </em><b>void wrValue(bool value)</b>
+
+</code></p>
+<p>wrValue call back when input changes</p>
+</dd>
+</dl>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>driver</a>
+</div>
+<div class='copyright'><script type='text/javascript'>document.write("Copyright &#169; " + new Date().getFullYear() + " Tridium, Inc.")</script></div>
+</body>
+</html>

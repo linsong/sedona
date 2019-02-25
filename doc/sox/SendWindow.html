@@ -1,0 +1,100 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>sox::SendWindow</title>
+  <meta http-equiv='Content-type' content='text/html;charset=UTF-8' />
+  <link rel='stylesheet' type='text/css' href='../style.css'/>
+</head>
+<body>
+<p>
+  <a href='../index.html'>
+    <img src='../logo.png' alt='Sedona'/>
+  </a>
+</p>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>sox</a>
+</div>
+<h1 class='title'>sox::SendWindow</h1>
+<hr/>
+<pre class='inheritance'><a href='../sys/Obj.html'>sys::Obj</a>
+  sox::SendWindow
+</pre>
+<br>
+<code style='color:darkgreen;font-weight:bold;font-size:120%'><em>public </em> class <b style='font-weight:bolder'>SendWindow</b>  </code><br>
+<hr/>
+<p>SendWindow manages the outgoing messages and keeps enough&#xd;&#xa;information needed to recreate the message on a retry.</p>
+<hr/>
+<dl>
+<dt>PKT_RETRY_INTERVAL</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int PKT_RETRY_INTERVAL</b>
+
+</code></p>
+</dd>
+<dt>max</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int max</b>
+
+</code></p>
+</dd>
+<dt>numUnacked</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>byte numUnacked</b>
+
+</code></p>
+</dd>
+<dt>packets</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>inline</em> </em><b><a href='../sox/SendPacket.html'>SendPacket</a>[] packets</b>
+
+</code></p>
+</dd>
+<dt>seqNum</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>short seqNum</b>
+
+</code></p>
+</dd>
+<dt>checkAckHeaders</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>bool checkAckHeaders(<a href='../sox/SoxService.html'>SoxService</a> service, int numFields)</b>
+
+</code></p>
+<p>If we have any ack headers then process them.  Return true if&#xd;&#xa;the sending window isn&#x27;t full - if we return false, then we&#xd;&#xa;don&#x27;t have room to store any additional outgoing messages.</p>
+</dd>
+<dt>isAcked</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>bool isAcked(int unackStart, int unackEnd, int ackNum, byte[] ackMore, int ackMoreOff, int ackMoreLen, int seqNum)</b>
+
+</code></p>
+<p>Return if the specified seqNum should be considered&#xd;&#xa;acked.  The unackStart and unackEnd define the inclusive&#xd;&#xa;range of what the remote endpoint has not acked (which&#xd;&#xa;means anything outside of that range is immediately&#xd;&#xa;considered acked).  We also check our ackMore mask for&#xd;&#xa;unordered acks.</p>
+</dd>
+<dt>nextPacket</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../sox/SendPacket.html'>SendPacket</a> nextPacket()</b>
+
+</code></p>
+<p>Allocate a SendPacket which stores how to resend the message.</p>
+</dd>
+<dt>nextSeqNum</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>int nextSeqNum()</b>
+
+</code></p>
+<p>Allocate the next outgoing sequence number.</p>
+</dd>
+<dt>reset</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void reset()</b>
+
+</code></p>
+<p>Reset into a clean state for new session.</p>
+</dd>
+<dt>sendRetries</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>bool sendRetries(<a href='../sox/SoxService.html'>SoxService</a> service, <a href='../sox/SoxSession.html'>SoxSession</a> session, int houseKeepingTicks)</b>
+
+</code></p>
+<p>If we have any unacked outgoing messages, then&#xd;&#xa;resend them.  Return if we did work.</p>
+</dd>
+</dl>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>sox</a>
+</div>
+<div class='copyright'><script type='text/javascript'>document.write("Copyright &#169; " + new Date().getFullYear() + " Tridium, Inc.")</script></div>
+</body>
+</html>

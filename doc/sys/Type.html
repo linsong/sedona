@@ -1,0 +1,160 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>sys::Type</title>
+  <meta http-equiv='Content-type' content='text/html;charset=UTF-8' />
+  <link rel='stylesheet' type='text/css' href='../style.css'/>
+</head>
+<body>
+<p>
+  <a href='../index.html'>
+    <img src='../logo.png' alt='Sedona'/>
+  </a>
+</p>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>sys</a>
+</div>
+<h1 class='title'>sys::Type</h1>
+<hr/>
+<pre class='inheritance'><a href='../sys/Obj.html'>sys::Obj</a>
+  sys::Type
+</pre>
+<br>
+<code style='color:darkgreen;font-weight:bold;font-size:120%'><em>public const </em> class <b style='font-weight:bolder'>Type</b>  </code><br>
+<hr/>
+<p>Type models the meta-data of a Component including its&#xa;virtual method tables and slot definitions.</p>
+<hr/>
+<dl>
+<dt>base</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>const</em> </em><b><a href='../sys/Type.html'>Type</a> base</b>
+
+</code></p>
+<p>Reference to the base class type or null if Component itself.</p>
+</dd>
+<dt>boolId</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int boolId</b>
+
+</code></p>
+</dd>
+<dt>bufId</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int bufId</b>
+
+</code></p>
+</dd>
+<dt>byteId</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int byteId</b>
+
+</code></p>
+</dd>
+<dt>doubleId</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int doubleId</b>
+
+</code></p>
+</dd>
+<dt>errorId</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int errorId</b>
+
+</code></p>
+</dd>
+<dt>floatId</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int floatId</b>
+
+</code></p>
+</dd>
+<dt>id</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>const</em> </em><b>byte id</b>
+
+</code></p>
+<p>Unique id within this type&#x27;s kit; index into kit.types.</p>
+</dd>
+<dt>intId</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int intId</b>
+
+</code></p>
+</dd>
+<dt>kit</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>const</em> </em><b><a href='../sys/Kit.html'>Kit</a> kit</b>
+
+</code></p>
+<p>Reference to the Kit which contains this type.</p>
+</dd>
+<dt>longId</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int longId</b>
+
+</code></p>
+</dd>
+<dt>maxPrimitiveId</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int maxPrimitiveId</b>
+
+</code></p>
+</dd>
+<dt>name</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>const</em> </em><b><a href='../sys/Str.html'>Str</a> name</b>
+
+</code></p>
+<p>Simple name string of this type which unique within the kit.</p>
+</dd>
+<dt>shortId</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int shortId</b>
+
+</code></p>
+</dd>
+<dt>sizeof</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>const</em> </em><b>short sizeof</b>
+
+</code></p>
+<p>Number of bytes in memory an instance of this type requires.</p>
+</dd>
+<dt>slots</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>const</em> <em>inline</em> </em><b><a href='../sys/Slot.html'>Slot</a>[] slots</b>
+
+</code></p>
+<p>The list of this type&#x27;s reflective slots (properties&#xa;and actions) including inherited slots.</p>
+</dd>
+<dt>slotsLen</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>const</em> </em><b>byte slotsLen</b>
+
+</code></p>
+<p>The number of slots in the slots array.</p>
+</dd>
+<dt>voidId</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int voidId</b>
+
+</code></p>
+</dd>
+<dt>findSlot</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../sys/Slot.html'>Slot</a> findSlot(<a href='../sys/Str.html'>Str</a> name)</b>
+
+</code></p>
+<p>Find a slot by its simple name within this Type or&#xa;return null if not found.</p>
+</dd>
+<dt>is</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>bool is(<a href='../sys/Type.html'>Type</a> t)</b>
+
+</code></p>
+<p>Return if this type is or extends from the specified type.</p>
+</dd>
+<dt>isPrimitive</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>bool isPrimitive()</b>
+
+</code></p>
+<p>Return if this one of the primitive types.</p>
+</dd>
+<dt>slot</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../sys/Slot.html'>Slot</a> slot(int id)</b>
+
+</code></p>
+<p>Get the slot for the specified id or return null if out of range.</p>
+</dd>
+</dl>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>sys</a>
+</div>
+<div class='copyright'><script type='text/javascript'>document.write("Copyright &#169; " + new Date().getFullYear() + " Tridium, Inc.")</script></div>
+</body>
+</html>

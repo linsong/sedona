@@ -1,0 +1,93 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>hvac::Tstat</title>
+  <meta http-equiv='Content-type' content='text/html;charset=UTF-8' />
+  <link rel='stylesheet' type='text/css' href='../style.css'/>
+</head>
+<body>
+<p>
+  <a href='../index.html'>
+    <img src='../logo.png' alt='Sedona'/>
+  </a>
+</p>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>hvac</a>
+</div>
+<h1 class='title'>hvac::Tstat</h1>
+<hr/>
+<pre class='inheritance'><a href='../sys/Obj.html'>sys::Obj</a>
+  <a href='../sys/Virtual.html'>sys::Virtual</a>
+    <a href='../sys/Component.html'>sys::Component</a>
+      hvac::Tstat
+</pre>
+<br>
+<code style='color:darkgreen;font-weight:bold;font-size:120%'><em>public </em> class <b style='font-weight:bolder'>Tstat</b>  </code><code style='color:darkblue;font-weight:bold'>
+[niagaraIcon=&#x22;module://icons/x16/control/util/switch.png&#x22;]</code>
+<br>
+<hr/>
+<p>Tstat Provides On/Off or Floating Thermostat control</p>
+<pre class='doc'>  raise &amp; lower outputs operate independently of isHeating mode.&#xa;    lower will be set to true if cv &gt; (sp + diff/2) and will&#xa;          remain set until cv &lt; (sp - diff/2).&#xa;    raise will be set to true if cv &lt; (sp - diff/2) and will&#xa;          remain set until CV &gt; (sp + diff/2).</pre>
+<pre class='doc'>  out will be set based on isHeating mode.&#xa;    if isHeating&#xa;       out = raise&#xa;    else&#xa;       out = lower</pre>
+<hr/>
+<dl>
+<dt>cv</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>float cv</b>
+
+</code></p>
+<p>actual</p>
+</dd>
+<dt>diff</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>float diff</b> [summary, config]
+
+</code></p>
+<p>deadband centered around sp</p>
+</dd>
+<dt>isHeating</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>bool isHeating</b> [summary, config]
+
+</code></p>
+<p>set true to put into heating mode, false for cooling mode</p>
+</dd>
+<dt>lower</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>bool lower</b> [readonly]
+
+</code></p>
+<p>need to lower</p>
+</dd>
+<dt>out</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>bool out</b> [readonly]
+
+</code></p>
+<p>calls for cooling or heating as required by sp/cv/isheating</p>
+</dd>
+<dt>raise</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>bool raise</b> [readonly]
+
+</code></p>
+<p>need to raise</p>
+</dd>
+<dt>sp</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>float sp</b> [summary, config]
+
+</code></p>
+<p>the setpoint</p>
+</dd>
+<dt>execute</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> <em>override</em> </em><b>void execute()</b>
+
+</code></p>
+<p>Execute is called once every scan.</p>
+</dd>
+</dl>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>hvac</a>
+</div>
+<div class='copyright'><script type='text/javascript'>document.write("Copyright &#169; " + new Date().getFullYear() + " Tridium, Inc.")</script></div>
+</body>
+</html>

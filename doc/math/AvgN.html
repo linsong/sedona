@@ -1,0 +1,95 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>math::AvgN</title>
+  <meta http-equiv='Content-type' content='text/html;charset=UTF-8' />
+  <link rel='stylesheet' type='text/css' href='../style.css'/>
+</head>
+<body>
+<p>
+  <a href='../index.html'>
+    <img src='../logo.png' alt='Sedona'/>
+  </a>
+</p>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>math</a>
+</div>
+<h1 class='title'>math::AvgN</h1>
+<hr/>
+<pre class='inheritance'><a href='../sys/Obj.html'>sys::Obj</a>
+  <a href='../sys/Virtual.html'>sys::Virtual</a>
+    <a href='../sys/Component.html'>sys::Component</a>
+      math::AvgN
+</pre>
+<br>
+<code style='color:darkgreen;font-weight:bold;font-size:120%'><em>public </em> class <b style='font-weight:bolder'>AvgN</b>  </code><code style='color:darkblue;font-weight:bold'>
+[niagaraIcon=&#x22;module://icons/x16/control/math/average.png&#x22;]</code>
+<br>
+<hr/>
+<p>Modified Moving Average math object</p>
+<pre class='doc'>  out = [(n-1)*out + in]/n = (total + in - avg)/n</pre>
+<pre class='doc'>  where total = approx. running total of last n samples&#xa;        avg   = last computed average = total/n </pre>
+<pre class='doc'>  Note: 1) the &#x22;avg&#x22; value is &#x22;seeded&#x22; with the &#x22;in&#x22; &#xa;           value at startup or whenever &#x22;n&#x22; changes&#xa;        2) the &#x22;total&#x22; value is &#x22;seeded&#x22; with (in * n)&#xa;           at startup or whenever &#x22;n&#x22; changes&#xa;        3) boolean input &#x22;reset&#x22; resets the object to &#xa;           return to first execute cycle state, and avg&#xa;           and total are re &#x22;seeded&#x22;.  This may be useful&#xa;           to invoke in an application where large step changes&#xa;           of &#x22;in&#x22; are expected and &#x22;n&#x22; is a high value, to prevent&#xa;           output lag of the input.&#xa;           </pre>
+<pre class='doc'>  For large step changes in values, the &#x22;out&#x22; value will asymptotically&#xa;  approach the &#x22;in&#x22; value.</pre>
+<hr/>
+<dl>
+<dt>in</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>float in</b>
+
+</code></p>
+<p>value of in is added to average computation every execute cycle</p>
+</dd>
+<dt>numSamplesToAvg</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>int numSamplesToAvg</b> [min=1, config]
+
+</code></p>
+<p>number of samples to average. One new sample is read every execute cycle.</p>
+</dd>
+<dt>out</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>float out</b> [readonly]
+
+</code></p>
+<p>the average value updated every execute cycle</p>
+</dd>
+<dt>reset</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>bool reset</b> [readonly]
+
+</code></p>
+<p>reset is invoked to re-initialize the averaging</p>
+</dd>
+<dt>changed</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> <em>override</em> </em><b>void changed(<a href='../sys/Slot.html'>Slot</a> slot)</b>
+
+</code></p>
+<p>Behavior to execute when a property is changed externally</p>
+</dd>
+<dt>computeAverage</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void computeAverage()</b>
+
+</code></p>
+<p>average in a new sample</p>
+</dd>
+<dt>execute</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> <em>override</em> </em><b>void execute()</b>
+
+</code></p>
+<p>Execute is called once every scan.</p>
+</dd>
+<dt>start</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> <em>override</em> </em><b>void start()</b>
+
+</code></p>
+<p>Callback when component is first started in an app,&#xa;before the first call to propagateLinksTo() or execute().</p>
+</dd>
+</dl>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>math</a>
+</div>
+<div class='copyright'><script type='text/javascript'>document.write("Copyright &#169; " + new Date().getFullYear() + " Tridium, Inc.")</script></div>
+</body>
+</html>

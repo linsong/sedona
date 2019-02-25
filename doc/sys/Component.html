@@ -1,0 +1,384 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>sys::Component</title>
+  <meta http-equiv='Content-type' content='text/html;charset=UTF-8' />
+  <link rel='stylesheet' type='text/css' href='../style.css'/>
+</head>
+<body>
+<p>
+  <a href='../index.html'>
+    <img src='../logo.png' alt='Sedona'/>
+  </a>
+</p>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>sys</a>
+</div>
+<h1 class='title'>sys::Component</h1>
+<hr/>
+<pre class='inheritance'><a href='../sys/Obj.html'>sys::Obj</a>
+  <a href='../sys/Virtual.html'>sys::Virtual</a>
+    sys::Component
+</pre>
+<br>
+<code style='color:darkgreen;font-weight:bold;font-size:120%'><em>public </em> class <b style='font-weight:bolder'>Component</b>  </code><br>
+<hr/>
+<p>Component is the base class for all Sedona component classes.</p>
+<hr/>
+<dl>
+<dt>ADDED</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int ADDED</b>
+
+</code></p>
+</dd>
+<dt>REMOVED</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int REMOVED</b>
+
+</code></p>
+</dd>
+<dt>REORDERED</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int REORDERED</b>
+
+</code></p>
+</dd>
+<dt>children</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>short children</b>
+
+</code></p>
+<p>First child id in linked list of children (do not modify directly)</p>
+</dd>
+<dt>id</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>short id</b>
+
+</code></p>
+<p>Identifier in application (do not modify directly)</p>
+</dd>
+<dt>linksFrom</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../sys/Link.html'>Link</a> linksFrom</b>
+
+</code></p>
+<p>Linked list of Links where this is the &#x22;from&#x22; component</p>
+</dd>
+<dt>linksTo</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../sys/Link.html'>Link</a> linksTo</b>
+
+</code></p>
+<p>Linked list of Links where this is the &#x22;to&#x22; component</p>
+</dd>
+<dt>meta</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>int meta</b> [config]
+
+</code></p>
+<p>Metadata common to all components is packed into 32-bits:</p>
+<pre class='doc'>  00-03: nibble for security groups&#xa;  16-23: byte logical x coordinate on wiresheet&#xa;  23-31: byte logical y coordinate on wiresheet</pre>
+</dd>
+<dt>name</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>inline</em> </em><b><a href='../sys/Str.html'>Str</a> name</b>
+
+</code></p>
+</dd>
+<dt>nameLen</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int nameLen</b>
+
+</code></p>
+<p>Human name for this component which is unique&#xa;within its parent (do not modify directly)</p>
+</dd>
+<dt>nextSibling</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>short nextSibling</b>
+
+</code></p>
+<p>Next sibling id for linked list of components under&#xa;a given parent (do not modify directly)</p>
+</dd>
+<dt>nullId</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int nullId</b>
+
+</code></p>
+<p>This value represents a null two byte id as 0xffff</p>
+</dd>
+<dt>parent</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>short parent</b>
+
+</code></p>
+<p>Parent id or nullId if root App or unmounted (do not modify directly)</p>
+</dd>
+<dt>type</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>const</em> </em><b><a href='../sys/Type.html'>Type</a> type</b>
+
+</code></p>
+<p>Reference to the Type instance which describes this Component.</p>
+</dd>
+<dt>watchFlags</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>inline</em> </em><b>byte[] watchFlags</b>
+
+</code></p>
+<p>Bitmask for each watch&#x27;s subscriptions and events</p>
+</dd>
+<dt>allowChildExecute</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> </em><b>bool allowChildExecute()</b>
+
+</code></p>
+<p>allowChildExecute returns false if child components of this&#xa;should not have execute() called this app cycle.</p>
+</dd>
+<dt>changed</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> </em><b>void changed(<a href='../sys/Slot.html'>Slot</a> slot)</b>
+
+</code></p>
+<p>The changed method must be called when a slot is modified.&#xa;It is automatically called whenever setting a property&#xa;field with a primitive type (bool, byte, short, int, and&#xa;float).  However it must be manually called after updating&#xa;the contents of a Buf property.  If you override this&#xa;method, you MUST call super!</p>
+</dd>
+<dt>childEvent</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> </em><b>int childEvent(int eType, <a href='../sys/Component.html'>Component</a> child)</b>
+
+</code></p>
+<p>Called on parent when a child event occurs.  Only called if app is&#xa;running.</p>
+<p>Defined event types are:</p>
+<p>REMOVED - notification that child has been removed from component.  </p>
+<pre class='doc'>  Should always return 0.  Called after stop() on child.</pre>
+<p>ADDED   - notification that child has been added to component.  </p>
+<pre class='doc'>  Should always return 0.   Called prior to loaded() / start() on child.</pre>
+<p>REORDERED - notification that component&#x27;s children have been reordered.  </p>
+<pre class='doc'>  Should always return 0.   Called after the reordering is complete.&#xa;  Only called once per reorder event; child arg is always null.</pre>
+<p>Future event types may make use of return code.</p>
+</dd>
+<dt>execute</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> </em><b>void execute()</b>
+
+</code></p>
+<p>Execute is called once every scan using the&#xa;simple round-robin scan engine.</p>
+</dd>
+<dt>fireLinksChanged</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void fireLinksChanged()</b>
+
+</code></p>
+<p>Fire the links changed event on this component by marking&#xa;the link event bit for each watch&#x27;s bitmask.</p>
+</dd>
+<dt>fireTreeChanged</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void fireTreeChanged()</b>
+
+</code></p>
+<p>Fire a tree changed event on this component by marking&#xa;the tree event bit for each watch&#x27;s bitmask.</p>
+</dd>
+<dt>getBool</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>native</em> </em><b>bool getBool(<a href='../sys/Slot.html'>Slot</a> slot)</b>
+
+</code></p>
+<p>Get a bool property using reflection.</p>
+</dd>
+<dt>getBuf</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>native</em> </em><b><a href='../sys/Buf.html'>Buf</a> getBuf(<a href='../sys/Slot.html'>Slot</a> slot)</b>
+
+</code></p>
+<p>Get a Buf property using reflection.</p>
+</dd>
+<dt>getDouble</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>native</em> </em><b>double getDouble(<a href='../sys/Slot.html'>Slot</a> slot)</b>
+
+</code></p>
+<p>Get a double property using reflection.</p>
+</dd>
+<dt>getFloat</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>native</em> </em><b>float getFloat(<a href='../sys/Slot.html'>Slot</a> slot)</b>
+
+</code></p>
+<p>Get a float property using reflection.</p>
+</dd>
+<dt>getInt</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>native</em> </em><b>int getInt(<a href='../sys/Slot.html'>Slot</a> slot)</b>
+
+</code></p>
+<p>Get an integer (byte, short, or int) property using reflection.</p>
+</dd>
+<dt>getLong</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>native</em> </em><b>long getLong(<a href='../sys/Slot.html'>Slot</a> slot)</b>
+
+</code></p>
+<p>Get a long property using reflection.</p>
+</dd>
+<dt>invokeAction</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void invokeAction(<a href='../sys/InStream.html'>InStream</a> in, <a href='../sys/Slot.html'>Slot</a> slot)</b>
+
+</code></p>
+<p>Decode a value from the input stream&#xa;and invoke for the specified action.</p>
+</dd>
+<dt>invokeBool</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>native</em> </em><b>void invokeBool(<a href='../sys/Slot.html'>Slot</a> slot, bool arg)</b>
+
+</code></p>
+<p>Invoke an action which takes a boolean argument.</p>
+</dd>
+<dt>invokeBuf</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>native</em> </em><b>void invokeBuf(<a href='../sys/Slot.html'>Slot</a> slot, <a href='../sys/Buf.html'>Buf</a> arg)</b>
+
+</code></p>
+<p>Invoke an action which takes a Buf argument.</p>
+</dd>
+<dt>invokeDouble</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>native</em> </em><b>void invokeDouble(<a href='../sys/Slot.html'>Slot</a> slot, double arg)</b>
+
+</code></p>
+<p>Invoke an action which takes a double argument.</p>
+</dd>
+<dt>invokeFloat</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>native</em> </em><b>void invokeFloat(<a href='../sys/Slot.html'>Slot</a> slot, float arg)</b>
+
+</code></p>
+<p>Invoke an action which takes a float argument.</p>
+</dd>
+<dt>invokeInt</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>native</em> </em><b>void invokeInt(<a href='../sys/Slot.html'>Slot</a> slot, int arg)</b>
+
+</code></p>
+<p>Invoke an action which takes an int argument.</p>
+</dd>
+<dt>invokeLong</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>native</em> </em><b>void invokeLong(<a href='../sys/Slot.html'>Slot</a> slot, long arg)</b>
+
+</code></p>
+<p>Invoke an action which takes a long argument.</p>
+</dd>
+<dt>invokeVoid</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>native</em> </em><b>void invokeVoid(<a href='../sys/Slot.html'>Slot</a> slot)</b>
+
+</code></p>
+<p>Invoke an action which takes no arguments.</p>
+</dd>
+<dt>linkEvent</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> </em><b>int linkEvent(int eType, <a href='../sys/Link.html'>Link</a> link)</b>
+
+</code></p>
+<p>Called on a component when a link event occurs.  Only called&#xa;if app is running.</p>
+<p>Defined event types are:</p>
+<p>REMOVED - link has been removed from the component.  </p>
+<pre class='doc'>  Should always return 0</pre>
+<p>ADDED   - link has been added to the component.  </p>
+<pre class='doc'>  Should always return 0. </pre>
+<p>Future event types may make use of return code.</p>
+</dd>
+<dt>loadAppComp</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>int loadAppComp(<a href='../sys/InStream.html'>InStream</a> in)</b>
+
+</code></p>
+<p>Load the component&#x27;s configuration from a binary&#xa;format input stream - see saveAppComp() for format.&#xa;We assume component id and type id have already been&#xa;read.  Return 0 on success or non-zero on error.</p>
+</dd>
+<dt>loadProp</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void loadProp(<a href='../sys/InStream.html'>InStream</a> in, <a href='../sys/Slot.html'>Slot</a> slot)</b>
+
+</code></p>
+<p>Decode a value from the input stream&#xa;and set for the specified property.</p>
+</dd>
+<dt>loadProps</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void loadProps(<a href='../sys/InStream.html'>InStream</a> in, int filter)</b>
+
+</code></p>
+<p>Load the property values to the output stream.&#xa;Filter:</p>
+<pre class='doc'>  0   = all&#xa;  &#x27;c&#x27; = config only&#xa;  &#x27;r&#x27; = runtime only</pre>
+</dd>
+<dt>loaded</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> </em><b>void loaded()</b>
+
+</code></p>
+<p>Callback when component is loaded into an app.  This occurs&#xa;before the start phase.  Only called if app is running.</p>
+</dd>
+<dt>lookupByName</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../sys/Component.html'>Component</a> lookupByName(<a href='../sys/Str.html'>Str</a> name)</b>
+
+</code></p>
+<p>Lookup a child by name or return null.</p>
+</dd>
+<dt>parentEvent</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> </em><b>int parentEvent(int eType, <a href='../sys/Component.html'>Component</a> parent)</b>
+
+</code></p>
+<p>Called on a child when a parent event occurs.  Only called if app is&#xa;running.</p>
+<p>Defined event types are:</p>
+<p>REMOVED - notification that child has been removed/unparented.  </p>
+<pre class='doc'>  Should always return 0.  Called after stop() on child.</pre>
+<p>ADDED   - notification this child has been parented.  </p>
+<pre class='doc'>  Should always return 0.  Called prior to loaded() / start() on child.</pre>
+<p>Future event types may make use of return code.</p>
+</dd>
+<dt>path</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../sys/Component.html'>Component</a>[] path()</b>
+
+</code></p>
+<p>Get the path of this component from the root App.&#xa;The end of the path is denoted by null.  The list&#xa;is a shared static buffer.  Return null on error or&#xa;if not mounted under an Sys.app.</p>
+</dd>
+<dt>saveAppComp</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void saveAppComp(<a href='../sys/OutStream.html'>OutStream</a> out)</b>
+
+</code></p>
+<p>Save the component&#x27;s application information in&#xa;binary format to the output stream:</p>
+<pre class='doc'>  appComp&#xa;  {&#xa;    u2      id&#xa;    u1      kitId&#xa;    u1      typeId&#xa;    str     name&#xa;    u2      parent&#xa;    u2      children&#xa;    u2      nextSibling&#xa;    val[]   configProps&#xa;    u1      &#x27;;&#x27; end marker&#xa;  }</pre>
+</dd>
+<dt>saveProp</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void saveProp(<a href='../sys/OutStream.html'>OutStream</a> out, <a href='../sys/Slot.html'>Slot</a> prop)</b>
+
+</code></p>
+<p>Save a property value to the output stream.</p>
+</dd>
+<dt>saveProps</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void saveProps(<a href='../sys/OutStream.html'>OutStream</a> out, int filter)</b>
+
+</code></p>
+<p>Save the property values to the output stream.&#xa;Filter:</p>
+<pre class='doc'>  0   = all&#xa;  &#x27;c&#x27; = config only&#xa;  &#x27;r&#x27; = runtime only</pre>
+</dd>
+<dt>setBool</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void setBool(<a href='../sys/Slot.html'>Slot</a> slot, bool val)</b>
+
+</code></p>
+<p>Set a bool property using reflection.</p>
+</dd>
+<dt>setDouble</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void setDouble(<a href='../sys/Slot.html'>Slot</a> slot, double val)</b>
+
+</code></p>
+<p>Set a double property using reflection.</p>
+</dd>
+<dt>setFloat</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void setFloat(<a href='../sys/Slot.html'>Slot</a> slot, float val)</b>
+
+</code></p>
+<p>Set a float property using reflection.</p>
+</dd>
+<dt>setInt</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void setInt(<a href='../sys/Slot.html'>Slot</a> slot, int val)</b>
+
+</code></p>
+<p>Set an integer (byte, short, or int) property using reflection.</p>
+</dd>
+<dt>setLong</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void setLong(<a href='../sys/Slot.html'>Slot</a> slot, long val)</b>
+
+</code></p>
+<p>Set a long property using reflection.</p>
+</dd>
+<dt>setToDefault</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> </em><b>void setToDefault(<a href='../sys/Slot.html'>Slot</a> slot)</b>
+
+</code></p>
+<p>Set property to a default value.  &#xa;Called when a link is removed from an input slot.</p>
+</dd>
+<dt>start</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> </em><b>void start()</b>
+
+</code></p>
+<p>Callback when component is first started in an app.  This occurs&#xa;only after all components have had their loaded callback invoked. &#xa;Only called if app is running</p>
+</dd>
+<dt>stop</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> </em><b>void stop()</b>
+
+</code></p>
+<p>Callback when component is first stopped in an app.  Only called&#xa;if app is running.</p>
+</dd>
+</dl>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>sys</a>
+</div>
+<div class='copyright'><script type='text/javascript'>document.write("Copyright &#169; " + new Date().getFullYear() + " Tridium, Inc.")</script></div>
+</body>
+</html>

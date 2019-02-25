@@ -1,0 +1,85 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>control::DemuxI2B4</title>
+  <meta http-equiv='Content-type' content='text/html;charset=UTF-8' />
+  <link rel='stylesheet' type='text/css' href='../style.css'/>
+</head>
+<body>
+<p>
+  <a href='../index.html'>
+    <img src='../logo.png' alt='Sedona'/>
+  </a>
+</p>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>control</a>
+</div>
+<h1 class='title'>control::DemuxI2B4</h1>
+<hr/>
+<pre class='inheritance'><a href='../sys/Obj.html'>sys::Obj</a>
+  <a href='../sys/Virtual.html'>sys::Virtual</a>
+    <a href='../sys/Component.html'>sys::Component</a>
+      control::DemuxI2B4
+</pre>
+<br>
+<code style='color:darkgreen;font-weight:bold;font-size:120%'><em>public </em> class <b style='font-weight:bolder'>DemuxI2B4</b>  </code><code style='color:darkblue;font-weight:bold'>
+[niagaraIcon=&#x22;module://icons/x16/control/util/switch.png&#x22;]</code>
+<br>
+<hr/>
+<p>Demuxes an integer count input into 4 boolean outputs.&#xa;By setting &#x22;startsAt&#x22; appropriately, N objects&#xa;can demux to N*4 outputs (ie, you can create a 4x, 8x, 16x, etc demux)&#xa;if in == startsAt + 0, out1 is true, else false&#xa;if in == startsAt + 1, out2 is true, else false&#xa;if in == startsAt + 2, out3 is true, else false&#xa;if in == startsAt + 3, out4 is true, else false</p>
+<hr/>
+<dl>
+<dt>in</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>int in</b>
+
+</code></p>
+<p>input</p>
+</dd>
+<dt>out1</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>bool out1</b> [readonly]
+
+</code></p>
+<p>if in == startsAt + 0, out1 is true, else false</p>
+</dd>
+<dt>out2</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>bool out2</b> [readonly]
+
+</code></p>
+<p>if in == startsAt + 1, out2 is true, else false</p>
+</dd>
+<dt>out3</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>bool out3</b> [readonly]
+
+</code></p>
+<p>if in == startsAt + 2, out3 is true, else false</p>
+</dd>
+<dt>out4</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>bool out4</b> [readonly]
+
+</code></p>
+<p>if in == startsAt + 3, out4 is true, else false</p>
+</dd>
+<dt>startsAt</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>int startsAt</b> [config]
+
+</code></p>
+<p>starting value for in</p>
+</dd>
+<dt>execute</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> <em>override</em> </em><b>void execute()</b>
+
+</code></p>
+<p>Execute is called once every scan.</p>
+</dd>
+</dl>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>control</a>
+</div>
+<div class='copyright'><script type='text/javascript'>document.write("Copyright &#169; " + new Date().getFullYear() + " Tridium, Inc.")</script></div>
+</body>
+</html>

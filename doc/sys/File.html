@@ -1,0 +1,109 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>sys::File</title>
+  <meta http-equiv='Content-type' content='text/html;charset=UTF-8' />
+  <link rel='stylesheet' type='text/css' href='../style.css'/>
+</head>
+<body>
+<p>
+  <a href='../index.html'>
+    <img src='../logo.png' alt='Sedona'/>
+  </a>
+</p>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>sys</a>
+</div>
+<h1 class='title'>sys::File</h1>
+<hr/>
+<pre class='inheritance'><a href='../sys/Obj.html'>sys::Obj</a>
+  sys::File
+</pre>
+<br>
+<code style='color:darkgreen;font-weight:bold;font-size:120%'><em>public final </em> class <b style='font-weight:bolder'>File</b>  </code><br>
+<hr/>
+<p>File is used to manage I/O to a &#x22;file&#x22;.  A Sedona VM may support&#xa;multiple file backing storage devices via FileStore subclasses.</p>
+<hr/>
+<dl>
+<dt>fp</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../sys/Obj.html'>Obj</a> fp</b>
+
+</code></p>
+</dd>
+<dt>in</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>inline</em> </em><b><a href='../sys/InStream.html'>InStream</a> in</b>
+
+</code></p>
+</dd>
+<dt>name</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../sys/Str.html'>Str</a> name</b>
+
+</code></p>
+</dd>
+<dt>out</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>inline</em> </em><b><a href='../sys/OutStream.html'>OutStream</a> out</b>
+
+</code></p>
+</dd>
+<dt>store</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../sys/FileStore.html'>FileStore</a> store</b>
+
+</code></p>
+</dd>
+<dt>File</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void File()</b>
+
+</code></p>
+<p>File constructor.</p>
+</dd>
+<dt>close</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>bool close()</b>
+
+</code></p>
+<p>Close this file.  Return true on success or false on failure.</p>
+</dd>
+<dt>exists</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>bool exists()</b>
+
+</code></p>
+<p>Return if the file identified by name exists on the file system.&#xa;This method may used without opening the file.</p>
+</dd>
+<dt>open</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>bool open(<a href='../sys/Str.html'>Str</a> mode)</b>
+
+</code></p>
+<p>Open the file using the configured name field.  Mode&#xa;is a string how IO will be performed:</p>
+<pre class='doc'>  - &#x22;r&#x22;: open for reading&#xa;  - &#x22;w&#x22;: open for writing (truncate existing)&#xa;  - &#x22;m&#x22;: open for modification and read/writing (don&#x27;t truncate)</pre>
+<p>Return true on success or false on error.</p>
+<p>Note although the mode strings are passed as simply &#x22;r&#x22;, &#x22;w&#x22;, or&#xa;&#x22;m&#x22;, it is expected that files are always opened for binary&#xa;IO - for example &#x22;w&#x22; maps to the C fopen mode of &#x22;wb&#x22;.</p>
+</dd>
+<dt>seek</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>bool seek(int pos)</b>
+
+</code></p>
+<p>Seek to a specific byte offset position in the file.&#xa;Return true on success or false on failure.  A failure&#xa;typically indicates a seek past the file limit of the&#xa;device&#x27;s &#x22;file system&#x22;.  Use tell to read the current&#xa;position.</p>
+</dd>
+<dt>size</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>int size()</b>
+
+</code></p>
+<p>Return the size in bytes of the file, or -1 if the file does&#xa;not exist or cannot currently be accessed (e.g. if open for&#xa;writing).  This method may used without opening the file.</p>
+</dd>
+<dt>tell</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>int tell()</b>
+
+</code></p>
+<p>Return the current byte offset position of the file.  &#xa;Use seek to change the current position. Returns -1&#xa;on an error.</p>
+</dd>
+</dl>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>sys</a>
+</div>
+<div class='copyright'><script type='text/javascript'>document.write("Copyright &#169; " + new Date().getFullYear() + " Tridium, Inc.")</script></div>
+</body>
+</html>

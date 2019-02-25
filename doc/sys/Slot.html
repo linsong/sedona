@@ -1,0 +1,124 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>sys::Slot</title>
+  <meta http-equiv='Content-type' content='text/html;charset=UTF-8' />
+  <link rel='stylesheet' type='text/css' href='../style.css'/>
+</head>
+<body>
+<p>
+  <a href='../index.html'>
+    <img src='../logo.png' alt='Sedona'/>
+  </a>
+</p>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>sys</a>
+</div>
+<h1 class='title'>sys::Slot</h1>
+<hr/>
+<pre class='inheritance'><a href='../sys/Obj.html'>sys::Obj</a>
+  sys::Slot
+</pre>
+<br>
+<code style='color:darkgreen;font-weight:bold;font-size:120%'><em>public const </em> class <b style='font-weight:bolder'>Slot</b>  </code><br>
+<hr/>
+<p>Slot models a property or action slot which is&#xa;available to the runtime via the reflection APIs.</p>
+<hr/>
+<dl>
+<dt>ACTION</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int ACTION</b>
+
+</code></p>
+<p>Flag to indicate property versus action</p>
+</dd>
+<dt>AS_STR</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int AS_STR</b>
+
+</code></p>
+<p>Flag to indicate if a Buf should be treated as a Str</p>
+</dd>
+<dt>CONFIG</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int CONFIG</b>
+
+</code></p>
+<p>Flag to indicate configuration property versus runtime property</p>
+</dd>
+<dt>OPERATOR</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int OPERATOR</b>
+
+</code></p>
+<p>Flag to indicate if slot is operator level - if not &#xa;operator then a slot is consider admin level.</p>
+</dd>
+<dt>flags</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>const</em> </em><b>byte flags</b>
+
+</code></p>
+<p>Bitmask for flags</p>
+</dd>
+<dt>id</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>const</em> </em><b>byte id</b>
+
+</code></p>
+<p>Index of this slot in its type slot list</p>
+</dd>
+<dt>name</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>const</em> </em><b><a href='../sys/Str.html'>Str</a> name</b>
+
+</code></p>
+<p>Unique name of this slot in its type</p>
+</dd>
+<dt>type</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>const</em> </em><b><a href='../sys/Type.html'>Type</a> type</b>
+
+</code></p>
+<p>Type of the slot.  If the slot is a property this is the type&#xa;the property stores.  If the slot is an action this is the&#xa;argument type.</p>
+</dd>
+<dt>isAction</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>bool isAction()</b>
+
+</code></p>
+<p>Is this an action slot.</p>
+</dd>
+<dt>isAsStr</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>bool isAsStr()</b>
+
+</code></p>
+<p>Is this a Buf property which should be treated as a Str.</p>
+</dd>
+<dt>isConfig</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>bool isConfig()</b>
+
+</code></p>
+<p>Is this a config property.</p>
+</dd>
+<dt>isOperator</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>bool isOperator()</b>
+
+</code></p>
+<p>Is true if an operator level slot, or false if admin level.</p>
+</dd>
+<dt>isProp</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>bool isProp()</b>
+
+</code></p>
+<p>Is this a property slot.</p>
+</dd>
+<dt>matchProp</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>bool matchProp(int filter)</b>
+
+</code></p>
+<p>Return if this slot is a property against the specified&#xa;filter:</p>
+<pre class='doc'>   &#x27;*&#x27; = any property&#xa;   &#x27;c&#x27; = only config properties&#xa;   &#x27;r&#x27; = only runtime properties&#xa;   &#x27;C&#x27; = only operator level config properties&#xa;   &#x27;R&#x27; = only operator level runtime properties</pre>
+</dd>
+</dl>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>sys</a>
+</div>
+<div class='copyright'><script type='text/javascript'>document.write("Copyright &#169; " + new Date().getFullYear() + " Tridium, Inc.")</script></div>
+</body>
+</html>

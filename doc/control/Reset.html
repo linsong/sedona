@@ -1,0 +1,105 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>control::Reset</title>
+  <meta http-equiv='Content-type' content='text/html;charset=UTF-8' />
+  <link rel='stylesheet' type='text/css' href='../style.css'/>
+</head>
+<body>
+<p>
+  <a href='../index.html'>
+    <img src='../logo.png' alt='Sedona'/>
+  </a>
+</p>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>control</a>
+</div>
+<h1 class='title'>control::Reset</h1>
+<hr/>
+<pre class='inheritance'><a href='../sys/Obj.html'>sys::Obj</a>
+  <a href='../sys/Virtual.html'>sys::Virtual</a>
+    <a href='../sys/Component.html'>sys::Component</a>
+      control::Reset
+</pre>
+<br>
+<code style='color:darkgreen;font-weight:bold;font-size:120%'><em>public </em> class <b style='font-weight:bolder'>Reset</b>  </code><code style='color:darkblue;font-weight:bold'>
+[niagaraIcon=&#x22;module://icons/x16/control/math/reset.png&#x22;]</code>
+<br>
+<hr/>
+<p>Reset re-scales in value to out value object</p>
+<p>This function performs a &#x22;reset&#x22; on the input value.</p>
+<p>&#x22;Reset&#x22; is a HVAC term for scaling a number between two limits.  </p>
+<p>When inMin &lt; inA &lt; inMax, the output value scales linearly &#xa;between outMin and outMax.  </p>
+<p>If inA &lt; inMin, the value is capped at outMin.  </p>
+<p>If inA &gt; inMax, the value is capped at outMax.</p>
+<p>To calculate out, the following equation is used:&#xa;&lt;pre&gt;</p>
+<pre class='doc'>        (outMax-outMin)&#xa;  out = --------------- * (in - inMin) + outMin&#xa;         (inMax-inMin)  </pre>
+<p>&lt;/pre&gt;</p>
+<hr/>
+<dl>
+<dt>in</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>float in</b>
+
+</code></p>
+<p>input</p>
+</dd>
+<dt>inMax</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>float inMax</b> [config]
+
+</code></p>
+<p>scaling constant inMax</p>
+</dd>
+<dt>inMin</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>float inMin</b> [config]
+
+</code></p>
+<p>scaling constant inMin</p>
+</dd>
+<dt>out</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>float out</b> [readonly]
+
+</code></p>
+<p>re-scaled output</p>
+</dd>
+<dt>outMax</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>float outMax</b> [config]
+
+</code></p>
+<p>scaling constant outMax</p>
+</dd>
+<dt>outMin</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>float outMin</b> [config]
+
+</code></p>
+<p>scaling constant outMin</p>
+</dd>
+<dt>changed</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>override</em> </em><b>void changed(<a href='../sys/Slot.html'>Slot</a> slot)</b>
+
+</code></p>
+<p>Behavior to execute when a property is changed externally</p>
+</dd>
+<dt>execute</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> <em>override</em> </em><b>void execute()</b>
+
+</code></p>
+<p>Execute is called once every scan.</p>
+</dd>
+<dt>start</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> <em>override</em> </em><b>void start()</b>
+
+</code></p>
+<p>Callback when component is first started in an app.</p>
+</dd>
+</dl>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>control</a>
+</div>
+<div class='copyright'><script type='text/javascript'>document.write("Copyright &#169; " + new Date().getFullYear() + " Tridium, Inc.")</script></div>
+</body>
+</html>

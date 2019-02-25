@@ -1,0 +1,124 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>sys::Str</title>
+  <meta http-equiv='Content-type' content='text/html;charset=UTF-8' />
+  <link rel='stylesheet' type='text/css' href='../style.css'/>
+</head>
+<body>
+<p>
+  <a href='../index.html'>
+    <img src='../logo.png' alt='Sedona'/>
+  </a>
+</p>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>sys</a>
+</div>
+<h1 class='title'>sys::Str</h1>
+<hr/>
+<pre class='inheritance'><a href='../sys/Obj.html'>sys::Obj</a>
+  sys::Str
+</pre>
+<br>
+<code style='color:darkgreen;font-weight:bold;font-size:120%'><em>public final </em> class <b style='font-weight:bolder'>Str</b>  </code><br>
+<hr/>
+<p>Str encapsulates a byte array which stores a string of ASCII&#xa;characters terminated by the null character.  The characters must&#xa;be less then 128 (the high bit must clear) for future UTF-8&#xa;support.</p>
+<hr/>
+<dl>
+<dt>Str</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void Str(int bufLen)</b>
+
+</code></p>
+<p>The inline constructor for Str requires the max size&#xa;of the character buffer including the space for the null&#xa;terminator.  For the following declaration declares a Str&#xa;with enough memory to store 3 ASCII characters:</p>
+<pre class='doc'>  inline Str(4) mystr</pre>
+</dd>
+<dt>copyFromStr</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>bool copyFromStr(<a href='../sys/Str.html'>Str</a> from, int max)</b>
+
+</code></p>
+<p>Copy the specified string into this string&#x27;s memory&#xa;buffer.  If the specified string contains more than max&#xa;characters including the null terminator then return false&#xa;and truncate the copy.  Max should always be the size&#xa;of this string&#x27;s buffer.</p>
+</dd>
+<dt>equals</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>bool equals(<a href='../sys/Str.html'>Str</a> that)</b>
+
+</code></p>
+<p>Return if two strings contain the exact same characters.</p>
+</dd>
+<dt>equalsRegion</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>bool equalsRegion(<a href='../sys/Str.html'>Str</a> that, int start, int end)</b>
+
+</code></p>
+<p>Return if this entire string equals a region within &#xa;the specified string.  Start index is inclusive and &#xa;end index is exclusive.  The start index must be a valid index &#xa;into the specified string&#x27;s memory space, but the end &#xa;index can be larger than the memory size.</p>
+</dd>
+<dt>fromBytes</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>native</em> </em><b><a href='../sys/Str.html'>Str</a> fromBytes(byte[] buf, int off)</b>
+
+</code></p>
+<p>Return a Str reference into the byte array at the specified&#xa;offset.  In the SVM we return a pointer to buf+off.  In the JVM&#xa;we return a new StrRef with the specified offset.  No guarantee &#xa;is made that the buffer contains the null terminator.</p>
+</dd>
+<dt>get</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>int get(int index)</b>
+
+</code></p>
+<p>Get the character at the specified index.</p>
+</dd>
+<dt>index</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>int index(int ch)</b>
+
+</code></p>
+<p>Return if the index of the specified character &#xa;or -1 if not found in this string.</p>
+</dd>
+<dt>length</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>int length()</b>
+
+</code></p>
+<p>Return number of characters in the string not including&#xa;the null terminating character.</p>
+</dd>
+<dt>parseInt</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>int parseInt()</b>
+
+</code></p>
+<p>Parse this string into an integer or return -1.</p>
+</dd>
+<dt>set</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void set(int index, int ch)</b>
+
+</code></p>
+<p>Set the character at the specified index.</p>
+</dd>
+<dt>startsWith</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>bool startsWith(<a href='../sys/Str.html'>Str</a> that)</b>
+
+</code></p>
+<p>Return if this string starts with the specified string.</p>
+</dd>
+<dt>suffix</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../sys/Str.html'>Str</a> suffix(int newStart)</b>
+
+</code></p>
+<p>Perform an in-place trim on the string pointer by&#xa;removing leading characters up to index &#x27;newStart&#x27;.&#xa;Note this method will return a different reference,&#xa;the starting position of the new string, but the&#xa;underlying memory does not change.</p>
+</dd>
+<dt>toBytes</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>byte[] toBytes()</b>
+
+</code></p>
+<p>Get the backing byte array of this String.</p>
+</dd>
+<dt>trim</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../sys/Str.html'>Str</a> trim()</b>
+
+</code></p>
+<p>Perform an in-place trim on the string pointer by&#xa;removing any leading or trailing space characters.&#xa;Note this method will change the characters in the&#xa;string&#x27;s buffer and will return a different reference&#xa;the starting position of the new string.</p>
+</dd>
+</dl>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>sys</a>
+</div>
+<div class='copyright'><script type='text/javascript'>document.write("Copyright &#169; " + new Date().getFullYear() + " Tridium, Inc.")</script></div>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>sys::RateFolder</title>
+  <meta http-equiv='Content-type' content='text/html;charset=UTF-8' />
+  <link rel='stylesheet' type='text/css' href='../style.css'/>
+</head>
+<body>
+<p>
+  <a href='../index.html'>
+    <img src='../logo.png' alt='Sedona'/>
+  </a>
+</p>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>sys</a>
+</div>
+<h1 class='title'>sys::RateFolder</h1>
+<hr/>
+<pre class='inheritance'><a href='../sys/Obj.html'>sys::Obj</a>
+  <a href='../sys/Virtual.html'>sys::Virtual</a>
+    <a href='../sys/Component.html'>sys::Component</a>
+      <a href='../sys/Folder.html'>sys::Folder</a>
+        sys::RateFolder
+</pre>
+<br>
+<code style='color:darkgreen;font-weight:bold;font-size:120%'><em>public </em> class <b style='font-weight:bolder'>RateFolder</b>  </code><code style='color:darkblue;font-weight:bold'>
+[niagaraIcon=&#x22;module://icons/x16/folder.png&#x22;]</code>
+<br>
+<hr/>
+<p>RateFolder is a folder that controls how often its children execute.&#xa;It can be used to implement an app with components that execute at&#xa;different rates.</p>
+<hr/>
+<dl>
+<dt>appCyclesToSkip</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>int appCyclesToSkip</b> [min=0, config]
+
+</code></p>
+<p>How many app cycles to skip between child executes.&#xa;Set to 0 to disable, i.e. children execute every cycle.</p>
+</dd>
+<dt>allowChildExecute</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> <em>override</em> </em><b>bool allowChildExecute()</b>
+
+</code></p>
+<p>Calculate when to allow children to execute.</p>
+</dd>
+<dt>loaded</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> <em>override</em> </em><b>void loaded()</b>
+
+</code></p>
+<p>Override loaded() to init execCount.</p>
+</dd>
+</dl>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>sys</a>
+</div>
+<div class='copyright'><script type='text/javascript'>document.write("Copyright &#169; " + new Date().getFullYear() + " Tridium, Inc.")</script></div>
+</body>
+</html>

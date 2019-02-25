@@ -1,0 +1,156 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>driver::Device</title>
+  <meta http-equiv='Content-type' content='text/html;charset=UTF-8' />
+  <link rel='stylesheet' type='text/css' href='../style.css'/>
+</head>
+<body>
+<p>
+  <a href='../index.html'>
+    <img src='../logo.png' alt='Sedona'/>
+  </a>
+</p>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>driver</a>
+</div>
+<h1 class='title'>driver::Device</h1>
+<hr/>
+<pre class='inheritance'><a href='../sys/Obj.html'>sys::Obj</a>
+  <a href='../sys/Virtual.html'>sys::Virtual</a>
+    <a href='../sys/Component.html'>sys::Component</a>
+      driver::Device
+</pre>
+<br>
+<code style='color:darkgreen;font-weight:bold;font-size:120%'><em>public </em> class <b style='font-weight:bolder'>Device</b>  </code><br>
+<hr/>
+<p>Models a device as a collection of I/O points.  Provides access to child components&#xa;of type Point or a subclass of it.</p>
+<hr/>
+<dl>
+<dt>app</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../sys/App.html'>App</a> app</b>
+
+</code></p>
+</dd>
+<dt>enable</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>bool enable</b> [config]
+
+</code></p>
+<p>Whether the device is enabled.</p>
+</dd>
+<dt>fault</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>bool fault</b>
+
+</code></p>
+<p>Whether the device is in fault.</p>
+</dd>
+<dt>lastUpTime</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>long lastUpTime</b>
+
+</code></p>
+</dd>
+<dt>net</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../driver/DeviceNetwork.html'>DeviceNetwork</a> net</b>
+
+</code></p>
+</dd>
+<dt>nextPingTime</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>long nextPingTime</b>
+
+</code></p>
+</dd>
+<dt>pingTime</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>long pingTime</b>
+
+</code></p>
+</dd>
+<dt>status</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>int status</b>
+
+</code></p>
+<p>Status bitmask for device.</p>
+</dd>
+<dt>addPoint</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void addPoint(<a href='../sys/Str.html'>Str</a> name, int address, <a href='../sys/Type.html'>Type</a> type)</b>
+
+</code></p>
+<p>Adds a point to this device.</p>
+</dd>
+<dt>execute</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> <em>override</em> </em><b>void execute()</b>
+
+</code></p>
+<p>Updates fault state, posts ping at appropriate time.</p>
+</dd>
+<dt>getFirstPoint</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../driver/Point.html'>Point</a> getFirstPoint()</b>
+
+</code></p>
+<p>Gets first child component of type Point (or subclass).&#xa;Returns null if no Point objects found.</p>
+</dd>
+<dt>getNetwork</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../driver/DeviceNetwork.html'>DeviceNetwork</a> getNetwork()</b>
+
+</code></p>
+<p>Returns a reference to the parent network.</p>
+</dd>
+<dt>getNextPoint</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../driver/Point.html'>Point</a> getNextPoint(<a href='../driver/Point.html'>Point</a> point)</b>
+
+</code></p>
+<p>Gets next child component after &#x27;point&#x27; that is of type Point (or subclass).&#xa;Returns null if end of child list is reached without finding one.</p>
+</dd>
+<dt>getPoint</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../driver/Point.html'>Point</a> getPoint(<a href='../sys/Type.html'>Type</a> type, int address)</b>
+
+</code></p>
+<p>Gets point by type and address.</p>
+</dd>
+<dt>isDown</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> </em><b>bool isDown()</b>
+
+</code></p>
+<p>Test down status flag.</p>
+</dd>
+<dt>postPing</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> </em><b>void postPing()</b>
+
+</code></p>
+<p>Method invoked when time to ping device.</p>
+</dd>
+<dt>setAoValue</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> </em><b>void setAoValue(int address, float value)</b>
+
+</code></p>
+<p>Callback to write a AO point value.</p>
+</dd>
+<dt>setDoValue</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> </em><b>void setDoValue(int address, bool value)</b>
+
+</code></p>
+<p>Callback to write a DO point value.</p>
+</dd>
+<dt>setDown</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> </em><b>void setDown(bool isDown)</b>
+
+</code></p>
+<p>Sets/clears the down status flag.</p>
+</dd>
+<dt>start</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> <em>override</em> </em><b>void start()</b>
+
+</code></p>
+<p>Sets up pointers and timestamps.</p>
+</dd>
+</dl>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>driver</a>
+</div>
+<div class='copyright'><script type='text/javascript'>document.write("Copyright &#169; " + new Date().getFullYear() + " Tridium, Inc.")</script></div>
+</body>
+</html>

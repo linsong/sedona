@@ -1,0 +1,65 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>inet::TcpServerSocket</title>
+  <meta http-equiv='Content-type' content='text/html;charset=UTF-8' />
+  <link rel='stylesheet' type='text/css' href='../style.css'/>
+</head>
+<body>
+<p>
+  <a href='../index.html'>
+    <img src='../logo.png' alt='Sedona'/>
+  </a>
+</p>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>inet</a>
+</div>
+<h1 class='title'>inet::TcpServerSocket</h1>
+<hr/>
+<pre class='inheritance'><a href='../sys/Obj.html'>sys::Obj</a>
+  inet::TcpServerSocket
+</pre>
+<br>
+<code style='color:darkgreen;font-weight:bold;font-size:120%'><em>public </em> class <b style='font-weight:bolder'>TcpServerSocket</b>  </code><code style='color:darkblue;font-weight:bold'>
+[javaPeer]</code>
+<br>
+<hr/>
+<p>TcpServerSocket is used to open a socket for listening&#xa;and accepting incoming TCP connections.</p>
+<hr/>
+<dl>
+<dt>accept</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>native</em> </em><b>bool accept(<a href='../inet/TcpSocket.html'>TcpSocket</a> socket)</b>
+
+</code></p>
+<p>Poll the server socket to see if there are any pending&#xa;connections.  If a connection is pending then setup the&#xa;specified socket instance to handle the incoming connection.&#xa;The socket passed in must be closed, and if successful will&#xa;be open on return.  Return true if a connection was successfully&#xa;accepted or false if there are no pending connections.</p>
+</dd>
+<dt>bind</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>native</em> </em><b>bool bind(int port)</b>
+
+</code></p>
+<p>Bind this socket the specified well-known port on this&#xa;machine. Return true on success, false on failure.</p>
+</dd>
+<dt>close</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>native</em> </em><b>void close()</b>
+
+</code></p>
+<p>Shutdown and close this server socket.</p>
+</dd>
+<dt>isClosed</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>bool isClosed()</b>
+
+</code></p>
+<p>Is this server socket closed.</p>
+</dd>
+</dl>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>inet</a>
+</div>
+<div class='copyright'><script type='text/javascript'>document.write("Copyright &#169; " + new Date().getFullYear() + " Tridium, Inc.")</script></div>
+</body>
+</html>

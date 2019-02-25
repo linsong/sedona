@@ -1,0 +1,112 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>sys::InStream</title>
+  <meta http-equiv='Content-type' content='text/html;charset=UTF-8' />
+  <link rel='stylesheet' type='text/css' href='../style.css'/>
+</head>
+<body>
+<p>
+  <a href='../index.html'>
+    <img src='../logo.png' alt='Sedona'/>
+  </a>
+</p>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>sys</a>
+</div>
+<h1 class='title'>sys::InStream</h1>
+<hr/>
+<pre class='inheritance'><a href='../sys/Obj.html'>sys::Obj</a>
+  <a href='../sys/Virtual.html'>sys::Virtual</a>
+    sys::InStream
+</pre>
+<br>
+<code style='color:darkgreen;font-weight:bold;font-size:120%'><em>public abstract </em> class <b style='font-weight:bolder'>InStream</b>  </code><br>
+<hr/>
+<p>InStream is used to input text or binary data.</p>
+<hr/>
+<dl>
+<dt>close</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> </em><b>void close()</b>
+
+</code></p>
+<p>Close the stream.  Default implementation does nothing.</p>
+</dd>
+<dt>read</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>abstract</em> </em><b>int read()</b>
+
+</code></p>
+<p>Read an unsigned single byte. Return -1 if end&#xa;of stream is reached.</p>
+</dd>
+<dt>readBool</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>bool readBool()</b>
+
+</code></p>
+<p>Read a boolean value of zero or non-zero.</p>
+</dd>
+<dt>readBytes</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>abstract</em> </em><b>int readBytes(byte[] b, int off, int len)</b>
+
+</code></p>
+<p>Read a block of bytes.  Return number of bytes&#xa;read into b, or -1 if end of stream.</p>
+</dd>
+<dt>readChar</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>int readChar()</b>
+
+</code></p>
+<p>Read a single character (right now we only read ASCII).</p>
+</dd>
+<dt>readF4</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>float readF4()</b>
+
+</code></p>
+<p>Read a four byte (32-bit) floating point value in network byte order</p>
+</dd>
+<dt>readF8</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>double readF8()</b>
+
+</code></p>
+<p>Read a eight byte (64-bit) floating point value in network byte order</p>
+</dd>
+<dt>readS4</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>int readS4()</b>
+
+</code></p>
+<p>Read an signed four byte (32-bit) integer in network&#xa;byte order.  Return -1 if end of stream.</p>
+</dd>
+<dt>readS8</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>long readS8()</b>
+
+</code></p>
+<p>Read an signed eight byte (64-bit) integer in network&#xa;byte order.  Return -1 if end of stream.</p>
+</dd>
+<dt>readStr</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>bool readStr(<a href='../sys/Str.html'>Str</a> s, int max)</b>
+
+</code></p>
+<p>Read a null terminated string into a buffer.&#xa;Return true on success, false on error or end&#xa;of stream.</p>
+</dd>
+<dt>readU2</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>int readU2()</b>
+
+</code></p>
+<p>Read an unsigned two byte integer in network&#xa;byte order.  Return -1 if end of stream.</p>
+</dd>
+<dt>skip</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void skip(int n)</b>
+
+</code></p>
+<p>Skip n number of bytes.</p>
+</dd>
+</dl>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>sys</a>
+</div>
+<div class='copyright'><script type='text/javascript'>document.write("Copyright &#169; " + new Date().getFullYear() + " Tridium, Inc.")</script></div>
+</body>
+</html>

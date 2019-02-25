@@ -1,0 +1,167 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>pricomp::PrioritizedInt</title>
+  <meta http-equiv='Content-type' content='text/html;charset=UTF-8' />
+  <link rel='stylesheet' type='text/css' href='../style.css'/>
+</head>
+<body>
+<p>
+  <a href='../index.html'>
+    <img src='../logo.png' alt='Sedona'/>
+  </a>
+</p>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>pricomp</a>
+</div>
+<h1 class='title'>pricomp::PrioritizedInt</h1>
+<hr/>
+<pre class='inheritance'><a href='../sys/Obj.html'>sys::Obj</a>
+  <a href='../sys/Virtual.html'>sys::Virtual</a>
+    <a href='../sys/Component.html'>sys::Component</a>
+      <a href='../pricomp/Prioritized.html'>pricomp::Prioritized</a>
+        pricomp::PrioritizedInt
+</pre>
+<br>
+<code style='color:darkgreen;font-weight:bold;font-size:120%'><em>public </em> class <b style='font-weight:bolder'>PrioritizedInt</b>  </code><br>
+<hr/>
+<p>PrioritizedInt</p>
+<hr/>
+<dl>
+<dt>NULLVAL</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int NULLVAL</b>
+
+</code></p>
+<p>Sys.minInt</p>
+<pre class='doc'>  Min value of a 32-bit signed integer: -2,147,483,648</pre>
+</dd>
+<dt>fallback</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>int fallback</b> [summary=false, config]
+
+</code></p>
+</dd>
+<dt>in1</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>int in1</b> [summary=false, readonly]
+
+</code></p>
+</dd>
+<dt>in10</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>int in10</b> [summary]
+
+</code></p>
+</dd>
+<dt>in11</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>int in11</b> [summary=false]
+
+</code></p>
+</dd>
+<dt>in12</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>int in12</b> [summary=false]
+
+</code></p>
+</dd>
+<dt>in13</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>int in13</b> [summary=false]
+
+</code></p>
+</dd>
+<dt>in14</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>int in14</b> [summary=false]
+
+</code></p>
+</dd>
+<dt>in15</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>int in15</b> [summary=false]
+
+</code></p>
+</dd>
+<dt>in16</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>int in16</b> [summary]
+
+</code></p>
+</dd>
+<dt>in2</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>int in2</b> [summary=false]
+
+</code></p>
+</dd>
+<dt>in3</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>int in3</b> [summary=false]
+
+</code></p>
+</dd>
+<dt>in4</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>int in4</b> [summary=false]
+
+</code></p>
+</dd>
+<dt>in5</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>int in5</b> [summary=false]
+
+</code></p>
+</dd>
+<dt>in6</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>int in6</b> [summary=false]
+
+</code></p>
+</dd>
+<dt>in7</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>int in7</b> [summary=false]
+
+</code></p>
+</dd>
+<dt>in8</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>int in8</b> [summary=false, readonly]
+
+</code></p>
+</dd>
+<dt>in9</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>int in9</b> [summary=false]
+
+</code></p>
+</dd>
+<dt>out</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>int out</b> [summary, readonly]
+
+</code></p>
+</dd>
+<dt>emergencyAuto</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>action</em> </em><b>void emergencyAuto()</b>
+
+</code></p>
+</dd>
+<dt>emergencySet</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>action</em> </em><b>void emergencySet(int newValue)</b>
+
+</code></p>
+</dd>
+<dt>execute</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> <em>override</em> </em><b>void execute()</b>
+
+</code></p>
+<p>Execute is called once every scan using the&#xa;simple round-robin scan engine.</p>
+</dd>
+<dt>manualAuto</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>action</em> </em><b>void manualAuto()</b>
+
+</code></p>
+</dd>
+<dt>manualSet</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>action</em> </em><b>void manualSet(long valAndExpTime)</b>
+
+</code></p>
+<p>manualSet - Override value.</p>
+<pre class='doc'> Arg to action is 8-byte long; first 4 bytes are new value,&#xa;   last 4 are override duration in milliseconds.</pre>
+</dd>
+</dl>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>pricomp</a>
+</div>
+<div class='copyright'><script type='text/javascript'>document.write("Copyright &#169; " + new Date().getFullYear() + " Tridium, Inc.")</script></div>
+</body>
+</html>

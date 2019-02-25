@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>basicSchedule::DailySchedule</title>
+  <meta http-equiv='Content-type' content='text/html;charset=UTF-8' />
+  <link rel='stylesheet' type='text/css' href='../style.css'/>
+</head>
+<body>
+<p>
+  <a href='../index.html'>
+    <img src='../logo.png' alt='Sedona'/>
+  </a>
+</p>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>basicSchedule</a>
+</div>
+<h1 class='title'>basicSchedule::DailySchedule</h1>
+<hr/>
+<pre class='inheritance'><a href='../sys/Obj.html'>sys::Obj</a>
+  <a href='../sys/Virtual.html'>sys::Virtual</a>
+    <a href='../sys/Component.html'>sys::Component</a>
+      basicSchedule::DailySchedule
+</pre>
+<br>
+<code style='color:darkgreen;font-weight:bold;font-size:120%'><em>public abstract </em> class <b style='font-weight:bolder'>DailySchedule</b>  </code><br>
+<hr/>
+<p>DailySchedule represents a simple daily schedule with up to two active &#xa;periods.  Each active period is defined by a start time and duration.&#xa;If the duration is zero, the period is disabled.   &#xa;If the periods overlap, then first period (defined by start1 and dur1) &#xa;take precedence.  If the duration extends past midnight, then the &#xa;active period will span two separate calendar days.</p>
+<hr/>
+<dl>
+<dt>dtSrvc</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../datetime/DateTimeService.html'>DateTimeService</a> dtSrvc</b>
+
+</code></p>
+</dd>
+<dt>dur1</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>short dur1</b> [unit=&#x22;minute&#x22;, min=0, max=1440, config]
+
+</code></p>
+<p>Duration for first active period, expressed in minutes after midnight</p>
+</dd>
+<dt>dur2</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>short dur2</b> [unit=&#x22;minute&#x22;, min=0, max=1440, config]
+
+</code></p>
+<p>Duration for the second active period, expressed in minutes after midnight</p>
+</dd>
+<dt>minsInDay</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int minsInDay</b>
+
+</code></p>
+</dd>
+<dt>output1</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int output1</b>
+
+</code></p>
+</dd>
+<dt>output2</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int output2</b>
+
+</code></p>
+</dd>
+<dt>outputDefault</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int outputDefault</b>
+
+</code></p>
+</dd>
+<dt>start1</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>short start1</b> [unit=&#x22;minute&#x22;, config]
+
+</code></p>
+<p>Start time for first active period, expressed in minutes after midnight</p>
+</dd>
+<dt>start2</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>short start2</b> [unit=&#x22;minute&#x22;, config]
+
+</code></p>
+<p>Start time for second active period, expressed in minutes after midnight</p>
+</dd>
+<dt>execute</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> <em>override</em> </em><b>void execute()</b>
+
+</code></p>
+</dd>
+<dt>setOutValue</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> </em><b>void setOutValue(int activeVal)</b>
+
+</code></p>
+<p>Subclasses of DailySchedule must implement this to set the proper&#xa;output value based on current time and schedule configuration</p>
+</dd>
+<dt>start</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> <em>override</em> </em><b>void start()</b>
+
+</code></p>
+</dd>
+</dl>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>basicSchedule</a>
+</div>
+<div class='copyright'><script type='text/javascript'>document.write("Copyright &#169; " + new Date().getFullYear() + " Tridium, Inc.")</script></div>
+</body>
+</html>

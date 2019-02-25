@@ -1,0 +1,107 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>sox::FileTransfer</title>
+  <meta http-equiv='Content-type' content='text/html;charset=UTF-8' />
+  <link rel='stylesheet' type='text/css' href='../style.css'/>
+</head>
+<body>
+<p>
+  <a href='../index.html'>
+    <img src='../logo.png' alt='Sedona'/>
+  </a>
+</p>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>sox</a>
+</div>
+<h1 class='title'>sox::FileTransfer</h1>
+<hr/>
+<pre class='inheritance'><a href='../sys/Obj.html'>sys::Obj</a>
+  sox::FileTransfer
+</pre>
+<br>
+<code style='color:darkgreen;font-weight:bold;font-size:120%'><em>public </em> class <b style='font-weight:bolder'>FileTransfer</b>  </code><br>
+<hr/>
+<p>FileTransfer manages the state of a session&#x27;s file transfer.</p>
+<hr/>
+<dl>
+<dt>chunkSize</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>short chunkSize</b>
+
+</code></p>
+</dd>
+<dt>file</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>inline</em> </em><b><a href='../sys/File.html'>File</a> file</b>
+
+</code></p>
+</dd>
+<dt>fileSize</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>int fileSize</b>
+
+</code></p>
+</dd>
+<dt>get</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int get</b>
+
+</code></p>
+</dd>
+<dt>mode</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>byte mode</b>
+
+</code></p>
+</dd>
+<dt>nextChunk</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>short nextChunk</b>
+
+</code></p>
+</dd>
+<dt>numChunks</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>short numChunks</b>
+
+</code></p>
+</dd>
+<dt>offset</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>int offset</b>
+
+</code></p>
+</dd>
+<dt>put</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int put</b>
+
+</code></p>
+</dd>
+<dt>unused</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int unused</b>
+
+</code></p>
+</dd>
+<dt>checkGet</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>bool checkGet(<a href='../sox/SoxService.html'>SoxService</a> service, <a href='../sox/SoxSession.html'>SoxSession</a> session)</b>
+
+</code></p>
+<p>Poll for work on a get.  Attempt to send the next &#xa;chunk of a file get.</p>
+</dd>
+<dt>checkPut</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>bool checkPut(<a href='../sox/SoxService.html'>SoxService</a> service, <a href='../sox/SoxSession.html'>SoxSession</a> session)</b>
+
+</code></p>
+<p>Poll for work on a put.  Check if we need to send the close.</p>
+</dd>
+<dt>reset</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void reset()</b>
+
+</code></p>
+<p>Reset into a clean state for new session.</p>
+</dd>
+</dl>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>sox</a>
+</div>
+<div class='copyright'><script type='text/javascript'>document.write("Copyright &#169; " + new Date().getFullYear() + " Tridium, Inc.")</script></div>
+</body>
+</html>

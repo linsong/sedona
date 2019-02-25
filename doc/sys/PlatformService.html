@@ -1,0 +1,183 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>sys::PlatformService</title>
+  <meta http-equiv='Content-type' content='text/html;charset=UTF-8' />
+  <link rel='stylesheet' type='text/css' href='../style.css'/>
+</head>
+<body>
+<p>
+  <a href='../index.html'>
+    <img src='../logo.png' alt='Sedona'/>
+  </a>
+</p>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>sys</a>
+</div>
+<h1 class='title'>sys::PlatformService</h1>
+<hr/>
+<pre class='inheritance'><a href='../sys/Obj.html'>sys::Obj</a>
+  <a href='../sys/Virtual.html'>sys::Virtual</a>
+    <a href='../sys/Component.html'>sys::Component</a>
+      <a href='../sys/Service.html'>sys::Service</a>
+        sys::PlatformService
+</pre>
+<br>
+<code style='color:darkgreen;font-weight:bold;font-size:120%'><em>public </em> class <b style='font-weight:bolder'>PlatformService</b>  </code><code style='color:darkblue;font-weight:bold'>
+[niagaraIcon=&#x22;module://icons/x16/platform.png&#x22;]</code>
+<br>
+<hr/>
+<p>PlatformService is a service designed for a&#xa;specific hardware/OS platform.</p>
+<hr/>
+<dl>
+<dt>memAvailable</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>long memAvailable</b> [readonly]
+
+</code></p>
+<p>The amount of available runtime memory, in bytes. This property&#xa;must be updated during execute()</p>
+</dd>
+<dt>netConfigError</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int netConfigError</b>
+
+</code></p>
+<p>Network failed due to configuration error</p>
+</dd>
+<dt>netFatal</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int netFatal</b>
+
+</code></p>
+<p>Network interface has fatal error</p>
+</dd>
+<dt>netInitializing</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int netInitializing</b>
+
+</code></p>
+<p>Network interface is initializing&#xa;i.e. acquiring DHCP address or joining RF network</p>
+</dd>
+<dt>netOk</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int netOk</b>
+
+</code></p>
+<p>Network interface is operational</p>
+</dd>
+<dt>platformId</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>inline</em> <em>property</em> </em><b><a href='../sys/Buf.html'>Buf</a> platformId</b> [summary=false, asStr, readonly, max=128]
+
+</code></p>
+<p>The platform identifier which defines how this&#xa;Sedona device should be provisioned.</p>
+</dd>
+<dt>platformVer</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>inline</em> <em>property</em> </em><b><a href='../sys/Buf.html'>Buf</a> platformVer</b> [summary=false, asStr, readonly, max=17]
+
+</code></p>
+<p>The platform version.  This should be a Dewey Decimal style&#xa;version (x.y.z).  The default value is &#x22;0&#x22; and should be used&#xa;to indicate that the platform does not have a meaningful concept&#xa;for platform version.</p>
+</dd>
+<dt>canHibernate</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> <em>override</em> </em><b>bool canHibernate()</b>
+
+</code></p>
+<p>By default, a Platform Service assumes that the platform does not&#xa;support hibernation, so this method always returns false.  If your&#xa;platform supports hibernation, you should override this method to&#xa;return true.</p>
+</dd>
+<dt>execute</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> <em>override</em> </em><b>void execute()</b>
+
+</code></p>
+</dd>
+<dt>getNetworkState</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> </em><b>int getNetworkState()</b>
+
+</code></p>
+<p>Return the current state of the network interface.  For devices&#xa;that support multiple interfaces, return the state of the primary&#xa;network interface on the platform.</p>
+</dd>
+<dt>init</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> </em><b>int init(<a href='../sys/Str.html'>Str</a>[] args, int argsLen)</b>
+
+</code></p>
+<p>Initialize the platform with the command line arguments.&#xa;Return 0 on success.  Return  non-zero on failure, which will&#xa;terminate the process.</p>
+</dd>
+<dt>lookup</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> </em><b><a href='../sys/PlatformService.html'>PlatformService</a> lookup()</b>
+
+</code></p>
+<p>Lookup the platform service for this VM.  Return null&#xa;if the application hasn&#x27;t booted yet or is missing&#xa;a platform service.</p>
+</dd>
+<dt>notify</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> </em><b>void notify(<a href='../sys/Str.html'>Str</a> key, <a href='../sys/Str.html'>Str</a> val)</b>
+
+</code></p>
+<p>Notify the platform of a name/value pair setting&#xa;or state change.</p>
+</dd>
+<dt>reboot</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>action</em> </em><b>void reboot()</b> [confirmRequired]
+
+</code></p>
+<p>Action to reboot the entire host platform.  This typically&#xa;means to reboot the entire operating system.</p>
+</dd>
+<dt>refreshMemory</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> </em><b>void refreshMemory()</b>
+
+</code></p>
+<p>Update the memAvailable property to reflect the current&#xa;amount of available memory.</p>
+</dd>
+<dt>restart</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>action</em> </em><b>void restart()</b> [confirmRequired]
+
+</code></p>
+<p>Action to restart the Sedona application on the host platform.&#xa;This typically means restart just the Sedona process.</p>
+</dd>
+<dt>start</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> <em>override</em> </em><b>void start()</b>
+
+</code></p>
+</dd>
+<dt>updatePlatformId</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void updatePlatformId(<a href='../sys/Str.html'>Str</a> id)</b>
+
+</code></p>
+<p>Convenience to set the platformId property, and call changed()</p>
+</dd>
+<dt>updatePlatformVer</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void updatePlatformVer(<a href='../sys/Str.html'>Str</a> ver)</b>
+
+</code></p>
+<p>Convenience to set the platformVer property, and call changed()</p>
+</dd>
+<dt>workDuringFreeTime</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> </em><b>bool workDuringFreeTime(long nsUntilDeadline)</b>
+
+</code></p>
+<p>Returns true if the platform wants to the App to invoke work() again on&#xa;all Services during free time before the next App execute needs to begin.</p>
+<p>For Apps with long scanPeriods (greater than 50ms), this allows Services &#xa;to respond to network traffic or other asynchronous events multiple times &#xa;during a single scanPeriod - even if the service didn&#x27;t have any immediate &#xa;work to do.  </p>
+<p>i.e. - Sox services responds to a poll request, but then has no further&#xa;work, nor doing any other services.  A few ms later, another poll request &#xa;comes in.  If this method returns false, no further workd will be done &#xa;until the beginning of the next scan period  If this method returns true, &#xa;work() will be called on all services again and the poll request will&#xa;be handled before the next scanPeriod.  </p>
+<p>nsUntilDeadline represents the time remaining before the next App &#xa;execute() cycle again.  Depending on the underlying OS/system &#xa;architecture, the platform may want to sleep or otherwise relinquish the &#xa;CPU for some fraction of nsUntilDeadline before returning and&#xa;allowing App to call service work again.</p>
+<p>See also the Apps chapter in Sedona docs</p>
+</dd>
+<dt>yield</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> </em><b>void yield(long yieldTime)</b>
+
+</code></p>
+<p>Inform platform that SVM will be exiting with Err.yield and needs&#xa;to be scheduled to run again (via resume in vm.c) in ns nanoseconds to meet&#xa;the desired App.scanPeriod value.</p>
+<p>If the application overruns its scan period, yieldTime will be negative.&#xa;In this case the VM should be scheduled to run again as soon as possible.</p>
+<p>See also the Apps chapter in Sedona docs</p>
+</dd>
+<dt>yieldRequired</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> </em><b>bool yieldRequired()</b>
+
+</code></p>
+<p>Return true if App must yield CPU by exiting VM each cycle.</p>
+<p>Platforms that support pre-emptive multitasking should return false&#xa;since App can sleep to yield CPU.</p>
+<p>Cooperative multitasking platforms that expect tasks to run to&#xa;completion and return so other tasks can execute should return true.</p>
+<p>See also the Apps chapter in Sedona docs</p>
+</dd>
+</dl>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>sys</a>
+</div>
+<div class='copyright'><script type='text/javascript'>document.write("Copyright &#169; " + new Date().getFullYear() + " Tridium, Inc.")</script></div>
+</body>
+</html>

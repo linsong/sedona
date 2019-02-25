@@ -1,0 +1,161 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>sox::SoxSession</title>
+  <meta http-equiv='Content-type' content='text/html;charset=UTF-8' />
+  <link rel='stylesheet' type='text/css' href='../style.css'/>
+</head>
+<body>
+<p>
+  <a href='../index.html'>
+    <img src='../logo.png' alt='Sedona'/>
+  </a>
+</p>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>sox</a>
+</div>
+<h1 class='title'>sox::SoxSession</h1>
+<hr/>
+<pre class='inheritance'><a href='../sys/Obj.html'>sys::Obj</a>
+  <a href='../sys/Virtual.html'>sys::Virtual</a>
+    <a href='../sys/Watch.html'>sys::Watch</a>
+      sox::SoxSession
+</pre>
+<br>
+<code style='color:darkgreen;font-weight:bold;font-size:120%'><em>public </em> class <b style='font-weight:bolder'>SoxSession</b>  </code><br>
+<hr/>
+<p>SoxSession models a Dasp/Sox session.</p>
+<hr/>
+<dl>
+<dt>addr</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>inline</em> </em><b><a href='../inet/SocketAddr.html'>SocketAddr</a> addr</b>
+
+</code></p>
+</dd>
+<dt>allTreeEvents</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>bool allTreeEvents</b>
+
+</code></p>
+</dd>
+<dt>errStr</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>inline</em> </em><b><a href='../sys/Str.html'>Str</a> errStr</b>
+
+</code></p>
+</dd>
+<dt>idealMax</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>short idealMax</b>
+
+</code></p>
+</dd>
+<dt>lastReceiveTicks</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>long lastReceiveTicks</b>
+
+</code></p>
+</dd>
+<dt>lastSendTicks</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>long lastSendTicks</b>
+
+</code></p>
+</dd>
+<dt>nonce</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>long nonce</b>
+
+</code></p>
+</dd>
+<dt>receiveTimeout</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>short receiveTimeout</b>
+
+</code></p>
+</dd>
+<dt>receiveWindow</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>inline</em> </em><b><a href='../sox/ReceiveWindow.html'>ReceiveWindow</a> receiveWindow</b>
+
+</code></p>
+</dd>
+<dt>remoteId</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>short remoteId</b>
+
+</code></p>
+</dd>
+<dt>sendWindow</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>inline</em> </em><b><a href='../sox/SendWindow.html'>SendWindow</a> sendWindow</b>
+
+</code></p>
+</dd>
+<dt>transfer</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>inline</em> </em><b><a href='../sox/FileTransfer.html'>FileTransfer</a> transfer</b>
+
+</code></p>
+</dd>
+<dt>user</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../sys/User.html'>User</a> user</b>
+
+</code></p>
+</dd>
+<dt>authenticate</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>bool authenticate(<a href='../sox/SoxService.html'>SoxService</a> service, <a href='../sys/Str.html'>Str</a> username, byte[] digest, int digestOff, int digestLen)</b>
+
+</code></p>
+<p>If authenticated, then update user field and &#xa;return true, or return false if rejected.</p>
+</dd>
+<dt>challenge</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void challenge(<a href='../sox/SoxService.html'>SoxService</a> service, int numFields)</b>
+
+</code></p>
+<p>Receive hello and respond with challenge.</p>
+</dd>
+<dt>close</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void close(<a href='../sox/SoxService.html'>SoxService</a> service, int errorCode)</b>
+
+</code></p>
+<p>Close the dasp/sox session.</p>
+</dd>
+<dt>discoverResponse</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void discoverResponse(<a href='../sox/SoxService.html'>SoxService</a> service)</b>
+
+</code></p>
+<p>Send a discovery response.</p>
+</dd>
+<dt>houseKeeping</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>bool houseKeeping(<a href='../sox/SoxService.html'>SoxService</a> service, long now, int houseKeepingTicks)</b>
+
+</code></p>
+<p>House keeping is used to check for retries, acks, keep-alives, and &#xa;timeouts.  Ideally it is called every SoxService.HOUSE_KEEPING_INTERVAL,&#xa;but call rate may very based on App scanPeriod.  It is never called&#xa;more often then HOUSE_KEEPING_INTERVAL ms, but it may be called less&#xa;frequently.  houseKeepingTicks represents the number of intervals&#xa;that have elapsed (rounded up) since the last time houseKeeping was called</p>
+<p>For example, if HOUSE_KEEPING_INTERVAL is 100ms and 160 ms have elapsed&#xa;since the last time the method was called, houseKeepingTicks = 2</p>
+</dd>
+<dt>keepAlive</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void keepAlive(<a href='../sox/SoxService.html'>SoxService</a> service)</b>
+
+</code></p>
+<p>Send a keep alive message</p>
+</dd>
+<dt>reset</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void reset()</b>
+
+</code></p>
+<p>Reset into a clean state for new session.</p>
+</dd>
+<dt>skipHeader</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> </em><b>void skipHeader(<a href='../sys/BufInStream.html'>BufInStream</a> in, int typeId)</b>
+
+</code></p>
+<p>Skip a Dasp header field based on its typeId.</p>
+</dd>
+<dt>welcome</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void welcome(<a href='../sox/SoxService.html'>SoxService</a> service, int numFields)</b>
+
+</code></p>
+<p>Receive authenticate and respond with welcome.</p>
+</dd>
+</dl>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>sox</a>
+</div>
+<div class='copyright'><script type='text/javascript'>document.write("Copyright &#169; " + new Date().getFullYear() + " Tridium, Inc.")</script></div>
+</body>
+</html>

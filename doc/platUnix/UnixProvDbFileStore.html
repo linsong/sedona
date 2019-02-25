@@ -1,0 +1,95 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>platUnix::UnixProvDbFileStore</title>
+  <meta http-equiv='Content-type' content='text/html;charset=UTF-8' />
+  <link rel='stylesheet' type='text/css' href='../style.css'/>
+</head>
+<body>
+<p>
+  <a href='../index.html'>
+    <img src='../logo.png' alt='Sedona'/>
+  </a>
+</p>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>platUnix</a>
+</div>
+<h1 class='title'>platUnix::UnixProvDbFileStore</h1>
+<hr/>
+<pre class='inheritance'><a href='../sys/Obj.html'>sys::Obj</a>
+  <a href='../sys/Virtual.html'>sys::Virtual</a>
+    <a href='../sys/FileStore.html'>sys::FileStore</a>
+      platUnix::UnixProvDbFileStore
+</pre>
+<br>
+<code style='color:darkgreen;font-weight:bold;font-size:120%'><em>public final </em> class <b style='font-weight:bolder'>UnixProvDbFileStore</b>  </code><br>
+<hr/>
+<p>UnixProvDbFileStore converts filenames for the Manifest (or Kit) Database.</p>
+<hr/>
+<dl>
+<dt>fullpath</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>inline</em> </em><b><a href='../sys/BufOutStream.html'>BufOutStream</a> fullpath</b>
+
+</code></p>
+</dd>
+<dt>maxPathLen</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int maxPathLen</b>
+
+</code></p>
+</dd>
+<dt>mfStore</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>inline</em> </em><b><a href='../platUnix/UnixProvDbFileStore.html'>UnixProvDbFileStore</a> mfStore</b>
+
+</code></p>
+</dd>
+<dt>pathBuf</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>inline</em> </em><b><a href='../sys/Buf.html'>Buf</a> pathBuf</b>
+
+</code></p>
+</dd>
+<dt>pathStr</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../sys/Str.html'>Str</a> pathStr</b>
+
+</code></p>
+</dd>
+<dt>prefix</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../sys/Str.html'>Str</a> prefix</b>
+
+</code></p>
+</dd>
+<dt>UnixProvDbFileStore</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void UnixProvDbFileStore(<a href='../sys/Str.html'>Str</a> pre, <a href='../sys/Str.html'>Str</a> path)</b>
+
+</code></p>
+<p>Constructor sets instance fields and inserts self into FileStore list.&#xa;Note: assume args are (const) string literals, no need to copy.</p>
+</dd>
+<dt>accept</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> <em>override</em> </em><b>bool accept(<a href='../sys/Str.html'>Str</a> filename)</b>
+
+</code></p>
+<p>Parse the given filename, and return true if this is the appropriate&#xa;FileStore instance to handle it.</p>
+</dd>
+<dt>open</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> <em>override</em> </em><b>bool open(<a href='../sys/File.html'>File</a> f, <a href='../sys/Str.html'>Str</a> mode)</b>
+
+</code></p>
+<p>Implementation for &#x27;File.open&#x27;.</p>
+</dd>
+<dt>size</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>virtual</em> <em>override</em> </em><b>int size(<a href='../sys/File.html'>File</a> f)</b>
+
+</code></p>
+<p>Implementation for &#x27;File.size&#x27;.  &#xa;Must work without opening the file.</p>
+</dd>
+</dl>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>platUnix</a>
+</div>
+<div class='copyright'><script type='text/javascript'>document.write("Copyright &#169; " + new Date().getFullYear() + " Tridium, Inc.")</script></div>
+</body>
+</html>

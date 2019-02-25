@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>sys::Link</title>
+  <meta http-equiv='Content-type' content='text/html;charset=UTF-8' />
+  <link rel='stylesheet' type='text/css' href='../style.css'/>
+</head>
+<body>
+<p>
+  <a href='../index.html'>
+    <img src='../logo.png' alt='Sedona'/>
+  </a>
+</p>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>sys</a>
+</div>
+<h1 class='title'>sys::Link</h1>
+<hr/>
+<pre class='inheritance'><a href='../sys/Obj.html'>sys::Obj</a>
+  sys::Link
+</pre>
+<br>
+<code style='color:darkgreen;font-weight:bold;font-size:120%'><em>public </em> class <b style='font-weight:bolder'>Link</b>  </code><br>
+<hr/>
+<p>Link models an execution relationship between a source&#xa;component&#x27;s slot to a target component&#x27;s slot.</p>
+<hr/>
+<dl>
+<dt>fromComp</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>short fromComp</b>
+
+</code></p>
+</dd>
+<dt>fromSlot</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>byte fromSlot</b>
+
+</code></p>
+</dd>
+<dt>nextFrom</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../sys/Link.html'>Link</a> nextFrom</b>
+
+</code></p>
+</dd>
+<dt>nextTo</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../sys/Link.html'>Link</a> nextTo</b>
+
+</code></p>
+</dd>
+<dt>toComp</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>short toComp</b>
+
+</code></p>
+</dd>
+<dt>toSlot</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>byte toSlot</b>
+
+</code></p>
+</dd>
+<dt>load</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>bool load(<a href='../sys/InStream.html'>InStream</a> in, int fromComp)</b>
+
+</code></p>
+<p>Load the link from a binary format input stream.&#xa;Return true on success, false on error.</p>
+</dd>
+<dt>propagate</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void propagate()</b>
+
+</code></p>
+<p>Propage the link</p>
+</dd>
+<dt>save</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void save(<a href='../sys/OutStream.html'>OutStream</a> out)</b>
+
+</code></p>
+<p>Save the link in binary format to the output stream.</p>
+</dd>
+</dl>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>sys</a>
+</div>
+<div class='copyright'><script type='text/javascript'>document.write("Copyright &#169; " + new Date().getFullYear() + " Tridium, Inc.")</script></div>
+</body>
+</html>

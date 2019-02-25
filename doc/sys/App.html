@@ -1,0 +1,344 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>sys::App</title>
+  <meta http-equiv='Content-type' content='text/html;charset=UTF-8' />
+  <link rel='stylesheet' type='text/css' href='../style.css'/>
+</head>
+<body>
+<p>
+  <a href='../index.html'>
+    <img src='../logo.png' alt='Sedona'/>
+  </a>
+</p>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>sys</a>
+</div>
+<h1 class='title'>sys::App</h1>
+<hr/>
+<pre class='inheritance'><a href='../sys/Obj.html'>sys::Obj</a>
+  <a href='../sys/Virtual.html'>sys::Virtual</a>
+    <a href='../sys/Component.html'>sys::Component</a>
+      sys::App
+</pre>
+<br>
+<code style='color:darkgreen;font-weight:bold;font-size:120%'><em>public </em> class <b style='font-weight:bolder'>App</b>  </code><code style='color:darkblue;font-weight:bold'>
+[niagaraIcon=&#x22;module://icons/x16/database.png&#x22;, palette=false]</code>
+<br>
+<hr/>
+<p>App encapsulates an application database which includes&#xa;the list of available Types, the Component instances,&#xa;their configuration, and the Links.</p>
+<hr/>
+<dl>
+<dt>appName</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>inline</em> <em>property</em> </em><b><a href='../sys/Buf.html'>Buf</a> appName</b> [asStr, config, max=16]
+
+</code></p>
+<p>Name of the app, up to 15 ASCII chars long</p>
+</dd>
+<dt>comps</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../sys/Component.html'>Component</a>[] comps</b>
+
+</code></p>
+<p>List of application component indexed by&#xa;id (may be sparse with null items).</p>
+</dd>
+<dt>compsLen</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>int compsLen</b>
+
+</code></p>
+<p>Size of the components array</p>
+</dd>
+<dt>cycleCount</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>long cycleCount</b>
+
+</code></p>
+<p>This counter is incremented at the start of each engine cycle</p>
+</dd>
+<dt>deviceName</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>inline</em> <em>property</em> </em><b><a href='../sys/Buf.html'>Buf</a> deviceName</b> [asStr, config, max=16]
+
+</code></p>
+<p>Logical name for the device, up to 15 ASCII chars long</p>
+</dd>
+<dt>guardTime</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>int guardTime</b> [unit=&#x22;millisecond&#x22;, config]
+
+</code></p>
+<p>Time before the end of the scan period in which no new services work&#xa;should be started in order to allow work in progress to finish before&#xa;the end of scan.</p>
+</dd>
+<dt>hibernationResetsSteadyState</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>bool hibernationResetsSteadyState</b> [config]
+
+</code></p>
+<p>If true, when the App returns from hibernation then the&#xa;steady state will be reset and the App will not return&#xa;to steady state until timeToSteadyState has elapsed.</p>
+</dd>
+<dt>kitIdMap</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>int[] kitIdMap</b>
+
+</code></p>
+</dd>
+<dt>lastEndWork</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>long lastEndWork</b>
+
+</code></p>
+<p>Timestamp of end of service&#x27;s work (also start of sleep time).  This timestamp&#xa;corresponds to the PREVIOUS scan.</p>
+<pre class='doc'>    lastEndWork - lastStartWork = work time of previous scan</pre>
+</dd>
+<dt>lastStartExec</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>long lastStartExec</b>
+
+</code></p>
+<p>Cache of the timestamp of the start of the component tree execution of&#xa;the PREVIOUS scan.  It is intended that that timing statistics to be computed&#xa;within the execute method of a component dropped into the component tree, so&#xa;we need to cache the start of the last component tree execution.  Also marks&#xa;the time that sleep ends on previous scan.</p>
+<pre class='doc'>    lastStartWork - lastStartExec = execution time of previous scan</pre>
+</dd>
+<dt>lastStartWork</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>long lastStartWork</b>
+
+</code></p>
+<p>Timestamp of start of service work (also marks the end of component tree execution). If&#xa;timing statistics computed during component tree execution, this timestamp&#xa;corresponds to the PREVIOUS scan.</p>
+<pre class='doc'>    lastEndWork - lastStartWork = work time of previous scan</pre>
+</dd>
+<dt>log</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b><a href='../sys/Log.html'>Log</a> log</b>
+
+</code></p>
+<p>Application level logging</p>
+</dd>
+<dt>newStartExec</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>long newStartExec</b>
+
+</code></p>
+<p>End of previous scan sleep time is also the start of a new component tree execution&#xa;This marks start of he CURRENT scan, such that:</p>
+<pre class='doc'>    newStartExec - lastStartExec = scan time of PREVIOUS scan</pre>
+</dd>
+<dt>platform</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../sys/PlatformService.html'>PlatformService</a> platform</b>
+
+</code></p>
+<p>PlatformService installed in this application</p>
+</dd>
+<dt>scanPeriod</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>int scanPeriod</b> [unit=&#x22;millisecond&#x22;, config]
+
+</code></p>
+<p>Scan cycle period in milliseconds.</p>
+</dd>
+<dt>services</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../sys/Service.html'>Service</a> services</b>
+
+</code></p>
+<p>Linked list of services</p>
+</dd>
+<dt>timeToSteadyState</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>property</em> </em><b>int timeToSteadyState</b> [unit=&#x22;millisecond&#x22;, config]
+
+</code></p>
+<p>Time from app start to steady state, in milliseconds.</p>
+</dd>
+<dt>watches</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>inline</em> </em><b><a href='../sys/Watch.html'>Watch</a>[] watches</b>
+
+</code></p>
+<p>This array references the active watches by referencing&#xa;the application specific subclasses currently open.</p>
+</dd>
+<dt>add</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../sys/Component.html'>Component</a> add(<a href='../sys/Component.html'>Component</a> parent, <a href='../sys/Str.html'>Str</a> name, <a href='../sys/Type.html'>Type</a> t)</b>
+
+</code></p>
+<p>Add a component to the application.&#xa;Return the new Component on success, null on failure.</p>
+</dd>
+<dt>addLink</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../sys/Link.html'>Link</a> addLink(<a href='../sys/Component.html'>Component</a> from, <a href='../sys/Slot.html'>Slot</a> fromSlot, <a href='../sys/Component.html'>Component</a> to, <a href='../sys/Slot.html'>Slot</a> toSlot)</b>
+
+</code></p>
+<p>Add a new Link into the application by registering it in both&#xa;the &#x22;to&#x22; and &#x22;from&#x22; component&#x27;s linked-list of Links.  Return&#xa;the new Link or null on error.</p>
+</dd>
+<dt>cleanupApp</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void cleanupApp()</b>
+
+</code></p>
+<p>Free all the dynamic memory associated with&#xa;this application.</p>
+</dd>
+<dt>closeWatch</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void closeWatch(<a href='../sys/Watch.html'>Watch</a> watch)</b>
+
+</code></p>
+<p>Close the specific watch by freeing its id to be used&#xa;again and setting its closed field to false.</p>
+</dd>
+<dt>getFirstChildOfType</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../sys/Component.html'>Component</a> getFirstChildOfType(<a href='../sys/Component.html'>Component</a> parent, <a href='../sys/Type.html'>Type</a> t)</b>
+
+</code></p>
+<p>Gets first child component of a given type.&#xa;Returns null if no objects found, otherwise returns&#xa;a Component</p>
+</dd>
+<dt>getNextSiblingOfType</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../sys/Component.html'>Component</a> getNextSiblingOfType(<a href='../sys/Component.html'>Component</a> component, <a href='../sys/Type.html'>Type</a> t)</b>
+
+</code></p>
+<p>Gets next sibling of a component that is of type t.&#xa;Returns null if end of sibling list is reached without finding one.</p>
+</dd>
+<dt>hibernate</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>action</em> </em><b>void hibernate()</b> [confirmRequired]
+
+</code></p>
+<p>Action to request hibernation.  Current execute loop will&#xa;complete and all services will get a chance to work before&#xa;hibernation occurs</p>
+</dd>
+<dt>initApp</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>bool initApp(int initCompsLen)</b>
+
+</code></p>
+<p>Prepare the applications data structures to begin&#xa;configuration.</p>
+</dd>
+<dt>initWatches</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void initWatches(<a href='../sys/Watch.html'>Watch</a>[] subclasses)</b>
+
+</code></p>
+<p>Each service which uses watches, should call this&#xa;method on startup with it&#x27;s service specific array&#xa;of Watch subclasses.</p>
+</dd>
+<dt>isRunning</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>bool isRunning()</b>
+
+</code></p>
+<p>Is the application currently running</p>
+</dd>
+<dt>isSteadyState</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>bool isSteadyState()</b>
+
+</code></p>
+<p>Has the application reached steady state (as defined by timeToSteadyState)</p>
+</dd>
+<dt>load</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>int load()</b>
+
+</code></p>
+<p>Load the application from persistent storage</p>
+</dd>
+<dt>loadApp</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>int loadApp(<a href='../sys/InStream.html'>InStream</a> in)</b>
+
+</code></p>
+<p>Load the app from a binary format input stream.&#xa;Return 0 on success or non-zero on error.</p>
+</dd>
+<dt>loadSchema</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>bool loadSchema(<a href='../sys/InStream.html'>InStream</a> in)</b>
+
+</code></p>
+<p>Check that the schema on the input stream matches&#xa;the schema of the current runtime.</p>
+<p>In this version, we allow the app to depend on fewer kits than &#xa;the scode, as long as all the app&#x27;s kits are in the scode.</p>
+</dd>
+<dt>lookup</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../sys/Component.html'>Component</a> lookup(int id)</b>
+
+</code></p>
+<p>Lookup a component by id or null.</p>
+</dd>
+<dt>lookupLink</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../sys/Link.html'>Link</a> lookupLink(int fromCompId, int fromSlotId, int toCompId, int toSlotId)</b>
+
+</code></p>
+<p>Find a link with the specified from and to&#xa;ids or return null if not found.</p>
+</dd>
+<dt>lookupService</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../sys/Service.html'>Service</a> lookupService(<a href='../sys/Type.html'>Type</a> type)</b>
+
+</code></p>
+<p>Lookup a service by type (or base type).  Return&#xa;null if there are no registered services which&#xa;implement the specified type.</p>
+</dd>
+<dt>maxId</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>int maxId()</b>
+
+</code></p>
+<p>Get the maximum component id used by the application.</p>
+</dd>
+<dt>openWatch</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../sys/Watch.html'>Watch</a> openWatch(<a href='../sys/Watch.html'>Watch</a>[] subclasses)</b>
+
+</code></p>
+<p>Allocate a watch for a service using watches.  The service&#xa;should pass in its service specific array of Watch subclasses.&#xa;If a watch is opened then it is reserved, its closed field is&#xa;set to false, and the subclass instance is returned.  If all&#xa;the watches are currently open, then return null.</p>
+</dd>
+<dt>quit</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>action</em> </em><b>void quit()</b> [confirmRequired]
+
+</code></p>
+<p>Save the application and then exit the main loop.</p>
+</dd>
+<dt>reboot</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>action</em> </em><b>void reboot()</b> [confirmRequired]
+
+</code></p>
+<p>Action to invoke Platform.reboot.</p>
+</dd>
+<dt>remove</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>bool remove(<a href='../sys/Component.html'>Component</a> c)</b>
+
+</code></p>
+<p>Remove the specified component and free it&#x27;s memory.&#xa;This method automatically recursively removes any children&#xa;of the component first.  Return true on success, false on&#xa;failure.</p>
+</dd>
+<dt>removeLink</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>bool removeLink(<a href='../sys/Link.html'>Link</a> link)</b>
+
+</code></p>
+<p>Remove a Link from the application by unregistering it from both&#xa;the &#x22;to&#x22; and &#x22;from&#x22; component&#x27;s list linked of Links.  Return&#xa;true on success, false on failure.</p>
+</dd>
+<dt>restart</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>action</em> </em><b>void restart()</b> [confirmRequired]
+
+</code></p>
+<p>Action to invoke Platform.restart.</p>
+</dd>
+<dt>resumeApp</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>int resumeApp()</b>
+
+</code></p>
+<p>Run this application - right now this is a&#xa;simple round robin execution.</p>
+</dd>
+<dt>runApp</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>int runApp()</b>
+
+</code></p>
+<p>Run this application - right now this is a&#xa;simple round robin execution.</p>
+</dd>
+<dt>save</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>action</em> </em><b>void save()</b>
+
+</code></p>
+<p>Save the application back to persistent storage</p>
+</dd>
+<dt>saveApp</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>int saveApp(<a href='../sys/OutStream.html'>OutStream</a> out)</b>
+
+</code></p>
+<p>Save the app in binary format to the output stream:</p>
+<pre class='doc'>  app&#xa;  {&#xa;    u4           magic 0x73617070 &#x22;sapp&#x22;&#xa;    u4           version 0x0002 0.2&#xa;    Schema       schema&#xa;    Component[]  comps&#xa;    u2           0xffff end of comps marker&#xa;    Link[]       links&#xa;    u2           0xffff end of links marker&#xa;    u1           &#x27;.&#x27; end of app marker&#xa;  }</pre>
+<p>Return 0 on success, non-zero on failure.</p>
+</dd>
+<dt>saveSchema</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void saveSchema(<a href='../sys/OutStream.html'>OutStream</a> out)</b>
+
+</code></p>
+<p>Schema is the list of kit names and checksums:</p>
+<pre class='doc'>  schema&#xa;  {&#xa;    u1  count&#xa;    kits[count]&#xa;    {&#xa;      str  name&#xa;      u4   checksum&#xa;    }&#xa;  }</pre>
+</dd>
+<dt>startApp</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>int startApp(<a href='../sys/Str.html'>Str</a>[] args, int argsLen)</b>
+
+</code></p>
+<p>Start all the components.  Return 0 on success,&#xa;error code on failure.</p>
+</dd>
+<dt>stopApp</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void stopApp()</b>
+
+</code></p>
+<p>Stop all the components.</p>
+</dd>
+</dl>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>sys</a>
+</div>
+<div class='copyright'><script type='text/javascript'>document.write("Copyright &#169; " + new Date().getFullYear() + " Tridium, Inc.")</script></div>
+</body>
+</html>

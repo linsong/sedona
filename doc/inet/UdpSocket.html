@@ -1,0 +1,108 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>inet::UdpSocket</title>
+  <meta http-equiv='Content-type' content='text/html;charset=UTF-8' />
+  <link rel='stylesheet' type='text/css' href='../style.css'/>
+</head>
+<body>
+<p>
+  <a href='../index.html'>
+    <img src='../logo.png' alt='Sedona'/>
+  </a>
+</p>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>inet</a>
+</div>
+<h1 class='title'>inet::UdpSocket</h1>
+<hr/>
+<pre class='inheritance'><a href='../sys/Obj.html'>sys::Obj</a>
+  inet::UdpSocket
+</pre>
+<br>
+<code style='color:darkgreen;font-weight:bold;font-size:120%'><em>public </em> class <b style='font-weight:bolder'>UdpSocket</b>  </code><code style='color:darkblue;font-weight:bold'>
+[javaPeer]</code>
+<br>
+<hr/>
+<p>UdpSocket is used to send and receive UDP datagrams.&#xa;The Sedona socket APIs are all asynchronous to be used&#xa;in a single threaded environment.</p>
+<hr/>
+<dl>
+<dt>READ</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int READ</b>
+
+</code></p>
+<p>Bitmask for select when socket is readable</p>
+</dd>
+<dt>WRITE</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int WRITE</b>
+
+</code></p>
+<p>Bitmask for select when socket is writable</p>
+</dd>
+<dt>bind</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>native</em> </em><b>bool bind(int port)</b>
+
+</code></p>
+<p>Bind this socket the specified well-known port on this&#xa;host. Return true on success, false on failure.</p>
+</dd>
+<dt>close</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>native</em> </em><b>void close()</b>
+
+</code></p>
+<p>Shutdown and close this socket.</p>
+</dd>
+<dt>idealPacketSize</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>native</em> </em><b>int idealPacketSize()</b>
+
+</code></p>
+<p>What is the ideal maximum number of bytes to send by this &#xa;UDP implementation.  This is typically driven by the &#xa;lower levels of the IP stack - for instance when running &#xa;6LoWPAN over 802.15.4, this is the max UDP packet size &#xa;which doesn&#x27;t require fragmenting across multiple &#xa;802.15.4 frames.</p>
+</dd>
+<dt>isClosed</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>bool isClosed()</b>
+
+</code></p>
+<p>Is this socket closed.</p>
+</dd>
+<dt>join</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>native</em> </em><b>bool join()</b>
+
+</code></p>
+<p>Join this socket to a multicast group.&#xa;(Address is defined at native level.)&#xa;Return true on success, false on failure.</p>
+</dd>
+<dt>maxPacketSize</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>native</em> </em><b>int maxPacketSize()</b>
+
+</code></p>
+<p>What is the maximum number of bytes which can be&#xa;sent by this UDP implementation.</p>
+</dd>
+<dt>open</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>native</em> </em><b>bool open()</b>
+
+</code></p>
+<p>Initialize this socket which allocates a socket handle&#xa;for this instance.  This method must be called before using&#xa;the socket.  Return true on success, false on failure.</p>
+</dd>
+<dt>receive</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>native</em> </em><b>bool receive(<a href='../inet/UdpDatagram.html'>UdpDatagram</a> datagram)</b>
+
+</code></p>
+<p>Receive a datagram into the specified structure.  The&#xa;datagram.buf must reference a valid byte buffer - bytes&#xa;are read in starting at datagram.buf[0] with at most datagram.len&#xa;bytes being received.  If successful then return true,&#xa;datagram.len reflects the actual number of bytes received,&#xa;and datagram.addr/datagram.port reflect the source socket&#xa;address.  Note datagram.addr is only valid until the next&#xa;call to receive().  On failure or if no packets are pending&#xa;to read, then return false, len=0, port=-1, and addr=null.</p>
+<p>Note if the number of bytes available to be read is greater&#xa;then len than this call works differently dependent on the&#xa;platform.  In Java it silently ignores the remainder of&#xa;the bytes (wrong way), and in C++ it returns false since&#xa;the message received is not the same as the message sent.</p>
+</dd>
+<dt>send</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>native</em> </em><b>bool send(<a href='../inet/UdpDatagram.html'>UdpDatagram</a> datagram)</b>
+
+</code></p>
+<p>Send the specified datagram which encapsulates both the&#xa;destination address and the data to send.  Return true&#xa;on success, false on failure.  If the number of bytes&#xa;sent does not match datagram.len then this call will&#xa;fail and return false.</p>
+</dd>
+</dl>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>inet</a>
+</div>
+<div class='copyright'><script type='text/javascript'>document.write("Copyright &#169; " + new Date().getFullYear() + " Tridium, Inc.")</script></div>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>web::Base64</title>
+  <meta http-equiv='Content-type' content='text/html;charset=UTF-8' />
+  <link rel='stylesheet' type='text/css' href='../style.css'/>
+</head>
+<body>
+<p>
+  <a href='../index.html'>
+    <img src='../logo.png' alt='Sedona'/>
+  </a>
+</p>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>web</a>
+</div>
+<h1 class='title'>web::Base64</h1>
+<hr/>
+<pre class='inheritance'><a href='../sys/Obj.html'>sys::Obj</a>
+  web::Base64
+</pre>
+<br>
+<code style='color:darkgreen;font-weight:bold;font-size:120%'><em>public </em> class <b style='font-weight:bolder'>Base64</b>  </code><br>
+<hr/>
+<p>Base64 encoding.  </p>
+<pre class='doc'>  Base64 encoding replaces each set of 3 bytes from the input with 4 bytes of encoded data.&#xa;  This implementation prints base64 encoding of byte array to given output.</pre>
+<hr/>
+<dl>
+<dt>PAD</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>int PAD</b>
+
+</code></p>
+</dd>
+<dt>encodeTable</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>const</em> <em>define</em> </em><b>byte[] encodeTable</b>
+
+</code></p>
+</dd>
+<dt>remainder</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> <em>inline</em> </em><b>byte[] remainder</b>
+
+</code></p>
+</dd>
+<dt>append</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> </em><b>int append(<a href='../sys/OutStream.html'>OutStream</a> out, int ch, int linelen, int pos)</b>
+
+</code></p>
+</dd>
+<dt>encode</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> </em><b>void encode(<a href='../sys/OutStream.html'>OutStream</a> out, byte[] buf, int buflen)</b>
+
+</code></p>
+</dd>
+<dt>encodeLen</dt>
+<dd><p class='sig'><code><em><em>public</em> <em>static</em> </em><b>void encodeLen(<a href='../sys/OutStream.html'>OutStream</a> out, byte[] buf, int buflen, int linelen)</b>
+
+</code></p>
+</dd>
+</dl>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>web</a>
+</div>
+<div class='copyright'><script type='text/javascript'>document.write("Copyright &#169; " + new Date().getFullYear() + " Tridium, Inc.")</script></div>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>inet::IpAddr</title>
+  <meta http-equiv='Content-type' content='text/html;charset=UTF-8' />
+  <link rel='stylesheet' type='text/css' href='../style.css'/>
+</head>
+<body>
+<p>
+  <a href='../index.html'>
+    <img src='../logo.png' alt='Sedona'/>
+  </a>
+</p>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>inet</a>
+</div>
+<h1 class='title'>inet::IpAddr</h1>
+<hr/>
+<pre class='inheritance'><a href='../sys/Obj.html'>sys::Obj</a>
+  inet::IpAddr
+</pre>
+<br>
+<code style='color:darkgreen;font-weight:bold;font-size:120%'><em>public </em> class <b style='font-weight:bolder'>IpAddr</b>  </code><br>
+<hr/>
+<p>IpAddr models an Internet IPv4 or IPv6 address.</p>
+<hr/>
+<dl>
+<dt>equals</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>bool equals(<a href='../inet/IpAddr.html'>IpAddr</a> that)</b>
+
+</code></p>
+<p>Return if this address is equivalent to that address.</p>
+</dd>
+<dt>isIPv4</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>bool isIPv4()</b>
+
+</code></p>
+<p>Return if this is a IPv4 mapped address.  IPv4 addresses&#xa;have the first 80 bits set to zero, the next 16 set to one,&#xa;and the last 32 bits represent the IPv4 address.</p>
+</dd>
+<dt>loadBuf</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>bool loadBuf(<a href='../sys/Buf.html'>Buf</a> addr)</b>
+
+</code></p>
+<p>Convenience for loadBytes(addr.bytes, addr.size)</p>
+</dd>
+<dt>loadBytes</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>bool loadBytes(byte[] addr, int len)</b>
+
+</code></p>
+<p>Set the IpAddr using a raw byte array.  Returns true if the length&#xa;of the addr is 4-bytes (IPv4) or 16 bytes (IPv6).  No validation&#xa;is done on the raw addr.</p>
+</dd>
+<dt>parse</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>bool parse(<a href='../sys/Str.html'>Str</a> notation)</b>
+
+</code></p>
+<p>Parse the specified string from an IPv4 dotted-quad&#xa;notation or IPv6 colon-hexdecimal notation into this IpAddr.  &#xa;This method will not resolve a hostname.  Return true on &#xa;success, or false on failure (if the address is illegally &#xa;formatted).</p>
+</dd>
+<dt>set</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b>void set(<a href='../inet/IpAddr.html'>IpAddr</a> addr)</b>
+
+</code></p>
+<p>This method is used to copy the address&#xa;of &#x22;addr&#x22; into this instance.</p>
+</dd>
+<dt>toStr</dt>
+<dd><p class='sig'><code><em><em>public</em> </em><b><a href='../sys/Str.html'>Str</a> toStr()</b>
+
+</code></p>
+<p>Get the address in string format - dotted-quad&#xa;notation for IPv4 or colon-hexidecimal notation&#xa;for IPv6.  The string is stored in a static&#xa;shared buffer.</p>
+</dd>
+</dl>
+<div class='nav'>
+  <a href='../index.html'>Index</a> |
+  <a href='../api.html'>Kits</a> |
+  <a href='index.html'>inet</a>
+</div>
+<div class='copyright'><script type='text/javascript'>document.write("Copyright &#169; " + new Date().getFullYear() + " Tridium, Inc.")</script></div>
+</body>
+</html>
