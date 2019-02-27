@@ -66,7 +66,7 @@ def compile():
   makesedonac.compile()
 
   # make all kits
-  compilekit.compile(env.kits, ["-doc", "-outDir", env.build])
+  compilekit.compile(env.kits, ["-doc"])
 
   # make docs
   docOut = os.path.join(env.build, "doc")
