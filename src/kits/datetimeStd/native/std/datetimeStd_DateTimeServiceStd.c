@@ -9,7 +9,9 @@
 #include "sedona.h"
 
 #include <time.h>
+#include <errno.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #ifdef _WIN32
 #if !defined(__MINGW32__)
@@ -41,13 +43,23 @@ int64_t datetimeStd_DateTimeServiceStd_doNow(SedonaVM* vm, Cell* params)
   return nanos;
 }
 
- //  Setting system time not implemented on Win32
-  
 // void doSetClock 
 Cell datetimeStd_DateTimeServiceStd_doSetClock(SedonaVM* vm, Cell* params)
 {
   int64_t nanos = *(int64_t*)(params+0); // param 0+1
-    
+  nanos += SEDONA_EPOCH_OFFSET_SECS * 1000 * 1000 * 1000;
+
+  struct timespec ts;
+  ts.tv_sec = nanos / (1000*1000*1000);
+  ts.tv_nsec = nanos % (1000*1000*1000);
+
+  int ret;
+  ret = clock_settime(CLOCK_REALTIME, &ts);
+  if (ret) {
+	  perror("failed to set time");
+	  return nullCell;
+  }
+  system("hwclock -w");
   return nullCell;
 }
 
