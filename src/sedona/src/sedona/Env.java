@@ -143,7 +143,7 @@ public class Env
     {
       if (ticksMethod != null)
       {
-        long x = ((java.lang.Long)ticksMethod.invoke(null, null)).longValue();
+        long x = ((java.lang.Long)ticksMethod.invoke(null)).longValue();
         if (ticksMethodInNanos) x /= 1000000L;
         return x;
       }
