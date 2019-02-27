@@ -49,6 +49,10 @@ Cell datetimeStd_DateTimeServiceStd_doSetClock(SedonaVM* vm, Cell* params)
   int64_t nanos = *(int64_t*)(params+0); // param 0+1
   nanos += SEDONA_EPOCH_OFFSET_SECS * 1000 * 1000 * 1000;
 
+  #ifdef _WIN32
+  //  Setting system time not implemented on Win32
+  #else
+
   struct timespec ts;
   ts.tv_sec = nanos / (1000*1000*1000);
   ts.tv_nsec = nanos % (1000*1000*1000);
@@ -60,6 +64,7 @@ Cell datetimeStd_DateTimeServiceStd_doSetClock(SedonaVM* vm, Cell* params)
 	  return nullCell;
   }
   system("hwclock -w");
+  #endif
   return nullCell;
 }
 
