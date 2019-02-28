@@ -94,8 +94,11 @@ def archive():
   manifest = os.path.join(stageDir, "platformManifest.xml")
   if not os.path.isfile(manifest): fail("Could not find platform manifest: " + manifest)
   svmDir = os.path.join(stageDir, "svm")
-  
-  xplatform = filter(lambda x:x.nodeName=="platformManifest", xml.dom.minidom.parse(manifest).childNodes)[0]
+
+  for node in xml.dom.minidom.parse(manifest).childNodes:
+    if node.nodeName == "platformManifest":
+      xplatform = node
+      break
   platformId = xplatform.getAttribute("platformId")
   
   # Default outFile, if not specified (create path if it doesn't exist)
