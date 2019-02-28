@@ -84,8 +84,7 @@ class BuildError(Exception):
 # Dump the environment setting
 def dump():           
   print("------- env ------")
-  keys = env.__dict__.keys()
-  keys.sort()
+  keys = sorted(env.__dict__.keys())
   for slot in keys:
     if not slot.startswith("__"):
       print("%-20s %20s" % (slot + ":", getattr(env, slot)))
