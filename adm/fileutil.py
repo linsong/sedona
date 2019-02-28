@@ -40,7 +40,8 @@ def excludematch(exclude, file):
   """ Check if file matches any excludes """
   for pattern in exclude:
     length = re.match(pattern, file)
-    if length > 0: return 1
+    if length is not None:
+      return 1
   return 0  
 
 def cpfile(frompath, topath, force=0):
