@@ -26,11 +26,11 @@ java_home=$JAVA_HOME
 export java_home
 
 # set up SVM_PLATFORM for Darwin platform 
-platform=$(python -c 'import sys; print sys.platform')
+platform=$(python3 -c 'import sys; print(sys.platform)')
 [ "$platform" == 'darwin' ] && export SVM_PLATFORM=$sedona_home/platforms/src/generic/unix/generic-darwin.xml && echo "set SVM_PLATFORM to $SVM_PLATFORM"
 
 # check to make sure that programs we need are in the path
-for p in gcc python
+for p in gcc python3
 do
   if ! which $p > /dev/null
   then
