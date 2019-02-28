@@ -83,7 +83,7 @@ def parseOpts(argv):
     if not stageDir: stageDir = os.path.join(env.temp, ".par")
     if not os.path.isdir(stageDir): fail(stageDir + " is not a directory", True)
     
-  except getopt.GetoptError, err:
+  except getopt.GetoptError as err:
     print(str(err))
     usage()
     sys.exit(1)

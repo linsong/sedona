@@ -75,7 +75,7 @@ def compile():
     getattr(compileunix, compiler)(env.svmExe, srcFiles, includes, libs, defs)
     os.chmod(env.svmExe, 0O755)
 
-  except env.BuildError, err:
+  except env.BuildError as err:
     print("**")
     print("** " + str(err))
     print("** FAILED [" + env.svmExe + "]")
