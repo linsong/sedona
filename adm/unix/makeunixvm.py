@@ -73,7 +73,7 @@ def compile():
     fileutil.rmdir(stageDir)
     compilekit.compile(platFile + " -outDir " + stageDir)
     getattr(compileunix, compiler)(env.svmExe, srcFiles, includes, libs, defs)
-    os.chmod(env.svmExe, 0755)
+    os.chmod(env.svmExe, 0O755)
 
   except env.BuildError, err:
     print("**")
