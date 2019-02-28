@@ -8,7 +8,7 @@
 # Author:    Brian Frank
 # Creation:  6 Dec 02
 # 
-
+from __future__ import print_function
 import sys
 import os           
 import env
@@ -17,9 +17,9 @@ import props
 # Environment Variables
 javaHome = os.environ.get("java_home")
 if not javaHome or not os.path.exists(javaHome):
-  print ""
-  print "WARNING: java_home environment variable not setup correctly"
-  print ""                 
+  print("")
+  print("WARNING: java_home environment variable not setup correctly")
+  print("")
 
 # Home Directory: if the "sedona_home" environment variable
 # we use that; otherwise we assume this script is {home}\adm\env.py
@@ -83,12 +83,12 @@ class BuildError(Exception):
 
 # Dump the environment setting
 def dump():           
-  print "------- env ------"
+  print("------- env ------")
   keys = env.__dict__.keys()
   keys.sort()
   for slot in keys:
     if not slot.startswith("__"):
-      print "%-20s %20s" % (slot + ":", getattr(env, slot))
+      print("%-20s %20s" % (slot + ":", getattr(env, slot)))
     
 # Main
 if __name__ == '__main__':     

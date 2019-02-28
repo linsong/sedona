@@ -8,6 +8,7 @@
 # Creation:  15 Mar 02
 # 
 
+from __future__ import print_function
 import os
 import zipfile
 import re
@@ -47,7 +48,7 @@ def cpfile(frompath, topath, force=0):
   # bail if not out of date, unless the force flag is true
   if not force and not outofdate(frompath, topath): return
   # log
-  print '    Copy "' + topath + '"'
+  print('    Copy "' + topath + '"')
   # get file handles
   fromfile = open(frompath, 'rb')
   tofile = open(topath, 'wb')
@@ -59,7 +60,7 @@ def cpfile(frompath, topath, force=0):
     
 def cpdir(fromdir, todir, exclude=[], recurse=1, force=0):
   """ Recursively copy a directory - excludes are regular expressions """
-  print '  Directory "' + todir + '"'
+  print('  Directory "' + todir + '"')
   if not os.path.exists(todir): os.makedirs(todir)
   for file in os.listdir(fromdir):  
     if excludematch(exclude, file): continue
@@ -73,7 +74,7 @@ def cpdir(fromdir, todir, exclude=[], recurse=1, force=0):
 def rmdir(path, exclude = [], log=1):
   """ Recursively remove a directory - excludes are regular expressions """
   if not os.path.exists(path): return
-  if log: print '  Removing "' + path  + '"'
+  if log: print('  Removing "' + path  + '"')
   files = os.listdir(path)
   for file in files:
     if excludematch(exclude, file): continue
@@ -109,7 +110,7 @@ def zip(zippath, sourcedir, prefixPath = ""):
 def zipadd(zip, path, archivepath):
   """ Add the specified dir or file to the zipfile """
   if os.path.isfile(path):
-    print "  Zip " + archivepath
+    print("  Zip " + archivepath)
     zip.write(path, archivepath)
   else:
     for file in os.listdir(path):

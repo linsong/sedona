@@ -7,7 +7,7 @@
 # Author:    Brian Frank
 # Creation:  7 Dec 07
 #                 
-
+from __future__ import print_function
 import os
 import env
 import fileutil
@@ -21,14 +21,13 @@ import fileutil
 #   func:     function called with tempDir after compile but before jar
 #
 def compile(srcDir, depends, packages, jarFile, func=None):  
-  print "Compile [" + os.path.basename(jarFile) + "]"
+  print("Compile [" + os.path.basename(jarFile) + "]")
   # init jarTemp dir
   temp = os.path.join(env.build, "tempJar")
   fileutil.rmdir(temp, [], 0)
   fileutil.mkdir(temp)
   
-  # compile using jikes.exe
-  print "  Javac [" + srcDir + "]"
+  print("  javac [" + srcDir + "]")
   cmd = env.jikes
   cmd += " -source 1.6 "
   cmd += " -target 1.6 "
@@ -57,4 +56,4 @@ def compile(srcDir, depends, packages, jarFile, func=None):
   fileutil.rmdir(temp, [], 0)
   
   # success
-  print "  Jar [" + jarFile + "]"
+  print("  jar [" + jarFile + "]")

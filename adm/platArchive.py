@@ -9,6 +9,7 @@
 # Creation:  05 June 09
 #
 
+from __future__ import print_function
 import os
 import getopt
 import sys
@@ -54,8 +55,8 @@ def usage():
 """)
   
 def fail(msg, showUsage=False, code=1):
-  print
-  print "Error: ", msg
+  print("")
+  print("Error: ", msg)
   if showUsage: usage()
   sys.exit(code)
   
@@ -83,7 +84,7 @@ def parseOpts(argv):
     if not os.path.isdir(stageDir): fail(stageDir + " is not a directory", True)
     
   except getopt.GetoptError, err:
-    print str(err)
+    print(str(err))
     usage()
     sys.exit(1)
   
@@ -103,7 +104,7 @@ def archive():
   outDir = os.path.dirname( os.path.realpath(outFile) )
   #print "   outDir = %s" % outDir
   if not os.path.exists(outDir): 
-    print 'Creating folder %s' % outDir
+    print('Creating folder %s' % outDir)
     os.makedirs(outDir)
   
   # Zip it up - the manifest, plus all contents of the svmDir if requested
@@ -134,4 +135,4 @@ def main(argv=[]):
 # Main
 if __name__ == '__main__':
   main(sys.argv[1:])
-  print "\nSuccess: ", outFile
+  print("\nSuccess: ", outFile)

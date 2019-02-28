@@ -11,6 +11,7 @@
 # Creation:  7 Dec 07
 #                 
 
+from __future__ import print_function
 import os
 import env
 import fileutil
@@ -79,13 +80,13 @@ if __name__ == '__main__':
   options = parser.parse_args()
 
   # Print options
-  print 'options.version = ', options.version
-  print 'options.test    = ', options.test
-  print 'options.kits    = ', options.kits
-  print 'options.run     = ', options.run
-  print 'options.scode   = ', options.scode
-  print 'options.app     = ', options.app
-  print 'options.sys     = ', options.sys
+  print('options.version = ', options.version)
+  print('options.test    = ', options.test)
+  print('options.kits    = ', options.kits)
+  print('options.run     = ', options.run)
+  print('options.scode   = ', options.scode)
+  print('options.app     = ', options.app)
+  print('options.sys     = ', options.sys)
 
   scodefile = os.path.splitext(options.scode)[0] + '.scode'
   sabfile   = os.path.splitext(options.app)[0]   + '.sab'
@@ -102,8 +103,8 @@ if __name__ == '__main__':
     run_sc = False
     run_sv = False
 
-  if not run_sc: print '  Skipping sedonac tests'
-  if not run_sv: print '  Skipping svm tests'
+  if not run_sc: print('  Skipping sedonac tests')
+  if not run_sv: print('  Skipping svm tests')
 
   # Make sedona.jar  
   status = makesedona.compile()
@@ -125,7 +126,7 @@ if __name__ == '__main__':
 
   # Make additional external kits
   if options.kits is not None:
-    print "Build additional external kits"
+    print("Build additional external kits")
     compilekit.compile(options.kits)
 
   # Make windows test scode (or scode specified on cmd line)
@@ -154,23 +155,23 @@ if __name__ == '__main__':
 
   # Run sedonac tests
   if run_sc:
-    print "\n\n"
-    print "  ---------------------------------------------------------"
-    print "  -------------------- Testing sedonac --------------------"
-    print "  ---------------------------------------------------------"
-    print "\n\n"
+    print("\n\n")
+    print("  ---------------------------------------------------------")
+    print("  -------------------- Testing sedonac --------------------")
+    print("  ---------------------------------------------------------")
+    print("\n\n")
     status = os.system(env.sedonacExe + " -test")
     if status:
       raise env.BuildError("FATAL: sedonac tests failed")   
 
   # Run SVM tests
   if run_sv:
-    print "\n\n"
-    print "  ---------------------------------------------------------"
-    print "  -------------------- Testing svm ------------------------"
-    print "  ---------------------------------------------------------"
-    print "  scode =", scodefile
-    print "\n\n"
+    print("\n\n")
+    print("  ---------------------------------------------------------")
+    print("  -------------------- Testing svm ------------------------")
+    print("  ---------------------------------------------------------")
+    print("  scode =", scodefile)
+    print("\n\n")
     status = os.system(env.svmExe + " " + scodefile + " -test")
     if status:
       raise env.BuildError("FATAL: svm tests failed")      
@@ -182,13 +183,13 @@ if __name__ == '__main__':
     if status:
       raise env.BuildError("FATAL: app failed to build")      
 
-    print "\n\n"
-    print "  ---------------------------------------------------------"
-    print "  -------------------- Running svm ------------------------"
-    print "  ---------------------------------------------------------"
-    print "  scode =", scodefile
-    print "  app   =", sabfile
-    print "\n\n"
+    print("\n\n")
+    print("  ---------------------------------------------------------")
+    print("  -------------------- Running svm ------------------------")
+    print("  ---------------------------------------------------------")
+    print("  scode =", scodefile)
+    print("  app   =", sabfile)
+    print("\n\n")
 
     status = os.system(env.svmExe + " " + scodefile + " " + sabfile)
     if status:

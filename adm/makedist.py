@@ -8,6 +8,7 @@
 # Creation:  9 Jul 08
 #
 
+from __future__ import print_function
 import os
 import sys
 import env
@@ -50,7 +51,7 @@ def main():
 ################################################################
 
 def nuke():
-  print "====== makedist.nuke ======"
+  print("====== makedist.nuke ======")
   fileutil.rmdir(env.build)
 
 ################################################################
@@ -58,7 +59,7 @@ def nuke():
 ################################################################
 
 def compile():
-  print "====== makedist.compile ======"
+  print("====== makedist.compile ======")
   # make sedona.jar
   makesedona.compile()
 
