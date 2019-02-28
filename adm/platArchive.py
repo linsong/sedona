@@ -126,7 +126,7 @@ def addToPlatformDb(platformId):
   cmd = os.path.join(env.adm, "platformdb.py")
   cmd = cmd + " -i " + outFile
   if subprocess.call(cmd, shell=True, env=os.environ.copy()):
-    raise Exception, "call failed: " + cmd
+    raise Exception("call failed: " + cmd)
   
 def main(argv=[]):
   parseOpts(argv)

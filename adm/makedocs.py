@@ -62,10 +62,10 @@ def main():
   #print "\n\n   Executing cmd = { " + cmd + " }\n\n"
   
   if subprocess.call(buildsrcdocs, shell=True):
-    raise Exception, "\n *** Failed:\n" + buildsrcdocs
+    raise Exception("\n *** Failed:\n" + buildsrcdocs)
 
   if subprocess.call(buildpubdocs, shell=True):
-    raise Exception, "\n *** Failed:\n" + buildpubdocs
+    raise Exception("\n *** Failed:\n" + buildpubdocs)
 
 
 # 

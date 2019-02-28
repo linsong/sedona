@@ -107,7 +107,7 @@ def main():
 
     # If anything missing, bail
     if not os.path.isdir(svmDir):
-      raise Exception, "\n ERROR: Platform archive does not contain necessary files to run."
+      raise Exception("\n ERROR: Platform archive does not contain necessary files to run.")
 
 
     # Get filenames for svm, app, scode in plat archive
@@ -122,7 +122,7 @@ def main():
 
     # If anything missing, bail
     if not appFile or not scodeFile or not svmFile:
-      raise Exception, "\n ERROR: To run from platform archive, must have all files present.\n"
+      raise Exception("\n ERROR: To run from platform archive, must have all files present.\n")
 
     # Use the three files to run the SVM  (overrides any cmd line settings!)
     options.app = os.path.join(svmDir, appFile)
@@ -151,7 +151,7 @@ def main():
   #print "\n\n   Executing cmd = { " + cmd + " }\n\n"
   
   if subprocess.call(cmd, shell=True):
-    raise Exception, "\n *** Failed:\n" + cmd
+    raise Exception("\n *** Failed:\n" + cmd)
 
 
 # 
