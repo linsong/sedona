@@ -18,9 +18,13 @@
 extern long _timezone;
 extern int _daylight;
 #endif
+#define DAYLIGHT _daylight
+#define TIMEZONE _timezone
 #else
 extern long timezone;
 extern int daylight;
+#define DAYLIGHT daylight
+#define TIMEZONE timezone
 #endif
 
 //  Difference in seconds between ANSI C Epoch of midnight Jan 1 1970 and
@@ -84,15 +88,9 @@ Cell datetimeStd_DateTimeServiceStd_doGetUtcOffset(SedonaVM* vm, Cell* params)
   now     = time(NULL);
   lcltime = localtime(&now);
 
-  #ifdef _WIN32
-    result.ival = -(int)_timezone;
-    if (_daylight)
+  result.ival = -(int)TIMEZONE;
+  if (DAYLIGHT)
       result.ival += 3600;  //  if daylight savings active, advance one hour
-  #else
-    result.ival = -(int)timezone;
-    if (daylight)
-      result.ival += 3600;  //  if daylight savings active, advance one hour
-  #endif
 
 //printf("timezone %lld result.ival %d\n", _timezone, result.ival);
 
