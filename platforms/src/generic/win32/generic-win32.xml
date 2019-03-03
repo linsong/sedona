@@ -23,6 +23,7 @@
     <nativeSource path="/src/kits/inet/native/std" />
     <nativeSource path="/src/kits/inet/native/sha1" />
     <nativeSource path="/src/kits/datetimeStd/native/std" />
+    <nativeSource path="/src/kits/datetimeStd/native/default" />
     <nativeSource path="/platforms/src/generic/win32/native" />
 
   </compile>

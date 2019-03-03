@@ -24,6 +24,7 @@
     <nativeSource path="/src/kits/inet/native/std" />
     <nativeSource path="/src/kits/inet/native/sha1" />
     <nativeSource path="/src/kits/datetimeStd/native/std" />
+    <nativeSource path="/src/kits/datetimeStd/native/unix" />
     <nativeSource path="/src/kits/serial/native/linux" />
     <nativeSource path="/src/kits/serial/native" />
   </compile>    
