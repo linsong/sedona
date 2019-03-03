@@ -8,6 +8,7 @@
 
 #include "sedona.h"
 
+#include "datetimeStd_DateTimeServiceStd.h"
 #include <time.h>
 #include <errno.h>
 #include <stdio.h>
@@ -27,12 +28,6 @@ extern int daylight;
 #define TIMEZONE timezone
 #endif
 
-//  Difference in seconds between ANSI C Epoch of midnight Jan 1 1970 and
-//  the Sedona epoch of midnight Jan 1 2000.  There were 7 leap years
-//  in this timeframe - 72,76,80,84,88,92,96
-
-#define SEDONA_EPOCH_OFFSET_SECS ((int64_t)(((365L * 30L) + 7L) * 24L * 60L * 60L))
-
 ////////////////////////////////////////////////////////////////
 // Native Methods
 ////////////////////////////////////////////////////////////////
@@ -45,31 +40,6 @@ int64_t datetimeStd_DateTimeServiceStd_doNow(SedonaVM* vm, Cell* params)
   now -= SEDONA_EPOCH_OFFSET_SECS;
   nanos = ((int64_t) now * 1000 * 1000 *1000);
   return nanos;
-}
-
-// void doSetClock 
-Cell datetimeStd_DateTimeServiceStd_doSetClock(SedonaVM* vm, Cell* params)
-{
-  int64_t nanos = *(int64_t*)(params+0); // param 0+1
-  nanos += SEDONA_EPOCH_OFFSET_SECS * 1000 * 1000 * 1000;
-
-  #ifdef _WIN32
-  //  Setting system time not implemented on Win32
-  #else
-
-  struct timespec ts;
-  ts.tv_sec = nanos / (1000*1000*1000);
-  ts.tv_nsec = nanos % (1000*1000*1000);
-
-  int ret;
-  ret = clock_settime(CLOCK_REALTIME, &ts);
-  if (ret) {
-	  perror("failed to set time");
-	  return nullCell;
-  }
-  system("hwclock -w");
-  #endif
-  return nullCell;
 }
 
 Cell datetimeStd_DateTimeServiceStd_doGetUtcOffset(SedonaVM* vm, Cell* params)
