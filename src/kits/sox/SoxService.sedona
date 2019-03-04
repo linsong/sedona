@@ -487,7 +487,7 @@ class SoxService
   inline SoxSession[Watch.max] sessions = {...}
   inline UdpSocket socket           // socket used for send/receive
   inline UdpDatagram datagram       // datagram reused for both send/receive
-  inline Buf(512) packet            // reusable message packet
+  inline Buf(2048) packet           // reusable message packet
   inline BufInStream(packet) in     // for reading packet
   inline BufOutStream(packet) out   // for writing packet
   bool isPortOpen                   // have we successfully opened the port

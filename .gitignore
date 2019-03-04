@@ -8,10 +8,13 @@
 *.pstore
 *.swp
 *.exe
+*.zip
 sedona*.jar
 bin/jre
 build
-kits
+doc
+/test
+/kits
 manifests
 version.txt
 svm
