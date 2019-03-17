@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 #
 # platArchive.py
 #
@@ -9,6 +9,7 @@
 # Creation:  05 June 09
 #
 
+from __future__ import print_function
 import os
 import getopt
 import sys
@@ -54,8 +55,8 @@ def usage():
 """)
   
 def fail(msg, showUsage=False, code=1):
-  print
-  print "Error: ", msg
+  print("")
+  print("Error: ", msg)
   if showUsage: usage()
   sys.exit(code)
   
@@ -82,8 +83,8 @@ def parseOpts(argv):
     if not stageDir: stageDir = os.path.join(env.temp, ".par")
     if not os.path.isdir(stageDir): fail(stageDir + " is not a directory", True)
     
-  except getopt.GetoptError, err:
-    print str(err)
+  except getopt.GetoptError as err:
+    print(str(err))
     usage()
     sys.exit(1)
   
@@ -93,8 +94,11 @@ def archive():
   manifest = os.path.join(stageDir, "platformManifest.xml")
   if not os.path.isfile(manifest): fail("Could not find platform manifest: " + manifest)
   svmDir = os.path.join(stageDir, "svm")
-  
-  xplatform = filter(lambda x:x.nodeName=="platformManifest", xml.dom.minidom.parse(manifest).childNodes)[0]
+
+  for node in xml.dom.minidom.parse(manifest).childNodes:
+    if node.nodeName == "platformManifest":
+      xplatform = node
+      break
   platformId = xplatform.getAttribute("platformId")
   
   # Default outFile, if not specified (create path if it doesn't exist)
@@ -103,7 +107,7 @@ def archive():
   outDir = os.path.dirname( os.path.realpath(outFile) )
   #print "   outDir = %s" % outDir
   if not os.path.exists(outDir): 
-    print 'Creating folder %s' % outDir
+    print('Creating folder %s' % outDir)
     os.makedirs(outDir)
   
   # Zip it up - the manifest, plus all contents of the svmDir if requested
@@ -125,7 +129,7 @@ def addToPlatformDb(platformId):
   cmd = os.path.join(env.adm, "platformdb.py")
   cmd = cmd + " -i " + outFile
   if subprocess.call(cmd, shell=True, env=os.environ.copy()):
-    raise Exception, "call failed: " + cmd
+    raise Exception("call failed: " + cmd)
   
 def main(argv=[]):
   parseOpts(argv)
@@ -134,4 +138,4 @@ def main(argv=[]):
 # Main
 if __name__ == '__main__':
   main(sys.argv[1:])
-  print "\nSuccess: ", outFile
+  print("\nSuccess: ", outFile)

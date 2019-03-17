@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 #
 # makewinvm.py
 #
@@ -8,6 +8,7 @@
 # Creation:  7 Dec 07
 #
 
+from __future__ import print_function
 import os
 import sys
 import env
@@ -84,11 +85,11 @@ def initParser():
 def listCompilers():
   compilers = [e for e in dir(compilewin) if callable(getattr(compilewin,e))]# and not e.startsWith("__")]
   if len(compilers) == 0:
-    print "No compilers supported for building the SVM"
+    print("No compilers supported for building the SVM")
   else:
-    print "Compiler(s) supported for building the SVM:"
+    print("Compiler(s) supported for building the SVM:")
     for c in compilers:
-      print " " + c
+      print(" " + c)
 
 
 # compile
@@ -102,9 +103,9 @@ def compile(cdefs=defs):
     getattr(compilewin, compiler)(exeFile, srcFiles, includes, libs, cdefs)
 
   except env.BuildError:
-    print "**"
-    print "** FAILED [" + exeFile + "]"
-    print "**"
+    print("**")
+    print("** FAILED [" + exeFile + "]")
+    print("**")
     sys.exit(1)
 
 
@@ -137,12 +138,12 @@ def main(args):
   if (options.ipv6):
     defs.pop("SOCKET_FAMILY_INET", None)    # Remove ipv4 defn
     defs["SOCKET_FAMILY_INET6"] = None
-    print " Building Sedona VM to use IPv6 protocol.\n"
+    print(" Building Sedona VM to use IPv6 protocol.\n")
 
   else:    # Defaults to IPv4
     defs.pop("SOCKET_FAMILY_INET6", None)    # Remove ipv6 defn
     defs["SOCKET_FAMILY_INET"] = None
-    print " Building Sedona VM to use IPv4 protocol.\n"
+    print(" Building Sedona VM to use IPv4 protocol.\n")
 
   # Add cmd line arg to set version string
   if options.ver:

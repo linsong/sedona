@@ -17,4 +17,4 @@ install:
   - source ./adm/unix/init.sh
 
 script:
-  - python adm/makedev.py
+  - python3 adm/makedev.py

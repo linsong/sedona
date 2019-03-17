@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 #
 # compileunix.py
 #
@@ -8,6 +8,7 @@
 # Creation:  10 Dec 08
 #
 
+from __future__ import print_function
 import os
 import platform
 import sys
@@ -72,10 +73,10 @@ def gcc(exeFile, srcFiles, includes, libs, defs):
   cmd += " -o " + exeFile
 
   # compile away
-  print cmd
+  print(cmd)
   status = os.system(cmd)
   if status:
     raise env.BuildError("FATAL: compileunix " + exeFile)
 
-  print "  Success [" + exeFile + "]"
+  print("  Success [" + exeFile + "]")
 
