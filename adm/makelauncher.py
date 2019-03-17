@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 #
 # makelauncher.py
 # 
@@ -7,7 +7,7 @@
 # Author:    Brian Frank
 # Creation:  7 Dec 07
 # 
-
+from __future__ import print_function
 import os
 import env
 import compilewin          
@@ -44,9 +44,9 @@ def compile():
     compilewin.compile(exeFileA, srcFiles, includes, libs, defsA)
     compilewin.compile(exeFileD, srcFiles, includes, libs, defsD)
   except env.BuildError:
-    print "**"
-    print "** FAILED [" + exeFile + "]"
-    print "**"
+    print("**")
+    print("** FAILED [" + exeFile + "]")
+    print("**")
     
     
 # Main

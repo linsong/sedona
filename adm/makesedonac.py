@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 #
 # makesedonac.py
 # 
@@ -8,6 +8,7 @@
 # Creation:  7 Dec 07
 # 
 
+from __future__ import print_function
 import os
 import env
 import compilejar          
@@ -37,9 +38,9 @@ def compile():
   try:
     compilejar.compile(srcDir, depends, packages, jarFile)
   except env.BuildError:
-    print "**"
-    print "** FAILED [" + jarFile + "]"
-    print "**"
+    print("**")
+    print("** FAILED [" + jarFile + "]")
+    print("**")
     return 1
     
 # Main

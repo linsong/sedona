@@ -33,7 +33,7 @@ See all changes in the [ChangeLog](ChangeLog.md).
 ```
 3. in terminal window, start to build sedona zipball:
 ```
- $ python adm/makedist.py
+ $ ./adm/makedist.py
 ```
 
 ### GNU/Linux

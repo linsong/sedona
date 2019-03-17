@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 #
 # compilewin.py
 # 
@@ -8,6 +8,7 @@
 # Creation:  7 Dec 07
 #                 
 
+from __future__ import print_function
 import os
 import env
 import fileutil
@@ -21,7 +22,7 @@ import fileutil
 #   defs:     list of name/value tuples
 #
 def msvc(exeFile, srcFiles, includes, libs, defs, opts=[]):
-  print "Compile [" + os.path.basename(exeFile) + "]"
+  print("Compile [" + os.path.basename(exeFile) + "]")
 
   # get environment variables
   vcInstallDir = os.environ.get("VCINSTALLDIR")
@@ -89,7 +90,7 @@ def msvc(exeFile, srcFiles, includes, libs, defs, opts=[]):
   if status:
     raise env.BuildError("FATAL: compilewin " + exeFile)     
    
-  print "  Success [" + exeFile + "]"
+  print("  Success [" + exeFile + "]")
 
 def mingw32(exeFile, srcFiles, includes, libs, defs):
   # standard includes
@@ -122,4 +123,4 @@ def mingw32(exeFile, srcFiles, includes, libs, defs):
   if status:
     raise env.BuildError("FATAL: compilewin " + exeFile)
 
-  print "  Success [" + exeFile + "]"
+  print("  Success [" + exeFile + "]")
