@@ -9,6 +9,7 @@
 **
 ** Component is the base class for all Sedona component classes.
 **
+@palette=false
 class Component
   extends Virtual
 {
