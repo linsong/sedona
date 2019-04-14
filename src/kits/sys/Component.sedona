@@ -418,7 +418,7 @@ class Component
   int loadAppComp(InStream in)
   {
     // meta
-    if (!in.readStr(name, 8)) return Err.nameTooLong
+    if (!in.readStr(name, nameLen)) return Err.nameTooLong
     parent      = in.readU2()
     children    = in.readU2()
     nextSibling = in.readU2()
@@ -509,7 +509,7 @@ class Component
 
   ** Human name for this component which is unique
   ** within its parent (do not modify directly)
-  define int nameLen = 8
+  define int nameLen = 32
   inline Str(nameLen) name
 
   ** Parent id or nullId if root App or unmounted (do not modify directly)
