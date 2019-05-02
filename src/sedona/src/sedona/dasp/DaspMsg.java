@@ -150,6 +150,7 @@ public class DaspMsg implements DaspConst
         case RECEIVE_TIMEOUT:   receiveTimeout  = u2 * 1000L; break;
         case ERROR_CODE:        errorCode       = u2;     break;
         case PLATFORM_ID:       platformId      = str;    break;
+        case COMP_NAME_LEN:     compNameLenMax  = u2;     break;		
         default: System.out.println("WARNING: Unknown field id: " + id);
       }
     }
@@ -644,7 +645,30 @@ public class DaspMsg implements DaspConst
     this.platformId = platformId;
   }
 
-
+  /**
+   * Get compNameLenMax header field.
+   * 
+   * @return the maximum length for component name, 
+   *           or -1 if the header is not set.
+   */
+  public final int compNameLenMax()
+  {
+    return compNameLenMax;
+  }
+	
+  /**
+   * Set the compNameLenMax header field.
+   * 
+   * @param errorCode
+   *          maximum length for component name. 
+              Use a negative value to clear this header.
+   */
+  public final void setCompNameLenMax(final int compNameLenMax)
+  {
+    this.compNameLenMax
+	    = Math.max(-1, compNameLenMax);
+  }
+  
 ////////////////////////////////////////////////////////////////
 //Debug
 ////////////////////////////////////////////////////////////////
@@ -669,6 +693,7 @@ public class DaspMsg implements DaspConst
    if (receiveTimeout > -1)     out.println("  receiveTimeout  = " + receiveTimeout);
    if (errorCode > -1)          out.println("  errorCode       = " + errorCode);
    if (platformId != null)      out.println("  platformId      = " + platformId);
+   if (compNameLenMax > -1)     out.println("  compNameLenMax  = " + compNameLenMax);
 
    out.flush();
  }
@@ -708,6 +733,7 @@ public class DaspMsg implements DaspConst
   protected long    receiveTimeout = -1;
   protected int     errorCode = -1;
   protected String  platformId;
+  protected int     compNameLenMax = -1;	
   
   // payload bytes
   protected byte[] payload = noBytes;
