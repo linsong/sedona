@@ -150,7 +150,7 @@ public class DaspMsg implements DaspConst
         case RECEIVE_TIMEOUT:   receiveTimeout  = u2 * 1000L; break;
         case ERROR_CODE:        errorCode       = u2;     break;
         case PLATFORM_ID:       platformId      = str;    break;
-        default: throw new IllegalStateException("Unknown field id: " + id);
+        default: System.out.println("WARNING: Unknown field id: " + id);
       }
     }
     
