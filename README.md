@@ -10,7 +10,6 @@ This is a fork of the [official Sedona framework](http://www.sedonadev.org), we 
 
 We use [Academic Free License("AFL")](https://linsong.github.io/sedona/doc/license.html), the same as the official Sedona framework. You can visit the official site for more details: https://linsong.github.io/sedona (The official homesite http://www.sedonadev.org is down for a while, seems it is not maintained anymore).
 
-***
 
 ## Major Improvements/Features
 * Remove jikes dependency for POSIX OS platforms
@@ -41,4 +40,14 @@ We build a shell script that uses docker to build sedona under linux, read [here
 
 ### Customize build platform
 If it's necessary to cross-compile sedona to custom platform with own set of additional or modified kits, please follow instructions described [here](./adm/CustomBuild.md).
+
+## Contribution
+Contribution is always welcomed!  If you want to contribute(add new feature, fix bugs etc), please create an issue first so that if others are interested, related discussion can happen there. At last, please avoid sending huge pull request.
+
+The *master* branch is used as base branch for development, if you want to contribute, branch from here.
+
+ *stable* branch is used for stable features and for non-developer users, if you don't want to try bleeding edge features, you should use codes from this branch. *master* branch features will be merged to *stable* branch periodically before every release. 
+
+Happy Hacking! :-)
+
 
