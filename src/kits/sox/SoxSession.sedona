@@ -161,10 +161,7 @@ class SoxSession
     out.writeI2(service.receiveMax)
     out.write(Dasp.RECEIVE_TIMEOUT << 2 | Dasp.U2)
     out.writeI2(receiveTimeout)
-    out.write(Dasp.COMP_NAME_LEN << 2 | Dasp.U2)
-    out.writeI2(Component.nameLen-1)
-
-    service.packet.bytes[4] |= 4  // header count
+    service.packet.bytes[4] |= 3  // header count    
     service.send(this)    
   }                             
   
