@@ -80,7 +80,6 @@ public interface DaspConst
   public static final int RECEIVE_TIMEOUT      = 0x31;  // (c,1)
   public static final int ERROR_CODE           = 0x35;  // (d,1)
   public static final int PLATFORM_ID          = 0x3a;  // (e,2)
-  public static final int COMP_NAME_LEN        = 0x3d;  // (f,1)
 
 ////////////////////////////////////////////////////////////////
 // Error Codes
