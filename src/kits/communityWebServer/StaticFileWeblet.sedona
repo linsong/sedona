@@ -22,6 +22,11 @@
 ** To save space on sedona, gzipped file is supported and I recommend to use it
 ** since that will be more efficient(less bytes to be loaded and transferred)
 ** 
+** Warning: since it is impossible to create local payload for a request, we
+** have to precreate a list of payloads, in theory we need to create the same
+** number of payloads as the number of web handlers. The space cost for a 
+** payload is about 1.5KB.
+**
 class StaticFileWeblet extends Weblet
 {
   @config @asStr property Buf(12) urlPrefix = "statics"
@@ -71,67 +76,71 @@ class StaticFileWeblet extends Weblet
   **
   override void get(WebReq req, WebRes res)
   {
-    reset()
-
-    prepareFile(req)
-
-    if (isDir(filePath)) {
-      tryAppendIndex(filePath)
+    Payload p = borrowPayload()
+    if (p == null)
+    {
+      res.writeStatus(HttpCode.serviceUnavailable)
+      res.finishHeaders()
+      return 
     }
 
-    serveFile(res)
+    p.reset()
+
+    prepareFile(p, req)
+
+    if (isDir(p.filePath)) {
+      tryAppendIndex(p.filePath)
+    }
+
+    serveFile(p, res)
+    returnPayload(p)
   }
 
-  internal void reset() 
+  internal void serveFile(Payload p, WebRes res) 
   {
-    filePath.set(0, 0)
-  }
-
-  internal void serveFile(WebRes res) 
-  {
-    if (file.name==null) {
+    if (p.file.name==null) {
       res.writeStatus(HttpCode.notFound).finishHeaders()
       return
     }
 
-    if (!file.exists()) {
+    if (!p.file.exists()) {
       //try gzipped content
-      appendStr(file.name, ".gz", pathStrLen)
+      appendStr(p.file.name, ".gz", Payload.pathStrLen)
 
-      if (!file.exists()) {
+      if (!p.file.exists()) {
         res.writeStatus(HttpCode.notFound).finishHeaders()
         return
       }
     }
 
-    if (!file.open("r")) {
+    if (!p.file.open("r")) {
       res.writeStatus(HttpCode.internalError).finishHeaders()
       return
     }
 
-    WebService.log.trace("Serving File: " + file.name);
+    WebService.log.trace("Serving File: " + p.file.name);
     res.writeStatusOk()
 
     //write headers
-    if (endsWith(file.name, ".gz", 0))
+    if (endsWith(p.file.name, ".gz", 0))
       res.writeHeader("Content-Encoding", "gzip");
 
-    res.writeContentType(getContentType(file.name))
+    res.writeContentType(getContentType(p.file.name))
       .writeHeader("Cache-Control", "max-age=604800")
       .writeHeader("Server", "Sedona Web Server")
-      .writeHeader("Content-Length", Sys.intStr(file.size()))
+      .writeHeader("Content-Length", Sys.intStr(p.file.size()))
       .finishHeaders()
 
-    file.seek(0)
+    p.file.seek(0)
     while(true) {
-      int readed = file.in.readBytes(readBuf, 0, bufLen)
+      int readed = p.file.in.readBytes(p.readBuf, 0, Payload.bufLen)
       if (readed <= 0)
         break
 
-      res.writeBytes(readBuf, 0, readed)
+      res.writeBytes(p.readBuf, 0, readed)
     }
 
-    file.close()
+    p.file.close()
   }
 
   bool isDir(Str fileName) {
@@ -155,14 +164,14 @@ class StaticFileWeblet extends Weblet
   **
   bool tryAppendIndex(Str fileName) {
     int len = fileName.length()
-    if (len <= 0 || len+1>=pathStrLen)
+    if (len <= 0 || len+1>=Payload.pathStrLen)
       return false
 
     //try to append index.html to path end 
     if (!endsWith(fileName, "/", 0))
-      appendStr(fileName, "/", pathStrLen)
+      appendStr(fileName, "/", Payload.pathStrLen)
 
-    return appendStr(fileName, "index.html", pathStrLen)
+    return appendStr(fileName, "index.html", Payload.pathStrLen)
   }
 
   ** 
@@ -227,26 +236,26 @@ class StaticFileWeblet extends Weblet
       return "text/plain"
   }
 
-  internal void prepareFile(WebReq req) 
+  internal void prepareFile(Payload p, WebReq req) 
   {
     if (req.path.size < 1)
       return
     else {
       //TODO: process path to avoid security issues
-      filePath.copyFromStr(".", pathStrLen);
-      int index = filePath.length()
-      byte[] fileBuf = filePath.toBytes()
-      for(int i=0; i<req.path.size && index<pathStrLen-2; ++i) {
+      p.filePath.copyFromStr(".", Payload.pathStrLen);
+      int index = p.filePath.length()
+      byte[] fileBuf = p.filePath.toBytes()
+      for(int i=0; i<req.path.size && index<Payload.pathStrLen-2; ++i) {
         byte[] nameBuf = req.path.names[i].toBytes() 
         fileBuf[index++] = '/'
-        for(int j=0; j<req.path.names[i].length() && index<pathStrLen-2; ++j) {
+        for(int j=0; j<req.path.names[i].length() && index<Payload.pathStrLen-2; ++j) {
           fileBuf[index++] = nameBuf[j]
         }
       }
       fileBuf[index] = 0
     }
 
-    file.name = filePath
+    p.file.name = p.filePath
   }
 
 ////////////////////////////////////////////////////////////////
@@ -260,14 +269,32 @@ class StaticFileWeblet extends Weblet
     res.htmlEnd();
   }
 
+  private Payload borrowPayload() 
+  {
+    foreach (Payload p : payloads)
+    {
+      if (p.isFree())
+      {
+        p.lock()
+        return p 
+      }
+    }
+    return null
+  }
+
+  private void returnPayload(Payload p) 
+  {
+    if (p == null)
+      return
+
+    p.unlock()
+  }
+
 ////////////////////////////////////////////////////////////////
 // Fields
 ////////////////////////////////////////////////////////////////
-  define int bufLen = 1024
-  define int pathStrLen = 256
-
-  private inline byte[bufLen] readBuf
-  internal inline Str(pathStrLen) filePath  // buffer for file's path
-  internal inline File file
+  ** allocate as many payloads as the web handlers, so that we will never run
+  ** out of payload 
+  private inline Payload[web::WebService.handlersLen] payloads = {...}
 }
 

@@ -1,0 +1,31 @@
+internal class Payload
+{
+  void lock()
+  {
+    locked = true
+  }
+  
+  bool isFree()  
+  {
+    return !locked
+  }
+
+  void unlock()
+  {
+    locked = false
+  } 
+
+  void reset()
+  {
+    filePath.set(0, 0)
+  }
+
+  define int bufLen = 1024
+  define int pathStrLen = 256
+
+  private bool locked = false
+
+  internal inline byte[bufLen] readBuf
+  internal inline Str(pathStrLen) filePath  // buffer for file's path
+  internal inline File file
+}
