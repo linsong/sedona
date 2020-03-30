@@ -2,15 +2,16 @@
 site_name: 'Sedona Documentation'
 site_description: 'Online documentation for Sedona Framework(R)'
 site_author: 'Sedona Community'
-#site_url: 'https://my-github-handle.github.io/my-project'
-docs_dir: 'build/doc'
+site_url: 'https://linsong.github.io/sedona'
+docs_dir: 'doc'
+#docs_dir: 'build/doc'
 
 # Repository
-# repo_name: 'my-github-handle/my-project'
-# repo_url: 'https://github.com/my-github-handle/my-project'
+repo_name: 'linsong/sedona'
+repo_url: 'https://github.com/linsong/sedona'
 
 # Copyright
-copyright: 'Copyright &copy; 2007-2017 Tridium, 2018-2019 Sedona Community'
+copyright: 'Copyright &copy; 2007-2017 Tridium, 2018-2020 Sedona Community'
 
 # Documentation and theme
 #theme: readthedocs

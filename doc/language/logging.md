@@ -30,7 +30,7 @@ There are five logging severity levels:
 
 ## Log Definition
 
-The [`sys::Log`](api/sys/Log) class is the primary API used for
+The [`sys::Log`](/api/sys/Log) class is the primary API used for
 logging. The `Log` class is a const class like `Type` or `Slot`. This
 means you can't directly allocate instances yourself. Instead we use
 the `define` keyword to define a Log instance:

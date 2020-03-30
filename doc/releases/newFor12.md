@@ -40,4 +40,4 @@ With the release of Sedona Framework 1.2 a number of features have been added.
   <br/> <br/>
   Most of the component inputs are linkable, with the few exceptions being inputs that can be set only via right-click override actions. Overridden inputs are evaluated along with the linkable ones, using the same priority scheme. <code>PrioritizedBoolean</code> components also offer built-in timers for minimum on and/or off times to protect sensitive equipment.
   <br/> <br/>
-  See the [pricomp](/api/pricomp/index) kit docs for more about these components.
+  See the [pricomp](/api/pricomp/) kit docs for more about these components.
