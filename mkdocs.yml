@@ -16,11 +16,13 @@ copyright: 'Copyright &copy; 2007-2017 Tridium, 2018-2020 Sedona Community'
 # Documentation and theme
 #theme: readthedocs
 theme:
+  favicon: './favicon.ico'
   name: 'material'
+  language: 'en'
   palette:
     primary: 'brown'
     accent: 'red'
-  logo: './logo.png'
+  logo: './favicon.ico'
   font:
     text: 'Roboto'
     code: 'Roboto Mono'
@@ -68,10 +70,11 @@ markdown_extensions:
       custom_checkbox: true
   - pymdownx.tilde
 
-# plugins:
+plugins:
+  - search
+  - git-revision-date-localized
 #   - htmlproofer
 #   - awesome-pages
-#   - search
 
 nav:
 - Index: index.md
