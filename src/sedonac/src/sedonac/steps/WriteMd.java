@@ -415,7 +415,7 @@ public class WriteMd
 
   /**
    * Parse the text into a DocNode array and write out
-   * as HTMl markup.
+   * as Markdown markup.
    */
   void writeMd(String doc, XWriter out)
   {
