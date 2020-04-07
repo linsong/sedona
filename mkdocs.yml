@@ -1,0 +1,131 @@
+# Project information
+site_name: 'Sedona Documentation'
+site_description: 'Online documentation for Sedona Framework(R)'
+site_author: 'Sedona Community'
+site_url: 'https://linsong.github.io/sedona'
+# For GH repo pages hosting, use doc
+docs_dir: 'doc'
+# For local build/ testing of new content, use build/doc
+#docs_dir: 'build/doc'
+
+# Repository
+repo_name: 'linsong/sedona'
+repo_url: 'https://github.com/linsong/sedona'
+
+# Copyright
+copyright: 'Copyright &copy; 2007-2017 Tridium, 2018-2020 Sedona Community'
+
+# Documentation and theme
+#theme: readthedocs
+theme:
+  favicon: './favicon.ico'
+  name: 'material'
+  language: 'en'
+  palette:
+    primary: 'brown'
+    accent: 'red'
+  logo: './favicon.ico'
+  font:
+    text: 'Roboto'
+    code: 'Roboto Mono'
+
+# Options
+extra:
+  # social:
+  #   - type: 'twitter'
+  #     link: 'https://www.twitter.com/<link>'
+  #   - type: 'linkedin'
+  #     link: 'https://www.linkedin.com/company/<link>'
+  #   - type: 'facebook'
+  #     link: 'https://www.facebook.com/<link>'
+  feature:
+    tabs: true
+
+# Google Analytics
+# google_analytics:
+#   - 'UA-XXXXXXXX-X'
+#   - 'auto'
+
+# Extensions
+markdown_extensions:
+  - admonition
+  - codehilite:
+      guess_lang: false
+      linenums: false
+  - footnotes
+  - toc:
+      permalink: true
+  - pymdownx.arithmatex
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.critic
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_generator: !!python/name:pymdownx.emoji.to_svg
+  - pymdownx.inlinehilite
+  - pymdownx.magiclink
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.superfences
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+
+plugins:
+  - search
+  - git-revision-date-localized
+#   - htmlproofer
+#   - awesome-pages
+
+nav:
+- Index: index.md
+- Getting Started:
+  - Introduction: quickstart/intro.md
+  - Setup: quickstart/setup.md
+  - Architecture: quickstart/architecture.md
+  - Tutorial: quickstart/tutorial.md
+- Language:
+  - Language: language/lang.md
+  - Primitives: language/primitives.md
+  - Expressions: language/expr.md
+  - Statements: language/stmt.md
+  - Classes: language/classes.md
+  - Fields: language/fields.md
+  - Methods: language/methods.md
+  - Components: language/components.md
+  - Reflection: language/reflection.md
+  - Arrays: language/arrays.md
+  - Memory: language/memory.md
+  - Native Methods: language/nativeMethods.md
+  - Logging: language/logging.md
+- Apps:
+  - Application Model: apps/apps.md
+  - Security: apps/security.md
+- Deployment:
+  - Kits: deployment/kits.md
+  - Schema: deployment/schema.md
+- Platforms:
+  - Platform Definition: platforms/platDef.md
+  - Platform Archive: platforms/par.md
+  - Platform Tutorial: platforms/platTutorial.md
+  - Device Simulator: platforms/deviceSim.md
+  - Certified Platforms: platforms/platCertified.md
+- Development:
+  - Sedonac: development/sedonac.md
+  - Testing: development/testing.md
+  - Porting: development/porting.md
+  - Niagara: development/niagara.md
+- Networking:
+  - Networking: networking/networking.md
+  - DASP: networking/dasp.md
+  - Sox: networking/sox.md
+  - Device Discovery: networking/discover.md
+- Appendix:
+  - License: appendix/license.md
+  - Coding Conventions: appendix/conventions.md
+  - SCode Format: appendix/scodeFormat.md
+  - Grammar: appendix/grammar.md
+- Releases:
+  - v1.2: releases/newFor12.md
+- API: api/api.md

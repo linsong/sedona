@@ -101,7 +101,7 @@ public class Tokenizer
     this.pos = 0;
     this.line = 1;
     this.col  = -1;
-    this.doc  = compiler != null ? compiler.doc : false;
+    this.doc  = compiler != null ? (compiler.doc || compiler.md) : false;
     consume();
     consume();
   }

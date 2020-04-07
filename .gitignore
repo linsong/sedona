@@ -12,7 +12,8 @@
 sedona*.jar
 bin/jre
 build
-doc
+# doc/api
+/site
 /test
 /kits
 manifests

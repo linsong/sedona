@@ -21,6 +21,35 @@ Alternatively it's possible to load lua script by giving it in command line:
  wireshark -X lua_script:sox.lua
 ```
 
+Docs Build Environment
+=================================
+For building docs locally, please update the local python environment, and install the required plugins Following are instructions to update a unix (docker) environment:
+
+```bash
+# Update python tools
+$ yum upgrade python-setuptools
+
+# get pip installer and install it
+$ curl "https://bootstrap.pypa.io/get-pip.py" -o "get-pip.py"
+$ chmod +x get-pip.py
+$ ./get-pip.py
+
+# install mkdocs, mkdocs material and other plugins
+$ pip install mkdocs
+$ pip install mkdocs-material
+$ pip install mkdocs-git-revision-date-localized-plugin
+```
+
+Once the packages are installed, navigate to the root folder and type the following:
+```bash
+# build the site. This should create a new /site folder
+$ mkdocs build
+# OR build the site, and turn-on watch for live editing
+$ mkdocs serve
+```
+
+The new docs should be available on `<localhost>:8000`.
+
 Docker Build Environment
 =================================
 1. Make sure that docker is installed and started. On OSX, you can install Docker Toolbox and run Docker Quickstart Terminal

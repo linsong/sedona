@@ -65,6 +65,7 @@ import sedonac.steps.StaticAnalysis;
 import sedonac.steps.TableOfContents;
 import sedonac.steps.VTableLayout;
 import sedonac.steps.WriteDoc;
+import sedonac.steps.WriteMd;
 import sedonac.steps.WriteImage;
 import sedonac.steps.WriteKit;
 import sedonac.translate.Translation;
@@ -102,7 +103,7 @@ public class Compiler
     // check that input file exists
     if (!f.exists())
       throw err("Input file does not exist" , new Location(input));
-      
+
     // if directory, then look for kit.xml
     if (f.isDirectory())
     {
@@ -183,7 +184,8 @@ public class Compiler
     new BuildManifest(this).run();
     new OptimizeIr(this).run();
     new WriteKit(this).run();
-    new WriteDoc(this).run(); 
+    new WriteDoc(this).run();
+    new WriteMd(this).run();
   }
 
   /**
@@ -211,12 +213,12 @@ public class Compiler
    * Run the pipeline to compile a directory of compiler targets.
    */
   public void compileDir()
-  {                                                             
+  {
     new CompileDir(this).run();
   }
 
   /**
-   * Run the pipeline to stage the VM and native source 
+   * Run the pipeline to stage the VM and native source
    * code for a specific platform port.
    */
   public void stagePlatform()
@@ -232,7 +234,7 @@ public class Compiler
    * Run the pipeline to compile a set of kits into Java or C code.
    */
   public void translate()
-  {                         
+  {
     throw new RuntimeException("translate not supported yet");
   }
 
@@ -258,7 +260,7 @@ public class Compiler
   public void compileDocs()
   {
     new TableOfContents(this).run();
-    new CheckHtmlLinks(this).run();
+    if (this.doc) new CheckHtmlLinks(this).run();
   }
 
 ////////////////////////////////////////////////////////////////
@@ -351,17 +353,17 @@ public class Compiler
   {
     return err(new CompilerException(err));
   }
-                       
+
 ////////////////////////////////////////////////////////////////
 // Warnings
 ////////////////////////////////////////////////////////////////
-  
+
   public void warn(String msg)
   {
     log.warn("[WARNING] " + msg);
     warnings.add(msg);
   }
-  
+
   public void warn(String msg, Location loc)
   {
     if (loc != null) msg = loc + ": " + msg;
@@ -371,16 +373,17 @@ public class Compiler
 ////////////////////////////////////////////////////////////////
 // New Copy
 ////////////////////////////////////////////////////////////////
-  
+
   /**
-   * Create a new fresh compiler instance which 
+   * Create a new fresh compiler instance which
    * inherits all the environment configuration.
    */
   public Compiler spawn()
-  {              
+  {
     Compiler c = new Compiler();
     c.log        = this.log;
     c.doc        = this.doc;
+    c.md         = this.md;
     c.dumpLayout = this.dumpLayout;
     c.errors     = this.errors;
     c.warnings   = this.warnings;
@@ -390,7 +393,7 @@ public class Compiler
     c.www        = this.www;
     return c;
   }
-                       
+
 ////////////////////////////////////////////////////////////////
 // Fields
 ////////////////////////////////////////////////////////////////
@@ -398,10 +401,11 @@ public class Compiler
   // all pipelines
   public CompilerLog log;          // env -v
   public boolean doc;              // env -doc
+  public boolean md;               // env -md
   public File input;               // env <input>
   public boolean dumpLayout;       // env -layout
-  public Version kitVersion;       // env -kitVersion 
-  public File outDir;              // env -outDir     
+  public Version kitVersion;       // env -kitVersion
+  public File outDir;              // env -outDir
   public boolean optimize = true;  // env -noOptimize
   public boolean www = false;      // env -www
   public boolean nochk = false;    // env -noChecksum
@@ -427,7 +431,7 @@ public class Compiler
 
   // stage natives
   public PlatformDef platform;     // InitStageNatives
-  
+
   // translate to C pipeline
   public Translation translation;  // InitTranslate
 }
