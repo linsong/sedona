@@ -143,8 +143,9 @@ public abstract class AbstractSoxTest
         {
           BufferedReader in = new BufferedReader(new InputStreamReader(proc.getInputStream()));
           String line;
-          while ((line = in.readLine()) != null)
-            System.out.println("[s] " + line);
+          while ((line = in.readLine()) != null) {
+            //System.out.println("[s] " + line);
+          }
         }
         catch (Exception e)
         {

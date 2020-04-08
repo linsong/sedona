@@ -24,14 +24,14 @@ public class DaspTest
 
   public void test()
     throws Exception
-  {                               
-    // signficant white-box testing is in the 
-    // SendWindow and ReceiveWindow classes themselves. 
-    System.out.println();
+  {
+    // signficant white-box testing is in the
+    // SendWindow and ReceiveWindow classes themselves.
+    // System.out.println();
     DaspTestHooks.runWhiteboxTests();
-             
-    // run public API black-box tests         
-    System.out.println();
+
+    // run public API black-box tests
+    // System.out.println();
     local = InetAddress.getLoopbackAddress();
     try
     {
@@ -67,7 +67,7 @@ public class DaspTest
     */
     
     // connect with bad username
-    trace("Connect with bad username...");
+    // trace("Connect with bad username...");
     user = "bob";
     pass = "secret";
     ex = null;
@@ -75,7 +75,7 @@ public class DaspTest
     verifyEq(ex.errorCode, DaspConst.NOT_AUTHENTICATED);
 
     // connect with bad password
-    trace("Connect with bad password...");
+    // trace("Connect with bad password...");
     ex = null;
     try { socket.connect(local, socket.port(), "bob", "bad"); } catch (DaspException e) { ex = e; }
     verifyEq(ex.errorCode, DaspConst.NOT_AUTHENTICATED);  
@@ -87,7 +87,7 @@ public class DaspTest
     options.put("dasp.test", new TestHooks());
 
     // connect
-    trace("Connect...");
+    // trace("Connect...");
     client = socket.connect(local, socket.port(), "bob", "secret", options);
     verify(!client.isClosed());
     verify(0 < client.id && client.id < 0xffff); 
@@ -196,8 +196,8 @@ public class DaspTest
   private void verifyClose()
     throws Exception
   {
-    trace("Close...");
     
+    // trace("Close...");
     verify(!client.isClosed());
     verify(!server.isClosed());
     
@@ -295,16 +295,16 @@ public class DaspTest
     {                 
       if (msgType == dropType)
       {
-        System.out.println("  DROPPING msgType=" + msgType + " " + msgStr(msg));
+        //System.out.println("  DROPPING msgType=" + msgType + " " + msgStr(msg));
         dropType = -1;
         return false;
       }
                  
       for (int i=0; i<drop.length; ++i)
-        if (drop[i] == seqNum) 
-        { 
-          drop[i] = -1;                                           
-          System.out.println("  DROPPING " + seqNum + " " + msgStr(msg));
+        if (drop[i] == seqNum)
+        {
+          drop[i] = -1;
+          //System.out.println("  DROPPING " + seqNum + " " + msgStr(msg));
           return false; 
         }
       //System.out.println("  sending " + seqNum + " " + msgStr(msg));

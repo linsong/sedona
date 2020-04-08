@@ -87,7 +87,7 @@ public class SoxTest
     options.put("dasp.test", new DaspTest.TestHooks());
 
     // connect bad username
-    trace("Connect with bad username...");      
+    // trace("Connect with bad username...");
     int errorCode = -1;
     try
     {
@@ -101,7 +101,7 @@ public class SoxTest
     verifyEq(errorCode, DaspConst.NOT_AUTHENTICATED);
 
     // connect bad password
-    trace("Connect with bad password...");      
+    // trace("Connect with bad password...");
     errorCode = -1;
     try
     {
@@ -115,7 +115,7 @@ public class SoxTest
     verifyEq(errorCode, DaspConst.NOT_AUTHENTICATED);
 
     // connect
-    trace("Connect with good username and password...");
+    // trace("Connect with good username and password...");
     client = new SoxClient(sock, addr, 1876, "admin", "pw");
     client.connect(options);
     verify(!client.isClosed());
@@ -999,8 +999,8 @@ public class SoxTest
       final char c = (char)('a'+i);
       final String s = ""+c+c;
       putProps.put("offset", Integer.toString(i*2));
-      System.out.println();
-      System.out.println("]]]]]]]]]]]]]]]]]>>> TEST BINARY PUT " + putProps);
+      // System.out.println();
+      // System.out.println("]]]]]]]]]]]]]]]]]>>> TEST BINARY PUT " + putProps);
       setupBinaryDrops();
       client.putFile(URI, memFile(s), putProps, null);
       Thread.sleep(100);
@@ -1028,9 +1028,9 @@ public class SoxTest
     getProps.put("fileSize", Integer.toString(fileSize));
     getProps.put("offset", Integer.toString(offset));
     getProps.put("chunkSize", "1");
-    
-    System.out.println();
-    System.out.println("]]]]]]]]]]]]]]]]]>>> TEST BINARY GET " + getProps);
+
+    // System.out.println();
+    // System.out.println("]]]]]]]]]]]]]]]]]>>> TEST BINARY GET " + getProps);
     if ((binDropCount++ % 3) == 0)
       setupBinaryDrops();
 
@@ -1039,7 +1039,7 @@ public class SoxTest
 
     verifyEq(expected.length(), b.size);
     String s = new String(b.trim());
-    System.out.println("Verify: " + expected + " == " + s);
+    // System.out.println("Verify: " + expected + " == " + s);
     verifyEq(expected, s);
     
     ((DaspTest.TestHooks)client.session().test).clearDrop();
@@ -1099,8 +1099,8 @@ public class SoxTest
     out.close();
 
     // get/read our test file
-    System.out.println();
-    System.out.println("]]]]]]]]]]]]]]]]]>>> TEST FILE GET " + reqProps + " " + data.length());
+    // System.out.println();
+    // System.out.println("]]]]]]]]]]]]]]]]]>>> TEST FILE GET " + reqProps + " " + data.length());
     File g = new File(testDir(), "get.txt");
 
     Properties resProps = tryTransfer(GETFILE, client, "transfer.txt", SoxFile.make(g), reqProps);
@@ -1110,8 +1110,8 @@ public class SoxTest
     verifyEq(g.length(), f.length());
     verifyEq(data, readToStr(g));        
 
-    System.out.println();
-    System.out.println("]]]]]]]]]]]]]]]]]>>> TEST FILE PUT " + reqProps);
+    // System.out.println();
+    // System.out.println("]]]]]]]]]]]]]]]]]>>> TEST FILE PUT " + reqProps);
     // put/write out test file
     File p = new File(testDir(), "put.txt");
 
@@ -1173,7 +1173,7 @@ public class SoxTest
   {
     int remoteId = client.remoteId();
 
-    trace("Close...");
+    // trace("Close...");
     verify(!client.isClosed());
     verify(client.remoteId() != -1);
     client.close();
@@ -1280,13 +1280,13 @@ public class SoxTest
   public void verifyServer(String action, Value arg)
     throws Exception
   {
-    trace("verifyServer(" + action + ")");
+    // trace("verifyServer(" + action + ")");
     int verifiesBefore = readInt(soxTest, "verifies");
     int failuresBefore = readInt(soxTest, "failures");
 
-    trace("{");
+    // trace("{");
     invoke(soxTest, action, arg);
-    trace("}");
+    // trace("}");
 
     int verifiesAfter = readInt(soxTest, "verifies");
     int failuresAfter = readInt(soxTest, "failures");
@@ -1355,9 +1355,9 @@ public class SoxTest
         fail("\nFailed to " + fn + " file " + fname + " after " + maxAttempts + " attempts");
       }
     }
-    else
-      System.out.println("\t" + fn + "file(" + fname + ") succeeded after " + t + " failures.");
-    
+    // else
+      //System.out.println("\t" + fn + "file(" + fname + ") succeeded after " + t + " failures.");
+
     return respProps;
   }
 
@@ -1392,7 +1392,7 @@ public class SoxTest
       if (mask == 0)
       {
         if (this.comp != null)
-          System.out.println("Listener.verify " + comp + " mask=" + Integer.toHexString(this.mask));
+          // System.out.println("Listener.verify " + comp + " mask=" + Integer.toHexString(this.mask));
         SoxTest.this.verify(this.comp == null);
       }
       else

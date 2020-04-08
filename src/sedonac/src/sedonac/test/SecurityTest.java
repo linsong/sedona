@@ -108,8 +108,8 @@ public class SecurityTest
   
   void verifyPerm(OfflineComponent s, int perm)
     throws Exception
-  {             
-    System.out.println("-- " + client.username + " " + s.name() + " 0x" + Integer.toHexString(perm) + "...");          
+  {
+    //System.out.println("-- " + client.username + " " + s.name() + " 0x" + Integer.toHexString(perm) + "...");
     SoxComponent c = verifyCompRead(s, perm);
     if (c == null) return;
     
@@ -482,8 +482,8 @@ public class SecurityTest
 
   public void connect(String user)
     throws Exception
-  {  
-    trace("Connect [" + user + "]...");
+  {
+    // trace("Connect [" + user + "]...");
     InetAddress addr = InetAddress.getLoopbackAddress();
     client = new SoxClient(sock, addr, 1876, user, "pw");
     client.connect(null);

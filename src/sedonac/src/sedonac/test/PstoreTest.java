@@ -44,7 +44,6 @@ public class PstoreTest
   {                        
     client = new SoxClient(sock, InetAddress.getLoopbackAddress(), 1876, "admin", "pw");
     client.connect(null);   
-    System.out.println("Connected to pstore VM");    
     verifyStatus();   
     verifyReadWrite();   
     verifyResvChange();   
