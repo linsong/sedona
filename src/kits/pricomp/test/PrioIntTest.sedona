@@ -102,10 +102,11 @@ class PrioIntTest
   //
   static void verifyManualSet(int setval, int dur)
   {
+    /*
     Sys.out.print("  Testing manual set to $setval")
     if (dur==0) Sys.out.print(" ended by manualAuto action\n")
     else Sys.out.print(" for $dur ms\n")
-
+    */
     long comboValue = ((long)setval<<32) | (long)dur   
 
     f.manualSet(comboValue)

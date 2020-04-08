@@ -84,7 +84,7 @@ class TestComp extends AbstractTestComp
   
   @asStr action void actionStr(Buf x) 
   { 
-    Sys.out.print(x.toStr()).nl(); 
+    //Sys.out.print(x.toStr()).nl();
     changed(TestComp.str)  
     str.bytes[4] = 0
     str.copyFromBuf(x) 

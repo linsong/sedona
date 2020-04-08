@@ -56,12 +56,13 @@ class TickTockTest
 
     long deltaTime = Sys.ticks() - startTime
     freq.execute()
-
+    /*
     Sys.out.print("    ticks/sec = ").printInt(pps).nl()
     Sys.out.print("    count = ").printInt(count).nl()
     Sys.out.print("    time = ").printInt((int)deltaTime).nl()
     Sys.out.print("    freq.pps = ").printFloat(freq.pps).nl()
     Sys.out.print("    freq.ppm = ").printFloat(freq.ppm).nl()
+    */
     assert(count == pps)
     assert(deltaTime < 1050ms)
     assert(deltaTime > 950ms)

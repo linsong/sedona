@@ -112,10 +112,10 @@ class PrioBoolTest
   //
   static void verifyManualSet(bool bSetActive, int dur)
   {
-    Sys.out.print("  Testing manual set ")
-    Sys.out.print(bSetActive?"active":"inactive")
-    if (dur==0) Sys.out.print(" ended by manualAuto action\n")
-    else Sys.out.print(" for $dur ms\n")
+    // Sys.out.print("  Testing manual set ")
+    // Sys.out.print(bSetActive?"active":"inactive")
+    // if (dur==0) Sys.out.print(" ended by manualAuto action\n")
+    // else Sys.out.print(" for $dur ms\n")
 
     if (bSetActive)
       b.manualSetActive(dur)

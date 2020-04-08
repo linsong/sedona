@@ -104,10 +104,11 @@ class PrioFloatTest
   //
   static void verifyManualSet(float setval, int dur)
   {
+    /*
     Sys.out.print("  Testing manual set to $setval")
     if (dur==0) Sys.out.print(" ended by manualAuto action\n")
     else Sys.out.print(" for $dur ms\n")
-
+    */
     int   iv = Sys.floatToBits(setval)
     long comboValue = ((long)iv<<32) | (long)dur   
 

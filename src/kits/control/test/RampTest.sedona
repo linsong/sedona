@@ -71,7 +71,7 @@ class RampTest
   static void analyze(Ramp r, int nsamps, float margin)
   {
     Str rtype = r.rampType==Ramp.SAWTOOTH?"SAWTOOTH":"TRIANGLE"
-    Sys.out.print("  $rtype, $r.period sec test\n")
+    //Sys.out.print("  $rtype, $r.period sec test\n")
 
     assert(nsamps<=MAXTESTPTS)
 
@@ -101,7 +101,7 @@ class RampTest
       {
         if ( approx(signal[t], r.max, e/2.0) && approx(cval, r.min, e/2.0) )
         {
-          Sys.out.print("    Allowing: ${signal[t]} != $cval   t=${tsig[t]}\n")
+          //Sys.out.print("    Allowing: ${signal[t]} != $cval   t=${tsig[t]}\n")
           continue
         }
       }
@@ -144,7 +144,7 @@ class RampTest
   //
   static void IwaveChk(int x, long dur)
   {
-    Sys.out.print("  IRamp: ${(float)dur / (float)1sec} sec test\n")
+    //Sys.out.print("  IRamp: ${(float)dur / (float)1sec} sec test\n")
 
     long pd = ir.secs*1sec
 

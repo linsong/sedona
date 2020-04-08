@@ -36,7 +36,7 @@ class LPTest
 
   static void validateControl(float setpoint)
   {
-    Sys.out.print("    test setpoint: ").printFloat(setpoint).print("  max 10 sec @50 exec/sec ")
+    //Sys.out.print("    test setpoint: ").printFloat(setpoint).print("  max 10 sec @50 exec/sec ")
     lp.sp := setpoint
     lp.cv := 0.0
     lp.kp := 0.80
@@ -67,12 +67,14 @@ class LPTest
         done = inControlCount >= 5
       }
     }
+    /*
     if(done)
     {
       Sys.out.print(" control time = ").printInt( (int)((Sys.ticks() - startTime)/1ms) ).print(" ms").nl()
     }
     else
       Sys.out.print(" deltaValue = ").printFloat(deltaValue).nl()
+    */
     assert(done == true)
   }
 

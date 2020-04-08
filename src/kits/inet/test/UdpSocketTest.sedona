@@ -126,7 +126,7 @@ class UdpSocketTest
 
   static void delay()
   {
-    Sys.out.print(".")
+    //Sys.out.print(".")
     Sys.sleep(300ms)
   }
 

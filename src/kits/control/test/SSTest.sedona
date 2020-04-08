@@ -22,9 +22,9 @@ class SSTest
     Sys.app.platform = testplat             // need platform instance to avoid null ref
     Sys.app.runApp()                        // get app to steady state somehow
 
-    Sys.out.print("  >> Waiting for app to reach steady state")
-    while (!Sys.app.isSteadyState()) Sys.out.print(".")
-    Sys.out.nl()
+    //Sys.out.print("  >> Waiting for app to reach steady state")
+    //while (!Sys.app.isSteadyState()) Sys.out.print(".")
+    //Sys.out.nl()
   }
 
 

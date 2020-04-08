@@ -27,7 +27,7 @@ class OneShotTest
     //
     // First, test non-retriggerable
     //
-    Sys.out.print("\tTesting non-retriggerable pulse\n")
+    //Sys.out.print("\tTesting non-retriggerable pulse\n")
     sh.canRetrig  := false
     // Generate rising edge
     sh.in := false
@@ -50,7 +50,7 @@ class OneShotTest
     //
     // Second, test retriggerable
     //
-    Sys.out.print("\tTesting retriggerable pulse\n")
+    //Sys.out.print("\tTesting retriggerable pulse\n")
     sh.canRetrig  := true
     // Generate rising edge
     sh.in := false
@@ -77,7 +77,7 @@ class OneShotTest
     //
     // Third, test clear action
     //
-    Sys.out.print("\tTesting clear() action\n")
+    //Sys.out.print("\tTesting clear() action\n")
     sh.canRetrig  := true
     // Generate rising edge
     sh.in := false

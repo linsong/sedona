@@ -102,8 +102,8 @@ class AppTest
 
 
     // serialize
-    Sys.out.print("--> serialize/deserialize app\n")
-    
+    //Sys.out.print("--> serialize/deserialize app\n")
+
     // Rename app A for serialization
     a.appName.copyFromStr("App_ser")
 

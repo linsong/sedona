@@ -32,8 +32,8 @@ class SerialTest
 
   static void testOpenClose()
   {
-    Sys.out.print("SerialTest.testOpenClose()\n");
-    thePort.portNum = VIRTUAL_PORT     
+    //Sys.out.print("SerialTest.testOpenClose()\n");
+    thePort.portNum = VIRTUAL_PORT
 
     int rc = thePort.open()
     assert( rc==0 )
@@ -51,7 +51,7 @@ class SerialTest
 
   static void testPutGetChar()
   {
-    Sys.out.print("SerialTest.testPutGetChar()\n");
+    //Sys.out.print("SerialTest.testPutGetChar()\n");
 
     thePort.portNum = VIRTUAL_PORT
 
@@ -69,7 +69,7 @@ class SerialTest
 
   static void testPutGetStr()
   {
-    Sys.out.print("SerialTest.testPutGetStr()\n");
+    //Sys.out.print("SerialTest.testPutGetStr()\n");
 
     thePort.portNum = VIRTUAL_PORT
 
@@ -93,7 +93,7 @@ class SerialTest
 
   static void testPutGetBytes()
   {
-    Sys.out.print("SerialTest.testPutGetBytes()\n");
+    //Sys.out.print("SerialTest.testPutGetBytes()\n");
 
     thePort.portNum = VIRTUAL_PORT
 
@@ -121,7 +121,7 @@ class SerialTest
 
   static void testOneWayStream()
   {
-    Sys.out.print("SerialTest.testOneWayStream()\n");
+    //Sys.out.print("SerialTest.testOneWayStream()\n");
 
     thePort.portNum = 1               // use real port #1
 
@@ -143,7 +143,7 @@ class SerialTest
 
   static void testTwoWayStream()
   {
-    Sys.out.print("SerialTest.testTwoWayComm()\n");
+    //Sys.out.print("SerialTest.testTwoWayComm()\n");
 
     thePort.portNum = 1               // use real port #1
 
@@ -227,10 +227,9 @@ class SerialTest
     // Write what we got back onto port
     thePort.out.print("\nGot: [").print(testStr1).print("]\n").print("\nBye!\n")
 
-    Sys.out.print("port read: [").print(testStr1).print("]\n")   // DIAG
+    // Sys.out.print("port read: [").print(testStr1).print("]\n")   // DIAG
 
     thePort.close()
   }
 
 }
-

@@ -43,7 +43,7 @@ class TcpSocketTest
     assert(s.isClosed())
 
     // wait until we have both sides connected
-    Sys.out.print("  Connecting to myself...")
+    //Sys.out.print("  Connecting to myself...")
     bool cConnected = false
     bool sConnected = false
     while (!cConnected || !sConnected)
@@ -52,7 +52,7 @@ class TcpSocketTest
       if (!sConnected) sConnected = server.accept(s)
       delay()
     }
-    Sys.out.print("\n  Connected.\n")
+    //Sys.out.print("\n  Connected.\n")
 
     // verify connection
     assert(!c.isClosed())
@@ -115,7 +115,7 @@ class TcpSocketTest
 
     // cleanup server socket
     server.close()
-    Sys.out.print("testSocket done").nl()
+    //Sys.out.print("testSocket done").nl()
   }
 
 ////////////////////////////////////////////////////////////////
@@ -127,29 +127,29 @@ class TcpSocketTest
     assert(c.isClosed())
 
     // try host which does not exist
-    Sys.out.print("  Connect to unknown host...\n")
+    //Sys.out.print("  Connect to unknown host...\n")
     addr.parse("255.255.255.80")
     if (c.connect(addr, 7383))
     {
       while (!c.finishConnect()) delay()
-      Sys.out.nl()
+      //Sys.out.nl()
     }
     assert(c.isClosed())
     assert(c.read(in, 0, 1) < 0)
     assert(c.isClosed())
 
     // try port which is not open
-    Sys.out.print("  Connect to known host, inactive port...\n")
+    //Sys.out.print("  Connect to known host, inactive port...\n")
     addr.parse("127.0.0.1")
     if (c.connect(addr, 1234))
     {
       while (!c.finishConnect()) delay()
-      Sys.out.nl()
+      //Sys.out.nl()
     }
     assert(c.isClosed())
     assert(c.read(in, 0, 1) < 0)
     assert(c.isClosed())
-    Sys.out.print("testConnectError done").nl()
+    //Sys.out.print("testConnectError done").nl()
   }
 
 ////////////////////////////////////////////////////////////////
@@ -158,7 +158,7 @@ class TcpSocketTest
 
   static void delay()
   {
-    Sys.out.print(".")
+    //Sys.out.print(".")
     Sys.sleep(100ms)
   }
 

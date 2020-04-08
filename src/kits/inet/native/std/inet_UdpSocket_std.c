@@ -289,7 +289,7 @@ Cell inet_UdpSocket_send(SedonaVM* vm, Cell* params)
   struct sockaddr_storage addr;
   memset(&addr, 0, sizeof(addr));
 
-  if (closed) printf("  send error! UDP socket is closed\n");
+  if (closed) printf("\n  send error! UDP socket is closed\n");
 
   if (closed) return falseCell;
   if (sDatagram == NULL) return falseCell;
