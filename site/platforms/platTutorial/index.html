@@ -1,0 +1,1426 @@
+
+
+
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <meta http-equiv="x-ua-compatible" content="ie=edge">
+      
+        <meta name="description" content="Online documentation for Sedona Framework(R)">
+      
+      
+        <link rel="canonical" href="https://linsong.github.io/sedona/platforms/platTutorial/">
+      
+      
+        <meta name="author" content="Sedona Community">
+      
+      
+        <meta name="lang:clipboard.copy" content="Copy to clipboard">
+      
+        <meta name="lang:clipboard.copied" content="Copied to clipboard">
+      
+        <meta name="lang:search.language" content="en">
+      
+        <meta name="lang:search.pipeline.stopwords" content="True">
+      
+        <meta name="lang:search.pipeline.trimmer" content="True">
+      
+        <meta name="lang:search.result.none" content="No matching documents">
+      
+        <meta name="lang:search.result.one" content="1 matching document">
+      
+        <meta name="lang:search.result.other" content="# matching documents">
+      
+        <meta name="lang:search.tokenizer" content="[\s\-]+">
+      
+      <link rel="shortcut icon" href="../../favicon.ico">
+      <meta name="generator" content="mkdocs-1.1, mkdocs-material-4.6.3">
+    
+    
+      
+        <title>Platform Tutorial - Sedona Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/application.adb8469c.css">
+      
+        <link rel="stylesheet" href="../../assets/stylesheets/application-palette.a8b3c06d.css">
+      
+      
+        
+        
+        <meta name="theme-color" content="#795548">
+      
+    
+    
+      <script src="../../assets/javascripts/modernizr.86422ebf.js"></script>
+    
+    
+      
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono","Courier New",Courier,monospace}</style>
+      
+    
+    <link rel="stylesheet" href="../../assets/fonts/material-icons.css">
+    
+    
+    
+      
+    
+    
+  </head>
+  
+    
+    
+    <body dir="ltr" data-md-color-primary="brown" data-md-color-accent="red">
+  
+    <svg class="md-svg">
+      <defs>
+        
+        
+          <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448" viewBox="0 0 416 448" id="__github"><path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z"/></svg>
+        
+      </defs>
+    </svg>
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+    
+      <a href="#platform-tutorial" tabindex="0" class="md-skip">
+        Skip to content
+      </a>
+    
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="https://linsong.github.io/sedona" title="Sedona Documentation" aria-label="Sedona Documentation" class="md-header-nav__button md-logo">
+          
+            <img alt="logo" src="../../favicon.ico" width="24" height="24">
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          
+            <span class="md-header-nav__topic">
+              Sedona Documentation
+            </span>
+            <span class="md-header-nav__topic">
+              
+                Platform Tutorial
+              
+            </span>
+          
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        
+          <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+          
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" aria-label="search" name="query" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+        
+      </div>
+      
+        <div class="md-flex__cell md-flex__cell--shrink">
+          <div class="md-header-nav__source">
+            
+
+
+  
+
+<a href="https://github.com/linsong/sedona/" title="Go to repository" class="md-source" data-md-source="github">
+  
+    <div class="md-source__icon">
+      <svg viewBox="0 0 24 24" width="24" height="24">
+        <use xlink:href="#__github" width="24" height="24"></use>
+      </svg>
+    </div>
+  
+  <div class="md-source__repository">
+    linsong/sedona
+  </div>
+</a>
+          </div>
+        </div>
+      
+    </div>
+  </nav>
+</header>
+    
+    <div class="md-container">
+      
+        
+      
+      
+      <main class="md-main" role="main">
+        <div class="md-main__inner md-grid" data-md-component="container">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href="https://linsong.github.io/sedona" title="Sedona Documentation" class="md-nav__button md-logo">
+      
+        <img alt="logo" src="../../favicon.ico" width="48" height="48">
+      
+    </a>
+    Sedona Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      
+
+
+  
+
+<a href="https://github.com/linsong/sedona/" title="Go to repository" class="md-source" data-md-source="github">
+  
+    <div class="md-source__icon">
+      <svg viewBox="0 0 24 24" width="24" height="24">
+        <use xlink:href="#__github" width="24" height="24"></use>
+      </svg>
+    </div>
+  
+  <div class="md-source__repository">
+    linsong/sedona
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../.." title="Index" class="md-nav__link">
+      Index
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2">
+    
+    <label class="md-nav__link" for="nav-2">
+      Getting Started
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-2">
+        Getting Started
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../quickstart/intro/" title="Introduction" class="md-nav__link">
+      Introduction
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../quickstart/setup/" title="Setup" class="md-nav__link">
+      Setup
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../quickstart/architecture/" title="Architecture" class="md-nav__link">
+      Architecture
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../quickstart/tutorial/" title="Tutorial" class="md-nav__link">
+      Tutorial
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3">
+    
+    <label class="md-nav__link" for="nav-3">
+      Language
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-3">
+        Language
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../language/lang/" title="Language" class="md-nav__link">
+      Language
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../language/primitives/" title="Primitives" class="md-nav__link">
+      Primitives
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../language/expr/" title="Expressions" class="md-nav__link">
+      Expressions
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../language/stmt/" title="Statements" class="md-nav__link">
+      Statements
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../language/classes/" title="Classes" class="md-nav__link">
+      Classes
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../language/fields/" title="Fields" class="md-nav__link">
+      Fields
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../language/methods/" title="Methods" class="md-nav__link">
+      Methods
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../language/components/" title="Components" class="md-nav__link">
+      Components
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../language/reflection/" title="Reflection" class="md-nav__link">
+      Reflection
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../language/arrays/" title="Arrays" class="md-nav__link">
+      Arrays
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../language/memory/" title="Memory" class="md-nav__link">
+      Memory
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../language/nativeMethods/" title="Native Methods" class="md-nav__link">
+      Native Methods
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../language/logging/" title="Logging" class="md-nav__link">
+      Logging
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4">
+    
+    <label class="md-nav__link" for="nav-4">
+      Apps
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-4">
+        Apps
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../apps/apps/" title="Application Model" class="md-nav__link">
+      Application Model
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../apps/security/" title="Security" class="md-nav__link">
+      Security
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5">
+    
+    <label class="md-nav__link" for="nav-5">
+      Deployment
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-5">
+        Deployment
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../deployment/kits/" title="Kits" class="md-nav__link">
+      Kits
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../deployment/schema/" title="Schema" class="md-nav__link">
+      Schema
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6" checked>
+    
+    <label class="md-nav__link" for="nav-6">
+      Platforms
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-6">
+        Platforms
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../platDef/" title="Platform Definition" class="md-nav__link">
+      Platform Definition
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../par/" title="Platform Archive" class="md-nav__link">
+      Platform Archive
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Platform Tutorial
+      </label>
+    
+    <a href="./" title="Platform Tutorial" class="md-nav__link md-nav__link--active">
+      Platform Tutorial
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#introduction" class="md-nav__link">
+    Introduction
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#create-kit" class="md-nav__link">
+    Create Kit
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implement-native-methods" class="md-nav__link">
+    Implement Native Methods
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#doplatformid" class="md-nav__link">
+    doPlatformId()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#create-platdef-file" class="md-nav__link">
+    Create platDef file
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#port-svm" class="md-nav__link">
+    Port SVM
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#build-svm" class="md-nav__link">
+    Build SVM
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#create-par-file" class="md-nav__link">
+    Create PAR file
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#test-platform" class="md-nav__link">
+    Test Platform
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../deviceSim/" title="Device Simulator" class="md-nav__link">
+      Device Simulator
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../platCertified/" title="Certified Platforms" class="md-nav__link">
+      Certified Platforms
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-7" type="checkbox" id="nav-7">
+    
+    <label class="md-nav__link" for="nav-7">
+      Development
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-7">
+        Development
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../development/sedonac/" title="Sedonac" class="md-nav__link">
+      Sedonac
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../development/testing/" title="Testing" class="md-nav__link">
+      Testing
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../development/porting/" title="Porting" class="md-nav__link">
+      Porting
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../development/niagara/" title="Niagara" class="md-nav__link">
+      Niagara
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-8" type="checkbox" id="nav-8">
+    
+    <label class="md-nav__link" for="nav-8">
+      Networking
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-8">
+        Networking
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../networking/networking/" title="Networking" class="md-nav__link">
+      Networking
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../networking/dasp/" title="DASP" class="md-nav__link">
+      DASP
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../networking/sox/" title="Sox" class="md-nav__link">
+      Sox
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../networking/discover/" title="Device Discovery" class="md-nav__link">
+      Device Discovery
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9" type="checkbox" id="nav-9">
+    
+    <label class="md-nav__link" for="nav-9">
+      Appendix
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-9">
+        Appendix
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../appendix/license/" title="License" class="md-nav__link">
+      License
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../appendix/conventions/" title="Coding Conventions" class="md-nav__link">
+      Coding Conventions
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../appendix/scodeFormat/" title="SCode Format" class="md-nav__link">
+      SCode Format
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../appendix/grammar/" title="Grammar" class="md-nav__link">
+      Grammar
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-10" type="checkbox" id="nav-10">
+    
+    <label class="md-nav__link" for="nav-10">
+      Releases
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-10">
+        Releases
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../releases/newFor12/" title="v1.2" class="md-nav__link">
+      v1.2
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../api/api/" title="API" class="md-nav__link">
+      API
+    </a>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#introduction" class="md-nav__link">
+    Introduction
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#create-kit" class="md-nav__link">
+    Create Kit
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implement-native-methods" class="md-nav__link">
+    Implement Native Methods
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#doplatformid" class="md-nav__link">
+    doPlatformId()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#create-platdef-file" class="md-nav__link">
+    Create platDef file
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#port-svm" class="md-nav__link">
+    Port SVM
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#build-svm" class="md-nav__link">
+    Build SVM
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#create-par-file" class="md-nav__link">
+    Create PAR file
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#test-platform" class="md-nav__link">
+    Test Platform
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/linsong/sedona/edit/master/docs/platforms/platTutorial.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
+                
+                
+                <!--
+[//]: # (Copyright &#169; 2010 Tridium, Inc
+  Licensed under the Academic Free License version 3.0
+
+  History:
+    07 Jan 2010 - Matthew Giannini creation
+) -->
+
+<p><a href="/"><img alt="Sedona" src="../../logo.png" /></a></p>
+<h1 id="platform-tutorial">Platform Tutorial<a class="headerlink" href="#platform-tutorial" title="Permanent link">&para;</a></h1>
+<h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">&para;</a></h2>
+<p>A Sedona Framework platform is simply any device running an SVM. The
+platform is uniquely identified by the <strong><em>platformId</em></strong> property of the
+platform service running in the app on that device.</p>
+<p>This section presents a high-level, step-by-step guide to creating a
+Sedona Framework platform for your own device. We will use the Win32
+platform provided in the open source distribution as a case study in
+creating a new Sedona Framework platform.</p>
+<ol>
+<li><a href="#create-kit">Step 1:</a> Create a kit for your platform service</li>
+<li><a href="#implement-native-methods">Step 2:</a> Implement PlatformService native methods</li>
+<li><a href="#create-platDef-file">Step 3:</a> Create a platform definition file</li>
+<li><a href="#port-svm">Step 4:</a> Port the SVM</li>
+<li><a href="#build-svm">Step 5:</a> Build the SVM</li>
+<li><a href="#create-par-file">Step 6:</a> Create a PAR file</li>
+<li><a href="#test-platform">Step 7:</a> SAX and Scode setup for your platform</li>
+</ol>
+<h2 id="create-kit">Create Kit<a class="headerlink" href="#create-kit" title="Permanent link">&para;</a></h2>
+<p>Every app must have a <code>sys::PlatformService</code> component running in it. A
+platform service encapsulates the behavior of that specific OS/Hardware
+platform. The <code>sys::PlatformService</code> class itself is generic, so some
+key methods do nothing. To implement a real Sedona platform, it must be
+subclassed so that platform-specific behavior can be implemented.</p>
+<p>The first step in porting Sedona to a new platform is the creation of a
+PlatformService subclass for the platform. As an example, the win32
+platform service is defined in a kit called "platWin32" and the kit
+definition file is in <code>sedona_home/platforms/src/generic/win32/kit.xml</code></p>
+<h2 id="implement-native-methods">Implement Native Methods<a class="headerlink" href="#implement-native-methods" title="Permanent link">&para;</a></h2>
+<p>The base class <code>sys::PlatformService</code> defines three native methods that
+must be implemented for every platform. They are called by
+<code>PlatformService</code> as needed to populate the corresponding properties.</p>
+<ul>
+<li><code>doPlatformId()</code>: returns platform ID string</li>
+<li><code>getPlatVersion()</code>: returns platform version string</li>
+<li><code>getNativeMemAvailable()</code>: returns number of bytes of physical
+    memory available</li>
+</ul>
+<p>The open source includes win32 natives as an example, see
+<code>sedona_home/src/sys/native/win32</code>.</p>
+<h3 id="doplatformid">doPlatformId()<a class="headerlink" href="#doplatformid" title="Permanent link">&para;</a></h3>
+<p>One of the most important properties on the platform service is the
+<code>platformId</code> property. This property uniquely identifies your platform,
+and maps to a platform manifest stored in the platform database. The
+native method <code>doPlatformId()</code> provides a means for Sedona to access
+this native property.</p>
+<p>The native implementation of <code>doPlatformId()</code> for the win32 platform is</p>
+<div class="codehilite"><pre><span></span><code>#include &quot;sedona.h&quot;
+#include &quot;sedonaPlatform.h&quot;
+#include &lt;windows.h&gt;
+
+// Str PlatformService.doPlatformId()
+Cell sys_PlatformService_doPlatformId(SedonaVM* vm, Cell* params)
+{
+  Cell result;
+  result.aval = PLATFORM_ID;
+  return result;
+}
+</code></pre></div>
+
+
+<p>The value of <code>PLATFORM_ID</code> is defined in the header file
+<code>sedonaPlatform.h</code>, which is generated automatically from the platform
+definition XML file. So the next step is to create one.</p>
+<h2 id="create-platdef-file">Create platDef file<a class="headerlink" href="#create-platdef-file" title="Permanent link">&para;</a></h2>
+<p>Please refer to the section on <a href="/platforms/platDef">platform definition</a> for
+an in depth discussion of this file and all its sections and attributes.</p>
+<p>The platform definition for the win32 platform is located in
+<code>sedona_home/platforms/src/generic/win32/generic-win32.xml</code>. (This file
+can be located anywhere, but the convention is to put it under
+<code>sedona_home/platforms/src/</code>.)</p>
+<div class="codehilite"><pre><span></span><code>    <span class="nt">&lt;sedonaPlatform</span> <span class="na">vendor=</span><span class="s">&quot;Tridium&quot;</span> <span class="na">id=</span><span class="s">&quot;tridium-generic-win32-${sedona.env.version}&quot;</span> <span class="nt">&gt;</span>
+
+      <span class="nt">&lt;compile</span> <span class="na">endian=</span><span class="s">&quot;little&quot;</span> <span class="na">blockSize=</span><span class="s">&quot;4&quot;</span> <span class="na">refSize=</span><span class="s">&quot;4&quot;</span> <span class="na">debug=</span><span class="s">&quot;true&quot;</span> <span class="na">test=</span><span class="s">&quot;true&quot;</span><span class="nt">&gt;</span>
+
+        <span class="c">&lt;!-- Native Kits --&gt;</span>
+        <span class="nt">&lt;nativeKit</span> <span class="na">depend=</span><span class="s">&quot;sys 1.0&quot;</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;nativeKit</span> <span class="na">depend=</span><span class="s">&quot;inet 1.0&quot;</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;nativeKit</span> <span class="na">depend=</span><span class="s">&quot;datetimeStd 1.0&quot;</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;nativeKit</span> <span class="na">depend=</span><span class="s">&quot;platWin32 1.0&quot;</span> <span class="nt">/&gt;</span>
+
+        <span class="c">&lt;!-- Native Sources --&gt;</span>
+        <span class="nt">&lt;nativeSource</span> <span class="na">path=</span><span class="s">&quot;/src/vm&quot;</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;nativeSource</span> <span class="na">path=</span><span class="s">&quot;/src/sys/native&quot;</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;nativeSource</span> <span class="na">path=</span><span class="s">&quot;/src/sys/native/std&quot;</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;nativeSource</span> <span class="na">path=</span><span class="s">&quot;/src/sys/native/win32&quot;</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;nativeSource</span> <span class="na">path=</span><span class="s">&quot;/src/inet/native&quot;</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;nativeSource</span> <span class="na">path=</span><span class="s">&quot;/src/inet/native/std&quot;</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;nativeSource</span> <span class="na">path=</span><span class="s">&quot;/src/inet/native/sha1&quot;</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;nativeSource</span> <span class="na">path=</span><span class="s">&quot;/src/datetimeStd/native/std&quot;</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;nativeSource</span> <span class="na">path=</span><span class="s">&quot;/platforms/src/generic/win32/native&quot;</span> <span class="nt">/&gt;</span>
+      <span class="nt">&lt;/compile&gt;</span>
+
+    <span class="nt">&lt;/sedonaPlatform&gt;</span>
+</code></pre></div>
+
+<p>There are a few things to note about this platform definition.</p>
+<ol>
+<li>It specifies the <code>id</code> attribute for the platform. Later, when we run
+    <code>sedonac</code> on this file to stage the source, it will generate the
+    header file <code>sedonaPlatform.h</code> based on this file. That header file
+    will contain the <code>PLATFORM_ID</code> definition required by the
+    <a href="#doplatformid">doPlatformId()</a> native code.</li>
+<li>The SVM created from this platform definition will only support the
+    native methods from the sys, inet, datetimeStd, and platWin32 kits
+    because those are the only kits included in <code>&lt;nativeKit&gt;</code>
+    declarations. In order to support other kits with native methods,
+    they will have to be added to the platform definition.</li>
+</ol>
+<h2 id="port-svm">Port SVM<a class="headerlink" href="#port-svm" title="Permanent link">&para;</a></h2>
+<p>This process is already described in detail in the
+<a href="/development/porting">porting</a> section. We specified in the platform definition
+file where all the native source code is located. If the native source
+file locations change at any time during the platform development
+process, the platform definition will need to be updated accordingly.</p>
+<p>Refer to the win32 platform definition to see where all the native code
+for the win32 SVM resides.</p>
+<h2 id="build-svm">Build SVM<a class="headerlink" href="#build-svm" title="Permanent link">&para;</a></h2>
+<p>Once the native source code is written and the platform definition file
+is correct, we are ready to build the SVM. As described in the
+<a href="/development/porting#staging">staging</a> section, we use <code>sedonac</code> to stage all
+native source files in one directory. Then we use the appropriate native
+tool-chain to actually build the SVM.</p>
+<p>The open source distribution includes a <code>makewinvm.py</code> script that will
+build the win32 platform SVM. It runs <code>sedonac</code> on the generic-win32.xml
+platform definition file to stage all the source code for the SVM, and
+then it compiles the source code into a binary. This is the same
+<code>svm.exe</code> that appears in the <code>bin/</code> directory of the open source
+distribution. To run <code>makewinvm.py</code> you must first have <a href="/quickstart/setup">set up</a> your environment for Windows 32-bit development.</p>
+<p>You must provide your own native tool-chain to accomplish the same tasks
+for a different platform.</p>
+<h2 id="create-par-file">Create PAR file<a class="headerlink" href="#create-par-file" title="Permanent link">&para;</a></h2>
+<p>Refer to the section on <a href="/platforms/par">PAR files</a> for a more in-depth
+discussion on PAR files.</p>
+<p>When we staged the native source by running <code>sedonac</code> on the platform
+definition file, it also created a <code>.par/</code> directory containing a valid
+platformManifest.xml file for the platform. Therefore, all we need to do
+is zip up the contents of that directory and use the platformdb.py
+script to install it in our platform database.</p>
+<p>The <code>makewinvm.py</code> script does the database installation step
+automatically for the open source win32 platform. If you issue the
+<code>platformdb.py --list</code> command you should see output similar to the
+following</p>
+<div class="codehilite"><pre><span></span><code>    sedona&gt; platformdb.py --list
+     tridium-generic-win32-1.0.46
+</code></pre></div>
+
+<p>This output indicates that the we have successfully installed the win32
+platform into the platform database. The toolchain steps you perform for
+another platform will need to do the same thing for that platform. You
+can use the <code>platformdb -i &lt;par file&gt;</code> command to install a PAR file
+into the platform database.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The path within the platform database where the .par folder will be located <strong>must</strong> match the platform ID exactly. For example, the win32 platform definition file defines the platform ID as <code>tridium-generic-win32-${sedona.env.version}</code>. When we ran <code>sedonac</code> on the platform definition file it substituted an actual version number, so the resulting platform manifest file contains a specific definition, for example <code>tridium-generic-win32-1.2.29</code>. Sedona would then expect to find the manifest file for this platform in the platform database under <code>sedona_home/platforms/db/tridium/generic/win32/1.2.29/.par/</code>.</p>
+</div>
+<h2 id="test-platform">Test Platform<a class="headerlink" href="#test-platform" title="Permanent link">&para;</a></h2>
+<p>To use your new platform service, you will need to create an application
+(SAX) that uses your platform service. There is an example SAX file that
+uses the Win32PlatformService at <code>sedona_home/apps/platWin32.sax</code>. You
+can use this file as a template and make the following modifications to
+use it for your platform:</p>
+<ol>
+<li>In the <code>&lt;schema&gt;</code> section, remove the platWin32 kit and add the kit
+    for your platform service.</li>
+<li>In the <code>&lt;app&gt;</code> section there is a component called "plat". Change
+    the type of that component from "platWin32::Win32PlatformService"
+    to the type of your platform service.</li>
+</ol>
+<p>After you have made these changes you can run <code>sedonac</code> on your new SAX
+file to create an binary application (SAB) that your SVM can run.</p>
+<p>Finally, you will need to create a scode image corresponding to the kits
+in your SAX. There is an example scode configuration file in
+<code>sedona_home/scode/platWin32.xml</code>. You can use this file as a template
+and make the following modifications for your platform:</p>
+<ol>
+<li>Modify the <code>&lt;sedonaCode&gt;</code> elements to match the settings for your
+    device. For example, make sure the blockSize, refSize, endian, etc.
+    are correct.</li>
+<li>Remove the dependency on "platWin32 1.0" and add a dependency for
+    the kit containing your platform service.</li>
+</ol>
+<p>After you have made these changes you an run <code>sedonac</code> on your new scode
+XML file to produce an scode image that your SVM can run.</p>
+                
+                  
+                
+                
+                  
+                  <hr>
+                  <div class="md-source-date">
+                    <small>
+                      
+                        Last update: April 7, 2020
+                      
+                    </small>
+                  </div>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+        
+          <a href="../par/" title="Platform Archive" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+            </div>
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Platform Archive
+              </span>
+            </div>
+          </a>
+        
+        
+          <a href="../deviceSim/" title="Device Simulator" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Device Simulator
+              </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+          <div class="md-footer-copyright__highlight">
+            Copyright &copy; 2007-2017 Tridium, 2018-2020 Sedona Community
+          </div>
+        
+        powered by
+        <a href="https://www.mkdocs.org" target="_blank" rel="noopener">MkDocs</a>
+        and
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs</a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../../assets/javascripts/application.c33a9706.js"></script>
+      
+      <script>app.initialize({version:"1.1",url:{base:"../.."}})</script>
+      
+    
+  </body>
+</html>

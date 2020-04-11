@@ -1,0 +1,1303 @@
+
+
+
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <meta http-equiv="x-ua-compatible" content="ie=edge">
+      
+        <meta name="description" content="Online documentation for Sedona Framework(R)">
+      
+      
+        <link rel="canonical" href="https://linsong.github.io/sedona/language/arrays/">
+      
+      
+        <meta name="author" content="Sedona Community">
+      
+      
+        <meta name="lang:clipboard.copy" content="Copy to clipboard">
+      
+        <meta name="lang:clipboard.copied" content="Copied to clipboard">
+      
+        <meta name="lang:search.language" content="en">
+      
+        <meta name="lang:search.pipeline.stopwords" content="True">
+      
+        <meta name="lang:search.pipeline.trimmer" content="True">
+      
+        <meta name="lang:search.result.none" content="No matching documents">
+      
+        <meta name="lang:search.result.one" content="1 matching document">
+      
+        <meta name="lang:search.result.other" content="# matching documents">
+      
+        <meta name="lang:search.tokenizer" content="[\s\-]+">
+      
+      <link rel="shortcut icon" href="../../favicon.ico">
+      <meta name="generator" content="mkdocs-1.1, mkdocs-material-4.6.3">
+    
+    
+      
+        <title>Arrays - Sedona Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/application.adb8469c.css">
+      
+        <link rel="stylesheet" href="../../assets/stylesheets/application-palette.a8b3c06d.css">
+      
+      
+        
+        
+        <meta name="theme-color" content="#795548">
+      
+    
+    
+      <script src="../../assets/javascripts/modernizr.86422ebf.js"></script>
+    
+    
+      
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono","Courier New",Courier,monospace}</style>
+      
+    
+    <link rel="stylesheet" href="../../assets/fonts/material-icons.css">
+    
+    
+    
+      
+    
+    
+  </head>
+  
+    
+    
+    <body dir="ltr" data-md-color-primary="brown" data-md-color-accent="red">
+  
+    <svg class="md-svg">
+      <defs>
+        
+        
+          <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448" viewBox="0 0 416 448" id="__github"><path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z"/></svg>
+        
+      </defs>
+    </svg>
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+    
+      <a href="#arrays" tabindex="0" class="md-skip">
+        Skip to content
+      </a>
+    
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="https://linsong.github.io/sedona" title="Sedona Documentation" aria-label="Sedona Documentation" class="md-header-nav__button md-logo">
+          
+            <img alt="logo" src="../../favicon.ico" width="24" height="24">
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          
+            <span class="md-header-nav__topic">
+              Sedona Documentation
+            </span>
+            <span class="md-header-nav__topic">
+              
+                Arrays
+              
+            </span>
+          
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        
+          <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+          
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" aria-label="search" name="query" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+        
+      </div>
+      
+        <div class="md-flex__cell md-flex__cell--shrink">
+          <div class="md-header-nav__source">
+            
+
+
+  
+
+<a href="https://github.com/linsong/sedona/" title="Go to repository" class="md-source" data-md-source="github">
+  
+    <div class="md-source__icon">
+      <svg viewBox="0 0 24 24" width="24" height="24">
+        <use xlink:href="#__github" width="24" height="24"></use>
+      </svg>
+    </div>
+  
+  <div class="md-source__repository">
+    linsong/sedona
+  </div>
+</a>
+          </div>
+        </div>
+      
+    </div>
+  </nav>
+</header>
+    
+    <div class="md-container">
+      
+        
+      
+      
+      <main class="md-main" role="main">
+        <div class="md-main__inner md-grid" data-md-component="container">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href="https://linsong.github.io/sedona" title="Sedona Documentation" class="md-nav__button md-logo">
+      
+        <img alt="logo" src="../../favicon.ico" width="48" height="48">
+      
+    </a>
+    Sedona Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      
+
+
+  
+
+<a href="https://github.com/linsong/sedona/" title="Go to repository" class="md-source" data-md-source="github">
+  
+    <div class="md-source__icon">
+      <svg viewBox="0 0 24 24" width="24" height="24">
+        <use xlink:href="#__github" width="24" height="24"></use>
+      </svg>
+    </div>
+  
+  <div class="md-source__repository">
+    linsong/sedona
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../.." title="Index" class="md-nav__link">
+      Index
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2">
+    
+    <label class="md-nav__link" for="nav-2">
+      Getting Started
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-2">
+        Getting Started
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../quickstart/intro/" title="Introduction" class="md-nav__link">
+      Introduction
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../quickstart/setup/" title="Setup" class="md-nav__link">
+      Setup
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../quickstart/architecture/" title="Architecture" class="md-nav__link">
+      Architecture
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../quickstart/tutorial/" title="Tutorial" class="md-nav__link">
+      Tutorial
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3" checked>
+    
+    <label class="md-nav__link" for="nav-3">
+      Language
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-3">
+        Language
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../lang/" title="Language" class="md-nav__link">
+      Language
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../primitives/" title="Primitives" class="md-nav__link">
+      Primitives
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../expr/" title="Expressions" class="md-nav__link">
+      Expressions
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../stmt/" title="Statements" class="md-nav__link">
+      Statements
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../classes/" title="Classes" class="md-nav__link">
+      Classes
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../fields/" title="Fields" class="md-nav__link">
+      Fields
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../methods/" title="Methods" class="md-nav__link">
+      Methods
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../components/" title="Components" class="md-nav__link">
+      Components
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../reflection/" title="Reflection" class="md-nav__link">
+      Reflection
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Arrays
+      </label>
+    
+    <a href="./" title="Arrays" class="md-nav__link md-nav__link--active">
+      Arrays
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    Overview
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#memory-management" class="md-nav__link">
+    Memory Management
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#arrays-of-references" class="md-nav__link">
+    Arrays of References
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#unsized-classes" class="md-nav__link">
+    Unsized Classes
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#array-literals" class="md-nav__link">
+    Array Literals
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../memory/" title="Memory" class="md-nav__link">
+      Memory
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../nativeMethods/" title="Native Methods" class="md-nav__link">
+      Native Methods
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../logging/" title="Logging" class="md-nav__link">
+      Logging
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4">
+    
+    <label class="md-nav__link" for="nav-4">
+      Apps
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-4">
+        Apps
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../apps/apps/" title="Application Model" class="md-nav__link">
+      Application Model
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../apps/security/" title="Security" class="md-nav__link">
+      Security
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5">
+    
+    <label class="md-nav__link" for="nav-5">
+      Deployment
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-5">
+        Deployment
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../deployment/kits/" title="Kits" class="md-nav__link">
+      Kits
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../deployment/schema/" title="Schema" class="md-nav__link">
+      Schema
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6">
+    
+    <label class="md-nav__link" for="nav-6">
+      Platforms
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-6">
+        Platforms
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../platforms/platDef/" title="Platform Definition" class="md-nav__link">
+      Platform Definition
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../platforms/par/" title="Platform Archive" class="md-nav__link">
+      Platform Archive
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../platforms/platTutorial/" title="Platform Tutorial" class="md-nav__link">
+      Platform Tutorial
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../platforms/deviceSim/" title="Device Simulator" class="md-nav__link">
+      Device Simulator
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../platforms/platCertified/" title="Certified Platforms" class="md-nav__link">
+      Certified Platforms
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-7" type="checkbox" id="nav-7">
+    
+    <label class="md-nav__link" for="nav-7">
+      Development
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-7">
+        Development
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../development/sedonac/" title="Sedonac" class="md-nav__link">
+      Sedonac
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../development/testing/" title="Testing" class="md-nav__link">
+      Testing
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../development/porting/" title="Porting" class="md-nav__link">
+      Porting
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../development/niagara/" title="Niagara" class="md-nav__link">
+      Niagara
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-8" type="checkbox" id="nav-8">
+    
+    <label class="md-nav__link" for="nav-8">
+      Networking
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-8">
+        Networking
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../networking/networking/" title="Networking" class="md-nav__link">
+      Networking
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../networking/dasp/" title="DASP" class="md-nav__link">
+      DASP
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../networking/sox/" title="Sox" class="md-nav__link">
+      Sox
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../networking/discover/" title="Device Discovery" class="md-nav__link">
+      Device Discovery
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9" type="checkbox" id="nav-9">
+    
+    <label class="md-nav__link" for="nav-9">
+      Appendix
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-9">
+        Appendix
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../appendix/license/" title="License" class="md-nav__link">
+      License
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../appendix/conventions/" title="Coding Conventions" class="md-nav__link">
+      Coding Conventions
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../appendix/scodeFormat/" title="SCode Format" class="md-nav__link">
+      SCode Format
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../appendix/grammar/" title="Grammar" class="md-nav__link">
+      Grammar
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-10" type="checkbox" id="nav-10">
+    
+    <label class="md-nav__link" for="nav-10">
+      Releases
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-10">
+        Releases
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../releases/newFor12/" title="v1.2" class="md-nav__link">
+      v1.2
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../api/api/" title="API" class="md-nav__link">
+      API
+    </a>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    Overview
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#memory-management" class="md-nav__link">
+    Memory Management
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#arrays-of-references" class="md-nav__link">
+    Arrays of References
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#unsized-classes" class="md-nav__link">
+    Unsized Classes
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#array-literals" class="md-nav__link">
+    Array Literals
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/linsong/sedona/edit/master/docs/language/arrays.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
+                
+                
+                <!--
+[//]: # (Copyright &#169; 2007 Tridium, Inc
+  Licensed under the Academic Free License version 3.0
+
+  History:
+    29 Mar 07  Brian Frank  Creation
+) -->
+
+<p><a href="/"><img alt="Sedona" src="../../logo.png" /></a></p>
+<h1 id="arrays">Arrays<a class="headerlink" href="#arrays" title="Permanent link">&para;</a></h1>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
+<p>The Sedona Framework model for arrays is very similar to the C language.
+An array is just a block of memory large enough hold a declared number
+of items. Arrays do not store their own length, so bounds checking is up
+to the developer.</p>
+<p>The format of an array type declaration is:</p>
+<div class="codehilite"><pre><span></span><code>  &lt;Type&gt;[&lt;size&gt;]  // size is optional
+  byte[10] buf      // example of sized array type declaration
+  Person[] people   // example of unsized array type declaration
+</code></pre></div>
+
+
+<p>If the size of the array is specified between the brackets we call it a
+<em>sized array</em>, otherwise we call it a <em>unsized array</em>. The Sedona
+Framework does not support multi-dimensional arrays.</p>
+<h2 id="memory-management">Memory Management<a class="headerlink" href="#memory-management" title="Permanent link">&para;</a></h2>
+<p>Arrays are always passed by reference - the reference is just a pointer
+to the base address of the array. To actually allocate memory for an
+array, it must be declared as an inline field. For example:</p>
+<div class="codehilite"><pre><span></span><code>class Foo
+{
+  static int[5] x
+  static inline int[5] y
+}
+</code></pre></div>
+
+
+<p>In the class above we declare two static fields. The field <code>x</code> is a
+reference to an array of five ints - so it allocates enough memory to
+store a pointer (typically 4 bytes on a 32-bit machine). The field <code>y</code>
+on the other hand is <em>storage</em> for five ints, so it allocates 20 bytes.</p>
+<p>In the example above <code>Foo.x</code> is just a pointer, so you can set <code>x</code> to
+any value that points to 5 ints. For example the assignment <code>x=y</code>
+updates <code>x</code> to point to the block of memory allocated by <code>y</code>.</p>
+<p>On the other hand, <code>y</code> actually allocates a block of memory to store 5
+ints. You can pass <code>y</code> around as a pointer and index its values, but you
+cannot change what it points to. Like all inline fields, <code>y</code> can never
+be used as the left hand side of an assignment statement.</p>
+<h2 id="arrays-of-references">Arrays of References<a class="headerlink" href="#arrays-of-references" title="Permanent link">&para;</a></h2>
+<p>An array of objects is stored as an array of references to those
+objects. On a machine with 32-bit pointers, this means that an array of
+3 objects will always be 12 bytes no matter how big the objects
+themselves are. However, there is a special syntax for allocating enough
+memory to hold the objects too:</p>
+<div class="codehilite"><pre><span></span><code>    <span class="kd">class</span> <span class="nc">Point</span>
+    <span class="p">{</span>
+      <span class="kt">int</span> <span class="n">x</span>
+      <span class="kt">int</span> <span class="n">y</span>
+    <span class="p">}</span>
+
+    <span class="kd">class</span> <span class="nc">Shape</span>
+    <span class="p">{</span>
+      <span class="kd">static</span> <span class="n">Point</span><span class="o">[]</span> <span class="n">a</span>
+      <span class="kd">static</span> <span class="n">inline</span> <span class="n">Point</span><span class="o">[</span><span class="mi">3</span><span class="o">]</span> <span class="n">b</span>
+      <span class="kd">static</span> <span class="n">inline</span> <span class="n">Point</span><span class="o">[</span><span class="mi">3</span><span class="o">]</span> <span class="n">c</span> <span class="o">=</span> <span class="p">{...}</span>
+    <span class="p">}</span>
+</code></pre></div>
+
+<p>The <code>Point</code> class stores two ints, which means a single instance of
+Point is 8 bytes. Note the three different field declarations in
+<code>Shape</code>:</p>
+<ul>
+<li><strong>Shape.a</strong>: The first field <code>a</code> declares a pointer to an array of
+    <code>Point</code>s, so <code>a</code> is allocated enough memory to store a single
+    pointer (most likely 4 bytes).</li>
+<li><strong>Shape.b</strong>: The field <code>Point.b</code> allocates enough memory to store <em>3
+    references to Points</em>, but doesn't allocate any memory for actual
+    <code>Point</code> instances - so <code>b</code> would allocate 12 bytes on a 32-bit
+    machine. The references don't point to anything yet; they must be
+    initialized elsewhere to point to actual objects.</li>
+<li><strong>Shape.c</strong>: The <code>Point.c</code> field uses the special syntax <code>= {...}</code>
+    to allocate enough memory for <em>an array of 3 references to Points</em>
+    <strong>and</strong> <em>3 instances of Points</em>. So <code>c</code> will allocate 36 bytes of
+    memory on a 32-bit machine: 12 for the array itself, plus 3*8 for
+    the instances. The compiler auto-generates initialization code to
+    assign the references to the instances.</li>
+</ul>
+<h2 id="unsized-classes">Unsized Classes<a class="headerlink" href="#unsized-classes" title="Permanent link">&para;</a></h2>
+<p>Under most circumstances you must specify a size to declare an inline
+array. However a class may declare one instance field as an unsized
+inline array. We call these classes <em>unsized classes</em> because their size
+isn't fixed. To make this work, unsized classes have a few special
+rules:</p>
+<ol>
+<li>The class can have no more than one unsized inline array</li>
+<li>The unsized inline array must be an instance field (not static)</li>
+<li>The array length must be assigned in the constructor</li>
+<li>The length must be assigned directly from a constructor parameter</li>
+<li>The class must be declared <code>final</code> (true of all classes with
+    constructor arguments)</li>
+</ol>
+<p>The <code>sys::Buf</code> class is a good example of an unsized class:</p>
+<div class="codehilite"><pre><span></span><code>    <span class="kd">final</span> <span class="kd">class</span> <span class="nc">Buf</span>
+    <span class="p">{</span>
+      <span class="n">Buf</span><span class="p">(</span><span class="kt">int</span> <span class="n">maxBufLen</span><span class="p">)</span>
+      <span class="p">{</span>
+        <span class="k">this</span><span class="p">.</span><span class="na">bytesLen</span> <span class="o">=</span> <span class="n">maxBufLen</span>
+        <span class="k">this</span><span class="p">.</span><span class="na">bytes</span><span class="p">.</span><span class="na">length</span> <span class="o">=</span> <span class="n">maxBufLen</span>
+      <span class="p">}</span>
+
+      <span class="n">inline</span> <span class="kt">byte</span><span class="o">[]</span> <span class="n">bytes</span>    <span class="c1">// raw byte array</span>
+      <span class="kt">short</span> <span class="n">bytesLen</span>         <span class="c1">// length of bytes array</span>
+    <span class="p">}</span>
+</code></pre></div>
+
+<p>The code snippet above illustrates how to declare an unsized inline
+array. The constructor must have a statement that assigns the "length
+field" of the array. The right hand side of the assignment must be a
+parameter of the constructor (it can't be a calculated value).</p>
+<p>To declare an instance of a <code>Buf</code> we pass the length to the inline
+constructor:</p>
+<div class="codehilite"><pre><span></span><code>  inline Buf(3) buf1st
+  inline Buf(10) buf2nd
+</code></pre></div>
+
+
+<p>In the example above we declared two instances of <code>Buf</code>. The first
+buffer allocates enough memory to store <code>Buf</code>'s fixed slots (such as
+<code>bytesLen</code>) plus enough memory for 3 bytes. The second buffer allocates
+enough memory for <code>Buf</code>'s fixed slots plus 10 bytes. This feature is
+used extensively when working with the <code>sys::Str</code> class.</p>
+<h2 id="array-literals">Array Literals<a class="headerlink" href="#array-literals" title="Permanent link">&para;</a></h2>
+<p>Some array types may be declared as literals in code:</p>
+<div class="codehilite"><pre><span></span><code>define Str[] colors = {&quot;red&quot;, &quot;green&quot;, &quot;blue&quot;}
+</code></pre></div>
+
+
+<p>See <a href="/language/fields#array-literals">Array Literals</a> for more details.</p>
+                
+                  
+                
+                
+                  
+                  <hr>
+                  <div class="md-source-date">
+                    <small>
+                      
+                        Last update: April 7, 2020
+                      
+                    </small>
+                  </div>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+        
+          <a href="../reflection/" title="Reflection" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+            </div>
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Reflection
+              </span>
+            </div>
+          </a>
+        
+        
+          <a href="../memory/" title="Memory" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Memory
+              </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+          <div class="md-footer-copyright__highlight">
+            Copyright &copy; 2007-2017 Tridium, 2018-2020 Sedona Community
+          </div>
+        
+        powered by
+        <a href="https://www.mkdocs.org" target="_blank" rel="noopener">MkDocs</a>
+        and
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs</a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../../assets/javascripts/application.c33a9706.js"></script>
+      
+      <script>app.initialize({version:"1.1",url:{base:"../.."}})</script>
+      
+    
+  </body>
+</html>

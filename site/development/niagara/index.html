@@ -1,0 +1,1538 @@
+
+
+
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <meta http-equiv="x-ua-compatible" content="ie=edge">
+      
+        <meta name="description" content="Online documentation for Sedona Framework(R)">
+      
+      
+        <link rel="canonical" href="https://linsong.github.io/sedona/development/niagara/">
+      
+      
+        <meta name="author" content="Sedona Community">
+      
+      
+        <meta name="lang:clipboard.copy" content="Copy to clipboard">
+      
+        <meta name="lang:clipboard.copied" content="Copied to clipboard">
+      
+        <meta name="lang:search.language" content="en">
+      
+        <meta name="lang:search.pipeline.stopwords" content="True">
+      
+        <meta name="lang:search.pipeline.trimmer" content="True">
+      
+        <meta name="lang:search.result.none" content="No matching documents">
+      
+        <meta name="lang:search.result.one" content="1 matching document">
+      
+        <meta name="lang:search.result.other" content="# matching documents">
+      
+        <meta name="lang:search.tokenizer" content="[\s\-]+">
+      
+      <link rel="shortcut icon" href="../../favicon.ico">
+      <meta name="generator" content="mkdocs-1.1, mkdocs-material-4.6.3">
+    
+    
+      
+        <title>Niagara - Sedona Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/application.adb8469c.css">
+      
+        <link rel="stylesheet" href="../../assets/stylesheets/application-palette.a8b3c06d.css">
+      
+      
+        
+        
+        <meta name="theme-color" content="#795548">
+      
+    
+    
+      <script src="../../assets/javascripts/modernizr.86422ebf.js"></script>
+    
+    
+      
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono","Courier New",Courier,monospace}</style>
+      
+    
+    <link rel="stylesheet" href="../../assets/fonts/material-icons.css">
+    
+    
+    
+      
+    
+    
+  </head>
+  
+    
+    
+    <body dir="ltr" data-md-color-primary="brown" data-md-color-accent="red">
+  
+    <svg class="md-svg">
+      <defs>
+        
+        
+          <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448" viewBox="0 0 416 448" id="__github"><path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z"/></svg>
+        
+      </defs>
+    </svg>
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+    
+      <a href="#niagara" tabindex="0" class="md-skip">
+        Skip to content
+      </a>
+    
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="https://linsong.github.io/sedona" title="Sedona Documentation" aria-label="Sedona Documentation" class="md-header-nav__button md-logo">
+          
+            <img alt="logo" src="../../favicon.ico" width="24" height="24">
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          
+            <span class="md-header-nav__topic">
+              Sedona Documentation
+            </span>
+            <span class="md-header-nav__topic">
+              
+                Niagara
+              
+            </span>
+          
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        
+          <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+          
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" aria-label="search" name="query" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+        
+      </div>
+      
+        <div class="md-flex__cell md-flex__cell--shrink">
+          <div class="md-header-nav__source">
+            
+
+
+  
+
+<a href="https://github.com/linsong/sedona/" title="Go to repository" class="md-source" data-md-source="github">
+  
+    <div class="md-source__icon">
+      <svg viewBox="0 0 24 24" width="24" height="24">
+        <use xlink:href="#__github" width="24" height="24"></use>
+      </svg>
+    </div>
+  
+  <div class="md-source__repository">
+    linsong/sedona
+  </div>
+</a>
+          </div>
+        </div>
+      
+    </div>
+  </nav>
+</header>
+    
+    <div class="md-container">
+      
+        
+      
+      
+      <main class="md-main" role="main">
+        <div class="md-main__inner md-grid" data-md-component="container">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href="https://linsong.github.io/sedona" title="Sedona Documentation" class="md-nav__button md-logo">
+      
+        <img alt="logo" src="../../favicon.ico" width="48" height="48">
+      
+    </a>
+    Sedona Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      
+
+
+  
+
+<a href="https://github.com/linsong/sedona/" title="Go to repository" class="md-source" data-md-source="github">
+  
+    <div class="md-source__icon">
+      <svg viewBox="0 0 24 24" width="24" height="24">
+        <use xlink:href="#__github" width="24" height="24"></use>
+      </svg>
+    </div>
+  
+  <div class="md-source__repository">
+    linsong/sedona
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../.." title="Index" class="md-nav__link">
+      Index
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2">
+    
+    <label class="md-nav__link" for="nav-2">
+      Getting Started
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-2">
+        Getting Started
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../quickstart/intro/" title="Introduction" class="md-nav__link">
+      Introduction
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../quickstart/setup/" title="Setup" class="md-nav__link">
+      Setup
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../quickstart/architecture/" title="Architecture" class="md-nav__link">
+      Architecture
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../quickstart/tutorial/" title="Tutorial" class="md-nav__link">
+      Tutorial
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3">
+    
+    <label class="md-nav__link" for="nav-3">
+      Language
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-3">
+        Language
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../language/lang/" title="Language" class="md-nav__link">
+      Language
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../language/primitives/" title="Primitives" class="md-nav__link">
+      Primitives
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../language/expr/" title="Expressions" class="md-nav__link">
+      Expressions
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../language/stmt/" title="Statements" class="md-nav__link">
+      Statements
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../language/classes/" title="Classes" class="md-nav__link">
+      Classes
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../language/fields/" title="Fields" class="md-nav__link">
+      Fields
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../language/methods/" title="Methods" class="md-nav__link">
+      Methods
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../language/components/" title="Components" class="md-nav__link">
+      Components
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../language/reflection/" title="Reflection" class="md-nav__link">
+      Reflection
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../language/arrays/" title="Arrays" class="md-nav__link">
+      Arrays
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../language/memory/" title="Memory" class="md-nav__link">
+      Memory
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../language/nativeMethods/" title="Native Methods" class="md-nav__link">
+      Native Methods
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../language/logging/" title="Logging" class="md-nav__link">
+      Logging
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4">
+    
+    <label class="md-nav__link" for="nav-4">
+      Apps
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-4">
+        Apps
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../apps/apps/" title="Application Model" class="md-nav__link">
+      Application Model
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../apps/security/" title="Security" class="md-nav__link">
+      Security
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5">
+    
+    <label class="md-nav__link" for="nav-5">
+      Deployment
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-5">
+        Deployment
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../deployment/kits/" title="Kits" class="md-nav__link">
+      Kits
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../deployment/schema/" title="Schema" class="md-nav__link">
+      Schema
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6">
+    
+    <label class="md-nav__link" for="nav-6">
+      Platforms
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-6">
+        Platforms
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../platforms/platDef/" title="Platform Definition" class="md-nav__link">
+      Platform Definition
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../platforms/par/" title="Platform Archive" class="md-nav__link">
+      Platform Archive
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../platforms/platTutorial/" title="Platform Tutorial" class="md-nav__link">
+      Platform Tutorial
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../platforms/deviceSim/" title="Device Simulator" class="md-nav__link">
+      Device Simulator
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../platforms/platCertified/" title="Certified Platforms" class="md-nav__link">
+      Certified Platforms
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-7" type="checkbox" id="nav-7" checked>
+    
+    <label class="md-nav__link" for="nav-7">
+      Development
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-7">
+        Development
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../sedonac/" title="Sedonac" class="md-nav__link">
+      Sedonac
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../testing/" title="Testing" class="md-nav__link">
+      Testing
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../porting/" title="Porting" class="md-nav__link">
+      Porting
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Niagara
+      </label>
+    
+    <a href="./" title="Niagara" class="md-nav__link md-nav__link--active">
+      Niagara
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    Overview
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sedona-in-niagara" class="md-nav__link">
+    Sedona in Niagara
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#component-facets" class="md-nav__link">
+    Component Facets
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#slot-facets" class="md-nav__link">
+    Slot Facets
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#bcomponent-slot-flags" class="md-nav__link">
+    BComponent slot flags
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bcomponent-slot-facets" class="md-nav__link">
+    BComponent slot facets
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#niagara-views" class="md-nav__link">
+    Niagara Views
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#provisioning-from-niagara" class="md-nav__link">
+    Provisioning from Niagara
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-8" type="checkbox" id="nav-8">
+    
+    <label class="md-nav__link" for="nav-8">
+      Networking
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-8">
+        Networking
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../networking/networking/" title="Networking" class="md-nav__link">
+      Networking
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../networking/dasp/" title="DASP" class="md-nav__link">
+      DASP
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../networking/sox/" title="Sox" class="md-nav__link">
+      Sox
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../networking/discover/" title="Device Discovery" class="md-nav__link">
+      Device Discovery
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9" type="checkbox" id="nav-9">
+    
+    <label class="md-nav__link" for="nav-9">
+      Appendix
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-9">
+        Appendix
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../appendix/license/" title="License" class="md-nav__link">
+      License
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../appendix/conventions/" title="Coding Conventions" class="md-nav__link">
+      Coding Conventions
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../appendix/scodeFormat/" title="SCode Format" class="md-nav__link">
+      SCode Format
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../appendix/grammar/" title="Grammar" class="md-nav__link">
+      Grammar
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-10" type="checkbox" id="nav-10">
+    
+    <label class="md-nav__link" for="nav-10">
+      Releases
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-10">
+        Releases
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../releases/newFor12/" title="v1.2" class="md-nav__link">
+      v1.2
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../api/api/" title="API" class="md-nav__link">
+      API
+    </a>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    Overview
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sedona-in-niagara" class="md-nav__link">
+    Sedona in Niagara
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#component-facets" class="md-nav__link">
+    Component Facets
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#slot-facets" class="md-nav__link">
+    Slot Facets
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#bcomponent-slot-flags" class="md-nav__link">
+    BComponent slot flags
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bcomponent-slot-facets" class="md-nav__link">
+    BComponent slot facets
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#niagara-views" class="md-nav__link">
+    Niagara Views
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#provisioning-from-niagara" class="md-nav__link">
+    Provisioning from Niagara
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/linsong/sedona/edit/master/docs/development/niagara.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
+                
+                
+                <!--
+[//]: # (Copyright &#169; 2009 Tridium, Inc
+  Licensed under the Academic Free License version 3.0
+
+  History:
+    23 Mar 09 Matthew Giannini  Creation
+) -->
+
+<p><a href="/"><img alt="Sedona" src="../../logo.png" /></a></p>
+<h1 id="niagara">Niagara<a class="headerlink" href="#niagara" title="Permanent link">&para;</a></h1>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
+<p>This section covers integration of the Sedona Framework with the Niagara
+AX Framework.</p>
+<ul>
+<li><a href="#sedona-in-niagara">Sedona Framework components in Niagara</a></li>
+<li><a href="#provisioning-from-niagara">Provisioning Sedona Framework-enabled devices from Niagara</a></li>
+</ul>
+<h2 id="sedona-in-niagara">Sedona in Niagara<a class="headerlink" href="#sedona-in-niagara" title="Permanent link">&para;</a></h2>
+<p>This section details how to write Sedona Framework components in such a
+way that they can be easily integrated with the Niagara AX component
+architecture. This section will help developers familiar with the
+Niagara AX Framework to understand how Sedona idioms translate to
+Niagara idioms. In particular, this section will detail various aspects
+of programming Sedona Framework components so that the user experience
+inside Workbench is very similar to that of using standard BComponents
+in Niagara.</p>
+<ul>
+<li><a href="#component-facets">How Niagara uses sys::Facets when modeling Sedona Framework
+    Components</a></li>
+<li><a href="#niagara-views">Niagara Views on Sedona Framework Components</a></li>
+</ul>
+<p>In Niagara, all Sedona Framework components are modeled as a special
+kind of BComponent called BSedonaComponent. Regardless of your Sedona
+Framework component type, it will be modeled as a BSedonaComponent,
+which essentially wraps your <code>sys::Component</code> type. The primary means of
+communicating information about a Sedona Framework component type and
+its slots to Niagara is by using <code>sys::Facets</code>. The following tables
+detail which facets are recognized by Niagara, and how they are used
+when Niagara constructs a BSedonaComponent to model your
+<code>sys::Component</code>.</p>
+<h3 id="component-facets">Component Facets<a class="headerlink" href="#component-facets" title="Permanent link">&para;</a></h3>
+<p>The following table lists the facets for a <code>sys::Component</code> type that
+Niagara will recognize.</p>
+<table>
+<thead>
+<tr>
+<th>Facet</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>niagaraIcon</td>
+<td>Str</td>
+<td>The Ord to the location of the icon to use for this component</td>
+</tr>
+<tr>
+<td>palette</td>
+<td>bool</td>
+<td>If set to false, then the type will not be displayed in the Sedona Palette. Otherwise, it will be shown in the palette</td>
+</tr>
+</tbody>
+</table>
+<p>Examples
+<div class="codehilite"><pre><span></span><code>    <span class="nd">@niagaraIcon</span><span class="o">=</span><span class="s">&quot;module://icons/x16/control/math/add.png&quot;</span>
+    <span class="kd">public</span> <span class="kd">class</span> <span class="nc">Add2</span> <span class="kd">extends</span> <span class="n">Component</span> <span class="p">{</span> <span class="p">...</span> <span class="p">}</span>
+
+    <span class="nd">@palette</span><span class="o">=</span><span class="kc">false</span>
+    <span class="kd">public</span> <span class="kd">class</span> <span class="nc">CommonBase</span> <span class="kd">extends</span> <span class="n">Component</span> <span class="p">{</span> <span class="p">...</span> <span class="p">}</span>
+</code></pre></div></p>
+<h3 id="slot-facets">Slot Facets<a class="headerlink" href="#slot-facets" title="Permanent link">&para;</a></h3>
+<h4 id="bcomponent-slot-flags">BComponent slot flags<a class="headerlink" href="#bcomponent-slot-flags" title="Permanent link">&para;</a></h4>
+<p>If you define a facet on your Sedona component slot that has the same
+name as a Niagara flag, <em>and</em> its value is <code>true</code> or <code>false</code>, then the
+corresponding slot in the BSedonaComponent will be likewise set;
+otherwise, the facet will simply be treated like all other facets (see
+BComponent <a href="#BComponent-Slot-Facets">facet list</a>). The most common slot flags to set are
+listed in the table below.</p>
+<table>
+<thead>
+<tr>
+<th>Facet</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>readonly</td>
+<td>The <code>readonly</code> flag is used to indicate slots that cannot be changed by the user.</td>
+</tr>
+<tr>
+<td>hidden</td>
+<td>Hidden slots are designed to be invisible to the user, and exist only for Java developers. User interfaces should rarely display hidden slots.</td>
+</tr>
+<tr>
+<td>summary</td>
+<td>Summary properties are the focal points of any given BComponent. This flag is used by user interface tools to indicate primary properties for display. This might be as a column in a table, or as a glyph in a graphical programming tool.</td>
+</tr>
+<tr>
+<td>confirmRequired</td>
+<td>When the action is invoked by a user, a confirmation dialog must be acknowledged before proceeding.</td>
+</tr>
+<tr>
+<td>operator</td>
+<td>This gives a slot an operator security level. By default when this flag is clear, the slot has an admin security level.</td>
+</tr>
+<tr>
+<td>noAudit</td>
+<td>Setting this flag prevents property changes and action invocations from being audited.</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>All Sedona runtime slots are treated as summary unless the summary facet is explicitly set to false: <code>@summary=false</code>.</p>
+</div>
+<p>Examples:</p>
+<div class="codehilite"><pre><span></span><code>    public class Foo extends Component
+    {
+      ...
+
+      // Require the user to confirm that they actually
+      // want to reboot the system before executing the action.
+      @confirmRequired
+      action void reboot() { ... }
+
+      // Don&#39;t want UI to allow user to edit password property
+      @config @readonly @asStr property Buf(17) password
+
+      // This slot we don&#39;t want displayed to users, but we
+      // want operators to be allowed to change it.
+      @hidden @operator property int debugLevel = 0
+    }
+</code></pre></div>
+
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>See <a href="/language/components#properties">Component Properties</a> for a discussion of <code>@config</code> and other Sedona-only facets.</p>
+</div>
+<h4 id="bcomponent-slot-facets">BComponent slot facets<a class="headerlink" href="#bcomponent-slot-facets" title="Permanent link">&para;</a></h4>
+<p>If a slot facet does not match a Niagara flag name, then it will stored
+as a a BFacet for the slot. Some BFacets have a special meaning in
+Niagara. This table lists some of the more common BFacets:</p>
+<table>
+<thead>
+<tr>
+<th>Facet</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>min</td>
+<td>number</td>
+<td>Used to specify the minimum value for a number, or the minimum number of characters in a Str.</td>
+</tr>
+<tr>
+<td>max</td>
+<td>number</td>
+<td>Used to specify the maximum value for a number, or the maximum number of characters in a Str.</td>
+</tr>
+<tr>
+<td>unit</td>
+<td>Str</td>
+<td>Display text that describes the property's units.</td>
+</tr>
+<tr>
+<td>precision</td>
+<td>int</td>
+<td>Used with floating point numbers to define the number of digits after the decimal point.</td>
+</tr>
+<tr>
+<td>radix</td>
+<td>int</td>
+<td>Used with integers to qualify base radix.</td>
+</tr>
+<tr>
+<td>showSeparators</td>
+<td>bool</td>
+<td>Used with numerics to enable/disable displaying of separators between every 3 digits (e.g. 10,000 vs. 10000).</td>
+</tr>
+<tr>
+<td>multiLine</td>
+<td>bool</td>
+<td>Used with Str to support a multiline editor.</td>
+</tr>
+<tr>
+<td>fieldWidth</td>
+<td>int</td>
+<td>Used with Str to specify the number of columns in a text field.</td>
+</tr>
+<tr>
+<td>allowNull</td>
+<td>bool</td>
+<td>Tells the field editor allow the value to be set to null.</td>
+</tr>
+<tr>
+<td>fieldEditor</td>
+<td>Str</td>
+<td>Indicates the BTypeSpec of the field editor to use for editing a property value. It overrides the default field editor registered for the property's value.</td>
+</tr>
+<tr>
+<td>trueText</td>
+<td>Str</td>
+<td>Display text to be used for a boolean property when true.</td>
+</tr>
+<tr>
+<td>falseText</td>
+<td>Str</td>
+<td>Display text to be used for a boolean property when false.</td>
+</tr>
+<tr>
+<td>nullText</td>
+<td>Str</td>
+<td>Display text to be used for a boolean property when null.</td>
+</tr>
+</tbody>
+</table>
+<p>Examples:</p>
+<div class="codehilite"><pre><span></span><code>    public class Foo extends Component
+    {
+      ...
+
+      // Property for password - must be at least 8 chars long
+      // and no more than 16.
+      @min=8 @max=16
+      @config @asStr property Buf(17) pwd
+
+      // The debug level should be specified in base 16.
+      @radix=16 @min=0 @config
+      property int dbgLevel = 0x1234
+    }
+</code></pre></div>
+
+<h3 id="niagara-views">Niagara Views<a class="headerlink" href="#niagara-views" title="Permanent link">&para;</a></h3>
+<p>Normally in Niagara, views are registered on a BTypeSpec by using the
+<code>&lt;agent/&gt;</code> specification in the <code>module-include.xml</code> file of your module.
+However, since all Sedona Framework components are modeled as
+BSedonaComponents in Niagara, a different mechanism is used to register
+views on your Sedona Framework component. Namely, <code>&lt;def/&gt;</code> blocks are
+used to define agents on specific Sedona Framework component types. An
+example follows.</p>
+<p>Suppose you have developed a Service called MyService in kit <code>foo</code>. The
+qname for this type is <code>foo::MyService</code>. Suppose, further, that you have
+written a Niagara view <code>BMyServiceView</code> to manage this service and that
+it resides in module <code>bar</code>. The BTypeSpec for this service is
+<code>bar:MyServiceView</code>. To register your view on the <code>MyService</code> service,
+you would add the following lines to the <code>module-include.xml</code> for your
+module:</p>
+<p><div class="codehilite"><pre><span></span><code>    <span class="nt">&lt;defs&gt;</span>
+      <span class="c">&lt;!-- This declares the agent on the foo::MyService service --&gt;</span>
+      <span class="nt">&lt;def</span> <span class="na">name=</span><span class="s">&quot;sedona.foo::MyService#agent&quot;</span> <span class="na">value=</span><span class="s">&quot;bar:MyServiceView&quot;</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/def&gt;</span>
+
+    <span class="nt">&lt;types&gt;</span>
+      ...
+      <span class="c">&lt;!-- Declare the Niagara type as usual, but no agent block is required --&gt;</span>
+      <span class="nt">&lt;type</span> <span class="na">name=</span><span class="s">&quot;MyServiceView&quot;</span> <span class="na">class=</span><span class="s">&quot;com.bar.BMyServiceView&quot;</span> <span class="nt">/&gt;</span>
+      ...
+    <span class="nt">&lt;/types&gt;</span>
+</code></pre></div>
+When your view loads, a BISedonaComponent will be passed to the
+<code>doLoadValue</code> method of your view.
+<div class="codehilite"><pre><span></span><code>    <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">doLoadValue</span><span class="p">(</span><span class="n">BObject</span> <span class="n">value</span><span class="p">,</span> <span class="n">Context</span> <span class="n">cx</span><span class="p">)</span> <span class="kd">throws</span> <span class="n">Exception</span>
+    <span class="p">{</span>
+      <span class="n">BISedonaComponent</span> <span class="n">myService</span> <span class="o">=</span> <span class="p">(</span><span class="n">BISedonaComponent</span><span class="p">)</span><span class="n">value</span><span class="p">;</span>
+      <span class="c1">// See the javax.baja.sedona.sys.BISedonaComponent interface</span>
+      <span class="c1">// for more details.</span>
+    <span class="p">}</span>
+</code></pre></div></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The concrete class BSedonaComponent is deprecated as of the TXS 1.1 release. You should migrate your views to use the new BISedonaComponent interface instead. If you have questions about writing views for Sedona Framework components, ask them on one of the Sedona Framework forums on <a href="http://niagara-central.com/ord?portal:/discussion">Niagara Central</a>.</p>
+</div>
+<h2 id="provisioning-from-niagara">Provisioning from Niagara<a class="headerlink" href="#provisioning-from-niagara" title="Permanent link">&para;</a></h2>
+<p>When using Niagara tools to provision a Sedona Framework-enabled device,
+there are a few things to be aware of:</p>
+<p><strong>File names</strong>
+:   Niagara makes assumptions about the file names used to launch the
+    remote platform. In particular, it assumes: the SVM is named
+    "svm.bin" (or "svm.exe"), the kit bundle file is named
+    "kits.scode", and the app binary is named "app.sab".</p>
+<p><strong>File PUT</strong>
+:   To be Sox compliant, Sedona Framework platforms must use <code>app.sab</code>
+    as the file name of the app to run, and <code>kits.scode</code> as the file
+    name of the scode image to run. Further, to be Sox compliant, a
+    platform must look for an <code>app.sab.stage</code> and a <code>kits.scode.stage</code>
+    file when starting and rename them to <code>app.sab</code> and <code>kits.scode</code>
+    respectively before the SVM attempts to load the app and scode.</p>
+<div class="codehilite"><pre><span></span><code>Hence, when Niagara writes new app and scode files to the device, it
+does so in three stages:
+
+1.  Writes the app as `app.sab.writing` and the scode as
+    `kits.scode.writing`.
+2.  Renames those files to `app.sab.stage` and `kits.scode.stage`
+    respectively.
+3.  Restarts the device.
+</code></pre></div>
+
+
+<p><strong>File GET</strong>
+:   A file GET operation from Sedona to Niagara should prompt the user
+    for the path and filename to be used on the local host for the
+    received file. The name of the file as it is being transferred is
+    normally not visible (or relevant) to the user.</p>
+                
+                  
+                
+                
+                  
+                  <hr>
+                  <div class="md-source-date">
+                    <small>
+                      
+                        Last update: April 7, 2020
+                      
+                    </small>
+                  </div>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+        
+          <a href="../porting/" title="Porting" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+            </div>
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Porting
+              </span>
+            </div>
+          </a>
+        
+        
+          <a href="../../networking/networking/" title="Networking" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Networking
+              </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+          <div class="md-footer-copyright__highlight">
+            Copyright &copy; 2007-2017 Tridium, 2018-2020 Sedona Community
+          </div>
+        
+        powered by
+        <a href="https://www.mkdocs.org" target="_blank" rel="noopener">MkDocs</a>
+        and
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs</a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../../assets/javascripts/application.c33a9706.js"></script>
+      
+      <script>app.initialize({version:"1.1",url:{base:"../.."}})</script>
+      
+    
+  </body>
+</html>

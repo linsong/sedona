@@ -1,0 +1,1452 @@
+
+
+
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <meta http-equiv="x-ua-compatible" content="ie=edge">
+      
+        <meta name="description" content="Online documentation for Sedona Framework(R)">
+      
+      
+        <link rel="canonical" href="https://linsong.github.io/sedona/development/sedonac/">
+      
+      
+        <meta name="author" content="Sedona Community">
+      
+      
+        <meta name="lang:clipboard.copy" content="Copy to clipboard">
+      
+        <meta name="lang:clipboard.copied" content="Copied to clipboard">
+      
+        <meta name="lang:search.language" content="en">
+      
+        <meta name="lang:search.pipeline.stopwords" content="True">
+      
+        <meta name="lang:search.pipeline.trimmer" content="True">
+      
+        <meta name="lang:search.result.none" content="No matching documents">
+      
+        <meta name="lang:search.result.one" content="1 matching document">
+      
+        <meta name="lang:search.result.other" content="# matching documents">
+      
+        <meta name="lang:search.tokenizer" content="[\s\-]+">
+      
+      <link rel="shortcut icon" href="../../favicon.ico">
+      <meta name="generator" content="mkdocs-1.1, mkdocs-material-4.6.3">
+    
+    
+      
+        <title>Sedonac - Sedona Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/application.adb8469c.css">
+      
+        <link rel="stylesheet" href="../../assets/stylesheets/application-palette.a8b3c06d.css">
+      
+      
+        
+        
+        <meta name="theme-color" content="#795548">
+      
+    
+    
+      <script src="../../assets/javascripts/modernizr.86422ebf.js"></script>
+    
+    
+      
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono","Courier New",Courier,monospace}</style>
+      
+    
+    <link rel="stylesheet" href="../../assets/fonts/material-icons.css">
+    
+    
+    
+      
+    
+    
+  </head>
+  
+    
+    
+    <body dir="ltr" data-md-color-primary="brown" data-md-color-accent="red">
+  
+    <svg class="md-svg">
+      <defs>
+        
+        
+          <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448" viewBox="0 0 416 448" id="__github"><path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z"/></svg>
+        
+      </defs>
+    </svg>
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+    
+      <a href="#sedonac" tabindex="0" class="md-skip">
+        Skip to content
+      </a>
+    
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="https://linsong.github.io/sedona" title="Sedona Documentation" aria-label="Sedona Documentation" class="md-header-nav__button md-logo">
+          
+            <img alt="logo" src="../../favicon.ico" width="24" height="24">
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          
+            <span class="md-header-nav__topic">
+              Sedona Documentation
+            </span>
+            <span class="md-header-nav__topic">
+              
+                Sedonac
+              
+            </span>
+          
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        
+          <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+          
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" aria-label="search" name="query" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+        
+      </div>
+      
+        <div class="md-flex__cell md-flex__cell--shrink">
+          <div class="md-header-nav__source">
+            
+
+
+  
+
+<a href="https://github.com/linsong/sedona/" title="Go to repository" class="md-source" data-md-source="github">
+  
+    <div class="md-source__icon">
+      <svg viewBox="0 0 24 24" width="24" height="24">
+        <use xlink:href="#__github" width="24" height="24"></use>
+      </svg>
+    </div>
+  
+  <div class="md-source__repository">
+    linsong/sedona
+  </div>
+</a>
+          </div>
+        </div>
+      
+    </div>
+  </nav>
+</header>
+    
+    <div class="md-container">
+      
+        
+      
+      
+      <main class="md-main" role="main">
+        <div class="md-main__inner md-grid" data-md-component="container">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href="https://linsong.github.io/sedona" title="Sedona Documentation" class="md-nav__button md-logo">
+      
+        <img alt="logo" src="../../favicon.ico" width="48" height="48">
+      
+    </a>
+    Sedona Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      
+
+
+  
+
+<a href="https://github.com/linsong/sedona/" title="Go to repository" class="md-source" data-md-source="github">
+  
+    <div class="md-source__icon">
+      <svg viewBox="0 0 24 24" width="24" height="24">
+        <use xlink:href="#__github" width="24" height="24"></use>
+      </svg>
+    </div>
+  
+  <div class="md-source__repository">
+    linsong/sedona
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../.." title="Index" class="md-nav__link">
+      Index
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2">
+    
+    <label class="md-nav__link" for="nav-2">
+      Getting Started
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-2">
+        Getting Started
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../quickstart/intro/" title="Introduction" class="md-nav__link">
+      Introduction
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../quickstart/setup/" title="Setup" class="md-nav__link">
+      Setup
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../quickstart/architecture/" title="Architecture" class="md-nav__link">
+      Architecture
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../quickstart/tutorial/" title="Tutorial" class="md-nav__link">
+      Tutorial
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3">
+    
+    <label class="md-nav__link" for="nav-3">
+      Language
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-3">
+        Language
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../language/lang/" title="Language" class="md-nav__link">
+      Language
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../language/primitives/" title="Primitives" class="md-nav__link">
+      Primitives
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../language/expr/" title="Expressions" class="md-nav__link">
+      Expressions
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../language/stmt/" title="Statements" class="md-nav__link">
+      Statements
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../language/classes/" title="Classes" class="md-nav__link">
+      Classes
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../language/fields/" title="Fields" class="md-nav__link">
+      Fields
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../language/methods/" title="Methods" class="md-nav__link">
+      Methods
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../language/components/" title="Components" class="md-nav__link">
+      Components
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../language/reflection/" title="Reflection" class="md-nav__link">
+      Reflection
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../language/arrays/" title="Arrays" class="md-nav__link">
+      Arrays
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../language/memory/" title="Memory" class="md-nav__link">
+      Memory
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../language/nativeMethods/" title="Native Methods" class="md-nav__link">
+      Native Methods
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../language/logging/" title="Logging" class="md-nav__link">
+      Logging
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4">
+    
+    <label class="md-nav__link" for="nav-4">
+      Apps
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-4">
+        Apps
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../apps/apps/" title="Application Model" class="md-nav__link">
+      Application Model
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../apps/security/" title="Security" class="md-nav__link">
+      Security
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5">
+    
+    <label class="md-nav__link" for="nav-5">
+      Deployment
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-5">
+        Deployment
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../deployment/kits/" title="Kits" class="md-nav__link">
+      Kits
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../deployment/schema/" title="Schema" class="md-nav__link">
+      Schema
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6">
+    
+    <label class="md-nav__link" for="nav-6">
+      Platforms
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-6">
+        Platforms
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../platforms/platDef/" title="Platform Definition" class="md-nav__link">
+      Platform Definition
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../platforms/par/" title="Platform Archive" class="md-nav__link">
+      Platform Archive
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../platforms/platTutorial/" title="Platform Tutorial" class="md-nav__link">
+      Platform Tutorial
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../platforms/deviceSim/" title="Device Simulator" class="md-nav__link">
+      Device Simulator
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../platforms/platCertified/" title="Certified Platforms" class="md-nav__link">
+      Certified Platforms
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-7" type="checkbox" id="nav-7" checked>
+    
+    <label class="md-nav__link" for="nav-7">
+      Development
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-7">
+        Development
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Sedonac
+      </label>
+    
+    <a href="./" title="Sedonac" class="md-nav__link md-nav__link--active">
+      Sedonac
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    Overview
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#compile-kit" class="md-nav__link">
+    Compile Kit
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#compile-dir" class="md-nav__link">
+    Compile Dir
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#compile-code" class="md-nav__link">
+    Compile Code
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#compile-platform" class="md-nav__link">
+    Compile Platform
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#compile-app" class="md-nav__link">
+    Compile App
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#run" class="md-nav__link">
+    Run
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#build-docs" class="md-nav__link">
+    Build Docs
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#variable-substitution" class="md-nav__link">
+    Variable Substitution
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../testing/" title="Testing" class="md-nav__link">
+      Testing
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../porting/" title="Porting" class="md-nav__link">
+      Porting
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../niagara/" title="Niagara" class="md-nav__link">
+      Niagara
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-8" type="checkbox" id="nav-8">
+    
+    <label class="md-nav__link" for="nav-8">
+      Networking
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-8">
+        Networking
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../networking/networking/" title="Networking" class="md-nav__link">
+      Networking
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../networking/dasp/" title="DASP" class="md-nav__link">
+      DASP
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../networking/sox/" title="Sox" class="md-nav__link">
+      Sox
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../networking/discover/" title="Device Discovery" class="md-nav__link">
+      Device Discovery
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9" type="checkbox" id="nav-9">
+    
+    <label class="md-nav__link" for="nav-9">
+      Appendix
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-9">
+        Appendix
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../appendix/license/" title="License" class="md-nav__link">
+      License
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../appendix/conventions/" title="Coding Conventions" class="md-nav__link">
+      Coding Conventions
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../appendix/scodeFormat/" title="SCode Format" class="md-nav__link">
+      SCode Format
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../appendix/grammar/" title="Grammar" class="md-nav__link">
+      Grammar
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-10" type="checkbox" id="nav-10">
+    
+    <label class="md-nav__link" for="nav-10">
+      Releases
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-10">
+        Releases
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../releases/newFor12/" title="v1.2" class="md-nav__link">
+      v1.2
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../api/api/" title="API" class="md-nav__link">
+      API
+    </a>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    Overview
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#compile-kit" class="md-nav__link">
+    Compile Kit
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#compile-dir" class="md-nav__link">
+    Compile Dir
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#compile-code" class="md-nav__link">
+    Compile Code
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#compile-platform" class="md-nav__link">
+    Compile Platform
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#compile-app" class="md-nav__link">
+    Compile App
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#run" class="md-nav__link">
+    Run
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#build-docs" class="md-nav__link">
+    Build Docs
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#variable-substitution" class="md-nav__link">
+    Variable Substitution
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/linsong/sedona/edit/master/docs/development/sedonac.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
+                
+                
+                <!--
+[//]: # (Copyright &#169; 2008 Tridium, Inc
+  Licensed under the Academic Free License version 3.0
+
+  History:
+    15 Jul 08  Brian Frank  Creation
+) -->
+
+<p><a href="/"><img alt="Sedona" src="../../logo.png" /></a></p>
+<h1 id="sedonac">Sedonac<a class="headerlink" href="#sedonac" title="Permanent link">&para;</a></h1>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
+<p>The sedonac tool is like a swiss army knife, it is used for the
+following tasks:</p>
+<ul>
+<li><a href="#compile-kit">Compile Kit</a>: compile Sedona source code into a kit
+    file.</li>
+<li><a href="#compile-dir">Compile Dir</a>: compile a group of kits</li>
+<li><a href="#compile-code">Compile Code</a>: compile a set of kits into an scode
+    file</li>
+<li><a href="#compile-platform">Compile Platform</a>: stage the native code for a
+    specific platform binary</li>
+<li><a href="#compile-app">Compile App</a>: convert between sax and sab formats</li>
+<li><a href="#run">Run</a>: run an arbitrary class within "sedona.jar" or
+    "sedoanc.jar".</li>
+<li><a href="#build-docs">Build Docs</a>: auto-generate HTML documentation</li>
+</ul>
+<h2 id="compile-kit">Compile Kit<a class="headerlink" href="#compile-kit" title="Permanent link">&para;</a></h2>
+<p>Sedonac compiles Sedona source files into a kit file when run on a
+"kit.xml" file (or a directory that contains a "kit.xml" file).
+<div class="codehilite"><pre><span></span><code>    <span class="nt">&lt;sedonaKit</span>
+     <span class="na">name =</span> <span class="s">&quot;serial&quot;</span>
+     <span class="na">vendor =</span> <span class="s">&quot;Tridium&quot;</span>
+     <span class="na">description =</span> <span class="s">&quot;Serial I/O support&quot;</span>
+     <span class="na">includeSource =</span> <span class="s">&quot;true&quot;</span>
+     <span class="na">doc =</span> <span class="s">&quot;true&quot;</span>
+    <span class="nt">&gt;</span>
+
+      <span class="c">&lt;!-- Dependencies --&gt;</span>
+      <span class="nt">&lt;depend</span> <span class="na">on=</span><span class="s">&quot;sys 1.0&quot;</span> <span class="nt">/&gt;</span>
+
+      <span class="c">&lt;!-- Source Directories --&gt;</span>
+      <span class="nt">&lt;source</span> <span class="na">dir=</span><span class="s">&quot;.&quot;</span><span class="nt">/&gt;</span>
+      <span class="nt">&lt;source</span> <span class="na">dir=</span><span class="s">&quot;test&quot;</span> <span class="na">testonly=</span><span class="s">&quot;true&quot;</span><span class="nt">/&gt;</span>
+
+      <span class="c">&lt;!-- Natives --&gt;</span>
+      <span class="nt">&lt;native</span> <span class="na">qname=</span><span class="s">&quot;serial::SerialPort.doInit&quot;</span>   <span class="na">id=</span><span class="s">&quot;4::0&quot;</span> <span class="nt">/&gt;</span>
+      <span class="nt">&lt;native</span> <span class="na">qname=</span><span class="s">&quot;serial::SerialPort.doClose&quot;</span>  <span class="na">id=</span><span class="s">&quot;4::1&quot;</span> <span class="nt">/&gt;</span>
+      <span class="nt">&lt;native</span> <span class="na">qname=</span><span class="s">&quot;serial::SerialPort.doRead&quot;</span>   <span class="na">id=</span><span class="s">&quot;4::2&quot;</span> <span class="nt">/&gt;</span>
+      <span class="nt">&lt;native</span> <span class="na">qname=</span><span class="s">&quot;serial::SerialPort.doWrite&quot;</span>  <span class="na">id=</span><span class="s">&quot;4::3&quot;</span> <span class="nt">/&gt;</span>
+
+    <span class="nt">&lt;/sedonaKit&gt;</span>
+</code></pre></div>
+Specification of elements and attributes:</p>
+<p><strong>&lt;sedonaKit></strong> top level element:</p>
+<ul>
+<li><strong>name</strong>: (required) name of kit. See <a href="/deployment/kits#vendors">Vendors</a>
+    for rules on kit names.</li>
+<li><strong>vendor</strong>: (required) name of vendor for kit</li>
+<li><strong>description</strong>: (required) short description for kit</li>
+<li><strong>includeSource</strong>: (optional) boolean indicates whether to include
+    source in kit zip. Defaults to false.</li>
+<li><strong>doc</strong>: (optional) boolean indicates whether to include this kit in
+    API documentation. Defaults to false.</li>
+<li><strong>version</strong>: (optional) version string. Supports <a href="#variable-substitution">variable substitution</a>. See <a href="/deployment/kits#versioning">versioning</a></li>
+</ul>
+<p><strong>&lt;depend></strong> specifies the dependencies of the kits</p>
+<ul>
+<li><strong>on</strong>: (required) <a href="/deployment/kits#dependencies">dependency</a> as a kit name and version constraint.</li>
+</ul>
+<p><strong>&lt;source></strong> specifies a directory of source code:</p>
+<ul>
+<li><strong>dir</strong>: (required) directory path where "kit.xml" is located,
+    relative to top directory</li>
+<li><strong>testonly</strong>: (optional) boolean indicating whether the classes in
+    the kit should be used in the test harness. If true, it infers the
+    <code>@testonly</code> facet on all the classes in that directory. Default is
+    false.</li>
+</ul>
+<p><strong>&lt;native></strong> specifies a <a href="/language/nativeMethods#id">native method</a>
+identifier:</p>
+<ul>
+<li><strong>qname</strong>: qualified name of the native method</li>
+<li><strong>id</strong>: qualified id of the native method</li>
+</ul>
+<h2 id="compile-dir">Compile Dir<a class="headerlink" href="#compile-dir" title="Permanent link">&para;</a></h2>
+<p>If sedonac is run on a file containing a <code>sedonaDir</code> element (usually
+named "dir.xml"), it compiles all the kits named in the list:
+<div class="codehilite"><pre><span></span><code>    <span class="nt">&lt;sedonaDir&gt;</span>
+      <span class="nt">&lt;target</span> <span class="na">name=</span><span class="s">&quot;sys&quot;</span> <span class="nt">/&gt;</span>
+      <span class="nt">&lt;target</span> <span class="na">name=</span><span class="s">&quot;inet&quot;</span> <span class="nt">/&gt;</span>
+      <span class="nt">&lt;target</span> <span class="na">name=</span><span class="s">&quot;sox&quot;</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/sedonaDir&gt;</span>
+</code></pre></div>
+<strong>&lt;target></strong> specifies a child target:</p>
+<ul>
+<li><strong>name</strong>: (required) name of child directory.</li>
+</ul>
+<p>The kits will be compiled separately; to assemble them into an scode
+image, see <a href="#compile-code">Compile Code</a> below.</p>
+<h2 id="compile-code">Compile Code<a class="headerlink" href="#compile-code" title="Permanent link">&para;</a></h2>
+<p>If sedonac is run on a file containing a <code>sedonaCode</code> element, it
+compiles the given set of kits into an scode image. The filename of the
+input XML file is used for the output scode file, e.g. if the input file
+is "foo.xml" sedonac will create a file called "foo.scode" in the
+same directory.
+<div class="codehilite"><pre><span></span><code>    <span class="nt">&lt;sedonaCode</span>
+       <span class="na">endian=</span><span class="s">&quot;little&quot;</span>
+       <span class="na">blockSize=</span><span class="s">&quot;4&quot;</span>
+       <span class="na">refSize=</span><span class="s">&quot;4&quot;</span>
+       <span class="na">main=</span><span class="s">&quot;sys::Sys.main&quot;</span>
+       <span class="na">debug=</span><span class="s">&quot;true&quot;</span>
+       <span class="na">test=</span><span class="s">&quot;true&quot;</span>
+    <span class="nt">&gt;</span>
+
+      <span class="nt">&lt;depend</span> <span class="na">on=</span><span class="s">&quot;sys 1.0&quot;</span> <span class="nt">/&gt;</span>
+      <span class="nt">&lt;depend</span> <span class="na">on=</span><span class="s">&quot;sox 1.0&quot;</span> <span class="nt">/&gt;</span>
+      <span class="nt">&lt;depend</span> <span class="na">on=</span><span class="s">&quot;inet 1.0&quot;</span> <span class="nt">/&gt;</span>
+
+    <span class="nt">&lt;/sedonaCode&gt;</span>
+</code></pre></div>
+<strong>&lt;sedonaCode></strong> top level element for scode compile:</p>
+<ul>
+<li><strong>endian</strong>: either "little" or "big" based on target processor.</li>
+<li><strong>blockSize</strong>: size of a scode block in bytes (see "sedona.h")</li>
+<li><strong>refSize</strong>: size of a memory pointer in bytes for target processor
+    (4 for 32-bit processor).</li>
+<li><strong>main</strong>: qualified method name of main method (typically
+    <code>sys::Sys.main</code>).</li>
+<li><strong>debug</strong>: (optional) boolean to include debug meta-data in image.
+    Defaults to false</li>
+<li><strong>test</strong>: (optional) boolean to include test code in image. Defaults
+    to false</li>
+<li><strong>armDouble</strong>: (optional) set to true if using an ARM microprocessor
+    where 64-bit doubles are stored using byte level little endian, word
+    level big endian.</li>
+</ul>
+<p><strong>&lt;depend></strong> specifies the kits to compile into the image:</p>
+<ul>
+<li><strong>on</strong>: (required) <a href="/deployment/kits#dependencies">dependency</a> as a kit name and version constraint.</li>
+<li><strong>test</strong>: (optional) boolean to include tests for this key. Defaults
+    to value of <code>sedonaCode.test</code> if unspecified.</li>
+</ul>
+<p>Note that the <code>test</code> and <code>debug</code> flags may have a significant impact on scode size.</p>
+<h2 id="compile-platform">Compile Platform<a class="headerlink" href="#compile-platform" title="Permanent link">&para;</a></h2>
+<p>Sedonac is used to <em>stage</em> the native code when compiling a binary image
+for a given platform. This happens when sedonac is run against an XML
+file with a <code>sedonaPlatform</code> root element. See
+<a href="/development/porting#staging">Staging</a> and <a href="/platforms/platDef">Platform Definition</a>
+for more details.</p>
+<h2 id="compile-app">Compile App<a class="headerlink" href="#compile-app" title="Permanent link">&para;</a></h2>
+<p>If you run sedonac against a file with a ".sax" extension it converts
+the application to a ".sab" file, and vice versa. The output file is
+placed in the same directory as the input file:</p>
+<div class="codehilite"><pre><span></span><code>    D:<span class="se">\s</span>edona<span class="se">\p</span>ub<span class="se">\a</span>pps&gt;sedonac test.sax
+      ConvertAppFile <span class="o">[</span>D:<span class="se">\s</span>edona<span class="se">\p</span>ub<span class="se">\a</span>pps<span class="se">\t</span>est.sax -&gt; D:<span class="se">\s</span>edona<span class="se">\p</span>ub<span class="se">\a</span>pps<span class="se">\t</span>est.sab<span class="o">]</span>
+      +----------------------------------
+      <span class="p">|</span>  RAM:     <span class="m">14</span>.2kb <span class="o">(</span><span class="m">14588</span> bytes<span class="o">)</span>
+      <span class="p">|</span>  FLASH:    <span class="m">0</span>.4kb <span class="o">(</span><span class="m">382</span> bytes<span class="o">)</span>
+      +----------------------------------
+</code></pre></div>
+
+<p>Running sedonac on an application file also prints a memory impact
+report. The RAM value is an estimate of how much memory the application
+consumes in RAM during runtime. FLASH is the size required to persist
+the application to durable storage like flash memory (always exactly the
+same as the size of the sab file). Also see the <a href="/apps/apps">Apps</a> and
+<a href="/language/memory">Memory</a> chapters.</p>
+<h2 id="run">Run<a class="headerlink" href="#run" title="Permanent link">&para;</a></h2>
+<p>If you pass a qualified Java classname to sedonac it will attempt to run
+that class's main() method:
+<div class="codehilite"><pre><span></span><code>    D:<span class="se">\s</span>edona&gt;sedonac sedona.util.UserUtil brian pass
+    User:   brian:pass
+    Digest: 0x<span class="o">[</span>ca4d1fd9a089ff9d50ab1f1dc4e4772a6b24c6bb<span class="o">]</span>
+    Base64: yk0f2aCJ/51Qqx8dxOR3Kmskxrs<span class="o">=</span>
+</code></pre></div>
+The class must be defined in "sedona.jar" or "sedonac.jar":</p>
+<h2 id="build-docs">Build Docs<a class="headerlink" href="#build-docs" title="Permanent link">&para;</a></h2>
+<p>The <code>-doc</code> switch builds HTML documentation along with the scode. For
+example:
+<div class="codehilite"><pre><span></span><code>    D:<span class="se">\s</span>edona&gt;sedonac -doc pub/src/sys
+      Parse <span class="o">[</span><span class="m">44</span> files<span class="o">]</span>
+      WriteKit <span class="o">[</span>D:<span class="se">\s</span>edona<span class="se">\p</span>ub<span class="se">\k</span>its<span class="se">\s</span>ys<span class="se">\s</span>ys-b0ce639-1.0.36.kit<span class="o">]</span>
+      WriteDoc <span class="o">[</span>D:<span class="se">\s</span>edona<span class="se">\p</span>ub<span class="se">\d</span>oc<span class="se">\s</span>ys<span class="o">]</span>
+    *** Success! ***
+
+    D:<span class="se">\s</span>edona<span class="se">\s</span>edonac -doc pub/doc/toc.xml
+      TableOfContents <span class="o">[</span>D:<span class="se">\s</span>edona<span class="se">\p</span>ub<span class="se">\d</span>oc -&gt; D:<span class="se">\s</span>edona<span class="se">\p</span>ub<span class="se">\d</span>oc<span class="o">]</span>
+      CheckHtmlLinks <span class="o">[</span>D:<span class="se">\s</span>edona<span class="se">\p</span>ub<span class="se">\d</span>oc<span class="o">]</span>
+    *** Success! ***
+
+    D:<span class="se">\s</span>edona<span class="se">\s</span>edonac
+</code></pre></div>
+If the input file is a directory of kit source folders, then it will
+build the kits and automatically generate HTML documentation for each
+class, as well as a summary page for each kit. All fields and methods
+for each class will be included in the documentation, and any <code>**</code> style
+comments above a given field or method will be included with the entry
+for that field or method.</p>
+<p>If instead the input file to <code>sedonac -doc</code> is an XML file, it will be
+processed for information on generating a table of contents. See the
+file <code>doc/toc.xml</code> for an example.</p>
+<h2 id="variable-substitution">Variable Substitution<a class="headerlink" href="#variable-substitution" title="Permanent link">&para;</a></h2>
+<p>Some attributes in the various input XML files allow for variable
+substitution. Such attributes will be read by sedonac, and any variables
+present in the attribute text will be replaced by the variable value. A
+variable is specified as <code>${variableName}</code>. For example:</p>
+<p><code>&lt;sedonaPlatform vendor="Tridium" id="tridium-foo-${sedona.env.version}" /&gt;</code></p>
+<p>The <code>id</code> attribute above might end up being resolved as
+<code>tridium-foo-1.0.38</code>. <code>Sedonac</code> will resolve variables according to the
+following rules:</p>
+<ol>
+<li>If the variable starts with <code>os.env.</code> then sedonac will attempt to
+    resolve an environment variable. For example, <code>${os.env.USER}</code> will
+    cause sedonac to look in the environment for a variable called
+    <code>USER</code>.</li>
+<li>If the variable starts with <code>sedona.env.</code> then sedonac will attempt
+    to resolve a variable in the Sedona Framework environment (see
+    sedona.Env.java). For example, <code>${sedona.env.buildVersion}</code> will
+    cause sedonac to try and resolve property <code>buildVersion</code> in the
+    sedona environment. Note: as a convenience <code>${sedona.env.version}</code>
+    resolves to <code>sedona.Env.version</code></li>
+<li>Otherwise, attempt to resolve the variable name against any
+    variables that the compiler might set. For example, when compiling a
+    platform definition file the compiler will set a variable called
+    <code>${stage.nativeChecksum}</code>.</li>
+<li>It is always a compiler error if a variable cannot be resolved.</li>
+</ol>
+<p>The most common place that variable substitution is used is in the
+<a href="/platforms/platDef">platform definition</a> file. The documentation for each XML
+file will explicitly indicate which elements and attributes support
+variable substitution (if any).</p>
+                
+                  
+                
+                
+                  
+                  <hr>
+                  <div class="md-source-date">
+                    <small>
+                      
+                        Last update: April 7, 2020
+                      
+                    </small>
+                  </div>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+        
+          <a href="../../platforms/platCertified/" title="Certified Platforms" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+            </div>
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Certified Platforms
+              </span>
+            </div>
+          </a>
+        
+        
+          <a href="../testing/" title="Testing" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Testing
+              </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+          <div class="md-footer-copyright__highlight">
+            Copyright &copy; 2007-2017 Tridium, 2018-2020 Sedona Community
+          </div>
+        
+        powered by
+        <a href="https://www.mkdocs.org" target="_blank" rel="noopener">MkDocs</a>
+        and
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs</a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../../assets/javascripts/application.c33a9706.js"></script>
+      
+      <script>app.initialize({version:"1.1",url:{base:"../.."}})</script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,2218 @@
+
+
+
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <meta http-equiv="x-ua-compatible" content="ie=edge">
+      
+        <meta name="description" content="Online documentation for Sedona Framework(R)">
+      
+      
+        <link rel="canonical" href="https://linsong.github.io/sedona/networking/dasp/">
+      
+      
+        <meta name="author" content="Sedona Community">
+      
+      
+        <meta name="lang:clipboard.copy" content="Copy to clipboard">
+      
+        <meta name="lang:clipboard.copied" content="Copied to clipboard">
+      
+        <meta name="lang:search.language" content="en">
+      
+        <meta name="lang:search.pipeline.stopwords" content="True">
+      
+        <meta name="lang:search.pipeline.trimmer" content="True">
+      
+        <meta name="lang:search.result.none" content="No matching documents">
+      
+        <meta name="lang:search.result.one" content="1 matching document">
+      
+        <meta name="lang:search.result.other" content="# matching documents">
+      
+        <meta name="lang:search.tokenizer" content="[\s\-]+">
+      
+      <link rel="shortcut icon" href="../../favicon.ico">
+      <meta name="generator" content="mkdocs-1.1, mkdocs-material-4.6.3">
+    
+    
+      
+        <title>DASP - Sedona Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/application.adb8469c.css">
+      
+        <link rel="stylesheet" href="../../assets/stylesheets/application-palette.a8b3c06d.css">
+      
+      
+        
+        
+        <meta name="theme-color" content="#795548">
+      
+    
+    
+      <script src="../../assets/javascripts/modernizr.86422ebf.js"></script>
+    
+    
+      
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono","Courier New",Courier,monospace}</style>
+      
+    
+    <link rel="stylesheet" href="../../assets/fonts/material-icons.css">
+    
+    
+    
+      
+    
+    
+  </head>
+  
+    
+    
+    <body dir="ltr" data-md-color-primary="brown" data-md-color-accent="red">
+  
+    <svg class="md-svg">
+      <defs>
+        
+        
+          <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448" viewBox="0 0 416 448" id="__github"><path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z"/></svg>
+        
+      </defs>
+    </svg>
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+    
+      <a href="#dasp" tabindex="0" class="md-skip">
+        Skip to content
+      </a>
+    
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="https://linsong.github.io/sedona" title="Sedona Documentation" aria-label="Sedona Documentation" class="md-header-nav__button md-logo">
+          
+            <img alt="logo" src="../../favicon.ico" width="24" height="24">
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          
+            <span class="md-header-nav__topic">
+              Sedona Documentation
+            </span>
+            <span class="md-header-nav__topic">
+              
+                DASP
+              
+            </span>
+          
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        
+          <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+          
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" aria-label="search" name="query" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+        
+      </div>
+      
+        <div class="md-flex__cell md-flex__cell--shrink">
+          <div class="md-header-nav__source">
+            
+
+
+  
+
+<a href="https://github.com/linsong/sedona/" title="Go to repository" class="md-source" data-md-source="github">
+  
+    <div class="md-source__icon">
+      <svg viewBox="0 0 24 24" width="24" height="24">
+        <use xlink:href="#__github" width="24" height="24"></use>
+      </svg>
+    </div>
+  
+  <div class="md-source__repository">
+    linsong/sedona
+  </div>
+</a>
+          </div>
+        </div>
+      
+    </div>
+  </nav>
+</header>
+    
+    <div class="md-container">
+      
+        
+      
+      
+      <main class="md-main" role="main">
+        <div class="md-main__inner md-grid" data-md-component="container">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href="https://linsong.github.io/sedona" title="Sedona Documentation" class="md-nav__button md-logo">
+      
+        <img alt="logo" src="../../favicon.ico" width="48" height="48">
+      
+    </a>
+    Sedona Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      
+
+
+  
+
+<a href="https://github.com/linsong/sedona/" title="Go to repository" class="md-source" data-md-source="github">
+  
+    <div class="md-source__icon">
+      <svg viewBox="0 0 24 24" width="24" height="24">
+        <use xlink:href="#__github" width="24" height="24"></use>
+      </svg>
+    </div>
+  
+  <div class="md-source__repository">
+    linsong/sedona
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../.." title="Index" class="md-nav__link">
+      Index
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2">
+    
+    <label class="md-nav__link" for="nav-2">
+      Getting Started
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-2">
+        Getting Started
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../quickstart/intro/" title="Introduction" class="md-nav__link">
+      Introduction
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../quickstart/setup/" title="Setup" class="md-nav__link">
+      Setup
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../quickstart/architecture/" title="Architecture" class="md-nav__link">
+      Architecture
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../quickstart/tutorial/" title="Tutorial" class="md-nav__link">
+      Tutorial
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3">
+    
+    <label class="md-nav__link" for="nav-3">
+      Language
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-3">
+        Language
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../language/lang/" title="Language" class="md-nav__link">
+      Language
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../language/primitives/" title="Primitives" class="md-nav__link">
+      Primitives
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../language/expr/" title="Expressions" class="md-nav__link">
+      Expressions
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../language/stmt/" title="Statements" class="md-nav__link">
+      Statements
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../language/classes/" title="Classes" class="md-nav__link">
+      Classes
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../language/fields/" title="Fields" class="md-nav__link">
+      Fields
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../language/methods/" title="Methods" class="md-nav__link">
+      Methods
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../language/components/" title="Components" class="md-nav__link">
+      Components
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../language/reflection/" title="Reflection" class="md-nav__link">
+      Reflection
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../language/arrays/" title="Arrays" class="md-nav__link">
+      Arrays
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../language/memory/" title="Memory" class="md-nav__link">
+      Memory
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../language/nativeMethods/" title="Native Methods" class="md-nav__link">
+      Native Methods
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../language/logging/" title="Logging" class="md-nav__link">
+      Logging
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4">
+    
+    <label class="md-nav__link" for="nav-4">
+      Apps
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-4">
+        Apps
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../apps/apps/" title="Application Model" class="md-nav__link">
+      Application Model
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../apps/security/" title="Security" class="md-nav__link">
+      Security
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5">
+    
+    <label class="md-nav__link" for="nav-5">
+      Deployment
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-5">
+        Deployment
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../deployment/kits/" title="Kits" class="md-nav__link">
+      Kits
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../deployment/schema/" title="Schema" class="md-nav__link">
+      Schema
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6">
+    
+    <label class="md-nav__link" for="nav-6">
+      Platforms
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-6">
+        Platforms
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../platforms/platDef/" title="Platform Definition" class="md-nav__link">
+      Platform Definition
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../platforms/par/" title="Platform Archive" class="md-nav__link">
+      Platform Archive
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../platforms/platTutorial/" title="Platform Tutorial" class="md-nav__link">
+      Platform Tutorial
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../platforms/deviceSim/" title="Device Simulator" class="md-nav__link">
+      Device Simulator
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../platforms/platCertified/" title="Certified Platforms" class="md-nav__link">
+      Certified Platforms
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-7" type="checkbox" id="nav-7">
+    
+    <label class="md-nav__link" for="nav-7">
+      Development
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-7">
+        Development
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../development/sedonac/" title="Sedonac" class="md-nav__link">
+      Sedonac
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../development/testing/" title="Testing" class="md-nav__link">
+      Testing
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../development/porting/" title="Porting" class="md-nav__link">
+      Porting
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../development/niagara/" title="Niagara" class="md-nav__link">
+      Niagara
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-8" type="checkbox" id="nav-8" checked>
+    
+    <label class="md-nav__link" for="nav-8">
+      Networking
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-8">
+        Networking
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../networking/" title="Networking" class="md-nav__link">
+      Networking
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        DASP
+      </label>
+    
+    <a href="./" title="DASP" class="md-nav__link md-nav__link--active">
+      DASP
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#introduction" class="md-nav__link">
+    Introduction
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#requirements" class="md-nav__link">
+    Requirements
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#design" class="md-nav__link">
+    Design
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#message-format" class="md-nav__link">
+    Message Format
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#message-types" class="md-nav__link">
+    Message Types
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#header-fields" class="md-nav__link">
+    Header Fields
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#error-codes" class="md-nav__link">
+    Error Codes
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#handshake" class="md-nav__link">
+    Handshake
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#hello" class="md-nav__link">
+    Hello
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#challenge" class="md-nav__link">
+    Challenge
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#authenticate" class="md-nav__link">
+    Authenticate
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#welcome" class="md-nav__link">
+    Welcome
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tuning" class="md-nav__link">
+    Tuning
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#error-handling" class="md-nav__link">
+    Error Handling
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#messaging" class="md-nav__link">
+    Messaging
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#acks" class="md-nav__link">
+    Acks
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#retries" class="md-nav__link">
+    Retries
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sliding-window" class="md-nav__link">
+    Sliding Window
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#flow-control" class="md-nav__link">
+    Flow Control
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#keep-alive-and-termination" class="md-nav__link">
+    Keep Alive and Termination
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#close" class="md-nav__link">
+    Close
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#timeout" class="md-nav__link">
+    Timeout
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#keepalives" class="md-nav__link">
+    keepAlives
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#device-discovery" class="md-nav__link">
+    Device Discovery
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#discover" class="md-nav__link">
+    Discover
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../sox/" title="Sox" class="md-nav__link">
+      Sox
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../discover/" title="Device Discovery" class="md-nav__link">
+      Device Discovery
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9" type="checkbox" id="nav-9">
+    
+    <label class="md-nav__link" for="nav-9">
+      Appendix
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-9">
+        Appendix
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../appendix/license/" title="License" class="md-nav__link">
+      License
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../appendix/conventions/" title="Coding Conventions" class="md-nav__link">
+      Coding Conventions
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../appendix/scodeFormat/" title="SCode Format" class="md-nav__link">
+      SCode Format
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../appendix/grammar/" title="Grammar" class="md-nav__link">
+      Grammar
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-10" type="checkbox" id="nav-10">
+    
+    <label class="md-nav__link" for="nav-10">
+      Releases
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-10">
+        Releases
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../releases/newFor12/" title="v1.2" class="md-nav__link">
+      v1.2
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../api/api/" title="API" class="md-nav__link">
+      API
+    </a>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#introduction" class="md-nav__link">
+    Introduction
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#requirements" class="md-nav__link">
+    Requirements
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#design" class="md-nav__link">
+    Design
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#message-format" class="md-nav__link">
+    Message Format
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#message-types" class="md-nav__link">
+    Message Types
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#header-fields" class="md-nav__link">
+    Header Fields
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#error-codes" class="md-nav__link">
+    Error Codes
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#handshake" class="md-nav__link">
+    Handshake
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#hello" class="md-nav__link">
+    Hello
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#challenge" class="md-nav__link">
+    Challenge
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#authenticate" class="md-nav__link">
+    Authenticate
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#welcome" class="md-nav__link">
+    Welcome
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tuning" class="md-nav__link">
+    Tuning
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#error-handling" class="md-nav__link">
+    Error Handling
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#messaging" class="md-nav__link">
+    Messaging
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#acks" class="md-nav__link">
+    Acks
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#retries" class="md-nav__link">
+    Retries
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sliding-window" class="md-nav__link">
+    Sliding Window
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#flow-control" class="md-nav__link">
+    Flow Control
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#keep-alive-and-termination" class="md-nav__link">
+    Keep Alive and Termination
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#close" class="md-nav__link">
+    Close
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#timeout" class="md-nav__link">
+    Timeout
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#keepalives" class="md-nav__link">
+    keepAlives
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#device-discovery" class="md-nav__link">
+    Device Discovery
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#discover" class="md-nav__link">
+    Discover
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/linsong/sedona/edit/master/docs/networking/dasp.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
+                
+                
+                <!--
+[//]: # (Copyright &#169; 2008 Tridium, Inc
+  Licensed under the Academic Free License version 3.0
+
+  History:
+    24 Jul 08  Brian Frank  Creation
+) -->
+
+<p><a href="/"><img alt="Sedona" src="../../logo.png" /></a></p>
+<h1 id="dasp">DASP<a class="headerlink" href="#dasp" title="Permanent link">&para;</a></h1>
+<h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">&para;</a></h2>
+<p>This document specifies the Datagram Authenticated Session Protocol or
+DASP. This protocol is designed to provide an unordered, reliable,
+secure session for full-duplex datagram exchange that can be implemented
+for low power wireless networks and low cost devices. Specifically we
+target networks that include 6LoWPAN. These networks are typically
+comprised of devices without the resources to run a protocol such as TCP
+and must implement their protocol stacks in under 100KB of memory.</p>
+<h2 id="requirements">Requirements<a class="headerlink" href="#requirements" title="Permanent link">&para;</a></h2>
+<p>The following requirements dictate the design of DASP:</p>
+<ol>
+<li>DASP runs over an unordered, unreliable packet based transport
+    layer, which is assumed to be UDP or provide the same functionality.</li>
+<li>DASP will be a datagram oriented protocol, not a stream oriented
+    protocol. Datagram boundaries will be maintained.</li>
+<li>DASP will deliver datagrams reliably with associated retries.
+    Datagrams are guaranteed to be delivered exactly once.</li>
+<li>DASP will not guarantee delivery of datagrams in order. Because DASP
+    is designed to run on devices with limited RAM resources, we must
+    assume that buffer space is extremely scarce. Any ordering of
+    datagrams is the responsibility of the application layer.</li>
+<li>DASP datagrams are delivered within the context of a session.
+    Sessions allow us to efficiently associate datagrams with
+    application context. Application context might include user account
+    privileges, eventing state, or the state associated with a file
+    transfer.</li>
+<li>DASP sessions are full-duplex - either endpoint may initiate a
+    datagram.</li>
+<li>DASP sessions are established by authenticating a username and
+    password. However the term password is loosely defined to include
+    any type of secret key.</li>
+<li>DASP session setup will include an extensible mechanism for
+    negotiating the cryptography capabilities of the two endpoints. The
+    protocol will support plugging in new cryptography standards, but
+    standardizes on SHA-1 for message digest. Version 1.0 does not
+    specify encryption, but could be added via new handshaking headers.</li>
+<li>DASP will provide flow control in the delivery of datagrams between
+    the endpoints using a sliding window. For example, a session might
+    span both a high speed network such as Ethernet and a low speed
+    network such as 6LoWPAN running over 802.15.4. Compounding the
+    problem is that low speed networks may have few memory resources to
+    allocate to buffering and can quickly be overwhelmed by bursts of
+    packets.</li>
+</ol>
+<h2 id="design">Design<a class="headerlink" href="#design" title="Permanent link">&para;</a></h2>
+<p>A DASP session is established when a client initiates a connection to a
+server. The two endpoints exchange a set of messages called the
+<em>handshake</em> to establish or reject the session. Once a session is
+established it is assigned an unsigned 16-bit identifier called the
+<em>sessionId</em>. The sessionId is included in all subsequent messaging
+within the context of that session. Messages within the session are
+consecutively numbered with an unsigned 16-bit value, which we call the
+<em>sequence number</em> or <em>seqNum</em>. Each endpoint of the session maintains
+its own sequence and sliding window of outstanding datagrams. This
+sliding window is used to implement reliability and flow control.
+Sessions are terminated explicitly via a special control message, or may
+be timed out after a period where no messages have been received from
+the remote endpoint.</p>
+<h2 id="message-format">Message Format<a class="headerlink" href="#message-format" title="Permanent link">&para;</a></h2>
+<p>DASP messages are described as a data structure using the following
+primitive types:</p>
+<ul>
+<li><strong>u1</strong>: an unsigned 8-bit integer</li>
+<li><strong>u2</strong>: an unsigned 16-bit integer in network byte order</li>
+<li><strong>str</strong>: UTF-8 encoded text, followed by a null terminate (zero)
+    byte</li>
+<li><strong>bytes</strong>: an unsigned 8-bit length n, followed by n bytes</li>
+<li><strong>x[ ]</strong>: an array of type x that contains zero or more elements</li>
+</ul>
+<p>All DASP messages are formatted as follows:</p>
+<div class="codehilite"><pre><span></span><code>    <span class="n">message</span>
+    <span class="p">{</span>
+      <span class="n">u2</span>      <span class="n">sessionId</span>
+      <span class="n">u2</span>      <span class="n">seqNum</span>
+      <span class="n">u1</span>      <span class="n">high</span> <span class="mi">4</span><span class="o">-</span><span class="n">bits</span> <span class="n">msgType</span><span class="p">,</span> <span class="n">low</span> <span class="mi">4</span><span class="o">-</span><span class="n">bits</span> <span class="n">numFields</span>
+      <span class="n">field</span><span class="o">[]</span> <span class="n">headerFields</span>
+      <span class="n">u1</span><span class="o">[]</span>    <span class="n">payload</span>
+    <span class="p">}</span>
+</code></pre></div>
+
+<p>The data in the message is summarized:</p>
+<ul>
+<li><strong>sessionId</strong>: identifies the session associated with the message.
+    During the handshake before a sessionId is allocated, the value
+    0xffff is used.</li>
+<li><strong>seqNum</strong>: used to sequence each DATAGRAM message for management of
+    the sliding window and matching up requests/responses. Each endpoint
+    maintains its own sequence numbers.</li>
+<li><strong>msgType</strong>: 4-bits are used to identity how to handle the message
+    from an DASP perspective. The list of message types are detailed in
+    a separate section below.</li>
+<li><strong>numFields</strong>: 4-bits specify how many header fields follow in the
+    message.</li>
+<li><strong>headerFields</strong>: a list of zero or more fields that carry
+    additional data about the request much like HTTP header fields.
+    Header fields are detailed in a separate section below.</li>
+<li><strong>payload</strong>: zero or more bytes of message payload. A DASP message
+    does not specify the payload size, but assumes that the underlying
+    transport such as UDP provides the total size of the entire message
+    from which payload size can be computed.</li>
+</ul>
+<h2 id="message-types">Message Types<a class="headerlink" href="#message-types" title="Permanent link">&para;</a></h2>
+<p>The following table specifies the full list of message type identifiers:</p>
+<table>
+<thead>
+<tr>
+<th>Id</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0x0</td>
+<td>discover</td>
+<td>Sent by client or server during device discovery process</td>
+</tr>
+<tr>
+<td>0x1</td>
+<td>hello</td>
+<td>Sent by client to initiate handshake</td>
+</tr>
+<tr>
+<td>0x2</td>
+<td>challenge</td>
+<td>Response to client's hello message</td>
+</tr>
+<tr>
+<td>0x3</td>
+<td>authenticate</td>
+<td>Sent by client to provide authentication credentials</td>
+</tr>
+<tr>
+<td>0x4</td>
+<td>welcome</td>
+<td>Response to client's authenticate message if successful</td>
+</tr>
+<tr>
+<td>0x5</td>
+<td>keepAlive</td>
+<td>Heartbeat message and message acknowledgements</td>
+</tr>
+<tr>
+<td>0x6</td>
+<td>datagram</td>
+<td>Indicates an application datagram message</td>
+</tr>
+<tr>
+<td>0x7</td>
+<td>close</td>
+<td>Close the session</td>
+</tr>
+</tbody>
+</table>
+<h2 id="header-fields">Header Fields<a class="headerlink" href="#header-fields" title="Permanent link">&para;</a></h2>
+<p>Header fields define a generic way to include an arbitrary set of
+name/value pairs in an DASP header. They are used much like HTTP header
+fields - each message type defines required and optional header fields
+and how they are to be interpreted. Additional header fields can be
+added to future versions of this specification without breaking the
+generic processing of DASP messages.</p>
+<p>Header fields are prefixed with a one byte headerId. The headerId
+conveys the name of the header in the high 6 bits and the value type of
+the header in the bottom 2 bits. Implementations can always look at the
+least significant 2-bits of the headerIds to determine how to decode or
+skip the header value. Implementations must ignore unknown headers. The
+2-bit value type identifiers:</p>
+<table>
+<thead>
+<tr>
+<th>Id</th>
+<th>Name</th>
+<th>Encoding</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0x0</td>
+<td>nil</td>
+<td>The header has no value - the header itself indicates a boolean</td>
+</tr>
+<tr>
+<td>0x1</td>
+<td>u2</td>
+<td>Unsigned 16-bit integer in network byte order</td>
+</tr>
+<tr>
+<td>0x2</td>
+<td>str</td>
+<td>UTF-8 encoded text string, followed by null terminator (zero) byte</td>
+</tr>
+<tr>
+<td>0x3</td>
+<td>bytes</td>
+<td>8-bit length, followed by string of raw bytes</td>
+</tr>
+</tbody>
+</table>
+<p>The list of headerIds defined by this specification:</p>
+<table>
+<thead>
+<tr>
+<th>Id (6b, 2b)</th>
+<th>Name</th>
+<th>Type</th>
+<th>Description (default)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0x05 (1,1)</td>
+<td>version</td>
+<td>u2</td>
+<td>Version of the protocol to use</td>
+</tr>
+<tr>
+<td>0x09 (2,1)</td>
+<td>remoteId</td>
+<td>u2</td>
+<td>Remote endpoint's session id</td>
+</tr>
+<tr>
+<td>0x0e (3,2)</td>
+<td>digestAlgorithm</td>
+<td>str</td>
+<td>Name of digest to use ("SHA-1")</td>
+</tr>
+<tr>
+<td>0x13 (4,3)</td>
+<td>nonce</td>
+<td>bytes</td>
+<td>Nonce to use for digest hash</td>
+</tr>
+<tr>
+<td>0x16 (5,2)</td>
+<td>username</td>
+<td>str</td>
+<td>Name of user to authenticate</td>
+</tr>
+<tr>
+<td>0x1b (6,3)</td>
+<td>digest</td>
+<td>bytes</td>
+<td>Value of digest hash to authenticate</td>
+</tr>
+<tr>
+<td>0x1d (7,1)</td>
+<td>idealMax</td>
+<td>u2</td>
+<td>Ideal max size in bytes (512)</td>
+</tr>
+<tr>
+<td>0x21 (8,1)</td>
+<td>absMax</td>
+<td>u2</td>
+<td>Absolute max size in bytes (512)</td>
+</tr>
+<tr>
+<td>0x25 (9,1)</td>
+<td>ack</td>
+<td>u2</td>
+<td>Ack a single seqNum</td>
+</tr>
+<tr>
+<td>0x2b (a, 3)</td>
+<td>ackMore</td>
+<td>bytes</td>
+<td>Ack a list of seqNums (0x01)</td>
+</tr>
+<tr>
+<td>0x2d (b,1)</td>
+<td>receiveMax</td>
+<td>u2</td>
+<td>Max size of receiving window in bytes (31)</td>
+</tr>
+<tr>
+<td>0x31 (c, 1)</td>
+<td>receiveTimeout</td>
+<td>u2</td>
+<td>Receive timeout in seconds (30sec)</td>
+</tr>
+<tr>
+<td>0x35 (d,1)</td>
+<td>errorCode</td>
+<td>u2</td>
+<td>One of the predefined error codes</td>
+</tr>
+<tr>
+<td>0x3a (e,2)</td>
+<td>platformId</td>
+<td>str</td>
+<td>Device's platform ID string</td>
+</tr>
+</tbody>
+</table>
+<p>Header fields may be specified in any order. Implementations must never
+assume a specific order.</p>
+<h2 id="error-codes">Error Codes<a class="headerlink" href="#error-codes" title="Permanent link">&para;</a></h2>
+<p>The following types defines the error codes to be used with the
+errorCode header field:</p>
+<table>
+<thead>
+<tr>
+<th>Id</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0xe1</td>
+<td>incompatibleVersion</td>
+<td>Server doesn't support version specified by hello</td>
+</tr>
+<tr>
+<td>0xe2</td>
+<td>busy</td>
+<td>Server is too busy to allocate new session</td>
+</tr>
+<tr>
+<td>0xe3</td>
+<td>digestNotSupported</td>
+<td>Client does not support digest algorithm in challenge</td>
+</tr>
+<tr>
+<td>0xe4</td>
+<td>notAuthenticated</td>
+<td>Client supplied invalid credentials</td>
+</tr>
+<tr>
+<td>0xe5</td>
+<td>timeout</td>
+<td>Remote endpoint is timing out the session</td>
+</tr>
+</tbody>
+</table>
+<h2 id="handshake">Handshake<a class="headerlink" href="#handshake" title="Permanent link">&para;</a></h2>
+<p>A session is established by a series of messages called the handshake:</p>
+<ol>
+<li>The client sends the server a hello message</li>
+<li>The server responds with the challenge, welcome, or close message</li>
+<li>The client responds with the authenticate or close message</li>
+<li>The server responds with either a welcome or close message</li>
+</ol>
+<p>Once the client receives the welcome message from either step 2 or step
+4, then the session is established. An close message during any step
+terminates the handshake.</p>
+<h3 id="hello">Hello<a class="headerlink" href="#hello" title="Permanent link">&para;</a></h3>
+<p>The hello message is sent by a client to initiate a session. The
+following header fields apply:</p>
+<ul>
+<li><strong>version</strong> (required): specifies the protocol version to be used.
+    The version of this specification is 1.0, which is represented as
+    0x0100 in a 16-bit unsigned integer.</li>
+<li><strong>remoteId</strong> (required): the client side sessionId used for messages
+    sent by the server to the client.</li>
+<li><strong>idealMax</strong> (optional): the ideal maximum of bytes per message from
+    the client perspective - see Tuning. If not specified 512 is
+    assumed.</li>
+<li><strong>absMax</strong> (optional): the absolute maximum of bytes per message
+    from the client perspective - see Tuning. If not specified 512 is
+    assumed.</li>
+<li><strong>receiveMax</strong> (optional): the absolute maximum size of the
+    client's receiving windowing (number of messages). If not
+    specified, then a window size of 31 messages is assumed.</li>
+<li><strong>receiveTimeout</strong> (optional): the number of seconds that may elapse
+    without receiving a message before the session is timed out from
+    client perspective; if not specified then a default of 30 seconds is
+    assumed.</li>
+</ul>
+<p>The sessionId of a hello message must be set to 0xffff to indicate a new
+session from the server's perspective. The remoteId header specifies
+the client's sessionId, all messages back to the client will use this
+sessionId.</p>
+<p>The seqNum should be a randomly chosen number between <code>0</code> and <code>0xffff</code>,
+which becomes the start of the client sending window - this sequence
+number must be the seqNum of the first datagram message sent by the
+client to server.</p>
+<h3 id="challenge">Challenge<a class="headerlink" href="#challenge" title="Permanent link">&para;</a></h3>
+<p>Once a hello message has been received, the server assigns a randomly
+chosen, unused sessionId and then returns a challenge message. The
+remoteId header of the challenge contains the server side's newly
+assigned session identifier. The sessionId of the challenge message is
+the value of the hello's remoteId header.</p>
+<p>The seqNum should be randomly chosen between <code>0</code> and <code>0xffff</code> - this becomes
+the start of the server's sending window - the first datagram sent by
+the server to the client must use this seqNum.</p>
+<p>The following header fields apply:</p>
+<ul>
+<li><strong>remoteId</strong> (required): the server's sessionId to use for messages
+    sent by the client to the server.</li>
+<li><strong>digestAlgorithm</strong> (optional): this specifies the digest algorithm
+    to use for hashing the username, password, and nonce returned by the
+    authenticate message. If this field is unspecified, then "SHA-1"
+    is assumed. Other values that might be used are "MD5",
+    "SHA-256", "SHA-384", and "SHA-512". Implementations are only
+    required to implement "SHA-1", so this field should only be used
+    when knowledge of client capability is known. Values of this field
+    should always use upper case.</li>
+<li><strong>nonce</strong> (required): the challenge message is required to specify a
+    nonce used to generate a secure hash of the username and password.
+    This value should be randomly generated using a cryptographically
+    strong algorithm. A nonce should only be used once to prevent replay
+    attacks.</li>
+</ul>
+<p>If the server doesn't support the version specified by the client in
+the hello message, then it should send the close message with the
+incompatibleVersion error code. The close message returned should
+include the version header field, which tells the client which version
+the server does support. The client may then choose to retry the
+handshake if supports the server's version.</p>
+<p>If the server is too busy to allocate a new session, then it should send
+back a close with the busy error code.</p>
+<p>A server can by-pass authentication completely by directly sending back
+a welcome message.</p>
+<h3 id="authenticate">Authenticate<a class="headerlink" href="#authenticate" title="Permanent link">&para;</a></h3>
+<p>Once the client receives the challenge message, it has enough
+information to generate the authenticate message. Clients never pass
+user credentials directly to the server over the network. Instead the
+client sends the server a digest of the username, password, and nonce.
+The algorithm to compute the digest is defined by the digestAlgorithm
+field defined in the challenge message (or if unspecified then SHA-1 is
+assumed). The following function is used to compute the digest:</p>
+<div class="codehilite"><pre><span></span><code>    credentials = digestAlgorithm(username + &quot;:&quot; + password)
+    digest      = digestAlgorithm(credentials + nonce)
+</code></pre></div>
+
+<p>First we hash the UTF-8 encoded credentials string, which is the
+username and password separated by a single ":" colon character. We
+call this hash the credentials. We then run the hash function against
+the credentials and the nonce, which produces a one-time use digest.
+This mechanism permits DASP enabled devices to avoid storing a password
+in plain text by storing the username and only the credentials hash.
+However a device could store the username and password directly and
+compute the credentials hash as needed.</p>
+<p>Once the client computes the digest, it sends the server the
+authenticate message. The authenticate message uses the sessionId
+specified in the challenge's remoteId header. The seqNum should be the
+same as that used by the hello message.</p>
+<p>The following header fields apply:</p>
+<ul>
+<li><strong>username</strong> (required): the UTF-8 encoded string identifier of the
+    user to authenticate.</li>
+<li><strong>digest</strong> (required): the message digest hash computed from the
+    algorithm described above. If using SHA-1, this will be list of 20
+    bytes (160-bit digest).</li>
+</ul>
+<p>If the client does not support the digest algorithm specified by the
+server's challenge message, then the client should immediately send the
+server a close message with the digestNotSupported error code.</p>
+<h3 id="welcome">Welcome<a class="headerlink" href="#welcome" title="Permanent link">&para;</a></h3>
+<p>Once the server receives the authenticate message, it validates the
+username and digest against its user database. If the authentication is
+successful, then the server responds to the client with the welcome
+message type. The sessionId of the welcome is the remoteId specified by
+the client in its hello. The seqNum should be the same as that used by
+the server's challenge message.</p>
+<p>The following fields apply:</p>
+<ul>
+<li><strong>idealMax</strong> (optional): the ideal maximum of bytes per message from
+    the server perspective - see Tuning. If not specified 512 is
+    assumed.</li>
+<li><strong>absMax</strong> (optional): the absolute maximum of bytes per message
+    from the server perspective - see Tuning. If not specified 512 is
+    assumed.</li>
+<li><strong>receiveMax</strong> (optional): the absolute maximum size of the
+    server's receiving windowing (number of messages). If not
+    specified, then a window size of 31 messages is assumed.</li>
+<li><strong>receiveTimeout</strong> (optional): the number of seconds that may elapse
+    without receiving a message before the session is timed out from
+    server perspective; if not specified then a default of 30 seconds is
+    assumed.</li>
+<li><strong>remoteId</strong>: if we are skipping the challenge, then the server's
+    sessionId must be returned in the welcome, otherwise this header
+    must be omitted.</li>
+</ul>
+<p>If authentication fails, then the server sends the client back a close
+message with the notAuthenticated error code.</p>
+<h3 id="tuning">Tuning<a class="headerlink" href="#tuning" title="Permanent link">&para;</a></h3>
+<p>The absMax and idealMax header fields are used to negotiate message
+sizes between the client and server. The absMax is the absolute maximum
+number of bytes that a message may contain including the DASP headers,
+but not the transport headers (such as the UDP headers themselves).
+Typically this value maps to the amount of buffer space a device can
+dedicate to processing DASP messages. For example a device that can only
+allocate 256 bytes to buffering an DASP message will not be able to
+handle larger messages.</p>
+<p>The idealMax header field specifies the ideal maximum number of bytes a
+message should contain including the DASP headers (not including the
+transport headers). Often DASP is running over a network like 6LoWPAN
+that can support UDP packets larger than the MTU of a 802.15.4 frame.
+However if implementing a protocol like file transfer, it is desirable
+to chunk the stream such that messages fit within individual 802.15.4
+frames without additional fragmentation overhead. The idealMax header
+provides for this optimization.</p>
+<p>Both absMax and idealMax negotiation works the same way. The client
+specifies its absMax and idealMax fields in its hello message. If either
+of the header fields are omitted, then they are implied to be 512 bytes.
+The server has its own absMax and idealMax, which it returns in the
+welcome message (or else they default to 512). The actual absMax and
+idealMax used for the session is the minimum between the client and
+server. For example:</p>
+<div class="codehilite"><pre><span></span><code>    client: absMax=512, idealMax=256
+    server: absMax=1024, idealMax=64
+    session: absMax=512, idealMax=64
+</code></pre></div>
+
+<h3 id="error-handling">Error Handling<a class="headerlink" href="#error-handling" title="Permanent link">&para;</a></h3>
+<p>Because we assume DASP runs over an unreliable transport,
+implementations must be prepared to handle lost, delayed, or unordered
+messages during the handshake process. The following are specific
+conditions that may arise, and the recommended action for each:</p>
+<p><strong>The client sends the hello, but does not receive the challenge.</strong> In
+this case, either the hello or the challenge may have been lost. In
+either case, a new hello request should be sent. If after three attempts
+fail, then the client should assume communication with the server is not
+available</p>
+<p><strong>The server sends the challenge, but doesn't receive an authenticate
+message.</strong> In this case, either the challenge or the authenticate
+message might have been dropped. In either case the server should never
+attempt resending the challenge, but rather should time out the session
+if no authenticate is received. During the handshake process, the server
+should use a shortened time out period (compared to normal session
+communication).</p>
+<p><strong>The client sends the authenticate, but does not receive the welcome.</strong>
+In this case, either the authenticate or the welcome message was lost.
+The client should resend the authenticate message two more times, before
+giving up. Servers should gracefully handle receiving multiple
+authenticate messages for the same session.</p>
+<h2 id="messaging">Messaging<a class="headerlink" href="#messaging" title="Permanent link">&para;</a></h2>
+<p>Once the session has successfully been established, either end point may
+initiate application level messaging via the datagram message type. When
+an endpoint receives a datagram message it performs the following steps:</p>
+<ol>
+<li>Matches the sessionId to a valid session. If not a valid session,
+    the request is ignored.</li>
+<li>Checks that the remote address matches the one used to setup the
+    session. If not the request is ignored.</li>
+<li>Checks that the seqNum is within the valid receiving sliding window,
+    otherwise it is ignored.</li>
+<li>Checks that the datagram hasn't already been processed, otherwise
+    it is ignored. Each endpoint must keep track of messages it has
+    already processed within its receiving window.</li>
+<li>Updates its receiving window</li>
+<li>Sends the datagram to the application layer for processing.</li>
+<li>Receiver eventually piggybacks an ack on an outgoing message</li>
+</ol>
+<h3 id="acks">Acks<a class="headerlink" href="#acks" title="Permanent link">&para;</a></h3>
+<p>In order to provide reliability, datagrams have to be acknowledged. If
+there are outgoing messages, then the ack header should be piggybacked
+to avoid extra messaging. Otherwise a keepAlive message with an ack
+header is sent back to the remote endpoint to acknowledge the datagrams
+received so far. The ack header specifies the most recent seqNum
+successfully received. When an ack header is received, an endpoint can
+assume that all <code>seqNums &lt;= ackNum</code> have been successfully received and
+that <code>ackNum + 1</code> has not been received yet by the remote endpoint.</p>
+<p>If an endpoint has received messages with gaps in the sequence
+numbering, it can use the ackMore header to enumerate the seqNums it has
+received. This allows us to avoid resending those messages just because
+we've had partial failures. The ackMore is encoded as a list of bits
+that indicate messages received (bit is set), and messages not received
+(bit is zero). The least significant bit corresponds to the seqNum in
+the ack header, and the most significant bit n corresponds to <code>ackNum + n</code>.
+The ackMore header must always be accompanied by the ack header. By
+definition the least significant bit of the bitmask must always be one
+since it corresponds to ackNum itself. Some examples:</p>
+<div class="codehilite"><pre><span></span><code>    ack=10 ackMore=15          -&gt; 0x21
+    ack=10 ackMore=12, 13      -&gt; 0x0d
+    ack=10 ackMore=15, 18, 19  -&gt; 0x03 0x21
+</code></pre></div>
+
+<h3 id="retries">Retries<a class="headerlink" href="#retries" title="Permanent link">&para;</a></h3>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The following behavior is not currently implemented in the opensource Sedona Framework implementations of DASP.</p>
+</div>
+<p>Once an endpoint has sent a datagram message, it should wait for a
+period of time called the <em>sendRetry</em> (default = 1 sec) (see <a href="#flow-control">Flow Control</a> for details). If no acknowledgement has been
+received for the datagram's seqNum, then one of two things has
+happened: the original datagram was lost or the acknowledgement was
+lost. The endpoint should resend the datagram message with the original
+sequence number, then wait again for sendRetry period. This process
+should be repeated until the datagram has been sent the number of times
+specified by the <em>maxSend</em> (default = 3) parameter. If the maxSend
+attempt fails, then the session should be timed out and the close
+message sent to the remote endpoint with the timeout error code.</p>
+<h3 id="sliding-window">Sliding Window<a class="headerlink" href="#sliding-window" title="Permanent link">&para;</a></h3>
+<p>DASP supports full duplex messaging - either side may initiate
+application messages, which are identified with a 16-bit sequence
+number. An endpoint can have multiple outstanding messages that have not
+been acknowledged. The sequence of unacknowledged messages sent is
+called the <em>sending window</em>.</p>
+<p>Each endpoint also maintains a <em>receiving window</em>, which is the sequence
+of messages it is prepared to receive. Any messages outside of the
+receiving window are ignored. The receiveMax header is used to
+communicate the maximum size of receiving window so that the remote
+endpoint can tune its sending window. The receiveMax header of the
+client is specified in its hello message, and the receiveMax of the
+server is specified in the welcome message. Once receiveMax is
+established during the handshake, it cannot be changed.</p>
+<p>The receiveMax header specifies the maximum size of the sliding window,
+since any messages outside of that window will be ignored. An endpoint
+should never use a sending window size greater than the remote
+endpoint's receiving window. However, often the sending window is
+smaller than the remote's receive window. The sending window is grown
+and shrunk during the lifetime of the session to allow dynamic
+optimization of the session's throughput. Tuning the size of the
+sending window is the basis for flow control and congestion control.</p>
+<p>Since seqNum is stored in an unsigned 16-bit integer, implementations
+must handle rollover. The seqNum <code>65535</code> is followed by the sequence
+number 0. For example given lower bound of 65530 and a window size of
+10, then the window wraps from 65530 to 3 inclusively.</p>
+<p>Sequence numbers and the sliding window are only used for datagram
+messages. The client's handshake hello and authenticate messages define
+the client's starting sequence number, which is the seqNum of the
+client's first datagram. The server's handshake challenge and welcome
+define the sequence number of the server's first datagram. The close
+and keepAlive messages should always use a sequence number of 0xffff.</p>
+<h2 id="flow-control">Flow Control<a class="headerlink" href="#flow-control" title="Permanent link">&para;</a></h2>
+<p>A primary goal for DASP is to provide communication for traffic spanning
+networks and devices of varying capabilities. For example a common use
+case is a PC on an Ethernet network communicating to a low cost device
+on a 6LoWPAN network. The ability to tune a session's communication
+rates based on the capability of the endpoints is called <em>flow control</em>.</p>
+<p>It is also common for traffic on networks to vary over time during the
+course of a session. Tuning the session to handle varying network loads
+is called <em>congestion control</em>. For practical purposes, flow control and
+congestion control are handled using the same mechanisms - so we will
+use the term flow control generically.</p>
+<p>Flow control in DASP is always managed on the sending side by
+dynamically tuning the size of the sending window and the sendRetry
+time. These values are tuned based on analysis of the session's recent
+past performance.</p>
+<h2 id="keep-alive-and-termination">Keep Alive and Termination<a class="headerlink" href="#keep-alive-and-termination" title="Permanent link">&para;</a></h2>
+<p>A session is terminated via one of the following conditions:</p>
+<ul>
+<li>One endpoint sends the close message</li>
+<li>No packets are received after a timeout period</li>
+</ul>
+<h3 id="close">Close<a class="headerlink" href="#close" title="Permanent link">&para;</a></h3>
+<p>If possible, sessions should be gracefully shutdown using the close
+message type. If the failure is in the DASP layer (as opposed to the
+application layer), then the errorCode header should be specified.</p>
+<p>If an endpoint receives either the close or error message types, then
+the session is immediately terminated and the sessionId invalidated. No
+acknowledgement is sent on close messages.</p>
+<p>It is recommended that close messages be sent twice - endpoints should
+automatically ignore duplicate close/errors because the sessionId will
+be invalid. Errors during the handshake should only be sent once.
+However, since there is no acknowledgment, we can never guarantee that
+both endpoints are aware of the session termination (in which case we
+must rely on timeouts).</p>
+<h3 id="timeout">Timeout<a class="headerlink" href="#timeout" title="Permanent link">&para;</a></h3>
+<p>We can never assume that sessions are closed gracefully, because
+real-world applications and networks can't be trusted. If an endpoint
+has not received any messages after a period of time, then the session
+is timed out. A timed out session is terminated and the sessionId is
+invalidated. The endpoint should send the remote endpoint an close
+message with the timeout error code - this error should only be sent
+once since there is a good chance the remote endpoint is no longer
+available.</p>
+<p>Each endpoint specifies its configured timeout via the receiveTimeout
+header. The client specifies receiveTimeout in its hello message, and
+the server in the welcome message. If the receiveTimeout is omitted
+during the handshake, then 30 sec should be assumed. Once the session is
+established the overall timeout of the session is the maximum timeout
+between the client and the server. Both endpoints must then use the
+longer timeout.</p>
+<p>Because the timeout must be negotiated between the endpoints, care
+should be taken with using very long time outs. The longer timeout is
+used because we assume the less capable endpoint's network or device
+drives overall reliability and speed. However longer timeouts also mean
+longer periods where the critical memory resources of session state are
+tied up waiting for a session timeout.</p>
+<h3 id="keepalives">keepAlives<a class="headerlink" href="#keepalives" title="Permanent link">&para;</a></h3>
+<p>The keepAlive message type is used to prevent session timeouts and carry
+acknowledgments when there are no outgoing application messages.</p>
+<p>If there are no outgoing datagram messages to piggyback an ack header,
+then an endpoint should sent a keepAlive to acknowledge received
+messages. Implementations can send these acknowledgements immediately or
+may use a small delay called the <em>ackDelay</em>. The ackDelay provides a
+period of time to coalesce multiple acknowledgements and wait for an
+outgoing datagram message to be generated.</p>
+<p>Even if all received messages have been acknowledged, then an endpoint
+still needs to send keepAlive messages to ensure that the remote
+endpoint doesn't timeout the session. In the absence of other
+messaging, an endpoint should send keepAlives three times as fast as the
+timeout period. For example if the negotiated timeout is 30 sec, then
+keepAlives should be sent every 10 sec. Keep alives should only be used
+when no application datagrams are being transmitted.</p>
+<p>KeepAlives are themselves never part of the sliding window. The seqNum
+of a keepAlives should be 0xffff. When a keep alive is received, it is
+never checked against the receiving window and is never acknowledged. An
+endpoint that sends a keepAlive should never attempt to retry the
+keepAlive, since no acknowledgement is expected.</p>
+<h2 id="device-discovery">Device Discovery<a class="headerlink" href="#device-discovery" title="Permanent link">&para;</a></h2>
+<p>DASP supports device discovery with the following sequence:</p>
+<ol>
+<li>The client sends a discover request to all listening Sedona servers</li>
+<li>Any server that receives the discover request opens a Sox session</li>
+<li>The server then sends a discover response containing its platform ID</li>
+<li>The server closes the Sox session immediately</li>
+</ol>
+<p>Each discover response the client receives is added to a list of
+discovered nodes.</p>
+<h3 id="discover">Discover<a class="headerlink" href="#discover" title="Permanent link">&para;</a></h3>
+<p>A discover message may be sent by a client or a server. The client sends
+a discover message with no header fields. The server's response message
+is identical except that it adds a single header field containing its
+platform ID.</p>
+<ul>
+<li><strong>platformId</strong> (response only): a string containing the platform ID
+    of the responding device.</li>
+</ul>
+<p>How the discovered devices are collected and processed is not specified.</p>
+                
+                  
+                
+                
+                  
+                  <hr>
+                  <div class="md-source-date">
+                    <small>
+                      
+                        Last update: April 7, 2020
+                      
+                    </small>
+                  </div>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+        
+          <a href="../networking/" title="Networking" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+            </div>
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Networking
+              </span>
+            </div>
+          </a>
+        
+        
+          <a href="../sox/" title="Sox" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Sox
+              </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+          <div class="md-footer-copyright__highlight">
+            Copyright &copy; 2007-2017 Tridium, 2018-2020 Sedona Community
+          </div>
+        
+        powered by
+        <a href="https://www.mkdocs.org" target="_blank" rel="noopener">MkDocs</a>
+        and
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs</a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../../assets/javascripts/application.c33a9706.js"></script>
+      
+      <script>app.initialize({version:"1.1",url:{base:"../.."}})</script>
+      
+    
+  </body>
+</html>
