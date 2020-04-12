@@ -35,6 +35,17 @@ See all changes in the [ChangeLog](ChangeLog.md).
  $ ./adm/makedist.py
 ```
 
+_NOTE: As of MacOS Catalina, Sedona VM builds are not supported. Specifically, one may get a compiler error:_
+
+```
+...
+ld: warning: The i386 architecture is deprecated for macOS (remove from the Xcode build setting: ARCHS)
+...
+```
+
+_As per the [latest XCode release, last bullet](https://developer.apple.com/documentation/xcode_release_notes/xcode_10_release_notes#3035631), support for 32-bit architecture has been discontinued.
+Therefore, on MacOS platform, moving to docker builds may be the only solution._
+
 ### GNU/Linux
 We build a shell script that uses docker to build sedona under linux, read [here](./tools/README.md) for more details.
 
