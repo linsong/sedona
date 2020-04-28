@@ -132,10 +132,12 @@ public class WriteMd
 
   private void normNav(XWriter out, String title)
   {
-    out.w("[Doc Home](/) > ");
-    out.w("[API Index](/api/api) > ");
-    out.w("[").w(kit.name).w("](/api/").w(kit.name).w(")");
-    if (!title.equalsIgnoreCase(kit.name))
+    boolean isKitLevel = title.equalsIgnoreCase(kit.name);
+    String urlPrefix = isKitLevel ? "../.." : "../../..";
+    out.w("[Doc Home]("+urlPrefix+") > ");
+    out.w("[API Index]("+urlPrefix+"/api/api) > ");
+    out.w("[").w(kit.name).w("]("+urlPrefix+"/api/").w(kit.name).w(")");
+    if (isKitLevel)
       out.w(" > ").w(title);
     out.w("\n");
   }
