@@ -4,9 +4,9 @@ site_description: 'Online documentation for Sedona Framework(R)'
 site_author: 'Sedona Community'
 site_url: 'https://linsong.github.io/sedona'
 # For GH repo pages hosting, use doc
-#docs_dir: 'doc'
+docs_dir: 'doc'
 # For local build/ testing of new content, use build/doc
-docs_dir: 'build/doc'
+#docs_dir: 'build/doc'
 
 # Repository
 repo_name: 'linsong/sedona'
