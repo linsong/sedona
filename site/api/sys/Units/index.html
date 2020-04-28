@@ -1,0 +1,3370 @@
+
+
+
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <meta http-equiv="x-ua-compatible" content="ie=edge">
+      
+        <meta name="description" content="Online documentation for Sedona Framework(R)">
+      
+      
+        <link rel="canonical" href="https://linsong.github.io/sedona/api/sys/Units/">
+      
+      
+        <meta name="author" content="Sedona Community">
+      
+      
+        <meta name="lang:clipboard.copy" content="Copy to clipboard">
+      
+        <meta name="lang:clipboard.copied" content="Copied to clipboard">
+      
+        <meta name="lang:search.language" content="en">
+      
+        <meta name="lang:search.pipeline.stopwords" content="True">
+      
+        <meta name="lang:search.pipeline.trimmer" content="True">
+      
+        <meta name="lang:search.result.none" content="No matching documents">
+      
+        <meta name="lang:search.result.one" content="1 matching document">
+      
+        <meta name="lang:search.result.other" content="# matching documents">
+      
+        <meta name="lang:search.tokenizer" content="[\s\-]+">
+      
+      <link rel="shortcut icon" href="../../../favicon.ico">
+      <meta name="generator" content="mkdocs-1.1, mkdocs-material-4.6.3">
+    
+    
+      
+        <title>Units - Sedona Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/application.adb8469c.css">
+      
+        <link rel="stylesheet" href="../../../assets/stylesheets/application-palette.a8b3c06d.css">
+      
+      
+        
+        
+        <meta name="theme-color" content="#795548">
+      
+    
+    
+      <script src="../../../assets/javascripts/modernizr.86422ebf.js"></script>
+    
+    
+      
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono","Courier New",Courier,monospace}</style>
+      
+    
+    <link rel="stylesheet" href="../../../assets/fonts/material-icons.css">
+    
+    
+    
+      
+    
+    
+  </head>
+  
+    
+    
+    <body dir="ltr" data-md-color-primary="brown" data-md-color-accent="red">
+  
+    <svg class="md-svg">
+      <defs>
+        
+        
+          <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448" viewBox="0 0 416 448" id="__github"><path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z"/></svg>
+        
+      </defs>
+    </svg>
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+    
+      <a href="#units" tabindex="0" class="md-skip">
+        Skip to content
+      </a>
+    
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="https://linsong.github.io/sedona" title="Sedona Documentation" aria-label="Sedona Documentation" class="md-header-nav__button md-logo">
+          
+            <img alt="logo" src="../../../favicon.ico" width="24" height="24">
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          
+            <span class="md-header-nav__topic">
+              Sedona Documentation
+            </span>
+            <span class="md-header-nav__topic">
+              
+                Units
+              
+            </span>
+          
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        
+          <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+          
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" aria-label="search" name="query" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+        
+      </div>
+      
+        <div class="md-flex__cell md-flex__cell--shrink">
+          <div class="md-header-nav__source">
+            
+
+
+  
+
+<a href="https://github.com/linsong/sedona/" title="Go to repository" class="md-source" data-md-source="github">
+  
+    <div class="md-source__icon">
+      <svg viewBox="0 0 24 24" width="24" height="24">
+        <use xlink:href="#__github" width="24" height="24"></use>
+      </svg>
+    </div>
+  
+  <div class="md-source__repository">
+    linsong/sedona
+  </div>
+</a>
+          </div>
+        </div>
+      
+    </div>
+  </nav>
+</header>
+    
+    <div class="md-container">
+      
+        
+      
+      
+      <main class="md-main" role="main">
+        <div class="md-main__inner md-grid" data-md-component="container">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href="https://linsong.github.io/sedona" title="Sedona Documentation" class="md-nav__button md-logo">
+      
+        <img alt="logo" src="../../../favicon.ico" width="48" height="48">
+      
+    </a>
+    Sedona Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      
+
+
+  
+
+<a href="https://github.com/linsong/sedona/" title="Go to repository" class="md-source" data-md-source="github">
+  
+    <div class="md-source__icon">
+      <svg viewBox="0 0 24 24" width="24" height="24">
+        <use xlink:href="#__github" width="24" height="24"></use>
+      </svg>
+    </div>
+  
+  <div class="md-source__repository">
+    linsong/sedona
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../.." title="Index" class="md-nav__link">
+      Index
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2">
+    
+    <label class="md-nav__link" for="nav-2">
+      Getting Started
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-2">
+        Getting Started
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../quickstart/intro/" title="Introduction" class="md-nav__link">
+      Introduction
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../quickstart/setup/" title="Setup" class="md-nav__link">
+      Setup
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../quickstart/architecture/" title="Architecture" class="md-nav__link">
+      Architecture
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../quickstart/tutorial/" title="Tutorial" class="md-nav__link">
+      Tutorial
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3">
+    
+    <label class="md-nav__link" for="nav-3">
+      Language
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-3">
+        Language
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../language/lang/" title="Language" class="md-nav__link">
+      Language
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../language/primitives/" title="Primitives" class="md-nav__link">
+      Primitives
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../language/expr/" title="Expressions" class="md-nav__link">
+      Expressions
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../language/stmt/" title="Statements" class="md-nav__link">
+      Statements
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../language/classes/" title="Classes" class="md-nav__link">
+      Classes
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../language/fields/" title="Fields" class="md-nav__link">
+      Fields
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../language/methods/" title="Methods" class="md-nav__link">
+      Methods
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../language/components/" title="Components" class="md-nav__link">
+      Components
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../language/reflection/" title="Reflection" class="md-nav__link">
+      Reflection
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../language/arrays/" title="Arrays" class="md-nav__link">
+      Arrays
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../language/memory/" title="Memory" class="md-nav__link">
+      Memory
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../language/nativeMethods/" title="Native Methods" class="md-nav__link">
+      Native Methods
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../language/logging/" title="Logging" class="md-nav__link">
+      Logging
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4">
+    
+    <label class="md-nav__link" for="nav-4">
+      Apps
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-4">
+        Apps
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../apps/apps/" title="Application Model" class="md-nav__link">
+      Application Model
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../apps/security/" title="Security" class="md-nav__link">
+      Security
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5">
+    
+    <label class="md-nav__link" for="nav-5">
+      Deployment
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-5">
+        Deployment
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../deployment/kits/" title="Kits" class="md-nav__link">
+      Kits
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../deployment/schema/" title="Schema" class="md-nav__link">
+      Schema
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6">
+    
+    <label class="md-nav__link" for="nav-6">
+      Platforms
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-6">
+        Platforms
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../platforms/platDef/" title="Platform Definition" class="md-nav__link">
+      Platform Definition
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../platforms/par/" title="Platform Archive" class="md-nav__link">
+      Platform Archive
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../platforms/platTutorial/" title="Platform Tutorial" class="md-nav__link">
+      Platform Tutorial
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../platforms/deviceSim/" title="Device Simulator" class="md-nav__link">
+      Device Simulator
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../platforms/platCertified/" title="Certified Platforms" class="md-nav__link">
+      Certified Platforms
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-7" type="checkbox" id="nav-7">
+    
+    <label class="md-nav__link" for="nav-7">
+      Development
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-7">
+        Development
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../development/sedonac/" title="Sedonac" class="md-nav__link">
+      Sedonac
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../development/testing/" title="Testing" class="md-nav__link">
+      Testing
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../development/porting/" title="Porting" class="md-nav__link">
+      Porting
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../development/niagara/" title="Niagara" class="md-nav__link">
+      Niagara
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-8" type="checkbox" id="nav-8">
+    
+    <label class="md-nav__link" for="nav-8">
+      Networking
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-8">
+        Networking
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../networking/networking/" title="Networking" class="md-nav__link">
+      Networking
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../networking/dasp/" title="DASP" class="md-nav__link">
+      DASP
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../networking/sox/" title="Sox" class="md-nav__link">
+      Sox
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../networking/discover/" title="Device Discovery" class="md-nav__link">
+      Device Discovery
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9" type="checkbox" id="nav-9">
+    
+    <label class="md-nav__link" for="nav-9">
+      Appendix
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-9">
+        Appendix
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../appendix/license/" title="License" class="md-nav__link">
+      License
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../appendix/conventions/" title="Coding Conventions" class="md-nav__link">
+      Coding Conventions
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../appendix/scodeFormat/" title="SCode Format" class="md-nav__link">
+      SCode Format
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../appendix/grammar/" title="Grammar" class="md-nav__link">
+      Grammar
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-10" type="checkbox" id="nav-10">
+    
+    <label class="md-nav__link" for="nav-10">
+      Releases
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-10">
+        Releases
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../releases/newFor12/" title="v1.2" class="md-nav__link">
+      v1.2
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../api/" title="API" class="md-nav__link">
+      API
+    </a>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#inheritance" class="md-nav__link">
+    Inheritance
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fields" class="md-nav__link">
+    Fields
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#acre" class="md-nav__link">
+    acre
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ampere" class="md-nav__link">
+    ampere
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ampere_square_meter" class="md-nav__link">
+    ampere_square_meter
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#amperes_per_meter" class="md-nav__link">
+    amperes_per_meter
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#amperes_per_square_meter" class="md-nav__link">
+    amperes_per_square_meter
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#atmosphere" class="md-nav__link">
+    atmosphere
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bar" class="md-nav__link">
+    bar
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#btu" class="md-nav__link">
+    btu
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#btu_per_pound" class="md-nav__link">
+    btu_per_pound
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#btus_per_hour" class="md-nav__link">
+    btus_per_hour
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#btus_per_pound" class="md-nav__link">
+    btus_per_pound
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#btus_per_pound_dry_air" class="md-nav__link">
+    btus_per_pound_dry_air
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#calorie" class="md-nav__link">
+    calorie
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#calorie_per_gram" class="md-nav__link">
+    calorie_per_gram
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#candela" class="md-nav__link">
+    candela
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#candelas_per_square_meter" class="md-nav__link">
+    candelas_per_square_meter
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#celsius" class="md-nav__link">
+    celsius
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#celsius_degrees" class="md-nav__link">
+    celsius_degrees
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#centimeter" class="md-nav__link">
+    centimeter
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#centimeters_of_mercury" class="md-nav__link">
+    centimeters_of_mercury
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#centimeters_of_water" class="md-nav__link">
+    centimeters_of_water
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#coulomb" class="md-nav__link">
+    coulomb
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cubic_centimeter" class="md-nav__link">
+    cubic_centimeter
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cubic_feet_per_minute" class="md-nav__link">
+    cubic_feet_per_minute
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cubic_feet_per_second" class="md-nav__link">
+    cubic_feet_per_second
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cubic_foot" class="md-nav__link">
+    cubic_foot
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cubic_inch" class="md-nav__link">
+    cubic_inch
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cubic_meter" class="md-nav__link">
+    cubic_meter
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cubic_meters_per_hour" class="md-nav__link">
+    cubic_meters_per_hour
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cubic_meters_per_minute" class="md-nav__link">
+    cubic_meters_per_minute
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cubic_meters_per_second" class="md-nav__link">
+    cubic_meters_per_second
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cubic_millimeter" class="md-nav__link">
+    cubic_millimeter
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cubic_yard" class="md-nav__link">
+    cubic_yard
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cycles_per_hour" class="md-nav__link">
+    cycles_per_hour
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cycles_per_minute" class="md-nav__link">
+    cycles_per_minute
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#day" class="md-nav__link">
+    day
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#db_microvolt" class="md-nav__link">
+    db_microVolt
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#db_millivolt" class="md-nav__link">
+    db_milliVolt
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#decibel" class="md-nav__link">
+    decibel
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#degree_days_celsius" class="md-nav__link">
+    degree_days_celsius
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#degree_days_fahrenheit" class="md-nav__link">
+    degree_days_fahrenheit
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#degrees_angular" class="md-nav__link">
+    degrees_angular
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#degrees_celsius_per_hour" class="md-nav__link">
+    degrees_celsius_per_hour
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#degrees_celsius_per_minute" class="md-nav__link">
+    degrees_celsius_per_minute
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#degrees_fahrenheit_per_hour" class="md-nav__link">
+    degrees_fahrenheit_per_hour
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#degrees_fahrenheit_per_minute" class="md-nav__link">
+    degrees_fahrenheit_per_minute
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#degrees_kelvin_per_hour" class="md-nav__link">
+    degrees_kelvin_per_hour
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#degrees_kelvin_per_minute" class="md-nav__link">
+    degrees_kelvin_per_minute
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#degrees_kelvin_per_second" class="md-nav__link">
+    degrees_kelvin_per_second
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#degrees_phase" class="md-nav__link">
+    degrees_phase
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#delta_btus_per_pound" class="md-nav__link">
+    delta_btus_per_pound
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#delta_kilojoules_per_kilogram" class="md-nav__link">
+    delta_kilojoules_per_kilogram
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dollar" class="md-nav__link">
+    dollar
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#euro" class="md-nav__link">
+    euro
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fahrenheit" class="md-nav__link">
+    fahrenheit
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fahrenheit_degrees" class="md-nav__link">
+    fahrenheit_degrees
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#farad" class="md-nav__link">
+    farad
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#feet_per_minute" class="md-nav__link">
+    feet_per_minute
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#feet_per_second" class="md-nav__link">
+    feet_per_second
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fluid_ounce" class="md-nav__link">
+    fluid_ounce
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#foot" class="md-nav__link">
+    foot
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#foot_pounds_per_second" class="md-nav__link">
+    foot_pounds_per_second
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#footcandle" class="md-nav__link">
+    footcandle
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#footcandles" class="md-nav__link">
+    footcandles
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#formazin_nephelometric_unit" class="md-nav__link">
+    formazin_nephelometric_unit
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#franc" class="md-nav__link">
+    franc
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gallon" class="md-nav__link">
+    gallon
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gallons_per_minute" class="md-nav__link">
+    gallons_per_minute
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gigajoule" class="md-nav__link">
+    gigajoule
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gigawatt" class="md-nav__link">
+    gigawatt
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gram" class="md-nav__link">
+    gram
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#grams_of_water_per_kilogram_dry_air" class="md-nav__link">
+    grams_of_water_per_kilogram_dry_air
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#grams_per_kilogram" class="md-nav__link">
+    grams_per_kilogram
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#grams_per_minute" class="md-nav__link">
+    grams_per_minute
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#grams_per_second" class="md-nav__link">
+    grams_per_second
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#grams_per_square_meter" class="md-nav__link">
+    grams_per_square_meter
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hectopascal" class="md-nav__link">
+    hectopascal
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#henry" class="md-nav__link">
+    henry
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hertz" class="md-nav__link">
+    hertz
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#horsepower" class="md-nav__link">
+    horsepower
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#horsepower_hour" class="md-nav__link">
+    horsepower_hour
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hour" class="md-nav__link">
+    hour
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hundredths_second" class="md-nav__link">
+    hundredths_second
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#imperial_gallon" class="md-nav__link">
+    imperial_gallon
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#imperial_gallons_per_minute" class="md-nav__link">
+    imperial_gallons_per_minute
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#inch" class="md-nav__link">
+    inch
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#inches_of_mercury" class="md-nav__link">
+    inches_of_mercury
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#inches_of_water" class="md-nav__link">
+    inches_of_water
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#joule" class="md-nav__link">
+    joule
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#joule_second" class="md-nav__link">
+    joule_second
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#joules_per_degree_kelvin" class="md-nav__link">
+    joules_per_degree_kelvin
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#joules_per_gram" class="md-nav__link">
+    joules_per_gram
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#joules_per_kilogram" class="md-nav__link">
+    joules_per_kilogram
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#joules_per_kilogram_degree_kelvin" class="md-nav__link">
+    joules_per_kilogram_degree_kelvin
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#joules_per_kilogram_dry_air" class="md-nav__link">
+    joules_per_kilogram_dry_air
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#joules_per_kilogram_se" class="md-nav__link">
+    joules_per_kilogram_se
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#joules_per_square_meter" class="md-nav__link">
+    joules_per_square_meter
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#julian_month" class="md-nav__link">
+    julian_month
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kelvin" class="md-nav__link">
+    kelvin
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kelvin_degrees" class="md-nav__link">
+    kelvin_degrees
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kilobtu" class="md-nav__link">
+    kilobtu
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kilobtus_per_hour" class="md-nav__link">
+    kilobtus_per_hour
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kilogram" class="md-nav__link">
+    kilogram
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kilograms_per_cubic_meter" class="md-nav__link">
+    kilograms_per_cubic_meter
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kilograms_per_hour" class="md-nav__link">
+    kilograms_per_hour
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kilograms_per_minute" class="md-nav__link">
+    kilograms_per_minute
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kilograms_per_second" class="md-nav__link">
+    kilograms_per_second
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kilograms_per_square_meter" class="md-nav__link">
+    kilograms_per_square_meter
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kilohertz" class="md-nav__link">
+    kilohertz
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kilohm" class="md-nav__link">
+    kilohm
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kilojoule" class="md-nav__link">
+    kilojoule
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kilojoule_per_kilogram" class="md-nav__link">
+    kilojoule_per_kilogram
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kilojoules_per_degree_kelvin" class="md-nav__link">
+    kilojoules_per_degree_kelvin
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kilojoules_per_kilogram" class="md-nav__link">
+    kilojoules_per_kilogram
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kilojoules_per_kilogram_dry_air" class="md-nav__link">
+    kilojoules_per_kilogram_dry_air
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiloliter" class="md-nav__link">
+    kiloliter
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kilometer" class="md-nav__link">
+    kilometer
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kilometers_per_hour" class="md-nav__link">
+    kilometers_per_hour
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kilometers_per_second" class="md-nav__link">
+    kilometers_per_second
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kilopascal" class="md-nav__link">
+    kilopascal
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kilovolt" class="md-nav__link">
+    kilovolt
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kilovolt_ampere" class="md-nav__link">
+    kilovolt_ampere
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kilovolt_ampere_hour" class="md-nav__link">
+    kilovolt_ampere_hour
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kilovolt_ampere_reactive" class="md-nav__link">
+    kilovolt_ampere_reactive
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kilovolt_ampere_reactive_hour" class="md-nav__link">
+    kilovolt_ampere_reactive_hour
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kilowatt" class="md-nav__link">
+    kilowatt
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kilowatt_hour" class="md-nav__link">
+    kilowatt_hour
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kilowatt_hours_per_square_foot" class="md-nav__link">
+    kilowatt_hours_per_square_foot
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kilowatt_hours_per_square_meter" class="md-nav__link">
+    kilowatt_hours_per_square_meter
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lira" class="md-nav__link">
+    lira
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#liter" class="md-nav__link">
+    liter
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#liters_per_hour" class="md-nav__link">
+    liters_per_hour
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#liters_per_minute" class="md-nav__link">
+    liters_per_minute
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#liters_per_second" class="md-nav__link">
+    liters_per_second
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lumen" class="md-nav__link">
+    lumen
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lux" class="md-nav__link">
+    lux
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#megabtu" class="md-nav__link">
+    megabtu
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#megahertz" class="md-nav__link">
+    megahertz
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#megajoule" class="md-nav__link">
+    megajoule
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#megajoules_per_degree_kelvin" class="md-nav__link">
+    megajoules_per_degree_kelvin
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#megajoules_per_kilogram_dry_air" class="md-nav__link">
+    megajoules_per_kilogram_dry_air
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#megajoules_per_square_foot" class="md-nav__link">
+    megajoules_per_square_foot
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#megajoules_per_square_meter" class="md-nav__link">
+    megajoules_per_square_meter
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#megavolt" class="md-nav__link">
+    megavolt
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#megavolt_ampere" class="md-nav__link">
+    megavolt_ampere
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#megavolt_ampere_hour" class="md-nav__link">
+    megavolt_ampere_hour
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#megavolt_ampere_reactive" class="md-nav__link">
+    megavolt_ampere_reactive
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#megavolt_ampere_reactive_hour" class="md-nav__link">
+    megavolt_ampere_reactive_hour
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#megawatt" class="md-nav__link">
+    megawatt
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#megawatt_hour" class="md-nav__link">
+    megawatt_hour
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#megohm" class="md-nav__link">
+    megohm
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#meter" class="md-nav__link">
+    meter
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#meters_per_hour" class="md-nav__link">
+    meters_per_hour
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#meters_per_minute" class="md-nav__link">
+    meters_per_minute
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#meters_per_second" class="md-nav__link">
+    meters_per_second
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#meters_per_second_squared" class="md-nav__link">
+    meters_per_second_squared
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#metric_ton" class="md-nav__link">
+    metric_ton
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#metric_tons_per_hour" class="md-nav__link">
+    metric_tons_per_hour
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#micrometer" class="md-nav__link">
+    micrometer
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#microsecond" class="md-nav__link">
+    microsecond
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mile" class="md-nav__link">
+    mile
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#miles_per_hour" class="md-nav__link">
+    miles_per_hour
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#milliampere" class="md-nav__link">
+    milliampere
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#millibar" class="md-nav__link">
+    millibar
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#milligram" class="md-nav__link">
+    milligram
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#milliliter" class="md-nav__link">
+    milliliter
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#milliliters_per_minute" class="md-nav__link">
+    milliliters_per_minute
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#milliliters_per_second" class="md-nav__link">
+    milliliters_per_second
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#millimeter" class="md-nav__link">
+    millimeter
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#millimeters_of_mercury" class="md-nav__link">
+    millimeters_of_mercury
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#millimeters_per_minute" class="md-nav__link">
+    millimeters_per_minute
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#millimeters_per_second" class="md-nav__link">
+    millimeters_per_second
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#milliohm" class="md-nav__link">
+    milliohm
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#millisecond" class="md-nav__link">
+    millisecond
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#millivolt" class="md-nav__link">
+    millivolt
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#milliwatt" class="md-nav__link">
+    milliwatt
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#minute" class="md-nav__link">
+    minute
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nanosecond" class="md-nav__link">
+    nanosecond
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nephelometric_turbidity_units" class="md-nav__link">
+    nephelometric_turbidity_units
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#newton" class="md-nav__link">
+    newton
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#newton_meter" class="md-nav__link">
+    newton_meter
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#newton_second" class="md-nav__link">
+    newton_second
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#newtons_per_meter" class="md-nav__link">
+    newtons_per_meter
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#newtons_per_meter_st" class="md-nav__link">
+    newtons_per_meter_st
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ohm" class="md-nav__link">
+    ohm
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ohm_meter" class="md-nav__link">
+    ohm_meter
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ounce" class="md-nav__link">
+    ounce
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ph" class="md-nav__link">
+    pH
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#parts_per_billion" class="md-nav__link">
+    parts_per_billion
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#parts_per_million" class="md-nav__link">
+    parts_per_million
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#parts_per_unit" class="md-nav__link">
+    parts_per_unit
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pascal" class="md-nav__link">
+    pascal
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#per_hour" class="md-nav__link">
+    per_hour
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#per_minute" class="md-nav__link">
+    per_minute
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#per_second" class="md-nav__link">
+    per_second
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#percent" class="md-nav__link">
+    percent
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#percent_obscuration_per_foot" class="md-nav__link">
+    percent_obscuration_per_foot
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#percent_obscuration_per_meter" class="md-nav__link">
+    percent_obscuration_per_meter
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#percent_per_second" class="md-nav__link">
+    percent_per_second
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#percent_relative_humidity" class="md-nav__link">
+    percent_relative_humidity
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#peseta" class="md-nav__link">
+    peseta
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pint" class="md-nav__link">
+    pint
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pound" class="md-nav__link">
+    pound
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pound_force" class="md-nav__link">
+    pound_force
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pounds" class="md-nav__link">
+    pounds
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pounds_per_hour" class="md-nav__link">
+    pounds_per_hour
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pounds_per_minute" class="md-nav__link">
+    pounds_per_minute
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pounds_per_second" class="md-nav__link">
+    pounds_per_second
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pounds_per_square_inch" class="md-nav__link">
+    pounds_per_square_inch
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#power_factor" class="md-nav__link">
+    power_factor
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psi_per_degree_fahrenheit" class="md-nav__link">
+    psi_per_degree_fahrenheit
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#quart" class="md-nav__link">
+    quart
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#radian" class="md-nav__link">
+    radian
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#radians_per_second" class="md-nav__link">
+    radians_per_second
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#radians_per_second_squared" class="md-nav__link">
+    radians_per_second_squared
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#revolutions_per_minute" class="md-nav__link">
+    revolutions_per_minute
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rupee" class="md-nav__link">
+    rupee
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#second" class="md-nav__link">
+    second
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#short_ton" class="md-nav__link">
+    short_ton
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#siemens" class="md-nav__link">
+    siemens
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#siemens_per_meter" class="md-nav__link">
+    siemens_per_meter
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#square_centimeter" class="md-nav__link">
+    square_centimeter
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#square_foot" class="md-nav__link">
+    square_foot
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#square_inch" class="md-nav__link">
+    square_inch
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#square_kilometer" class="md-nav__link">
+    square_kilometer
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#square_meter" class="md-nav__link">
+    square_meter
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#square_meters_per_newton" class="md-nav__link">
+    square_meters_per_newton
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#square_mile" class="md-nav__link">
+    square_mile
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#square_millimeter" class="md-nav__link">
+    square_millimeter
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#square_yard" class="md-nav__link">
+    square_yard
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steradian" class="md-nav__link">
+    steradian
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tenths_second" class="md-nav__link">
+    tenths_second
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tesla" class="md-nav__link">
+    tesla
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#therm" class="md-nav__link">
+    therm
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tons_refrigeration" class="md-nav__link">
+    tons_refrigeration
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tons_refrigeration_hour" class="md-nav__link">
+    tons_refrigeration_hour
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#torr" class="md-nav__link">
+    torr
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#volt" class="md-nav__link">
+    volt
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#volt_ampere" class="md-nav__link">
+    volt_ampere
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#volt_ampere_hour" class="md-nav__link">
+    volt_ampere_hour
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#volt_ampere_reactive" class="md-nav__link">
+    volt_ampere_reactive
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#volt_ampere_reactive_hour" class="md-nav__link">
+    volt_ampere_reactive_hour
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#volts_per_degree_kelvin" class="md-nav__link">
+    volts_per_degree_kelvin
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#volts_per_meter" class="md-nav__link">
+    volts_per_meter
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#watt" class="md-nav__link">
+    watt
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#watt_hour" class="md-nav__link">
+    watt_hour
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#watts_per_meter_degree_kelvin" class="md-nav__link">
+    watts_per_meter_degree_kelvin
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#watts_per_square_foot" class="md-nav__link">
+    watts_per_square_foot
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#watts_per_square_meter" class="md-nav__link">
+    watts_per_square_meter
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#watts_per_square_meter_degree_kelvin" class="md-nav__link">
+    watts_per_square_meter_degree_kelvin
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#weber" class="md-nav__link">
+    weber
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#week" class="md-nav__link">
+    week
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#won" class="md-nav__link">
+    won
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#yard" class="md-nav__link">
+    yard
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#year" class="md-nav__link">
+    year
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#yen" class="md-nav__link">
+    yen
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/linsong/sedona/edit/master/docs/api/sys/Units.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
+                
+                
+                <p><a href="/"><img alt="Sedona" src="../../../logo.png" /></a></p>
+<h1 id="units">Units<a class="headerlink" href="#units" title="Permanent link">&para;</a></h1>
+<p><a href="../../..">Doc Home</a> &gt; <a href="../../../api/api">API Index</a> &gt; <a href="../../../api/sys">sys</a> &gt; Units</p>
+<hr />
+<h2 id="inheritance">Inheritance<a class="headerlink" href="#inheritance" title="Permanent link">&para;</a></h2>
+<p><pre class='inheritance'>
+<a href="/api/sys/Obj">sys::Obj</a>
+  sys::Units
+</pre>
+<code style='color:darkgreen;font-weight:bold;font-size:120%'>public  class <b style='font-weight:bolder'>Units</b>  </code></p>
+<p>Standard database of unit names to be used with the unit facet.
+These names are standardized by the oBIX OASIS specification.</p>
+<hr />
+<h2 id="fields">Fields<a class="headerlink" href="#fields" title="Permanent link">&para;</a></h2>
+<dl>
+
+<h3 id="acre">acre<a class="headerlink" href="#acre" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> acre</strong></code></p>
+<h3 id="ampere">ampere<a class="headerlink" href="#ampere" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> ampere</strong></code></p>
+<h3 id="ampere_square_meter">ampere_square_meter<a class="headerlink" href="#ampere_square_meter" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> ampere_square_meter</strong></code></p>
+<h3 id="amperes_per_meter">amperes_per_meter<a class="headerlink" href="#amperes_per_meter" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> amperes_per_meter</strong></code></p>
+<h3 id="amperes_per_square_meter">amperes_per_square_meter<a class="headerlink" href="#amperes_per_square_meter" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> amperes_per_square_meter</strong></code></p>
+<h3 id="atmosphere">atmosphere<a class="headerlink" href="#atmosphere" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> atmosphere</strong></code></p>
+<h3 id="bar">bar<a class="headerlink" href="#bar" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> bar</strong></code></p>
+<h3 id="btu">btu<a class="headerlink" href="#btu" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> btu</strong></code></p>
+<h3 id="btu_per_pound">btu_per_pound<a class="headerlink" href="#btu_per_pound" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> btu_per_pound</strong></code></p>
+<h3 id="btus_per_hour">btus_per_hour<a class="headerlink" href="#btus_per_hour" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> btus_per_hour</strong></code></p>
+<h3 id="btus_per_pound">btus_per_pound<a class="headerlink" href="#btus_per_pound" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> btus_per_pound</strong></code></p>
+<h3 id="btus_per_pound_dry_air">btus_per_pound_dry_air<a class="headerlink" href="#btus_per_pound_dry_air" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> btus_per_pound_dry_air</strong></code></p>
+<h3 id="calorie">calorie<a class="headerlink" href="#calorie" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> calorie</strong></code></p>
+<h3 id="calorie_per_gram">calorie_per_gram<a class="headerlink" href="#calorie_per_gram" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> calorie_per_gram</strong></code></p>
+<h3 id="candela">candela<a class="headerlink" href="#candela" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> candela</strong></code></p>
+<h3 id="candelas_per_square_meter">candelas_per_square_meter<a class="headerlink" href="#candelas_per_square_meter" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> candelas_per_square_meter</strong></code></p>
+<h3 id="celsius">celsius<a class="headerlink" href="#celsius" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> celsius</strong></code></p>
+<h3 id="celsius_degrees">celsius_degrees<a class="headerlink" href="#celsius_degrees" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> celsius_degrees</strong></code></p>
+<h3 id="centimeter">centimeter<a class="headerlink" href="#centimeter" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> centimeter</strong></code></p>
+<h3 id="centimeters_of_mercury">centimeters_of_mercury<a class="headerlink" href="#centimeters_of_mercury" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> centimeters_of_mercury</strong></code></p>
+<h3 id="centimeters_of_water">centimeters_of_water<a class="headerlink" href="#centimeters_of_water" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> centimeters_of_water</strong></code></p>
+<h3 id="coulomb">coulomb<a class="headerlink" href="#coulomb" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> coulomb</strong></code></p>
+<h3 id="cubic_centimeter">cubic_centimeter<a class="headerlink" href="#cubic_centimeter" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> cubic_centimeter</strong></code></p>
+<h3 id="cubic_feet_per_minute">cubic_feet_per_minute<a class="headerlink" href="#cubic_feet_per_minute" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> cubic_feet_per_minute</strong></code></p>
+<h3 id="cubic_feet_per_second">cubic_feet_per_second<a class="headerlink" href="#cubic_feet_per_second" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> cubic_feet_per_second</strong></code></p>
+<h3 id="cubic_foot">cubic_foot<a class="headerlink" href="#cubic_foot" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> cubic_foot</strong></code></p>
+<h3 id="cubic_inch">cubic_inch<a class="headerlink" href="#cubic_inch" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> cubic_inch</strong></code></p>
+<h3 id="cubic_meter">cubic_meter<a class="headerlink" href="#cubic_meter" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> cubic_meter</strong></code></p>
+<h3 id="cubic_meters_per_hour">cubic_meters_per_hour<a class="headerlink" href="#cubic_meters_per_hour" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> cubic_meters_per_hour</strong></code></p>
+<h3 id="cubic_meters_per_minute">cubic_meters_per_minute<a class="headerlink" href="#cubic_meters_per_minute" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> cubic_meters_per_minute</strong></code></p>
+<h3 id="cubic_meters_per_second">cubic_meters_per_second<a class="headerlink" href="#cubic_meters_per_second" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> cubic_meters_per_second</strong></code></p>
+<h3 id="cubic_millimeter">cubic_millimeter<a class="headerlink" href="#cubic_millimeter" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> cubic_millimeter</strong></code></p>
+<h3 id="cubic_yard">cubic_yard<a class="headerlink" href="#cubic_yard" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> cubic_yard</strong></code></p>
+<h3 id="cycles_per_hour">cycles_per_hour<a class="headerlink" href="#cycles_per_hour" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> cycles_per_hour</strong></code></p>
+<h3 id="cycles_per_minute">cycles_per_minute<a class="headerlink" href="#cycles_per_minute" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> cycles_per_minute</strong></code></p>
+<h3 id="day">day<a class="headerlink" href="#day" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> day</strong></code></p>
+<h3 id="db_microvolt">db_microVolt<a class="headerlink" href="#db_microvolt" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> db_microVolt</strong></code></p>
+<h3 id="db_millivolt">db_milliVolt<a class="headerlink" href="#db_millivolt" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> db_milliVolt</strong></code></p>
+<h3 id="decibel">decibel<a class="headerlink" href="#decibel" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> decibel</strong></code></p>
+<h3 id="degree_days_celsius">degree_days_celsius<a class="headerlink" href="#degree_days_celsius" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> degree_days_celsius</strong></code></p>
+<h3 id="degree_days_fahrenheit">degree_days_fahrenheit<a class="headerlink" href="#degree_days_fahrenheit" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> degree_days_fahrenheit</strong></code></p>
+<h3 id="degrees_angular">degrees_angular<a class="headerlink" href="#degrees_angular" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> degrees_angular</strong></code></p>
+<h3 id="degrees_celsius_per_hour">degrees_celsius_per_hour<a class="headerlink" href="#degrees_celsius_per_hour" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> degrees_celsius_per_hour</strong></code></p>
+<h3 id="degrees_celsius_per_minute">degrees_celsius_per_minute<a class="headerlink" href="#degrees_celsius_per_minute" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> degrees_celsius_per_minute</strong></code></p>
+<h3 id="degrees_fahrenheit_per_hour">degrees_fahrenheit_per_hour<a class="headerlink" href="#degrees_fahrenheit_per_hour" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> degrees_fahrenheit_per_hour</strong></code></p>
+<h3 id="degrees_fahrenheit_per_minute">degrees_fahrenheit_per_minute<a class="headerlink" href="#degrees_fahrenheit_per_minute" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> degrees_fahrenheit_per_minute</strong></code></p>
+<h3 id="degrees_kelvin_per_hour">degrees_kelvin_per_hour<a class="headerlink" href="#degrees_kelvin_per_hour" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> degrees_kelvin_per_hour</strong></code></p>
+<h3 id="degrees_kelvin_per_minute">degrees_kelvin_per_minute<a class="headerlink" href="#degrees_kelvin_per_minute" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> degrees_kelvin_per_minute</strong></code></p>
+<h3 id="degrees_kelvin_per_second">degrees_kelvin_per_second<a class="headerlink" href="#degrees_kelvin_per_second" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> degrees_kelvin_per_second</strong></code></p>
+<h3 id="degrees_phase">degrees_phase<a class="headerlink" href="#degrees_phase" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> degrees_phase</strong></code></p>
+<h3 id="delta_btus_per_pound">delta_btus_per_pound<a class="headerlink" href="#delta_btus_per_pound" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> delta_btus_per_pound</strong></code></p>
+<h3 id="delta_kilojoules_per_kilogram">delta_kilojoules_per_kilogram<a class="headerlink" href="#delta_kilojoules_per_kilogram" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> delta_kilojoules_per_kilogram</strong></code></p>
+<h3 id="dollar">dollar<a class="headerlink" href="#dollar" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> dollar</strong></code></p>
+<h3 id="euro">euro<a class="headerlink" href="#euro" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> euro</strong></code></p>
+<h3 id="fahrenheit">fahrenheit<a class="headerlink" href="#fahrenheit" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> fahrenheit</strong></code></p>
+<h3 id="fahrenheit_degrees">fahrenheit_degrees<a class="headerlink" href="#fahrenheit_degrees" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> fahrenheit_degrees</strong></code></p>
+<h3 id="farad">farad<a class="headerlink" href="#farad" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> farad</strong></code></p>
+<h3 id="feet_per_minute">feet_per_minute<a class="headerlink" href="#feet_per_minute" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> feet_per_minute</strong></code></p>
+<h3 id="feet_per_second">feet_per_second<a class="headerlink" href="#feet_per_second" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> feet_per_second</strong></code></p>
+<h3 id="fluid_ounce">fluid_ounce<a class="headerlink" href="#fluid_ounce" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> fluid_ounce</strong></code></p>
+<h3 id="foot">foot<a class="headerlink" href="#foot" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> foot</strong></code></p>
+<h3 id="foot_pounds_per_second">foot_pounds_per_second<a class="headerlink" href="#foot_pounds_per_second" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> foot_pounds_per_second</strong></code></p>
+<h3 id="footcandle">footcandle<a class="headerlink" href="#footcandle" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> footcandle</strong></code></p>
+<h3 id="footcandles">footcandles<a class="headerlink" href="#footcandles" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> footcandles</strong></code></p>
+<h3 id="formazin_nephelometric_unit">formazin_nephelometric_unit<a class="headerlink" href="#formazin_nephelometric_unit" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> formazin_nephelometric_unit</strong></code></p>
+<h3 id="franc">franc<a class="headerlink" href="#franc" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> franc</strong></code></p>
+<h3 id="gallon">gallon<a class="headerlink" href="#gallon" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> gallon</strong></code></p>
+<h3 id="gallons_per_minute">gallons_per_minute<a class="headerlink" href="#gallons_per_minute" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> gallons_per_minute</strong></code></p>
+<h3 id="gigajoule">gigajoule<a class="headerlink" href="#gigajoule" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> gigajoule</strong></code></p>
+<h3 id="gigawatt">gigawatt<a class="headerlink" href="#gigawatt" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> gigawatt</strong></code></p>
+<h3 id="gram">gram<a class="headerlink" href="#gram" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> gram</strong></code></p>
+<h3 id="grams_of_water_per_kilogram_dry_air">grams_of_water_per_kilogram_dry_air<a class="headerlink" href="#grams_of_water_per_kilogram_dry_air" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> grams_of_water_per_kilogram_dry_air</strong></code></p>
+<h3 id="grams_per_kilogram">grams_per_kilogram<a class="headerlink" href="#grams_per_kilogram" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> grams_per_kilogram</strong></code></p>
+<h3 id="grams_per_minute">grams_per_minute<a class="headerlink" href="#grams_per_minute" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> grams_per_minute</strong></code></p>
+<h3 id="grams_per_second">grams_per_second<a class="headerlink" href="#grams_per_second" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> grams_per_second</strong></code></p>
+<h3 id="grams_per_square_meter">grams_per_square_meter<a class="headerlink" href="#grams_per_square_meter" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> grams_per_square_meter</strong></code></p>
+<h3 id="hectopascal">hectopascal<a class="headerlink" href="#hectopascal" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> hectopascal</strong></code></p>
+<h3 id="henry">henry<a class="headerlink" href="#henry" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> henry</strong></code></p>
+<h3 id="hertz">hertz<a class="headerlink" href="#hertz" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> hertz</strong></code></p>
+<h3 id="horsepower">horsepower<a class="headerlink" href="#horsepower" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> horsepower</strong></code></p>
+<h3 id="horsepower_hour">horsepower_hour<a class="headerlink" href="#horsepower_hour" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> horsepower_hour</strong></code></p>
+<h3 id="hour">hour<a class="headerlink" href="#hour" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> hour</strong></code></p>
+<h3 id="hundredths_second">hundredths_second<a class="headerlink" href="#hundredths_second" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> hundredths_second</strong></code></p>
+<h3 id="imperial_gallon">imperial_gallon<a class="headerlink" href="#imperial_gallon" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> imperial_gallon</strong></code></p>
+<h3 id="imperial_gallons_per_minute">imperial_gallons_per_minute<a class="headerlink" href="#imperial_gallons_per_minute" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> imperial_gallons_per_minute</strong></code></p>
+<h3 id="inch">inch<a class="headerlink" href="#inch" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> inch</strong></code></p>
+<h3 id="inches_of_mercury">inches_of_mercury<a class="headerlink" href="#inches_of_mercury" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> inches_of_mercury</strong></code></p>
+<h3 id="inches_of_water">inches_of_water<a class="headerlink" href="#inches_of_water" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> inches_of_water</strong></code></p>
+<h3 id="joule">joule<a class="headerlink" href="#joule" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> joule</strong></code></p>
+<h3 id="joule_second">joule_second<a class="headerlink" href="#joule_second" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> joule_second</strong></code></p>
+<h3 id="joules_per_degree_kelvin">joules_per_degree_kelvin<a class="headerlink" href="#joules_per_degree_kelvin" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> joules_per_degree_kelvin</strong></code></p>
+<h3 id="joules_per_gram">joules_per_gram<a class="headerlink" href="#joules_per_gram" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> joules_per_gram</strong></code></p>
+<h3 id="joules_per_kilogram">joules_per_kilogram<a class="headerlink" href="#joules_per_kilogram" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> joules_per_kilogram</strong></code></p>
+<h3 id="joules_per_kilogram_degree_kelvin">joules_per_kilogram_degree_kelvin<a class="headerlink" href="#joules_per_kilogram_degree_kelvin" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> joules_per_kilogram_degree_kelvin</strong></code></p>
+<h3 id="joules_per_kilogram_dry_air">joules_per_kilogram_dry_air<a class="headerlink" href="#joules_per_kilogram_dry_air" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> joules_per_kilogram_dry_air</strong></code></p>
+<h3 id="joules_per_kilogram_se">joules_per_kilogram_se<a class="headerlink" href="#joules_per_kilogram_se" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> joules_per_kilogram_se</strong></code></p>
+<h3 id="joules_per_square_meter">joules_per_square_meter<a class="headerlink" href="#joules_per_square_meter" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> joules_per_square_meter</strong></code></p>
+<h3 id="julian_month">julian_month<a class="headerlink" href="#julian_month" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> julian_month</strong></code></p>
+<h3 id="kelvin">kelvin<a class="headerlink" href="#kelvin" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> kelvin</strong></code></p>
+<h3 id="kelvin_degrees">kelvin_degrees<a class="headerlink" href="#kelvin_degrees" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> kelvin_degrees</strong></code></p>
+<h3 id="kilobtu">kilobtu<a class="headerlink" href="#kilobtu" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> kilobtu</strong></code></p>
+<h3 id="kilobtus_per_hour">kilobtus_per_hour<a class="headerlink" href="#kilobtus_per_hour" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> kilobtus_per_hour</strong></code></p>
+<h3 id="kilogram">kilogram<a class="headerlink" href="#kilogram" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> kilogram</strong></code></p>
+<h3 id="kilograms_per_cubic_meter">kilograms_per_cubic_meter<a class="headerlink" href="#kilograms_per_cubic_meter" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> kilograms_per_cubic_meter</strong></code></p>
+<h3 id="kilograms_per_hour">kilograms_per_hour<a class="headerlink" href="#kilograms_per_hour" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> kilograms_per_hour</strong></code></p>
+<h3 id="kilograms_per_minute">kilograms_per_minute<a class="headerlink" href="#kilograms_per_minute" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> kilograms_per_minute</strong></code></p>
+<h3 id="kilograms_per_second">kilograms_per_second<a class="headerlink" href="#kilograms_per_second" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> kilograms_per_second</strong></code></p>
+<h3 id="kilograms_per_square_meter">kilograms_per_square_meter<a class="headerlink" href="#kilograms_per_square_meter" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> kilograms_per_square_meter</strong></code></p>
+<h3 id="kilohertz">kilohertz<a class="headerlink" href="#kilohertz" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> kilohertz</strong></code></p>
+<h3 id="kilohm">kilohm<a class="headerlink" href="#kilohm" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> kilohm</strong></code></p>
+<h3 id="kilojoule">kilojoule<a class="headerlink" href="#kilojoule" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> kilojoule</strong></code></p>
+<h3 id="kilojoule_per_kilogram">kilojoule_per_kilogram<a class="headerlink" href="#kilojoule_per_kilogram" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> kilojoule_per_kilogram</strong></code></p>
+<h3 id="kilojoules_per_degree_kelvin">kilojoules_per_degree_kelvin<a class="headerlink" href="#kilojoules_per_degree_kelvin" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> kilojoules_per_degree_kelvin</strong></code></p>
+<h3 id="kilojoules_per_kilogram">kilojoules_per_kilogram<a class="headerlink" href="#kilojoules_per_kilogram" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> kilojoules_per_kilogram</strong></code></p>
+<h3 id="kilojoules_per_kilogram_dry_air">kilojoules_per_kilogram_dry_air<a class="headerlink" href="#kilojoules_per_kilogram_dry_air" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> kilojoules_per_kilogram_dry_air</strong></code></p>
+<h3 id="kiloliter">kiloliter<a class="headerlink" href="#kiloliter" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> kiloliter</strong></code></p>
+<h3 id="kilometer">kilometer<a class="headerlink" href="#kilometer" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> kilometer</strong></code></p>
+<h3 id="kilometers_per_hour">kilometers_per_hour<a class="headerlink" href="#kilometers_per_hour" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> kilometers_per_hour</strong></code></p>
+<h3 id="kilometers_per_second">kilometers_per_second<a class="headerlink" href="#kilometers_per_second" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> kilometers_per_second</strong></code></p>
+<h3 id="kilopascal">kilopascal<a class="headerlink" href="#kilopascal" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> kilopascal</strong></code></p>
+<h3 id="kilovolt">kilovolt<a class="headerlink" href="#kilovolt" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> kilovolt</strong></code></p>
+<h3 id="kilovolt_ampere">kilovolt_ampere<a class="headerlink" href="#kilovolt_ampere" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> kilovolt_ampere</strong></code></p>
+<h3 id="kilovolt_ampere_hour">kilovolt_ampere_hour<a class="headerlink" href="#kilovolt_ampere_hour" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> kilovolt_ampere_hour</strong></code></p>
+<h3 id="kilovolt_ampere_reactive">kilovolt_ampere_reactive<a class="headerlink" href="#kilovolt_ampere_reactive" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> kilovolt_ampere_reactive</strong></code></p>
+<h3 id="kilovolt_ampere_reactive_hour">kilovolt_ampere_reactive_hour<a class="headerlink" href="#kilovolt_ampere_reactive_hour" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> kilovolt_ampere_reactive_hour</strong></code></p>
+<h3 id="kilowatt">kilowatt<a class="headerlink" href="#kilowatt" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> kilowatt</strong></code></p>
+<h3 id="kilowatt_hour">kilowatt_hour<a class="headerlink" href="#kilowatt_hour" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> kilowatt_hour</strong></code></p>
+<h3 id="kilowatt_hours_per_square_foot">kilowatt_hours_per_square_foot<a class="headerlink" href="#kilowatt_hours_per_square_foot" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> kilowatt_hours_per_square_foot</strong></code></p>
+<h3 id="kilowatt_hours_per_square_meter">kilowatt_hours_per_square_meter<a class="headerlink" href="#kilowatt_hours_per_square_meter" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> kilowatt_hours_per_square_meter</strong></code></p>
+<h3 id="lira">lira<a class="headerlink" href="#lira" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> lira</strong></code></p>
+<h3 id="liter">liter<a class="headerlink" href="#liter" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> liter</strong></code></p>
+<h3 id="liters_per_hour">liters_per_hour<a class="headerlink" href="#liters_per_hour" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> liters_per_hour</strong></code></p>
+<h3 id="liters_per_minute">liters_per_minute<a class="headerlink" href="#liters_per_minute" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> liters_per_minute</strong></code></p>
+<h3 id="liters_per_second">liters_per_second<a class="headerlink" href="#liters_per_second" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> liters_per_second</strong></code></p>
+<h3 id="lumen">lumen<a class="headerlink" href="#lumen" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> lumen</strong></code></p>
+<h3 id="lux">lux<a class="headerlink" href="#lux" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> lux</strong></code></p>
+<h3 id="megabtu">megabtu<a class="headerlink" href="#megabtu" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> megabtu</strong></code></p>
+<h3 id="megahertz">megahertz<a class="headerlink" href="#megahertz" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> megahertz</strong></code></p>
+<h3 id="megajoule">megajoule<a class="headerlink" href="#megajoule" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> megajoule</strong></code></p>
+<h3 id="megajoules_per_degree_kelvin">megajoules_per_degree_kelvin<a class="headerlink" href="#megajoules_per_degree_kelvin" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> megajoules_per_degree_kelvin</strong></code></p>
+<h3 id="megajoules_per_kilogram_dry_air">megajoules_per_kilogram_dry_air<a class="headerlink" href="#megajoules_per_kilogram_dry_air" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> megajoules_per_kilogram_dry_air</strong></code></p>
+<h3 id="megajoules_per_square_foot">megajoules_per_square_foot<a class="headerlink" href="#megajoules_per_square_foot" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> megajoules_per_square_foot</strong></code></p>
+<h3 id="megajoules_per_square_meter">megajoules_per_square_meter<a class="headerlink" href="#megajoules_per_square_meter" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> megajoules_per_square_meter</strong></code></p>
+<h3 id="megavolt">megavolt<a class="headerlink" href="#megavolt" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> megavolt</strong></code></p>
+<h3 id="megavolt_ampere">megavolt_ampere<a class="headerlink" href="#megavolt_ampere" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> megavolt_ampere</strong></code></p>
+<h3 id="megavolt_ampere_hour">megavolt_ampere_hour<a class="headerlink" href="#megavolt_ampere_hour" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> megavolt_ampere_hour</strong></code></p>
+<h3 id="megavolt_ampere_reactive">megavolt_ampere_reactive<a class="headerlink" href="#megavolt_ampere_reactive" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> megavolt_ampere_reactive</strong></code></p>
+<h3 id="megavolt_ampere_reactive_hour">megavolt_ampere_reactive_hour<a class="headerlink" href="#megavolt_ampere_reactive_hour" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> megavolt_ampere_reactive_hour</strong></code></p>
+<h3 id="megawatt">megawatt<a class="headerlink" href="#megawatt" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> megawatt</strong></code></p>
+<h3 id="megawatt_hour">megawatt_hour<a class="headerlink" href="#megawatt_hour" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> megawatt_hour</strong></code></p>
+<h3 id="megohm">megohm<a class="headerlink" href="#megohm" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> megohm</strong></code></p>
+<h3 id="meter">meter<a class="headerlink" href="#meter" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> meter</strong></code></p>
+<h3 id="meters_per_hour">meters_per_hour<a class="headerlink" href="#meters_per_hour" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> meters_per_hour</strong></code></p>
+<h3 id="meters_per_minute">meters_per_minute<a class="headerlink" href="#meters_per_minute" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> meters_per_minute</strong></code></p>
+<h3 id="meters_per_second">meters_per_second<a class="headerlink" href="#meters_per_second" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> meters_per_second</strong></code></p>
+<h3 id="meters_per_second_squared">meters_per_second_squared<a class="headerlink" href="#meters_per_second_squared" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> meters_per_second_squared</strong></code></p>
+<h3 id="metric_ton">metric_ton<a class="headerlink" href="#metric_ton" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> metric_ton</strong></code></p>
+<h3 id="metric_tons_per_hour">metric_tons_per_hour<a class="headerlink" href="#metric_tons_per_hour" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> metric_tons_per_hour</strong></code></p>
+<h3 id="micrometer">micrometer<a class="headerlink" href="#micrometer" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> micrometer</strong></code></p>
+<h3 id="microsecond">microsecond<a class="headerlink" href="#microsecond" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> microsecond</strong></code></p>
+<h3 id="mile">mile<a class="headerlink" href="#mile" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> mile</strong></code></p>
+<h3 id="miles_per_hour">miles_per_hour<a class="headerlink" href="#miles_per_hour" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> miles_per_hour</strong></code></p>
+<h3 id="milliampere">milliampere<a class="headerlink" href="#milliampere" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> milliampere</strong></code></p>
+<h3 id="millibar">millibar<a class="headerlink" href="#millibar" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> millibar</strong></code></p>
+<h3 id="milligram">milligram<a class="headerlink" href="#milligram" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> milligram</strong></code></p>
+<h3 id="milliliter">milliliter<a class="headerlink" href="#milliliter" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> milliliter</strong></code></p>
+<h3 id="milliliters_per_minute">milliliters_per_minute<a class="headerlink" href="#milliliters_per_minute" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> milliliters_per_minute</strong></code></p>
+<h3 id="milliliters_per_second">milliliters_per_second<a class="headerlink" href="#milliliters_per_second" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> milliliters_per_second</strong></code></p>
+<h3 id="millimeter">millimeter<a class="headerlink" href="#millimeter" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> millimeter</strong></code></p>
+<h3 id="millimeters_of_mercury">millimeters_of_mercury<a class="headerlink" href="#millimeters_of_mercury" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> millimeters_of_mercury</strong></code></p>
+<h3 id="millimeters_per_minute">millimeters_per_minute<a class="headerlink" href="#millimeters_per_minute" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> millimeters_per_minute</strong></code></p>
+<h3 id="millimeters_per_second">millimeters_per_second<a class="headerlink" href="#millimeters_per_second" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> millimeters_per_second</strong></code></p>
+<h3 id="milliohm">milliohm<a class="headerlink" href="#milliohm" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> milliohm</strong></code></p>
+<h3 id="millisecond">millisecond<a class="headerlink" href="#millisecond" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> millisecond</strong></code></p>
+<h3 id="millivolt">millivolt<a class="headerlink" href="#millivolt" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> millivolt</strong></code></p>
+<h3 id="milliwatt">milliwatt<a class="headerlink" href="#milliwatt" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> milliwatt</strong></code></p>
+<h3 id="minute">minute<a class="headerlink" href="#minute" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> minute</strong></code></p>
+<h3 id="nanosecond">nanosecond<a class="headerlink" href="#nanosecond" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> nanosecond</strong></code></p>
+<h3 id="nephelometric_turbidity_units">nephelometric_turbidity_units<a class="headerlink" href="#nephelometric_turbidity_units" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> nephelometric_turbidity_units</strong></code></p>
+<h3 id="newton">newton<a class="headerlink" href="#newton" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> newton</strong></code></p>
+<h3 id="newton_meter">newton_meter<a class="headerlink" href="#newton_meter" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> newton_meter</strong></code></p>
+<h3 id="newton_second">newton_second<a class="headerlink" href="#newton_second" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> newton_second</strong></code></p>
+<h3 id="newtons_per_meter">newtons_per_meter<a class="headerlink" href="#newtons_per_meter" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> newtons_per_meter</strong></code></p>
+<h3 id="newtons_per_meter_st">newtons_per_meter_st<a class="headerlink" href="#newtons_per_meter_st" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> newtons_per_meter_st</strong></code></p>
+<h3 id="ohm">ohm<a class="headerlink" href="#ohm" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> ohm</strong></code></p>
+<h3 id="ohm_meter">ohm_meter<a class="headerlink" href="#ohm_meter" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> ohm_meter</strong></code></p>
+<h3 id="ounce">ounce<a class="headerlink" href="#ounce" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> ounce</strong></code></p>
+<h3 id="ph">pH<a class="headerlink" href="#ph" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> pH</strong></code></p>
+<h3 id="parts_per_billion">parts_per_billion<a class="headerlink" href="#parts_per_billion" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> parts_per_billion</strong></code></p>
+<h3 id="parts_per_million">parts_per_million<a class="headerlink" href="#parts_per_million" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> parts_per_million</strong></code></p>
+<h3 id="parts_per_unit">parts_per_unit<a class="headerlink" href="#parts_per_unit" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> parts_per_unit</strong></code></p>
+<h3 id="pascal">pascal<a class="headerlink" href="#pascal" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> pascal</strong></code></p>
+<h3 id="per_hour">per_hour<a class="headerlink" href="#per_hour" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> per_hour</strong></code></p>
+<h3 id="per_minute">per_minute<a class="headerlink" href="#per_minute" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> per_minute</strong></code></p>
+<h3 id="per_second">per_second<a class="headerlink" href="#per_second" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> per_second</strong></code></p>
+<h3 id="percent">percent<a class="headerlink" href="#percent" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> percent</strong></code></p>
+<h3 id="percent_obscuration_per_foot">percent_obscuration_per_foot<a class="headerlink" href="#percent_obscuration_per_foot" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> percent_obscuration_per_foot</strong></code></p>
+<h3 id="percent_obscuration_per_meter">percent_obscuration_per_meter<a class="headerlink" href="#percent_obscuration_per_meter" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> percent_obscuration_per_meter</strong></code></p>
+<h3 id="percent_per_second">percent_per_second<a class="headerlink" href="#percent_per_second" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> percent_per_second</strong></code></p>
+<h3 id="percent_relative_humidity">percent_relative_humidity<a class="headerlink" href="#percent_relative_humidity" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> percent_relative_humidity</strong></code></p>
+<h3 id="peseta">peseta<a class="headerlink" href="#peseta" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> peseta</strong></code></p>
+<h3 id="pint">pint<a class="headerlink" href="#pint" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> pint</strong></code></p>
+<h3 id="pound">pound<a class="headerlink" href="#pound" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> pound</strong></code></p>
+<h3 id="pound_force">pound_force<a class="headerlink" href="#pound_force" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> pound_force</strong></code></p>
+<h3 id="pounds">pounds<a class="headerlink" href="#pounds" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> pounds</strong></code></p>
+<h3 id="pounds_per_hour">pounds_per_hour<a class="headerlink" href="#pounds_per_hour" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> pounds_per_hour</strong></code></p>
+<h3 id="pounds_per_minute">pounds_per_minute<a class="headerlink" href="#pounds_per_minute" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> pounds_per_minute</strong></code></p>
+<h3 id="pounds_per_second">pounds_per_second<a class="headerlink" href="#pounds_per_second" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> pounds_per_second</strong></code></p>
+<h3 id="pounds_per_square_inch">pounds_per_square_inch<a class="headerlink" href="#pounds_per_square_inch" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> pounds_per_square_inch</strong></code></p>
+<h3 id="power_factor">power_factor<a class="headerlink" href="#power_factor" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> power_factor</strong></code></p>
+<h3 id="psi_per_degree_fahrenheit">psi_per_degree_fahrenheit<a class="headerlink" href="#psi_per_degree_fahrenheit" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> psi_per_degree_fahrenheit</strong></code></p>
+<h3 id="quart">quart<a class="headerlink" href="#quart" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> quart</strong></code></p>
+<h3 id="radian">radian<a class="headerlink" href="#radian" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> radian</strong></code></p>
+<h3 id="radians_per_second">radians_per_second<a class="headerlink" href="#radians_per_second" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> radians_per_second</strong></code></p>
+<h3 id="radians_per_second_squared">radians_per_second_squared<a class="headerlink" href="#radians_per_second_squared" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> radians_per_second_squared</strong></code></p>
+<h3 id="revolutions_per_minute">revolutions_per_minute<a class="headerlink" href="#revolutions_per_minute" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> revolutions_per_minute</strong></code></p>
+<h3 id="rupee">rupee<a class="headerlink" href="#rupee" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> rupee</strong></code></p>
+<h3 id="second">second<a class="headerlink" href="#second" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> second</strong></code></p>
+<h3 id="short_ton">short_ton<a class="headerlink" href="#short_ton" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> short_ton</strong></code></p>
+<h3 id="siemens">siemens<a class="headerlink" href="#siemens" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> siemens</strong></code></p>
+<h3 id="siemens_per_meter">siemens_per_meter<a class="headerlink" href="#siemens_per_meter" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> siemens_per_meter</strong></code></p>
+<h3 id="square_centimeter">square_centimeter<a class="headerlink" href="#square_centimeter" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> square_centimeter</strong></code></p>
+<h3 id="square_foot">square_foot<a class="headerlink" href="#square_foot" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> square_foot</strong></code></p>
+<h3 id="square_inch">square_inch<a class="headerlink" href="#square_inch" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> square_inch</strong></code></p>
+<h3 id="square_kilometer">square_kilometer<a class="headerlink" href="#square_kilometer" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> square_kilometer</strong></code></p>
+<h3 id="square_meter">square_meter<a class="headerlink" href="#square_meter" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> square_meter</strong></code></p>
+<h3 id="square_meters_per_newton">square_meters_per_newton<a class="headerlink" href="#square_meters_per_newton" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> square_meters_per_newton</strong></code></p>
+<h3 id="square_mile">square_mile<a class="headerlink" href="#square_mile" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> square_mile</strong></code></p>
+<h3 id="square_millimeter">square_millimeter<a class="headerlink" href="#square_millimeter" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> square_millimeter</strong></code></p>
+<h3 id="square_yard">square_yard<a class="headerlink" href="#square_yard" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> square_yard</strong></code></p>
+<h3 id="steradian">steradian<a class="headerlink" href="#steradian" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> steradian</strong></code></p>
+<h3 id="tenths_second">tenths_second<a class="headerlink" href="#tenths_second" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> tenths_second</strong></code></p>
+<h3 id="tesla">tesla<a class="headerlink" href="#tesla" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> tesla</strong></code></p>
+<h3 id="therm">therm<a class="headerlink" href="#therm" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> therm</strong></code></p>
+<h3 id="tons_refrigeration">tons_refrigeration<a class="headerlink" href="#tons_refrigeration" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> tons_refrigeration</strong></code></p>
+<h3 id="tons_refrigeration_hour">tons_refrigeration_hour<a class="headerlink" href="#tons_refrigeration_hour" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> tons_refrigeration_hour</strong></code></p>
+<h3 id="torr">torr<a class="headerlink" href="#torr" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> torr</strong></code></p>
+<h3 id="volt">volt<a class="headerlink" href="#volt" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> volt</strong></code></p>
+<h3 id="volt_ampere">volt_ampere<a class="headerlink" href="#volt_ampere" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> volt_ampere</strong></code></p>
+<h3 id="volt_ampere_hour">volt_ampere_hour<a class="headerlink" href="#volt_ampere_hour" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> volt_ampere_hour</strong></code></p>
+<h3 id="volt_ampere_reactive">volt_ampere_reactive<a class="headerlink" href="#volt_ampere_reactive" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> volt_ampere_reactive</strong></code></p>
+<h3 id="volt_ampere_reactive_hour">volt_ampere_reactive_hour<a class="headerlink" href="#volt_ampere_reactive_hour" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> volt_ampere_reactive_hour</strong></code></p>
+<h3 id="volts_per_degree_kelvin">volts_per_degree_kelvin<a class="headerlink" href="#volts_per_degree_kelvin" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> volts_per_degree_kelvin</strong></code></p>
+<h3 id="volts_per_meter">volts_per_meter<a class="headerlink" href="#volts_per_meter" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> volts_per_meter</strong></code></p>
+<h3 id="watt">watt<a class="headerlink" href="#watt" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> watt</strong></code></p>
+<h3 id="watt_hour">watt_hour<a class="headerlink" href="#watt_hour" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> watt_hour</strong></code></p>
+<h3 id="watts_per_meter_degree_kelvin">watts_per_meter_degree_kelvin<a class="headerlink" href="#watts_per_meter_degree_kelvin" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> watts_per_meter_degree_kelvin</strong></code></p>
+<h3 id="watts_per_square_foot">watts_per_square_foot<a class="headerlink" href="#watts_per_square_foot" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> watts_per_square_foot</strong></code></p>
+<h3 id="watts_per_square_meter">watts_per_square_meter<a class="headerlink" href="#watts_per_square_meter" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> watts_per_square_meter</strong></code></p>
+<h3 id="watts_per_square_meter_degree_kelvin">watts_per_square_meter_degree_kelvin<a class="headerlink" href="#watts_per_square_meter_degree_kelvin" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> watts_per_square_meter_degree_kelvin</strong></code></p>
+<h3 id="weber">weber<a class="headerlink" href="#weber" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> weber</strong></code></p>
+<h3 id="week">week<a class="headerlink" href="#week" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> week</strong></code></p>
+<h3 id="won">won<a class="headerlink" href="#won" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> won</strong></code></p>
+<h3 id="yard">yard<a class="headerlink" href="#yard" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> yard</strong></code></p>
+<h3 id="year">year<a class="headerlink" href="#year" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> year</strong></code></p>
+<h3 id="yen">yen<a class="headerlink" href="#yen" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong><a href="/api/sys/Str">Str</a> yen</strong></code>
+</dl></p>
+<hr />
+<p><a href="../../..">Doc Home</a> &gt; <a href="../../../api/api">API Index</a> &gt; <a href="../../../api/sys">sys</a> &gt; Units</p>
+                
+                  
+                
+                
+                  
+                  <hr>
+                  <div class="md-source-date">
+                    <small>
+                      
+                        Last update: April 28, 2020
+                      
+                    </small>
+                  </div>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+          <div class="md-footer-copyright__highlight">
+            Copyright &copy; 2007-2017 Tridium, 2018-2020 Sedona Community
+          </div>
+        
+        powered by
+        <a href="https://www.mkdocs.org" target="_blank" rel="noopener">MkDocs</a>
+        and
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs</a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../../../assets/javascripts/application.c33a9706.js"></script>
+      
+      <script>app.initialize({version:"1.1",url:{base:"../../.."}})</script>
+      
+    
+  </body>
+</html>

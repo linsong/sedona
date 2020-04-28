@@ -1,0 +1,1425 @@
+
+
+
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <meta http-equiv="x-ua-compatible" content="ie=edge">
+      
+        <meta name="description" content="Online documentation for Sedona Framework(R)">
+      
+      
+        <link rel="canonical" href="https://linsong.github.io/sedona/api/sox/Dasp/">
+      
+      
+        <meta name="author" content="Sedona Community">
+      
+      
+        <meta name="lang:clipboard.copy" content="Copy to clipboard">
+      
+        <meta name="lang:clipboard.copied" content="Copied to clipboard">
+      
+        <meta name="lang:search.language" content="en">
+      
+        <meta name="lang:search.pipeline.stopwords" content="True">
+      
+        <meta name="lang:search.pipeline.trimmer" content="True">
+      
+        <meta name="lang:search.result.none" content="No matching documents">
+      
+        <meta name="lang:search.result.one" content="1 matching document">
+      
+        <meta name="lang:search.result.other" content="# matching documents">
+      
+        <meta name="lang:search.tokenizer" content="[\s\-]+">
+      
+      <link rel="shortcut icon" href="../../../favicon.ico">
+      <meta name="generator" content="mkdocs-1.1, mkdocs-material-4.6.3">
+    
+    
+      
+        <title>Dasp - Sedona Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/application.adb8469c.css">
+      
+        <link rel="stylesheet" href="../../../assets/stylesheets/application-palette.a8b3c06d.css">
+      
+      
+        
+        
+        <meta name="theme-color" content="#795548">
+      
+    
+    
+      <script src="../../../assets/javascripts/modernizr.86422ebf.js"></script>
+    
+    
+      
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono","Courier New",Courier,monospace}</style>
+      
+    
+    <link rel="stylesheet" href="../../../assets/fonts/material-icons.css">
+    
+    
+    
+      
+    
+    
+  </head>
+  
+    
+    
+    <body dir="ltr" data-md-color-primary="brown" data-md-color-accent="red">
+  
+    <svg class="md-svg">
+      <defs>
+        
+        
+          <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448" viewBox="0 0 416 448" id="__github"><path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z"/></svg>
+        
+      </defs>
+    </svg>
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+    
+      <a href="#dasp" tabindex="0" class="md-skip">
+        Skip to content
+      </a>
+    
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="https://linsong.github.io/sedona" title="Sedona Documentation" aria-label="Sedona Documentation" class="md-header-nav__button md-logo">
+          
+            <img alt="logo" src="../../../favicon.ico" width="24" height="24">
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          
+            <span class="md-header-nav__topic">
+              Sedona Documentation
+            </span>
+            <span class="md-header-nav__topic">
+              
+                Dasp
+              
+            </span>
+          
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        
+          <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+          
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" aria-label="search" name="query" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+        
+      </div>
+      
+        <div class="md-flex__cell md-flex__cell--shrink">
+          <div class="md-header-nav__source">
+            
+
+
+  
+
+<a href="https://github.com/linsong/sedona/" title="Go to repository" class="md-source" data-md-source="github">
+  
+    <div class="md-source__icon">
+      <svg viewBox="0 0 24 24" width="24" height="24">
+        <use xlink:href="#__github" width="24" height="24"></use>
+      </svg>
+    </div>
+  
+  <div class="md-source__repository">
+    linsong/sedona
+  </div>
+</a>
+          </div>
+        </div>
+      
+    </div>
+  </nav>
+</header>
+    
+    <div class="md-container">
+      
+        
+      
+      
+      <main class="md-main" role="main">
+        <div class="md-main__inner md-grid" data-md-component="container">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href="https://linsong.github.io/sedona" title="Sedona Documentation" class="md-nav__button md-logo">
+      
+        <img alt="logo" src="../../../favicon.ico" width="48" height="48">
+      
+    </a>
+    Sedona Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      
+
+
+  
+
+<a href="https://github.com/linsong/sedona/" title="Go to repository" class="md-source" data-md-source="github">
+  
+    <div class="md-source__icon">
+      <svg viewBox="0 0 24 24" width="24" height="24">
+        <use xlink:href="#__github" width="24" height="24"></use>
+      </svg>
+    </div>
+  
+  <div class="md-source__repository">
+    linsong/sedona
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../.." title="Index" class="md-nav__link">
+      Index
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2">
+    
+    <label class="md-nav__link" for="nav-2">
+      Getting Started
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-2">
+        Getting Started
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../quickstart/intro/" title="Introduction" class="md-nav__link">
+      Introduction
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../quickstart/setup/" title="Setup" class="md-nav__link">
+      Setup
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../quickstart/architecture/" title="Architecture" class="md-nav__link">
+      Architecture
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../quickstart/tutorial/" title="Tutorial" class="md-nav__link">
+      Tutorial
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3">
+    
+    <label class="md-nav__link" for="nav-3">
+      Language
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-3">
+        Language
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../language/lang/" title="Language" class="md-nav__link">
+      Language
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../language/primitives/" title="Primitives" class="md-nav__link">
+      Primitives
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../language/expr/" title="Expressions" class="md-nav__link">
+      Expressions
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../language/stmt/" title="Statements" class="md-nav__link">
+      Statements
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../language/classes/" title="Classes" class="md-nav__link">
+      Classes
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../language/fields/" title="Fields" class="md-nav__link">
+      Fields
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../language/methods/" title="Methods" class="md-nav__link">
+      Methods
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../language/components/" title="Components" class="md-nav__link">
+      Components
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../language/reflection/" title="Reflection" class="md-nav__link">
+      Reflection
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../language/arrays/" title="Arrays" class="md-nav__link">
+      Arrays
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../language/memory/" title="Memory" class="md-nav__link">
+      Memory
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../language/nativeMethods/" title="Native Methods" class="md-nav__link">
+      Native Methods
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../language/logging/" title="Logging" class="md-nav__link">
+      Logging
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4">
+    
+    <label class="md-nav__link" for="nav-4">
+      Apps
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-4">
+        Apps
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../apps/apps/" title="Application Model" class="md-nav__link">
+      Application Model
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../apps/security/" title="Security" class="md-nav__link">
+      Security
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5">
+    
+    <label class="md-nav__link" for="nav-5">
+      Deployment
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-5">
+        Deployment
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../deployment/kits/" title="Kits" class="md-nav__link">
+      Kits
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../deployment/schema/" title="Schema" class="md-nav__link">
+      Schema
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6">
+    
+    <label class="md-nav__link" for="nav-6">
+      Platforms
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-6">
+        Platforms
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../platforms/platDef/" title="Platform Definition" class="md-nav__link">
+      Platform Definition
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../platforms/par/" title="Platform Archive" class="md-nav__link">
+      Platform Archive
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../platforms/platTutorial/" title="Platform Tutorial" class="md-nav__link">
+      Platform Tutorial
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../platforms/deviceSim/" title="Device Simulator" class="md-nav__link">
+      Device Simulator
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../platforms/platCertified/" title="Certified Platforms" class="md-nav__link">
+      Certified Platforms
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-7" type="checkbox" id="nav-7">
+    
+    <label class="md-nav__link" for="nav-7">
+      Development
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-7">
+        Development
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../development/sedonac/" title="Sedonac" class="md-nav__link">
+      Sedonac
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../development/testing/" title="Testing" class="md-nav__link">
+      Testing
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../development/porting/" title="Porting" class="md-nav__link">
+      Porting
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../development/niagara/" title="Niagara" class="md-nav__link">
+      Niagara
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-8" type="checkbox" id="nav-8">
+    
+    <label class="md-nav__link" for="nav-8">
+      Networking
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-8">
+        Networking
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../networking/networking/" title="Networking" class="md-nav__link">
+      Networking
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../networking/dasp/" title="DASP" class="md-nav__link">
+      DASP
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../networking/sox/" title="Sox" class="md-nav__link">
+      Sox
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../networking/discover/" title="Device Discovery" class="md-nav__link">
+      Device Discovery
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9" type="checkbox" id="nav-9">
+    
+    <label class="md-nav__link" for="nav-9">
+      Appendix
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-9">
+        Appendix
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../appendix/license/" title="License" class="md-nav__link">
+      License
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../appendix/conventions/" title="Coding Conventions" class="md-nav__link">
+      Coding Conventions
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../appendix/scodeFormat/" title="SCode Format" class="md-nav__link">
+      SCode Format
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../appendix/grammar/" title="Grammar" class="md-nav__link">
+      Grammar
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-10" type="checkbox" id="nav-10">
+    
+    <label class="md-nav__link" for="nav-10">
+      Releases
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-10">
+        Releases
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../releases/newFor12/" title="v1.2" class="md-nav__link">
+      v1.2
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../api/" title="API" class="md-nav__link">
+      API
+    </a>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#inheritance" class="md-nav__link">
+    Inheritance
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fields" class="md-nav__link">
+    Fields
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#abs_max" class="md-nav__link">
+    ABS_MAX
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#abs_max_def" class="md-nav__link">
+    ABS_MAX_DEF
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#abs_max_val" class="md-nav__link">
+    ABS_MAX_VAL
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ack" class="md-nav__link">
+    ACK
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ack_more" class="md-nav__link">
+    ACK_MORE
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#authenticate" class="md-nav__link">
+    AUTHENTICATE
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#busy" class="md-nav__link">
+    BUSY
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bytes" class="md-nav__link">
+    BYTES
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#challenge" class="md-nav__link">
+    CHALLENGE
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#close" class="md-nav__link">
+    CLOSE
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#datagram" class="md-nav__link">
+    DATAGRAM
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#digest" class="md-nav__link">
+    DIGEST
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#digest_algorithm" class="md-nav__link">
+    DIGEST_ALGORITHM
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#digest_not_supported" class="md-nav__link">
+    DIGEST_NOT_SUPPORTED
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#discover" class="md-nav__link">
+    DISCOVER
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#error_code" class="md-nav__link">
+    ERROR_CODE
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hello" class="md-nav__link">
+    HELLO
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ideal_max" class="md-nav__link">
+    IDEAL_MAX
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ideal_max_def" class="md-nav__link">
+    IDEAL_MAX_DEF
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ideal_max_val" class="md-nav__link">
+    IDEAL_MAX_VAL
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#incompatible_version" class="md-nav__link">
+    INCOMPATIBLE_VERSION
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#keepalive" class="md-nav__link">
+    KEEPALIVE
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nil" class="md-nav__link">
+    NIL
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nonce" class="md-nav__link">
+    NONCE
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#not_authenticated" class="md-nav__link">
+    NOT_AUTHENTICATED
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#platform_id" class="md-nav__link">
+    PLATFORM_ID
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#receive_max" class="md-nav__link">
+    RECEIVE_MAX
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#receive_max_def" class="md-nav__link">
+    RECEIVE_MAX_DEF
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#receive_max_val" class="md-nav__link">
+    RECEIVE_MAX_VAL
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#receive_timeout" class="md-nav__link">
+    RECEIVE_TIMEOUT
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#receive_timeout_def" class="md-nav__link">
+    RECEIVE_TIMEOUT_DEF
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#receive_timeout_min" class="md-nav__link">
+    RECEIVE_TIMEOUT_MIN
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#remote_id" class="md-nav__link">
+    REMOTE_ID
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#str" class="md-nav__link">
+    STR
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#timeout" class="md-nav__link">
+    TIMEOUT
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#u2" class="md-nav__link">
+    U2
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#username" class="md-nav__link">
+    USERNAME
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#version" class="md-nav__link">
+    VERSION
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#version_val" class="md-nav__link">
+    VERSION_VAL
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#welcome" class="md-nav__link">
+    WELCOME
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/linsong/sedona/edit/master/docs/api/sox/Dasp.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
+                
+                
+                <p><a href="/"><img alt="Sedona" src="../../../logo.png" /></a></p>
+<h1 id="dasp">Dasp<a class="headerlink" href="#dasp" title="Permanent link">&para;</a></h1>
+<p><a href="../../..">Doc Home</a> &gt; <a href="../../../api/api">API Index</a> &gt; <a href="../../../api/sox">sox</a> &gt; Dasp</p>
+<hr />
+<h2 id="inheritance">Inheritance<a class="headerlink" href="#inheritance" title="Permanent link">&para;</a></h2>
+<p><pre class='inheritance'>
+<a href="/api/sys/Obj">sys::Obj</a>
+  sox::Dasp
+</pre>
+<code style='color:darkgreen;font-weight:bold;font-size:120%'>public  class <b style='font-weight:bolder'>Dasp</b>  </code></p>
+<p>Dasp constants</p>
+<hr />
+<h2 id="fields">Fields<a class="headerlink" href="#fields" title="Permanent link">&para;</a></h2>
+<dl>
+
+<h3 id="abs_max">ABS_MAX<a class="headerlink" href="#abs_max" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong>int ABS_MAX</strong></code></p>
+<h3 id="abs_max_def">ABS_MAX_DEF<a class="headerlink" href="#abs_max_def" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong>int ABS_MAX_DEF</strong></code></p>
+<h3 id="abs_max_val">ABS_MAX_VAL<a class="headerlink" href="#abs_max_val" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong>int ABS_MAX_VAL</strong></code></p>
+<h3 id="ack">ACK<a class="headerlink" href="#ack" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong>int ACK</strong></code></p>
+<h3 id="ack_more">ACK_MORE<a class="headerlink" href="#ack_more" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong>int ACK_MORE</strong></code></p>
+<h3 id="authenticate">AUTHENTICATE<a class="headerlink" href="#authenticate" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong>int AUTHENTICATE</strong></code></p>
+<h3 id="busy">BUSY<a class="headerlink" href="#busy" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong>int BUSY</strong></code></p>
+<h3 id="bytes">BYTES<a class="headerlink" href="#bytes" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong>int BYTES</strong></code></p>
+<h3 id="challenge">CHALLENGE<a class="headerlink" href="#challenge" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong>int CHALLENGE</strong></code></p>
+<h3 id="close">CLOSE<a class="headerlink" href="#close" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong>int CLOSE</strong></code></p>
+<h3 id="datagram">DATAGRAM<a class="headerlink" href="#datagram" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong>int DATAGRAM</strong></code></p>
+<h3 id="digest">DIGEST<a class="headerlink" href="#digest" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong>int DIGEST</strong></code></p>
+<h3 id="digest_algorithm">DIGEST_ALGORITHM<a class="headerlink" href="#digest_algorithm" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong>int DIGEST_ALGORITHM</strong></code></p>
+<h3 id="digest_not_supported">DIGEST_NOT_SUPPORTED<a class="headerlink" href="#digest_not_supported" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong>int DIGEST_NOT_SUPPORTED</strong></code></p>
+<h3 id="discover">DISCOVER<a class="headerlink" href="#discover" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong>int DISCOVER</strong></code></p>
+<h3 id="error_code">ERROR_CODE<a class="headerlink" href="#error_code" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong>int ERROR_CODE</strong></code></p>
+<h3 id="hello">HELLO<a class="headerlink" href="#hello" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong>int HELLO</strong></code></p>
+<h3 id="ideal_max">IDEAL_MAX<a class="headerlink" href="#ideal_max" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong>int IDEAL_MAX</strong></code></p>
+<h3 id="ideal_max_def">IDEAL_MAX_DEF<a class="headerlink" href="#ideal_max_def" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong>int IDEAL_MAX_DEF</strong></code></p>
+<h3 id="ideal_max_val">IDEAL_MAX_VAL<a class="headerlink" href="#ideal_max_val" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <strong>short IDEAL_MAX_VAL</strong></code></p>
+<h3 id="incompatible_version">INCOMPATIBLE_VERSION<a class="headerlink" href="#incompatible_version" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong>int INCOMPATIBLE_VERSION</strong></code></p>
+<h3 id="keepalive">KEEPALIVE<a class="headerlink" href="#keepalive" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong>int KEEPALIVE</strong></code></p>
+<h3 id="nil">NIL<a class="headerlink" href="#nil" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong>int NIL</strong></code></p>
+<h3 id="nonce">NONCE<a class="headerlink" href="#nonce" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong>int NONCE</strong></code></p>
+<h3 id="not_authenticated">NOT_AUTHENTICATED<a class="headerlink" href="#not_authenticated" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong>int NOT_AUTHENTICATED</strong></code></p>
+<h3 id="platform_id">PLATFORM_ID<a class="headerlink" href="#platform_id" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong>int PLATFORM_ID</strong></code></p>
+<h3 id="receive_max">RECEIVE_MAX<a class="headerlink" href="#receive_max" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong>int RECEIVE_MAX</strong></code></p>
+<h3 id="receive_max_def">RECEIVE_MAX_DEF<a class="headerlink" href="#receive_max_def" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong>int RECEIVE_MAX_DEF</strong></code></p>
+<h3 id="receive_max_val">RECEIVE_MAX_VAL<a class="headerlink" href="#receive_max_val" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong>int RECEIVE_MAX_VAL</strong></code></p>
+<h3 id="receive_timeout">RECEIVE_TIMEOUT<a class="headerlink" href="#receive_timeout" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong>int RECEIVE_TIMEOUT</strong></code></p>
+<h3 id="receive_timeout_def">RECEIVE_TIMEOUT_DEF<a class="headerlink" href="#receive_timeout_def" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong>int RECEIVE_TIMEOUT_DEF</strong></code></p>
+<h3 id="receive_timeout_min">RECEIVE_TIMEOUT_MIN<a class="headerlink" href="#receive_timeout_min" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong>int RECEIVE_TIMEOUT_MIN</strong></code></p>
+<h3 id="remote_id">REMOTE_ID<a class="headerlink" href="#remote_id" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong>int REMOTE_ID</strong></code></p>
+<h3 id="str">STR<a class="headerlink" href="#str" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong>int STR</strong></code></p>
+<h3 id="timeout">TIMEOUT<a class="headerlink" href="#timeout" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong>int TIMEOUT</strong></code></p>
+<h3 id="u2">U2<a class="headerlink" href="#u2" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong>int U2</strong></code></p>
+<h3 id="username">USERNAME<a class="headerlink" href="#username" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong>int USERNAME</strong></code></p>
+<h3 id="version">VERSION<a class="headerlink" href="#version" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong>int VERSION</strong></code></p>
+<h3 id="version_val">VERSION_VAL<a class="headerlink" href="#version_val" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong>int VERSION_VAL</strong></code></p>
+<h3 id="welcome">WELCOME<a class="headerlink" href="#welcome" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <em>const</em> <em>define</em> <strong>int WELCOME</strong></code>
+</dl></p>
+<hr />
+<p><a href="../../..">Doc Home</a> &gt; <a href="../../../api/api">API Index</a> &gt; <a href="../../../api/sox">sox</a> &gt; Dasp</p>
+                
+                  
+                
+                
+                  
+                  <hr>
+                  <div class="md-source-date">
+                    <small>
+                      
+                        Last update: April 28, 2020
+                      
+                    </small>
+                  </div>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+          <div class="md-footer-copyright__highlight">
+            Copyright &copy; 2007-2017 Tridium, 2018-2020 Sedona Community
+          </div>
+        
+        powered by
+        <a href="https://www.mkdocs.org" target="_blank" rel="noopener">MkDocs</a>
+        and
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs</a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../../../assets/javascripts/application.c33a9706.js"></script>
+      
+      <script>app.initialize({version:"1.1",url:{base:"../../.."}})</script>
+      
+    
+  </body>
+</html>

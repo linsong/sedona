@@ -1,0 +1,1762 @@
+
+
+
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <meta http-equiv="x-ua-compatible" content="ie=edge">
+      
+        <meta name="description" content="Online documentation for Sedona Framework(R)">
+      
+      
+        <link rel="canonical" href="https://linsong.github.io/sedona/api/sox/SoxCommands/">
+      
+      
+        <meta name="author" content="Sedona Community">
+      
+      
+        <meta name="lang:clipboard.copy" content="Copy to clipboard">
+      
+        <meta name="lang:clipboard.copied" content="Copied to clipboard">
+      
+        <meta name="lang:search.language" content="en">
+      
+        <meta name="lang:search.pipeline.stopwords" content="True">
+      
+        <meta name="lang:search.pipeline.trimmer" content="True">
+      
+        <meta name="lang:search.result.none" content="No matching documents">
+      
+        <meta name="lang:search.result.one" content="1 matching document">
+      
+        <meta name="lang:search.result.other" content="# matching documents">
+      
+        <meta name="lang:search.tokenizer" content="[\s\-]+">
+      
+      <link rel="shortcut icon" href="../../../favicon.ico">
+      <meta name="generator" content="mkdocs-1.1, mkdocs-material-4.6.3">
+    
+    
+      
+        <title>SoxCommands - Sedona Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/application.adb8469c.css">
+      
+        <link rel="stylesheet" href="../../../assets/stylesheets/application-palette.a8b3c06d.css">
+      
+      
+        
+        
+        <meta name="theme-color" content="#795548">
+      
+    
+    
+      <script src="../../../assets/javascripts/modernizr.86422ebf.js"></script>
+    
+    
+      
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono","Courier New",Courier,monospace}</style>
+      
+    
+    <link rel="stylesheet" href="../../../assets/fonts/material-icons.css">
+    
+    
+    
+      
+    
+    
+  </head>
+  
+    
+    
+    <body dir="ltr" data-md-color-primary="brown" data-md-color-accent="red">
+  
+    <svg class="md-svg">
+      <defs>
+        
+        
+          <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448" viewBox="0 0 416 448" id="__github"><path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z"/></svg>
+        
+      </defs>
+    </svg>
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+    
+      <a href="#soxcommands" tabindex="0" class="md-skip">
+        Skip to content
+      </a>
+    
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="https://linsong.github.io/sedona" title="Sedona Documentation" aria-label="Sedona Documentation" class="md-header-nav__button md-logo">
+          
+            <img alt="logo" src="../../../favicon.ico" width="24" height="24">
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          
+            <span class="md-header-nav__topic">
+              Sedona Documentation
+            </span>
+            <span class="md-header-nav__topic">
+              
+                SoxCommands
+              
+            </span>
+          
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        
+          <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+          
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" aria-label="search" name="query" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+        
+      </div>
+      
+        <div class="md-flex__cell md-flex__cell--shrink">
+          <div class="md-header-nav__source">
+            
+
+
+  
+
+<a href="https://github.com/linsong/sedona/" title="Go to repository" class="md-source" data-md-source="github">
+  
+    <div class="md-source__icon">
+      <svg viewBox="0 0 24 24" width="24" height="24">
+        <use xlink:href="#__github" width="24" height="24"></use>
+      </svg>
+    </div>
+  
+  <div class="md-source__repository">
+    linsong/sedona
+  </div>
+</a>
+          </div>
+        </div>
+      
+    </div>
+  </nav>
+</header>
+    
+    <div class="md-container">
+      
+        
+      
+      
+      <main class="md-main" role="main">
+        <div class="md-main__inner md-grid" data-md-component="container">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href="https://linsong.github.io/sedona" title="Sedona Documentation" class="md-nav__button md-logo">
+      
+        <img alt="logo" src="../../../favicon.ico" width="48" height="48">
+      
+    </a>
+    Sedona Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      
+
+
+  
+
+<a href="https://github.com/linsong/sedona/" title="Go to repository" class="md-source" data-md-source="github">
+  
+    <div class="md-source__icon">
+      <svg viewBox="0 0 24 24" width="24" height="24">
+        <use xlink:href="#__github" width="24" height="24"></use>
+      </svg>
+    </div>
+  
+  <div class="md-source__repository">
+    linsong/sedona
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../.." title="Index" class="md-nav__link">
+      Index
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2">
+    
+    <label class="md-nav__link" for="nav-2">
+      Getting Started
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-2">
+        Getting Started
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../quickstart/intro/" title="Introduction" class="md-nav__link">
+      Introduction
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../quickstart/setup/" title="Setup" class="md-nav__link">
+      Setup
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../quickstart/architecture/" title="Architecture" class="md-nav__link">
+      Architecture
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../quickstart/tutorial/" title="Tutorial" class="md-nav__link">
+      Tutorial
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3">
+    
+    <label class="md-nav__link" for="nav-3">
+      Language
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-3">
+        Language
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../language/lang/" title="Language" class="md-nav__link">
+      Language
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../language/primitives/" title="Primitives" class="md-nav__link">
+      Primitives
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../language/expr/" title="Expressions" class="md-nav__link">
+      Expressions
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../language/stmt/" title="Statements" class="md-nav__link">
+      Statements
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../language/classes/" title="Classes" class="md-nav__link">
+      Classes
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../language/fields/" title="Fields" class="md-nav__link">
+      Fields
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../language/methods/" title="Methods" class="md-nav__link">
+      Methods
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../language/components/" title="Components" class="md-nav__link">
+      Components
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../language/reflection/" title="Reflection" class="md-nav__link">
+      Reflection
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../language/arrays/" title="Arrays" class="md-nav__link">
+      Arrays
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../language/memory/" title="Memory" class="md-nav__link">
+      Memory
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../language/nativeMethods/" title="Native Methods" class="md-nav__link">
+      Native Methods
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../language/logging/" title="Logging" class="md-nav__link">
+      Logging
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4">
+    
+    <label class="md-nav__link" for="nav-4">
+      Apps
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-4">
+        Apps
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../apps/apps/" title="Application Model" class="md-nav__link">
+      Application Model
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../apps/security/" title="Security" class="md-nav__link">
+      Security
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5">
+    
+    <label class="md-nav__link" for="nav-5">
+      Deployment
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-5">
+        Deployment
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../deployment/kits/" title="Kits" class="md-nav__link">
+      Kits
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../deployment/schema/" title="Schema" class="md-nav__link">
+      Schema
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6">
+    
+    <label class="md-nav__link" for="nav-6">
+      Platforms
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-6">
+        Platforms
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../platforms/platDef/" title="Platform Definition" class="md-nav__link">
+      Platform Definition
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../platforms/par/" title="Platform Archive" class="md-nav__link">
+      Platform Archive
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../platforms/platTutorial/" title="Platform Tutorial" class="md-nav__link">
+      Platform Tutorial
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../platforms/deviceSim/" title="Device Simulator" class="md-nav__link">
+      Device Simulator
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../platforms/platCertified/" title="Certified Platforms" class="md-nav__link">
+      Certified Platforms
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-7" type="checkbox" id="nav-7">
+    
+    <label class="md-nav__link" for="nav-7">
+      Development
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-7">
+        Development
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../development/sedonac/" title="Sedonac" class="md-nav__link">
+      Sedonac
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../development/testing/" title="Testing" class="md-nav__link">
+      Testing
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../development/porting/" title="Porting" class="md-nav__link">
+      Porting
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../development/niagara/" title="Niagara" class="md-nav__link">
+      Niagara
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-8" type="checkbox" id="nav-8">
+    
+    <label class="md-nav__link" for="nav-8">
+      Networking
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-8">
+        Networking
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../networking/networking/" title="Networking" class="md-nav__link">
+      Networking
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../networking/dasp/" title="DASP" class="md-nav__link">
+      DASP
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../networking/sox/" title="Sox" class="md-nav__link">
+      Sox
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../networking/discover/" title="Device Discovery" class="md-nav__link">
+      Device Discovery
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9" type="checkbox" id="nav-9">
+    
+    <label class="md-nav__link" for="nav-9">
+      Appendix
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-9">
+        Appendix
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../appendix/license/" title="License" class="md-nav__link">
+      License
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../appendix/conventions/" title="Coding Conventions" class="md-nav__link">
+      Coding Conventions
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../appendix/scodeFormat/" title="SCode Format" class="md-nav__link">
+      SCode Format
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../appendix/grammar/" title="Grammar" class="md-nav__link">
+      Grammar
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-10" type="checkbox" id="nav-10">
+    
+    <label class="md-nav__link" for="nav-10">
+      Releases
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-10">
+        Releases
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../releases/newFor12/" title="v1.2" class="md-nav__link">
+      v1.2
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../api/" title="API" class="md-nav__link">
+      API
+    </a>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#inheritance" class="md-nav__link">
+    Inheritance
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fields" class="md-nav__link">
+    Fields
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#tempkey" class="md-nav__link">
+    tempKey
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tempstr1" class="md-nav__link">
+    tempStr1
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tempstr2" class="md-nav__link">
+    tempStr2
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tempval" class="md-nav__link">
+    tempVal
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#methods" class="md-nav__link">
+    Methods
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#addreq" class="md-nav__link">
+    addReq
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#addres" class="md-nav__link">
+    addRes
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deletereq" class="md-nav__link">
+    deleteReq
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#eventres" class="md-nav__link">
+    eventRes
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fileclosereq" class="md-nav__link">
+    fileCloseReq
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#filecloseres" class="md-nav__link">
+    fileCloseRes
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fileopenreq" class="md-nav__link">
+    fileOpenReq
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fileopenres" class="md-nav__link">
+    fileOpenRes
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#filereceivechunk" class="md-nav__link">
+    fileReceiveChunk
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#filerenamereq" class="md-nav__link">
+    fileRenameReq
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#filesendchunk" class="md-nav__link">
+    fileSendChunk
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#invokereq" class="md-nav__link">
+    invokeReq
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linkreq" class="md-nav__link">
+    linkReq
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#process" class="md-nav__link">
+    process
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#queryreq" class="md-nav__link">
+    queryReq
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#queryres" class="md-nav__link">
+    queryRes
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#readcompreq" class="md-nav__link">
+    readCompReq
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#readcompres" class="md-nav__link">
+    readCompRes
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#readpropreq" class="md-nav__link">
+    readPropReq
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#readpropres" class="md-nav__link">
+    readPropRes
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#renamereq" class="md-nav__link">
+    renameReq
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reorderreq" class="md-nav__link">
+    reorderReq
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#send" class="md-nav__link">
+    send
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#subscribereq" class="md-nav__link">
+    subscribeReq
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#subscriberes" class="md-nav__link">
+    subscribeRes
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#unsubscribereq" class="md-nav__link">
+    unsubscribeReq
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#versionmoreres" class="md-nav__link">
+    versionMoreRes
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#versionres" class="md-nav__link">
+    versionRes
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#writecomp" class="md-nav__link">
+    writeComp
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#writecomplinks" class="md-nav__link">
+    writeCompLinks
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#writecompprops" class="md-nav__link">
+    writeCompProps
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#writecomptree" class="md-nav__link">
+    writeCompTree
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#writereq" class="md-nav__link">
+    writeReq
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/linsong/sedona/edit/master/docs/api/sox/SoxCommands.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
+                
+                
+                <p><a href="/"><img alt="Sedona" src="../../../logo.png" /></a></p>
+<h1 id="soxcommands">SoxCommands<a class="headerlink" href="#soxcommands" title="Permanent link">&para;</a></h1>
+<p><a href="../../..">Doc Home</a> &gt; <a href="../../../api/api">API Index</a> &gt; <a href="../../../api/sox">sox</a> &gt; SoxCommands</p>
+<hr />
+<h2 id="inheritance">Inheritance<a class="headerlink" href="#inheritance" title="Permanent link">&para;</a></h2>
+<p><pre class='inheritance'>
+<a href="/api/sys/Obj">sys::Obj</a>
+  sox::SoxCommands
+</pre>
+<code style='color:darkgreen;font-weight:bold;font-size:120%'>public  class <b style='font-weight:bolder'>SoxCommands</b>  </code></p>
+<p>SoxCommands processes all the sox command request/response.</p>
+<hr />
+<h2 id="fields">Fields<a class="headerlink" href="#fields" title="Permanent link">&para;</a></h2>
+<dl>
+
+<h3 id="tempkey">tempKey<a class="headerlink" href="#tempkey" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <strong><a href="/api/sys/Str">Str</a> tempKey</strong></code></p>
+<h3 id="tempstr1">tempStr1<a class="headerlink" href="#tempstr1" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <strong><a href="/api/sys/Str">Str</a> tempStr1</strong></code></p>
+<h3 id="tempstr2">tempStr2<a class="headerlink" href="#tempstr2" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <strong><a href="/api/sys/Str">Str</a> tempStr2</strong></code></p>
+<h3 id="tempval">tempVal<a class="headerlink" href="#tempval" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <strong><a href="/api/sys/Str">Str</a> tempVal</strong></code></p>
+<hr />
+<h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
+<h3 id="addreq">addReq<a class="headerlink" href="#addreq" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <strong>void addReq(<a href="/api/sox/SoxService">SoxService</a> service, <a href="/api/sox/SoxSession">SoxSession</a> session, <a href="/api/sox/SendPacket">SendPacket</a> res)</strong></code></p>
+<p>req
+{</p>
+<div class="codehilite"><pre><span></span><code>  u1    &#39;a&#39;
+  u1    replyNum
+  u2    parentId
+  u1    kitId
+  u1    typeId
+  str   name
+  val[] configProps
+</code></pre></div>
+
+<p>}</p>
+<h3 id="addres">addRes<a class="headerlink" href="#addres" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <strong>void addRes(<a href="/api/sox/SoxService">SoxService</a> service, <a href="/api/sox/SoxSession">SoxSession</a> session, <a href="/api/sox/SendPacket">SendPacket</a> res)</strong></code></p>
+<p>res
+{</p>
+<div class="codehilite"><pre><span></span><code>  u1    &#39;A&#39;
+  u1    replyNum
+  u2    compId
+</code></pre></div>
+
+<p>}</p>
+<h3 id="deletereq">deleteReq<a class="headerlink" href="#deletereq" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <strong>void deleteReq(<a href="/api/sox/SoxService">SoxService</a> service, <a href="/api/sox/SoxSession">SoxSession</a> session, <a href="/api/sox/SendPacket">SendPacket</a> res)</strong></code></p>
+<p>req
+{</p>
+<div class="codehilite"><pre><span></span><code>  u1    &#39;d&#39;
+  u1    replyNum
+  u2    compId
+</code></pre></div>
+
+<p>}</p>
+<h3 id="eventres">eventRes<a class="headerlink" href="#eventres" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <strong>void eventRes(<a href="/api/sox/SoxService">SoxService</a> service, <a href="/api/sox/SoxSession">SoxSession</a> session, <a href="/api/sox/SendPacket">SendPacket</a> p)</strong></code></p>
+<p>req
+{</p>
+<div class="codehilite"><pre><span></span><code>  u1   &#39;e&#39;
+  u1   replyNum
+  u2   componentId
+  compTree | compProps | compLinks
+ }
+</code></pre></div>
+
+<h3 id="fileclosereq">fileCloseReq<a class="headerlink" href="#fileclosereq" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <strong>void fileCloseReq(<a href="/api/sox/SoxService">SoxService</a> service, <a href="/api/sox/SoxSession">SoxSession</a> session, <a href="/api/sox/SendPacket">SendPacket</a> res)</strong></code></p>
+<p>req
+{</p>
+<div class="codehilite"><pre><span></span><code>  u1  &#39;z&#39;
+  u1  replyNum
+</code></pre></div>
+
+<p>}</p>
+<h3 id="filecloseres">fileCloseRes<a class="headerlink" href="#filecloseres" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <strong>void fileCloseRes(<a href="/api/sox/SoxService">SoxService</a> service, <a href="/api/sox/SoxSession">SoxSession</a> session, <a href="/api/sox/SendPacket">SendPacket</a> res)</strong></code></p>
+<p>res
+{</p>
+<div class="codehilite"><pre><span></span><code>  u1  &#39;Z&#39;
+  u1  replyNum
+</code></pre></div>
+
+<p>}</p>
+<h3 id="fileopenreq">fileOpenReq<a class="headerlink" href="#fileopenreq" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <strong>void fileOpenReq(<a href="/api/sox/SoxService">SoxService</a> service, <a href="/api/sox/SoxSession">SoxSession</a> session, <a href="/api/sox/SendPacket">SendPacket</a> res)</strong></code></p>
+<p>req
+{</p>
+<div class="codehilite"><pre><span></span><code>  u1   &#39;f&#39;
+  u1   replyNum
+  str  method (&quot;g&quot; for get, &quot;p&quot; for put)
+  str  uri
+  u4   fileSize
+  u2   suggestedChunkSize  (suggested by client)
+  headers[]
+  {
+    str  name
+    str  value
+  }
+  u1 end of headers &#39;\0&#39;
+</code></pre></div>
+
+<p>}</p>
+<p>On a put, the fileSize is the number of bytes that will be written. On a
+get, the fileSize is the maximum number of bytes to read. You can read the
+whole file on a get by specifying fileSize as 0. The actual
+number of bytes read might be less if there are not fileSize bytes
+available (taking into account the size of the actual file, and the
+potential offset).</p>
+<div class="codehilite"><pre><span></span><code> Supported Headers:
+  Name      Value         Method      Default   Description
+  ----      -----         ------      -------   -----------
+  offset    int           get, put    0         Byte offset to use when reading/writing the uri
+  mode      &quot;w&quot;, &quot;m&quot;      put         &quot;w&quot;       File mode to use (see sys::File)
+</code></pre></div>
+
+<h3 id="fileopenres">fileOpenRes<a class="headerlink" href="#fileopenres" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <strong>void fileOpenRes(<a href="/api/sox/SoxService">SoxService</a> service, <a href="/api/sox/SoxSession">SoxSession</a> session, <a href="/api/sox/SendPacket">SendPacket</a> res)</strong></code></p>
+<p>res
+{</p>
+<div class="codehilite"><pre><span></span><code>  u1   &#39;F&#39;
+  u1   replyNum
+  u4   fileSize
+  u2   actualChunkSize
+  headers[]
+  {
+    str  name
+    str  value
+  }
+  u1 end of headers &#39;\0&#39;
+</code></pre></div>
+
+<p>}</p>
+<h3 id="filereceivechunk">fileReceiveChunk<a class="headerlink" href="#filereceivechunk" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <strong>void fileReceiveChunk(<a href="/api/sox/SoxService">SoxService</a> service, <a href="/api/sox/SoxSession">SoxSession</a> session)</strong></code></p>
+<p>Service a file chunk request (being put from client to me).
+NOTE: used by put (get uses fileSendChunk).</p>
+<div class="codehilite"><pre><span></span><code>  client -&gt; k -&gt; me
+  req
+  {
+    u1   &#39;k&#39;
+    u1   replyNum (ignored)
+    u2   chunkNum
+    u2   chunkSize
+    u1[chunkSize] chunk
+  }
+</code></pre></div>
+
+<h3 id="filerenamereq">fileRenameReq<a class="headerlink" href="#filerenamereq" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <strong>void fileRenameReq(<a href="/api/sox/SoxService">SoxService</a> service, <a href="/api/sox/SoxSession">SoxSession</a> session, <a href="/api/sox/SendPacket">SendPacket</a> res)</strong></code></p>
+<p>req
+{</p>
+<div class="codehilite"><pre><span></span><code>  u1  &#39;b&#39;
+  u1   replyNum
+  str  from
+  str  to
+</code></pre></div>
+
+<p>}</p>
+<h3 id="filesendchunk">fileSendChunk<a class="headerlink" href="#filesendchunk" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <strong>void fileSendChunk(<a href="/api/sox/SoxService">SoxService</a> service, <a href="/api/sox/SoxSession">SoxSession</a> session, <a href="/api/sox/SendPacket">SendPacket</a> res)</strong></code></p>
+<p>Send the client the next chunk of the file.
+NOTE: used by get (put uses fileReceiveChunk).</p>
+<div class="codehilite"><pre><span></span><code>  me -&gt; k -&gt; client
+  req
+  {
+    u1   &#39;k&#39;
+    u1   replyNum (ignored)
+    u2   chunkNum
+    u2   chunkSize
+    u1[chunkSize] chunk
+  }
+</code></pre></div>
+
+<h3 id="invokereq">invokeReq<a class="headerlink" href="#invokereq" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <strong>void invokeReq(<a href="/api/sox/SoxService">SoxService</a> service, <a href="/api/sox/SoxSession">SoxSession</a> session, <a href="/api/sox/SendPacket">SendPacket</a> res)</strong></code></p>
+<p>req
+{</p>
+<div class="codehilite"><pre><span></span><code>  u1   &#39;i&#39;
+  u1   replyNum
+  u2   componentId
+  u1   slotId
+  val  argument
+</code></pre></div>
+
+<p>}</p>
+<h3 id="linkreq">linkReq<a class="headerlink" href="#linkreq" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <strong>void linkReq(<a href="/api/sox/SoxService">SoxService</a> service, <a href="/api/sox/SoxSession">SoxSession</a> session, <a href="/api/sox/SendPacket">SendPacket</a> res)</strong></code></p>
+<p>req
+{</p>
+<div class="codehilite"><pre><span></span><code>  u1   &#39;l&#39;
+  u1   replyNum
+  u1   &#39;a&#39; | &#39;d&#39; (add/delete)
+  u2   fromCompId
+  u1   fromSlotId
+  u2   toCompId
+  u1   toSlotId
+</code></pre></div>
+
+<p>}</p>
+<h3 id="process">process<a class="headerlink" href="#process" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <strong>void process(<a href="/api/sox/SoxService">SoxService</a> service, <a href="/api/sox/SoxSession">SoxSession</a> session)</strong></code></p>
+<p>Process the current message just received</p>
+<h3 id="queryreq">queryReq<a class="headerlink" href="#queryreq" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <strong>void queryReq(<a href="/api/sox/SoxService">SoxService</a> service, <a href="/api/sox/SoxSession">SoxSession</a> session, <a href="/api/sox/SendPacket">SendPacket</a> res)</strong></code></p>
+<p>req
+{</p>
+<div class="codehilite"><pre><span></span><code>  u1   &#39;q&#39;
+  u1   replyNum
+  u1   queryType
+  u1[] queryReq
+</code></pre></div>
+
+<p>}</p>
+<p>queryType 's': query service
+req-service
+{</p>
+<div class="codehilite"><pre><span></span><code>  u1  kitId
+  u1  typeId
+</code></pre></div>
+
+<p>}</p>
+<h3 id="queryres">queryRes<a class="headerlink" href="#queryres" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <strong>void queryRes(<a href="/api/sox/SoxService">SoxService</a> service, <a href="/api/sox/SoxSession">SoxSession</a> session, <a href="/api/sox/SendPacket">SendPacket</a> res)</strong></code></p>
+<p>res
+{</p>
+<div class="codehilite"><pre><span></span><code>  u1   &#39;Q&#39;
+  u1   replyNum
+  u1[] queryRes
+</code></pre></div>
+
+<p>}</p>
+<p>queryType 's': query service
+res-service
+{</p>
+<div class="codehilite"><pre><span></span><code>  u2[num]  compIds
+  u2       0xffff end marker
+</code></pre></div>
+
+<p>}</p>
+<h3 id="readcompreq">readCompReq<a class="headerlink" href="#readcompreq" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <strong>void readCompReq(<a href="/api/sox/SoxService">SoxService</a> service, <a href="/api/sox/SoxSession">SoxSession</a> session, <a href="/api/sox/SendPacket">SendPacket</a> res)</strong></code></p>
+<p>req
+{</p>
+<div class="codehilite"><pre><span></span><code>  u1   &#39;c&#39;
+  u1   replyNum
+  u2   componentId
+  u1   what: &#39;t&#39;, &#39;c&#39;, &#39;r&#39;, &#39;l&#39; (tree, config, runtime, links)
+</code></pre></div>
+
+<p>}</p>
+<h3 id="readcompres">readCompRes<a class="headerlink" href="#readcompres" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <strong>void readCompRes(<a href="/api/sox/SoxService">SoxService</a> service, <a href="/api/sox/SoxSession">SoxSession</a> session, <a href="/api/sox/SendPacket">SendPacket</a> res)</strong></code></p>
+<p>res
+{</p>
+<div class="codehilite"><pre><span></span><code>  u1    &#39;C&#39;
+  u1    replyNum
+  u2    componentId
+  compTree | compProps | compLinks
+</code></pre></div>
+
+<p>}</p>
+<h3 id="readpropreq">readPropReq<a class="headerlink" href="#readpropreq" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <strong>void readPropReq(<a href="/api/sox/SoxService">SoxService</a> service, <a href="/api/sox/SoxSession">SoxSession</a> session, <a href="/api/sox/SendPacket">SendPacket</a> res)</strong></code></p>
+<p>req
+{</p>
+<div class="codehilite"><pre><span></span><code>  u1  &#39;r&#39;
+  u1  replyNum
+  u2  compId
+  u1  propId
+</code></pre></div>
+
+<p>}</p>
+<h3 id="readpropres">readPropRes<a class="headerlink" href="#readpropres" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <strong>void readPropRes(<a href="/api/sox/SoxService">SoxService</a> service, <a href="/api/sox/SoxSession">SoxSession</a> session, <a href="/api/sox/SendPacket">SendPacket</a> res)</strong></code></p>
+<p>res
+{</p>
+<div class="codehilite"><pre><span></span><code>  u1   &#39;R&#39;
+  u1   replyNum
+  u1   any code
+  var  propValue
+</code></pre></div>
+
+<p>}</p>
+<h3 id="renamereq">renameReq<a class="headerlink" href="#renamereq" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <strong>void renameReq(<a href="/api/sox/SoxService">SoxService</a> service, <a href="/api/sox/SoxSession">SoxSession</a> session, <a href="/api/sox/SendPacket">SendPacket</a> res)</strong></code></p>
+<p>req
+{</p>
+<div class="codehilite"><pre><span></span><code>  u1    &#39;n&#39;
+  u1    replyNum
+  u2    compId
+  str   newName
+</code></pre></div>
+
+<p>}</p>
+<h3 id="reorderreq">reorderReq<a class="headerlink" href="#reorderreq" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <strong>void reorderReq(<a href="/api/sox/SoxService">SoxService</a> service, <a href="/api/sox/SoxSession">SoxSession</a> session, <a href="/api/sox/SendPacket">SendPacket</a> res)</strong></code></p>
+<p>req
+{</p>
+<div class="codehilite"><pre><span></span><code>  u1    &#39;o&#39;
+  u1    replyNum
+  u2    compId
+  u1    numChildren
+  u2[]  childrenIds
+</code></pre></div>
+
+<p>}</p>
+<h3 id="send">send<a class="headerlink" href="#send" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <strong>void send(<a href="/api/sox/SoxService">SoxService</a> service, <a href="/api/sox/SoxSession">SoxSession</a> session, <a href="/api/sox/SendPacket">SendPacket</a> res)</strong></code></p>
+<h3 id="subscribereq">subscribeReq<a class="headerlink" href="#subscribereq" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <strong>void subscribeReq(<a href="/api/sox/SoxService">SoxService</a> service, <a href="/api/sox/SoxSession">SoxSession</a> session, <a href="/api/sox/SendPacket">SendPacket</a> res)</strong></code></p>
+<p>req
+{</p>
+<div class="codehilite"><pre><span></span><code>  u1   &#39;s&#39;
+  u1   replyNum
+  u1   whatMask: tree=0x01 config=0x02 rt=0x04 links=0x8 0xff all tree
+  u1   size
+  u2[] compIds
+</code></pre></div>
+
+<p>}</p>
+<h3 id="subscriberes">subscribeRes<a class="headerlink" href="#subscriberes" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <strong>void subscribeRes(<a href="/api/sox/SoxService">SoxService</a> service, <a href="/api/sox/SoxSession">SoxSession</a> session, <a href="/api/sox/SendPacket">SendPacket</a> res)</strong></code></p>
+<p>res
+{</p>
+<div class="codehilite"><pre><span></span><code>  u1     &#39;S&#39;
+  u1     replyNum
+  u1     numSubscribed
+</code></pre></div>
+
+<p>}</p>
+<h3 id="unsubscribereq">unsubscribeReq<a class="headerlink" href="#unsubscribereq" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <strong>void unsubscribeReq(<a href="/api/sox/SoxService">SoxService</a> service, <a href="/api/sox/SoxSession">SoxSession</a> session, <a href="/api/sox/SendPacket">SendPacket</a> res)</strong></code></p>
+<p>req
+{</p>
+<div class="codehilite"><pre><span></span><code>  u1   &#39;u&#39;
+  u1   replyNum
+  u2   componentId
+  u1   whatMask: tree=0x1 config=0x2 rt=0x4 links=0x8 0xff all tree
+</code></pre></div>
+
+<p>}</p>
+<h3 id="versionmoreres">versionMoreRes<a class="headerlink" href="#versionmoreres" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <strong>void versionMoreRes(<a href="/api/sox/SoxService">SoxService</a> service, <a href="/api/sox/SoxSession">SoxSession</a> session, <a href="/api/sox/SendPacket">SendPacket</a> res)</strong></code></p>
+<p>res
+{</p>
+<div class="codehilite"><pre><span></span><code>  u1   &#39;Y&#39;
+  u1   replyNum
+  str  platformId
+  u1   scodeFlags
+  kitVersions[kitCount]
+  {
+    str version
+  }
+  u1   pairs
+  pairs
+  {
+    str  key
+    str  val
+  }
+</code></pre></div>
+
+<p>}</p>
+<h3 id="versionres">versionRes<a class="headerlink" href="#versionres" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <strong>void versionRes(<a href="/api/sox/SoxService">SoxService</a> service, <a href="/api/sox/SoxSession">SoxSession</a> session, <a href="/api/sox/SendPacket">SendPacket</a> res)</strong></code></p>
+<p>versionRes
+{</p>
+<div class="codehilite"><pre><span></span><code>  u1   &#39;V&#39;
+  u1   replyNum
+  u1   kitCount
+  kits[kitCount]
+  {
+    str name
+    i4  checksum
+  }
+</code></pre></div>
+
+<p>}</p>
+<h3 id="writecomp">writeComp<a class="headerlink" href="#writecomp" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <strong>bool writeComp(<a href="/api/sox/SoxService">SoxService</a> service, <a href="/api/sox/SoxSession">SoxSession</a> session, <a href="/api/sys/Component">Component</a> c, int what)</strong></code></p>
+<p>Write a component</p>
+<div class="codehilite"><pre><span></span><code> - &#39;t&#39;: writeCompTree
+ - &#39;c&#39;: writeCompProps
+ - &#39;r&#39;: writeCompProps
+ - &#39;l&#39;: writeCompLinks
+</code></pre></div>
+
+<h3 id="writecomplinks">writeCompLinks<a class="headerlink" href="#writecomplinks" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <strong>bool writeCompLinks(<a href="/api/sox/SoxService">SoxService</a> service, <a href="/api/sox/SoxSession">SoxSession</a> session, <a href="/api/sys/Component">Component</a> c)</strong></code></p>
+<p>Write component links</p>
+<div class="codehilite"><pre><span></span><code>  compLinks
+  {
+    u1    &#39;l&#39;
+    Link[] links
+    u2     0xffff end marker
+  }
+</code></pre></div>
+
+<h3 id="writecompprops">writeCompProps<a class="headerlink" href="#writecompprops" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <strong>bool writeCompProps(<a href="/api/sox/SoxService">SoxService</a> service, <a href="/api/sox/SoxSession">SoxSession</a> session, <a href="/api/sys/Component">Component</a> c, int what)</strong></code></p>
+<p>Write component props (config or runtime)</p>
+<div class="codehilite"><pre><span></span><code>  compProps
+  {
+    u1     &#39;c&#39; or &#39;r&#39; for config or runtime, &#39;C&#39;/&#39;R&#39; if operator only
+    val[]  propValues
+  }
+</code></pre></div>
+
+<h3 id="writecomptree">writeCompTree<a class="headerlink" href="#writecomptree" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <strong>bool writeCompTree(<a href="/api/sox/SoxService">SoxService</a> service, <a href="/api/sox/SoxSession">SoxSession</a> session, <a href="/api/sys/Component">Component</a> c)</strong></code></p>
+<p>Write component tree information</p>
+<div class="codehilite"><pre><span></span><code>  compTree
+  {
+    u1    &#39;t&#39;
+    u1    kitId
+    u1    typeId
+    str   name
+    u2    parent
+    u1    permissions
+    u1    numKids
+    u2[numKids] kidIds
+  }
+</code></pre></div>
+
+<h3 id="writereq">writeReq<a class="headerlink" href="#writereq" title="Permanent link">&para;</a></h3>
+<p><code><em>public</em> <em>static</em> <strong>void writeReq(<a href="/api/sox/SoxService">SoxService</a> service, <a href="/api/sox/SoxSession">SoxSession</a> session, <a href="/api/sox/SendPacket">SendPacket</a> res)</strong></code></p>
+<p>req
+{</p>
+<div class="codehilite"><pre><span></span><code>  u1   &#39;w&#39;
+  u1   replyNum
+  u2   componentId
+  u1   slotId
+  val  value
+</code></pre></div>
+
+<p>}
+</dl></p>
+<hr />
+<p><a href="../../..">Doc Home</a> &gt; <a href="../../../api/api">API Index</a> &gt; <a href="../../../api/sox">sox</a> &gt; SoxCommands</p>
+                
+                  
+                
+                
+                  
+                  <hr>
+                  <div class="md-source-date">
+                    <small>
+                      
+                        Last update: April 28, 2020
+                      
+                    </small>
+                  </div>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+          <div class="md-footer-copyright__highlight">
+            Copyright &copy; 2007-2017 Tridium, 2018-2020 Sedona Community
+          </div>
+        
+        powered by
+        <a href="https://www.mkdocs.org" target="_blank" rel="noopener">MkDocs</a>
+        and
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs</a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../../../assets/javascripts/application.c33a9706.js"></script>
+      
+      <script>app.initialize({version:"1.1",url:{base:"../../.."}})</script>
+      
+    
+  </body>
+</html>
