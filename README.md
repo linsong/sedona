@@ -2,7 +2,7 @@
 
 
 
-The Sedona framework is designed to make it easy to build smart, networked embedded devices. Read [Documentation](https://linsong.github.io/sedona/doc/index.html).
+The Sedona framework is designed to make it easy to build smart, networked embedded devices. Read [Documentation](https://linsong.github.io/sedona/site/index.html).
 
 This is a fork of the [official Sedona framework](http://www.sedonadev.org), we call it as **Sedona community branch**. Here's why we decided to fork:
 * We love the Sedona framework and want it to become better and better, but there is no updates in years in the [official branch](http://www.sedonadev.org). So we make a branch here for everyone in the community to contribute; and at the same time, the whole community can get benifits from these contributions. **From the community, to the community**.
