@@ -1,0 +1,14 @@
+//
+// Copyright (c) 2016 Andrey Skvortsov <andrej.skvortzov@gmail.com>
+// Licensed under the Academic Free License version 3.0
+//
+
+**
+** Note is a component used to comment user application
+**
+class Note
+  extends Component
+{
+  @asStr @summary=true @multiLine=true
+  @config property Buf(128) comment;
+}

@@ -292,7 +292,7 @@ public abstract class Component
    */
   public static String checkName(String name)
   {                               
-    if (name.length() > 7) return "nameTooLong";
+    if (name.length() > 31) return "nameTooLong";
     if (name.length() == 0) return "nameEmpty";
     for (int i=0; i<name.length(); ++i)
     {
