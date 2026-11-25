@@ -134,7 +134,8 @@ same directory.
 -   **endian**: either "little" or "big" based on target processor.
 -   **blockSize**: size of a scode block in bytes (see "sedona.h")
 -   **refSize**: size of a memory pointer in bytes for target processor
-    (4 for 32-bit processor).
+    (4 for a 32-bit processor, 8 for a 64-bit processor). The SVM
+    refuses to load scode whose refSize differs from its own pointer size.
 -   **main**: qualified method name of main method (typically
     `sys::Sys.main`).
 -   **debug**: (optional) boolean to include debug meta-data in image.

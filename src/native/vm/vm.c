@@ -31,6 +31,25 @@ Cell oneCell;
 Cell negOneCell;                
 
 //////////////////////////////////////////////////////////////////////////
+// Compile Time Checks
+//////////////////////////////////////////////////////////////////////////
+
+// A Cell must be exactly one pointer wide, and floats must be 32 bits.
+// A long/double takes two Cells on the stack with its value stored in
+// the lower addressed one (which is all of it if a Cell is 64 bits).
+// These typedefs fail to compile with a negative array size otherwise.
+typedef char assertCellIsPointerSize[sizeof(Cell) == sizeof(void*) ? 1 : -1];
+typedef char assertFloatIs32Bits[sizeof(float) == 4 ? 1 : -1];
+typedef char assertWideFitsTwoCells[2*sizeof(Cell) >= sizeof(int64_t) ? 1 : -1];
+
+// The build scripts define SEDONA_REF_SIZE as the refSize of the platform
+// definition.  If this fails then the C compiler is generating code for
+// a different pointer size than the platform (and its scode) expects.
+#ifdef SEDONA_REF_SIZE
+typedef char assertRefSizeMatchesPlatform[sizeof(void*) == SEDONA_REF_SIZE ? 1 : -1];
+#endif
+
+//////////////////////////////////////////////////////////////////////////
 // External Forwards
 //////////////////////////////////////////////////////////////////////////
 
@@ -341,10 +360,10 @@ const char* opcodeToName(int opcode)
 void dumpStack(SedonaVM* vm, Cell* sp)
 {
   Cell* base = (Cell*)vm->stackBaseAddr;
-  int i = sp-base;
+  int i = (int)(sp-base);
 
   for (; sp >= base; --sp, --i)
-    printf("  Stack %2d [%p]:  0x%8p  %10i  %f\n", i, sp, sp->aval, sp->ival, sp->fval);
+    printf("  Stack %2d [%p]:  %p  %10i  %f\n", i, (void*)sp, sp->aval, sp->ival, sp->fval);
 }
 
 int handleNullPointer(SedonaVM* vm, int opcode, Cell* fp, Cell* sp)
@@ -467,7 +486,7 @@ int vmCall(SedonaVM* vm, uint16_t method, Cell* args, int argc)
     #endif
 
     //dumpStack(vm, sp);          
-    //printf("  -- opcode = [%d]  %s\n", cp-cb, opcodeToName(*cp));
+    //printf("  -- opcode = [%d]  %s\n", (int)(cp-cb), opcodeToName(*cp));
 
 #ifndef COMPUTED_GOTO
     // process next opcode using switch if not using computed gotos
@@ -480,7 +499,9 @@ int vmCall(SedonaVM* vm, uint16_t method, Cell* args, int argc)
 
       Case Nop:           ++cp; EndInstr;
       Case LoadIM1:       (++sp)->ival = -1; ++cp; EndInstr;
-      Case LoadNull:   
+      // null must clear the whole cell, which is wider
+      // than ival if pointers are bigger than 32 bits
+      Case LoadNull:      (++sp)->aval = NULL; ++cp; EndInstr;
       Case LoadI0:        (++sp)->ival = 0;  ++cp; EndInstr;
       Case LoadI1:        (++sp)->ival = 1;  ++cp; EndInstr;
       Case LoadNullBool:  
@@ -576,7 +597,7 @@ int vmCall(SedonaVM* vm, uint16_t method, Cell* args, int argc)
       Case IntAnd:    --sp; sp->ival = sp->ival & (sp+1)->ival; ++cp; EndInstr;
       Case IntNot:    sp->ival = ~sp->ival; ++cp; EndInstr;
       Case IntNeg:    sp->ival = -sp->ival; ++cp; EndInstr;
-      Case IntShiftL: --sp; sp->ival = sp->ival << (sp+1)->ival; ++cp; EndInstr;
+      Case IntShiftL: --sp; sp->ival = (int32_t)((uint32_t)sp->ival << (sp+1)->ival); ++cp; EndInstr;
       Case IntShiftR: --sp; sp->ival = sp->ival >> (sp+1)->ival; ++cp; EndInstr;
       Case IntInc:    ++sp->ival; ++cp; EndInstr;
       Case IntDec:    --sp->ival; ++cp; EndInstr;
@@ -604,7 +625,7 @@ int vmCall(SedonaVM* vm, uint16_t method, Cell* args, int argc)
       Case LongAnd:  sp -=2; *(int64_t*)(sp-1) = *(int64_t*)(sp-1) & *(int64_t*)(sp+1); ++cp; EndInstr;
       Case LongNot:  *(int64_t*)(sp-1) = ~(*(int64_t*)(sp-1)); ++cp; EndInstr;
       Case LongNeg:  *(int64_t*)(sp-1) = -(*(int64_t*)(sp-1)); ++cp; EndInstr;
-      Case LongShiftL: sp -= 1; *(int64_t*)(sp-1) = *(int64_t*)(sp-1) << (sp+1)->ival; ++cp; EndInstr;
+      Case LongShiftL: sp -= 1; *(int64_t*)(sp-1) = (int64_t)(*(uint64_t*)(sp-1) << (sp+1)->ival); ++cp; EndInstr;
       Case LongShiftR: sp -= 1; *(int64_t*)(sp-1) = *(int64_t*)(sp-1) >> (sp+1)->ival; ++cp; EndInstr;
 
       ////////////////////////////////////////////////////////////////////

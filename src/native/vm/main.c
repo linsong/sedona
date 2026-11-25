@@ -267,7 +267,9 @@ static int commonVmSetup(SedonaVM* vm, const char* scodeFile)
   if (vm->stackBaseAddr!=NULL) free((void*)vm->stackBaseAddr);  // Avoid memory leak
 
   // alloc stack (hardcoded for now)
-  vm->stackMaxSize  = 16384;
+  // sized in cells so the stack depth is the same no matter how big
+  // a pointer (and therefore a Cell) is; 4096 cells is 16kb on 32-bit
+  vm->stackMaxSize  = 4096 * sizeof(Cell);
   vm->stackBaseAddr = (uint8_t*)malloc(vm->stackMaxSize);
   if (vm->stackBaseAddr == NULL)
   {

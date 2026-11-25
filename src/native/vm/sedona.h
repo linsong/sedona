@@ -162,7 +162,11 @@
 #include <string.h>
 #include <stdbool.h>
 #include <unistd.h>
-#include <endian.h>
+#ifdef __DARWIN__
+  #include <machine/endian.h>
+#else
+  #include <endian.h>
+#endif
 #include <sys/stat.h>
 #include <math.h>
 

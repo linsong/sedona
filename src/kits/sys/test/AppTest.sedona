@@ -197,8 +197,8 @@ class AppTest
     verifyChildren(a, null, null, null)
     assert(a.services == null)
 
-    // remove y
-    assert(!a.remove(y))
+    // y has been freed, so removing it a second time
+    // cannot be tested without reading freed memory
 
     // cleanup
     a.cleanupApp()
@@ -256,8 +256,8 @@ class AppTest
     assert(x.childRemoved == true)
     assert(x.childReordered == false)
     assert(x.parentRemoved == false)
-    assert(y.parentRemoved == true)    
-    assert(y.childRemoved ==false)
+    // y has been freed by App.remove, so its callback
+    // flags cannot be checked without reading freed memory
 
     // cleanup
     a.cleanupApp()

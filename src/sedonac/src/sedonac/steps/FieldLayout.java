@@ -136,7 +136,8 @@ public class FieldLayout
     if (off < 0) throw new IllegalStateException(type.qname);
 
     // layout the fields
-    type.sizeof = layoutFields(off, type.instanceFields());
+    type.sizeof = layoutFields(off, type.instanceFields(), alignOf(type.base));
+    aligns.put(qname, new Integer(align));
 
     // now that is has been processed, removed it the
     // todo and processing maps
@@ -150,7 +151,7 @@ public class FieldLayout
 
   private void layoutStaticFields()
   {
-    int dataSize = layoutFields(0, flat.staticFields);
+    int dataSize = layoutFields(0, flat.staticFields, MIN_ALIGN);
     if (dataSize < 0) throw err("Data size could not be computed");
     compiler.dataSize = dataSize;
   }
@@ -159,8 +160,22 @@ public class FieldLayout
 // Utils
 //////////////////////////////////////////////////////////////////////////
 
-  private int layoutFields(int off, IrField[] fields)
+  /**
+   * Layout the fields starting at the given offset and return the
+   * total size.  The alignment required by the laid out fields (never
+   * less than baseAlign) is left in the 'align' field.
+   *
+   * Everything is aligned on 4 bytes unless we are compiling for 8
+   * byte references.  In that case references, and anything which
+   * contains references, is aligned on 8 bytes.  Types without
+   * references keep the exact same layout no matter what the reference
+   * size is, which is required for the types ImageGen writes directly
+   * into the image (Kit, Type, Slot, Log, Buf, Str).
+   */
+  private int layoutFields(int off, IrField[] fields, int baseAlign)
   {
+    int align = baseAlign;
+
     // layout 1, 2, then 4 bytes fields; putting the smaller fields
     // first ensures that maximize access to the first 255 bytes which
     // use the more compact opcodes (we pad everything out to 4 bytes
@@ -176,6 +191,15 @@ public class FieldLayout
     // four byte fields (includes 8 byte fields too)
     while (off % 4 != 0) off++;
     off = layoutFields(fields, off, 4);
+
+    // eight byte references; we only pad out to 8 bytes
+    // if there is actually a reference to layout
+    if (refSize == 8 && hasRefs(fields))
+    {
+      align = 8;
+      while (off % 8 != 0) off++;
+      off = layoutFields(fields, off, 8);
+    }
 
     // anything left over is odd sized inlines
     IrField unsizedArray = null;
@@ -231,10 +255,14 @@ public class FieldLayout
         if (recurse.sizeof() < 0) return -1;
       }
 
-      // compute size
+      // compute size and alignment
       int size;
+      int fieldAlign = MIN_ALIGN;
       if (type.isArray() && type.arrayOf().isRef())
       {
+        // array of references is aligned like a reference
+        fieldAlign = refAlign();
+
         // size to fit n references/pointers
         Type of = type.arrayOf();
         int len = type.arrayLength().val();
@@ -253,6 +281,7 @@ public class FieldLayout
           size = calcDynamicSize(f);
         else
           size = type.sizeof();
+        fieldAlign = alignOf(type);
       }
 
       // sanity
@@ -261,6 +290,10 @@ public class FieldLayout
 
       // everything should be started at 4-byte alignment
       if (off % 4 != 0) throw new IllegalStateException();
+
+      // anything which contains references is aligned like a reference
+      if (fieldAlign > align) align = fieldAlign;
+      while (off % fieldAlign != 0) off++;
 
       // inline enough memory to whole an instance of the type
       f.offset = off;
@@ -272,11 +305,19 @@ public class FieldLayout
     // laid out last in the memory
     if (unsizedArray != null)
     {
+      if (unsizedArray.type.arrayOf().isRef())
+      {
+        if (refAlign() > align) align = refAlign();
+        while (off % refAlign() != 0) off++;
+      }
       unsizedArray.offset = off;
     }
 
-    // everything is sized in multiples of 4 for alignment
+    // everything is sized in multiples of 4 for alignment,
+    // or multiples of 8 if we have 8 byte references
+    while (off % align != 0) off++;
     if (off % 4 != 0) throw new IllegalStateException();
+    this.align = align;
 
     // return size of fields
     return off;
@@ -321,6 +362,39 @@ public class FieldLayout
       }
     }
     return off;
+  }
+
+  /**
+   * Return if any of the fields is stored as a reference/pointer.
+   */
+  private boolean hasRefs(IrField[] fields)
+  {
+    for (int i=0; i<fields.length; ++i)
+    {
+      IrField f = fields[i];
+      if (f.type.isPrimitive()) continue;
+      if (f.isConst() && !f.isInline()) continue;
+      if (!f.isInline()) return true;
+    }
+    return false;
+  }
+
+  /**
+   * Alignment in bytes of a reference/pointer.
+   */
+  private int refAlign()
+  {
+    return refSize == 8 ? 8 : MIN_ALIGN;
+  }
+
+  /**
+   * Alignment in bytes required by an instance of the given type.
+   */
+  private int alignOf(Type type)
+  {
+    if (type == null) return MIN_ALIGN;
+    Integer a = (Integer)aligns.get(type.qname());
+    return a == null ? MIN_ALIGN : a.intValue();
   }
 
   private int calcDynamicSize(IrField field)
@@ -401,4 +475,8 @@ public class FieldLayout
   HashMap processing;    // map of qname to typse being processed
   HashMap todo;          // map of qname to types left to process
   int refSize;           // size of pointer in bytes
+  int align;             // alignment computed by last call to layoutFields
+  HashMap aligns = new HashMap();  // map of qname to alignment of laid out types
+
+  static final int MIN_ALIGN = 4;
 }

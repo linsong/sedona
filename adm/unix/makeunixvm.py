@@ -12,6 +12,7 @@ from __future__ import print_function
 import sys
 import getopt
 import os
+import platform
 import re
 import glob
 import env
@@ -35,6 +36,27 @@ if sys.platform == "darwin":
   # define darwin system environment variable
   defs.append(("__DARWIN__", "1"))
 
+# Is this a host which can only build and run 64-bit executables?
+def hostIs64BitOnly():
+  if os.environ.get("SVM_CROSS_COMPILE") is not None:
+    return False
+  return sys.platform == "darwin" or platform.machine() in ("arm64", "aarch64")
+
+# Platform definition used if none is specified
+def defaultPlatform():
+  name = "generic-unix.xml"
+  if hostIs64BitOnly():
+    name = "generic-unix64.xml"
+  return os.path.join(env.platforms, "src", "generic", "unix", name)
+
+# Pointer size in bytes the platform definition asks for
+def platRefSize(platFile):
+  doc = xml.dom.minidom.parse(platFile).documentElement
+  elems = doc.getElementsByTagName("compile")
+  if len(elems) == 0 or not elems[0].hasAttribute("refSize"):
+    return None
+  return int(elems[0].getAttribute("refSize"))
+
 # usage
 def usage():
   print(" makeunixvm.py [opts]")
@@ -46,7 +68,8 @@ def usage():
   print("                       is omitted, then environment variable $SVM_PLATFORM will")
   print("                       be checked. If that variable is not set, then")
   print("                       $sedona_home/platforms/src/generic/unix/generic-unix.xml")
-  print("                       will be used.")
+  print("                       will be used (generic-unix64.xml on hosts which can")
+  print("                       only build 64-bit executables).")
   print("   -l                  List the supported compilers.")
   print("   -h, --help          Show this usage")
 
@@ -72,7 +95,7 @@ def compile():
     srcFiles = [ os.path.join(stageDir, "*.c") ]
     fileutil.rmdir(stageDir)
     compilekit.compile(platFile + " -outDir " + stageDir)
-    getattr(compileunix, compiler)(env.svmExe, srcFiles, includes, libs, defs)
+    getattr(compileunix, compiler)(env.svmExe, srcFiles, includes, libs, defs, platRefSize(platFile))
     os.chmod(env.svmExe, 0O755)
 
   except env.BuildError as err:
@@ -86,7 +109,7 @@ def verifyOpts():
   if not platFile:
     platFile = os.environ.get("SVM_PLATFORM")
     if not platFile:
-      platFile = os.path.join(env.platforms,"src","generic","unix","generic-unix.xml")
+      platFile = defaultPlatform()
 
   if not getattr(compileunix, compiler, None):
     print("Error: Compiler '" + compiler + "' is not supported.")

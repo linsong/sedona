@@ -100,7 +100,7 @@ public abstract class AbstractSoxTest
     File file = new File(testDir(), "kits.xml");
     XWriter out = new XWriter(file);
     out.write("<sedonaCode endian='little' blockSize='4'\n");
-    out.write("   refSize='4' main='sys::Sys.main' debug='true' test='true'>\n");
+    out.write("   refSize='" + svmRefSize() + "' main='sys::Sys.main' debug='true' test='true'>\n");
     for (int i=0; i<schema.kits.length; ++i)
       out.write("<depend on='" + schema.kits[i].name + " 0+'/>\n");
     out.write("</sedonaCode>\n");
@@ -111,6 +111,34 @@ public abstract class AbstractSoxTest
     Compiler c = new Compiler();
     c.compile(file);
     return new File(testDir(), "kits.scode");
+  }
+
+  /**
+   * Get the pointer size of the svm we are going to spawn by
+   * asking it for its version info.  Assume 4 if that fails.
+   */
+  private int svmRefSize()
+  {
+    try
+    {
+      File exe = new File(Env.home, "bin"+File.separator+getSvmName());
+      Process p = Runtime.getRuntime().exec(new String[] { exe.getPath(), "--ver" });
+      BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
+      int refSize = 4;
+      String line;
+      while ((line = in.readLine()) != null)
+      {
+        line = line.trim();
+        if (line.startsWith("refSize:"))
+          refSize = Integer.parseInt(line.substring("refSize:".length()).trim());
+      }
+      p.waitFor();
+      return refSize;
+    }
+    catch (Exception e)
+    {
+      return 4;
+    }
   }
 
   private void spawnApp(File scode, File sab)

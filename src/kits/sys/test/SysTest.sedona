@@ -32,6 +32,8 @@ class SysTest
     
     if (Sys.sizeofRef == 4)
       assert(Link.sizeof == 16)
+    if (Sys.sizeofRef == 8)
+      assert(Link.sizeof == 24)
   }                    
                     
   static void testBytes()
