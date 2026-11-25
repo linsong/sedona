@@ -11,7 +11,8 @@
 # Setup sedona_home. This is the directory that contains adm/, src/, bin/, etc...
 # use the sedona source code directory as the home 
 
-DIR=$(dirname "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )")
+# (BASH_SOURCE is not available when sourced from zsh, where $0 is this script)
+DIR=$(dirname "$( cd "$( dirname "${BASH_SOURCE[0]:-$0}" )" && pwd )")
 export sedona_home=$(dirname $DIR)
 
 # path
@@ -22,7 +23,15 @@ export PYTHONPATH=$PYTHONPATH:$sedona_home/adm:$sedona_home/adm/unix
 
 # java environment - use JAVA_HOME from environment if set, otherwise hard code it
 java_home=$JAVA_HOME
-[ -z "$java_home" ] && java_home=/usr/lib/jvm/$(ls /usr/lib/jvm | head -n1)
+if [ -z "$java_home" ]
+then
+  if [ -x /usr/libexec/java_home ]
+  then
+    java_home=$(/usr/libexec/java_home)  # macOS
+  else
+    java_home=/usr/lib/jvm/$(ls /usr/lib/jvm | head -n1)
+  fi
+fi
 export java_home
 
 # check to make sure that programs we need are in the path

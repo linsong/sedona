@@ -129,6 +129,8 @@ public class InitStagePlatform
   {
     VarResolver vars = new VarResolver();
     plat.refSize   = xml.geti("refSize");
+    if (plat.refSize != 2 && plat.refSize != 4 && plat.refSize != 8)
+      throw new XException("Attribute 'refSize' must be 2, 4 or 8", xml);
     plat.blockSize = xml.geti("blockSize");
     plat.endian    = xml.get("endian");
     plat.armDouble = xml.getb("armDouble", plat.armDouble);

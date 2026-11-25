@@ -45,48 +45,53 @@ struct UdpDatagram
   int32_t  flow;     // only used by IPv6, BUT in 1.2.16+ UdpDatagram.sedona for both
 };
 
+// Offsets of the UdpDatagram fields as laid out by sedonac.  With 4 byte
+// references the fields are laid out in declaration order.  With 8 byte
+// references the ints come first, followed by the references aligned
+// on 8 bytes.  Use "sedonac -layout" on an scode xml to verify.
+#if UINTPTR_MAX > 0xffffffffu
+  #define DG_PORT   0
+  #define DG_OFF    4
+  #define DG_LEN    8
+  #define DG_SCOPE  12
+  #define DG_FLOW   16
+  #define DG_ADDR   24
+  #define DG_BUF    32
+#else
+  #define DG_ADDR   0
+  #define DG_PORT   4
+  #define DG_BUF    8
+  #define DG_OFF    12
+  #define DG_LEN    16
+  #define DG_SCOPE  20
+  #define DG_FLOW   24
+#endif
+
 static void getUdpDatagram(int8_t* sedona, struct UdpDatagram* c)
 {
-  if (sizeof(void*) == 4)
-  {
-    c->addr  = getRef(sedona, 0);
-    c->port  = getInt(sedona, 4);
-    c->buf   = getRef(sedona, 8);
-    c->off   = getInt(sedona, 12);
-    c->len   = getInt(sedona, 16);
+  c->addr  = getRef(sedona, DG_ADDR);
+  c->port  = getInt(sedona, DG_PORT);
+  c->buf   = getRef(sedona, DG_BUF);
+  c->off   = getInt(sedona, DG_OFF);
+  c->len   = getInt(sedona, DG_LEN);
 #ifdef SOCKET_FAMILY_INET6
-    c->scope = getInt(sedona, 20);   // don't touch these for IPv4
-    c->flow  = getInt(sedona, 24);   // don't touch these for IPv4
+  c->scope = getInt(sedona, DG_SCOPE);   // don't touch these for IPv4
+  c->flow  = getInt(sedona, DG_FLOW);    // don't touch these for IPv4
 #endif
-  }
-  else
-  {
-    printf("UdpSocket unsupported pointer size\n");
-  }
 }
 
 static void setUdpDatagram(int8_t* sedona, struct UdpDatagram* c)
 {
-  if (sizeof(void*) == 4)
-  {
-    setRef(sedona, 0,  c->addr);
-    setInt(sedona, 4,  c->port);
-    setRef(sedona, 8,  c->buf);
-    setInt(sedona, 12, c->off);
-    setInt(sedona, 16, c->len);
+  setRef(sedona, DG_ADDR, c->addr);
+  setInt(sedona, DG_PORT, c->port);
+  setRef(sedona, DG_BUF,  c->buf);
+  setInt(sedona, DG_OFF,  c->off);
+  setInt(sedona, DG_LEN,  c->len);
 #ifdef SOCKET_FAMILY_INET6
-    setInt(sedona, 20, c->scope);   // don't touch these for IPv4
-    setInt(sedona, 24, c->flow);    // don't touch these for IPv4
+  setInt(sedona, DG_SCOPE, c->scope);   // don't touch these for IPv4
+  setInt(sedona, DG_FLOW,  c->flow);    // don't touch these for IPv4
 #endif
-  }
-  else
-  {
-    printf("UdpSocket unsupported pointer size\n");
-  }
 }
-
-
-
 
 //////////////////////////////////////////////////////////////////////////
 // Native Methods

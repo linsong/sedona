@@ -29,8 +29,8 @@ def compile(srcDir, depends, packages, jarFile, func=None):
   
   print("  javac [" + srcDir + "]")
   cmd = env.jikes
-  cmd += " -source 1.6 "
-  cmd += " -target 1.6 "
+  cmd += " -source 1.8 "
+  cmd += " -target 1.8 "
   cmd += " -d " + temp
   cmd += " -classpath " + env.jreRt + env.cpSep + srcDir
   for depend in depends:

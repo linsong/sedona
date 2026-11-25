@@ -138,7 +138,8 @@ platform.
 -   **blockSize**: (required) size of a scode block in bytes (see the
     source for `src/vm/sedona.h`)
 -   **refSize**: (required) size of a memory pointer in bytes for target
-    processor (4 for 32-bit processor).
+    processor (4 for a 32-bit processor, 8 for a 64-bit processor). The SVM
+    refuses to load scode whose refSize differs from its own pointer size.
 -   **debug**: (optional) boolean to include debug meta-data in image.
     Defaults to false
 -   **test**: (optional) boolean to include test code in image. Defaults

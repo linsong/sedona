@@ -22,17 +22,26 @@ import fileutil
 #   includes: list of absolute directories
 #   libs:     list of filenames
 #   defs:     list of name/value tuples
+#   refSize:  pointer size in bytes the platform definition asks for,
+#             or None if unknown
 #
 #def compile(exeFile, srcFiles, includes, libs, defs):
-def gcc(exeFile, srcFiles, includes, libs, defs):
+def gcc(exeFile, srcFiles, includes, libs, defs, refSize=None):
   # standard includes
   compile_prefix=os.environ.get("SVM_CROSS_COMPILE")
   cmd = "gcc"
   if compile_prefix is not None:
     cmd = compile_prefix + cmd
 
-  if (platform.machine() == 'x86_64') and (compile_prefix is None):
-    cmd += " -m32"  # always compile in 32bit mode
+  # an x86_64 host compiler builds 64-bit code by default, so ask
+  # for 32-bit code unless the platform wants 8 byte references
+  if (platform.machine() == 'x86_64') and (compile_prefix is None) and (refSize != 8):
+    cmd += " -m32"
+
+  # lets the VM fail the compile, instead of failing to load scode at
+  # runtime, if the compiler's pointer size doesn't match the platform
+  if refSize is not None:
+    cmd += " -DSEDONA_REF_SIZE=" + str(refSize)
 
   sysroot = os.environ.get("SVM_SYSROOT")
   for include in includes:
@@ -47,6 +56,9 @@ def gcc(exeFile, srcFiles, includes, libs, defs):
     cmd += " -D" + d[0]
     if len(d)>1 and d[1] is not None:
       cmd += "=" + d[1]
+
+  # the VM accesses the stack and scode through casted pointers
+  cmd += " -fno-strict-aliasing"
 
   cmd += " -DPLAT_BUILD_VERSION=" + '\\"' + env.buildVersion() + '\\"'
 

@@ -203,6 +203,7 @@ public class Compiler
     new OrderStaticInits(this).run();
     new FieldLayout(this).run();
     new VTableLayout(this).run();
+    new OptimizeIr(this).run();
     new InlineConsts(this).run();
     new FindTestCases(this).run();
     new Generate(this).run();

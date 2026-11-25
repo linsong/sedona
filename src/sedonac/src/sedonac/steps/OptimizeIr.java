@@ -37,6 +37,20 @@ public class OptimizeIr
   {                               
     if (!compiler.optimize) return;
     log.debug("  OptimizeIr");
+
+    // When compiling an image we know the pointer size, which lets
+    // us do the optimizations which are only safe if a null pointer
+    // can be tested like a 32-bit integer zero.  Kits are portable
+    // across pointer sizes, so they never include these.
+    if (compiler.image != null)
+    {
+      if (compiler.image.refSize > 4) return;
+      nullIsIntZero = true;
+      for (int i=0; i<flat.methods.length; ++i)
+        optimize(flat.methods[i]);
+      return;
+    }
+
     IrType[] types = compiler.ir.types;
     for (int i=0; i<types.length; ++i)
     {
@@ -333,9 +347,9 @@ public class OptimizeIr
       if (b.opcode == SCode.IntNotEq) return new IrOp(SCode.NotEqZero);
     }
 
-    // LoadNull b (this probably isn't correct for a 64-bit VM, 
-    // but should work fine on a 32-bit VM where null is zero)
-    if (a.opcode == SCode.LoadNull)
+    // LoadNull b (EqZero only tests the 32-bit int value of a stack
+    // cell, so this is only done when pointers aren't wider than that)
+    if (nullIsIntZero && a.opcode == SCode.LoadNull)
     {          
       if (b.opcode == SCode.ObjEq)    return new IrOp(SCode.EqZero);
       if (b.opcode == SCode.ObjNotEq) return new IrOp(SCode.NotEqZero);
@@ -406,6 +420,7 @@ public class OptimizeIr
 //////////////////////////////////////////////////////////////////////////
   
   private final Set noPeephole = new HashSet();
+  private boolean nullIsIntZero = false;
 
 }
 

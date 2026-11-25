@@ -402,6 +402,7 @@ public class ImageGen
       code.u2(0);
     else
       addBlockIndex((IrType)t.base);
+    if (t.sizeof > 0xffff) throw err("Type '" + t.qname + "' is too big: " + t.sizeof + " bytes");
     code.u2(t.sizeof);
     addBlockIndex(((IrMethod)t.slot(Method.INSTANCE_INIT)).codeAddr);
     for (int i=0; i<slots.length; ++i)

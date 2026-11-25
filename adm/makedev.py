@@ -26,6 +26,8 @@ import argparse
 # Default app & scode files, assumed to be in <sedona>/apps and <sedona>/scode
 defaultapp   = "test.sax"
 defaultscode = "x86-test.xml"
+if os.name == "posix" and makeunixvm.hostIs64BitOnly():
+  defaultscode = "unix64-test.xml"
 
 
 # initParser

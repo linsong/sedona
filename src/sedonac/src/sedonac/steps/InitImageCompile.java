@@ -68,6 +68,8 @@ public class InitImageCompile
     image.endian      = toEndian(xml);
     image.blockSize   = xml.geti("blockSize");
     image.refSize     = xml.geti("refSize");
+    if (image.refSize != 2 && image.refSize != 4 && image.refSize != 8)
+      throw new XException("Attribute 'refSize' must be 2, 4 or 8", xml);
     image.main        = xml.get("main", "sys::Sys.main");
     image.debug       = xml.getb("debug", false);
     image.test        = xml.getb("test", false);

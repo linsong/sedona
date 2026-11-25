@@ -100,6 +100,25 @@ a 64-bit processor, a Cell is 32-bits wide. The definition of Cell in
     }
     Cell;
 
+### 64-bit platforms
+
+A Cell is always exactly as wide as a pointer, so it is 64-bits wide on
+a 64-bit processor (platform `refSize="8"`). Native code written
+according to this chapter works for both sizes if it follows these
+rules:
+
+-   Return a reference through `aval` (or `nullCell`), never through
+    `ival`. Writing `ival` only sets 32 bits of a 64-bit Cell.
+-   A `long` or `double` still takes two Cells. Its value is stored in
+    the first of the two, so the `*(int64_t*)(params+n)` idiom shown
+    below is correct for both sizes.
+-   Do not hard code field offsets of Sedona objects which contain
+    references. References are laid out after the 1, 2 and 4 byte
+    fields and aligned on 8 bytes when they are 8 bytes wide, so the
+    offsets differ from a 32-bit platform. Use `sedonac -layout` on
+    your scode XML file to see the layout, and select the offsets with
+    `#if UINTPTR_MAX > 0xffffffffu` (see `inet_UdpSocket_std.c`).
+
 Every native method must be implemented in C as a function that takes
 two arguments: a `SedonaVM_s` pointer and a `Cell` pointer into the
 stack, and returns a `Cell`. (Native methods that return a `long` or a
